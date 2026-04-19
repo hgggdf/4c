@@ -1,58 +1,90 @@
 <template>
-  <div class="chat-box">
+  <!-- 对话输入区 -->
+  <div
+    class="chat-box"
+    :class="{ 'chat-box-drop': isDragOver }"
+    @dragover.prevent="isDragOver = true"
+    @dragleave="isDragOver = false"
+    @drop.prevent="onDrop"
+  >
+    <!-- 已拖入的标的标签 -->
+    <div v-if="droppedItems.length" class="dragged-tags">
+      <span v-for="item in droppedItems" :key="item.symbol" class="dragged-tag">
+        {{ item.type === 'industry' ? '🏭' : '📈' }} {{ item.name }}
+        <span class="rm" @click="removeItem(item.symbol)">×</span>
+      </span>
+    </div>
+
     <textarea
-      v-model="draft"
-      placeholder="请输入问题，例如：帮我分析恒瑞医药的研发管线、集采对某公司的影响、600519 今天行情"
-      @keydown.enter.exact.prevent="submit"
+      v-model="text"
+      class="chat-textarea"
+      :placeholder="placeholder"
+      rows="3"
+      @keydown.enter.exact.prevent="handleSubmit"
     />
-    <div style="display:flex;gap:8px;align-items:center;">
-      <label class="upload-btn" title="上传年报/研报 PDF 到知识库">
-        📄 上传PDF
-        <input type="file" accept=".pdf" style="display:none" @change="uploadPdf" />
-      </label>
-      <button class="primary-btn" :disabled="disabled" @click="submit">
-        {{ disabled ? '发送中' : '发送' }}
+
+    <div class="chat-toolbar">
+      <span class="chat-hint">
+        <template v-if="droppedItems.length">
+          已添加 {{ droppedItems.length }} 个标的 · 
+        </template>
+        Enter 发送 · Shift+Enter 换行
+      </span>
+      <button
+        class="send-btn"
+        :disabled="loading || (!text.trim() && !droppedItems.length)"
+        @click="handleSubmit"
+      >
+        <span v-if="loading">思考中…</span>
+        <span v-else>发送</span>
       </button>
     </div>
-    <div v-if="uploadStatus" class="upload-status">{{ uploadStatus }}</div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import request from '../api/request'
 
-const emit = defineEmits(['submit'])
 const props = defineProps({
   loading: { type: Boolean, default: false }
 })
+const emit = defineEmits(['submit'])
 
-const draft = ref('')
-const uploadStatus = ref('')
-const disabled = computed(() => props.loading || !draft.value.trim())
+const text = ref('')
+const isDragOver = ref(false)
+const droppedItems = ref([])
 
-function submit() {
-  const message = draft.value.trim()
-  if (!message || props.loading) return
-  emit('submit', message)
-  draft.value = ''
+const placeholder = computed(() =>
+  droppedItems.value.length
+    ? `已选中 ${droppedItems.value.map(i=>i.name).join('、')}，输入分析问题…`
+    : '请输入问题，或将个股/行业卡片拖入此处进行多标的联合分析…'
+)
+
+function onDrop(evt) {
+  isDragOver.value = false
+  try {
+    const item = JSON.parse(evt.dataTransfer.getData('application/json'))
+    if (!droppedItems.value.find(x => x.symbol === item.symbol)) {
+      droppedItems.value.push(item)
+    }
+  } catch {}
 }
 
-async function uploadPdf(e) {
-  const file = e.target.files[0]
-  if (!file) return
-  uploadStatus.value = `正在上传 ${file.name}...`
-  try {
-    const form = new FormData()
-    form.append('file', file)
-    const res = await request.post('/api/upload_pdf', form, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    uploadStatus.value = res.message || '上传成功'
-  } catch (err) {
-    uploadStatus.value = `上传失败：${err.message}`
+function removeItem(symbol) {
+  droppedItems.value = droppedItems.value.filter(x => x.symbol !== symbol)
+}
+
+function handleSubmit() {
+  const msg = text.value.trim()
+  const targets = droppedItems.value
+  if (!msg && !targets.length) return
+
+  const payload = {
+    message: msg,
+    targets: targets.map(t => ({ symbol: t.symbol, name: t.name, type: t.type || 'stock' })),
   }
-  e.target.value = ''
-  setTimeout(() => { uploadStatus.value = '' }, 4000)
+  emit('submit', payload)
+  text.value = ''
+  droppedItems.value = []
 }
 </script>

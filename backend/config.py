@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -18,9 +19,13 @@ class Settings(BaseSettings):
     demo_user_id: int = 1
     demo_username: str = "demo_user"
 
+    database_url_override: str = ""
+    local_database_path: str = "local_data/stock_agent.db"
+
     anthropic_api_key: str = ""
     anthropic_base_url: str = "https://api.anthropic.com"
     claude_model: str = "claude-sonnet-4-6"
+    tushare_token: str = ""
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -34,10 +39,18 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
+        if self.database_url_override.strip():
+            return self.database_url_override.strip()
         return (
             f"mysql+pymysql://{self.mysql_user}:{self.mysql_password}"
             f"@{self.mysql_host}:{self.mysql_port}/{self.mysql_database}?charset=utf8mb4"
         )
+
+    @property
+    def sqlite_database_url(self) -> str:
+        database_path = Path(__file__).parent / self.local_database_path
+        database_path.parent.mkdir(parents=True, exist_ok=True)
+        return f"sqlite:///{database_path.resolve().as_posix()}"
 
 
 @lru_cache

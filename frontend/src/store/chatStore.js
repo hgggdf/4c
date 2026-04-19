@@ -1,55 +1,57 @@
 import { defineStore } from 'pinia'
 import { sendChatMessage } from '../api/chat'
 
-const demoUserId = Number(import.meta.env.VITE_DEMO_USER_ID || 1)
-
 export const useChatStore = defineStore('chat', {
   state: () => ({
-    userId: demoUserId,
     messages: [
       {
         role: 'assistant',
-        content: '你好，我是智策系统——专注于医药生物行业的智能投资分析助手。\n\n你可以问我：\n• 帮我分析恒瑞医药的研发管线\n• 药明康德最近订单情况怎么样\n• 集采对某某公司的影响有多大\n• 贵州茅台（600519）今天行情如何\n• 医药行业整体趋势分析',
-        createdAt: Date.now()
+        content: '你好，我是医药投研多智能体系统。\n\n你可以：\n• 直接提问，如「分析恒瑞医药的研发管线」\n• 将左侧个股或行业卡片拖入输入框，进行多标的联合分析\n• 切换右侧宏观/行业/个股面板，查看详细数据',
+        createdAt: Date.now(),
       }
     ],
-    loading: false
+    loading: false,
   }),
   actions: {
-    async ask(message) {
-      const userMessage = {
-        role: 'user',
-        content: message,
-        createdAt: Date.now()
+    async ask({ message, targets = [] }) {
+      // 构建用户消息
+      let content = message
+      if (targets.length && !message) {
+        content = `请对以下标的进行联合分析：${targets.map(t => t.name).join('、')}`
+      } else if (targets.length) {
+        content = `[联合分析：${targets.map(t => t.name).join('、')}] ${message}`
       }
-      this.messages.push(userMessage)
+
+      const userMsg = {
+        role: 'user',
+        content,
+        targets,
+        createdAt: Date.now(),
+      }
+      this.messages.push(userMsg)
       this.loading = true
 
       try {
         const response = await sendChatMessage({
-          user_id: this.userId,
-          message,
-          history: this.messages.map(item => ({
-            role: item.role,
-            content: item.content
-          }))
+          message: content,
+          targets,
+          history: this.messages.map(m => ({ role: m.role, content: m.content })),
         })
-
         this.messages.push({
           role: 'assistant',
-          content: response.answer,
+          content: response.answer ?? response.message ?? '已收到，正在处理…',
+          extra: response.quote || null,
           createdAt: Date.now(),
-          extra: response.quote || null
         })
-      } catch (error) {
+      } catch (err) {
         this.messages.push({
           role: 'assistant',
-          content: `抱歉，处理失败：${error.message}`,
-          createdAt: Date.now()
+          content: `抱歉，请求失败：${err.message}`,
+          createdAt: Date.now(),
         })
       } finally {
         this.loading = false
       }
-    }
-  }
+    },
+  },
 })

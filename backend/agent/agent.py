@@ -63,19 +63,29 @@ class StockAgent:
         context_parts: list[str] = []
         intent = _detect_intent(message)
 
-        # ── 子 Agent 1：实时行情 ──────────────────────────────────────────────
+        # 子 Agent 1：本地公司数据仓 + 行情数据
         if symbol:
-            quote = self.tools.get_quote(symbol)
-            context_parts.append(
-                f"【实时行情】{quote['name']}（{quote['symbol']}）"
-                f"最新价 {quote['price']}，涨跌额 {quote['change']}，"
-                f"涨跌幅 {quote['change_percent']}%，"
-                f"开盘 {quote['open']}，最高 {quote['high']}，最低 {quote['low']}，"
-                f"成交量 {quote['volume']}，时间 {quote['time']}"
-            )
+            dataset = self.tools.get_company_dataset(symbol, refresh=False, compact=True)
+            if dataset and dataset.get("quote"):
+                quote = dataset["quote"]
+            else:
+                quote = self.tools.get_quote(symbol)
 
-        # ── 子 Agent 2：研报/资讯 ─────────────────────────────────────────────
-        if self._needs_news(message) or symbol:
+            if quote:
+                context_parts.append(
+                    f"【实时行情】{quote['name']}（{quote['symbol']}）"
+                    f"最新价 {quote['price']}，涨跌额 {quote['change']}，"
+                    f"涨跌幅 {quote['change_percent']}%，"
+                    f"开盘 {quote['open']}，最高 {quote['high']}，最低 {quote['low']}，"
+                    f"成交量 {quote['volume']}，时间 {quote['time']}"
+                )
+
+            company_context = self.tools.get_company_context(symbol)
+            if company_context:
+                context_parts.append(company_context)
+
+        # 子 Agent 2：研报/资讯数据
+        if self._needs_news(message) and not symbol:
             news = self.tools.get_pharma_news(symbol)
             valid = [n for n in news if "error" not in n and n.get("title")]
             if valid:

@@ -40,7 +40,7 @@
       </div>
 
       <div class="card" style="margin-top: 18px;">
-        <h3 class="card-title">近 {{ days }} 日走势（历史数据会缓存到 MySQL）</h3>
+        <h3 class="card-title">近 {{ days }} 日走势</h3>
         <StockChart :kline="kline" />
       </div>
     </template>

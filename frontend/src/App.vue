@@ -1,17 +1,13 @@
 <template>
-  <div class="layout">
+  <div>
     <header class="topbar">
-      <div class="brand">智策系统 · 医药智能分析</div>
-      <nav class="nav">
-        <RouterLink to="/">智能咨询</RouterLink>
-        <RouterLink to="/diagnose">企业诊断</RouterLink>
-        <RouterLink to="/risk">风险洞察</RouterLink>
-        <RouterLink to="/report">分析报告</RouterLink>
-      </nav>
+      <RouterLink to="/" class="brand">⚕ 医药投研智能体</RouterLink>
+      <div class="topbar-meta">多智能体运营诊断系统 · Alpha</div>
     </header>
-    <main class="page">
+
+    <div class="app-shell">
       <RouterView />
-    </main>
+    </div>
   </div>
 </template>
 

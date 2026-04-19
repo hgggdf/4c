@@ -102,7 +102,7 @@ async function loadData() {
   error.value = ''
   try {
     const res = await getRisks()
-    data.value = res.data.data
+    data.value = res.data
     await nextTick()
     renderBar(activeMetric.value)
   } catch (e) {
@@ -123,7 +123,7 @@ async function renderBar(metric) {
 
   try {
     const res = await getCompare(metric)
-    const items = res.data.data
+    const items = res.data
     const names = items.map(i => i.stock_name)
     const values = items.map(i => i.value ?? 0)
     const unit = items[0]?.unit || ''

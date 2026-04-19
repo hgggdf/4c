@@ -1,8 +1,15 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+import math
+import os
 import random
 import time
+
+from config import get_settings
+from data.pharma_company_registry import get_company, list_pharma_companies, resolve_company_symbol, to_market_prefix
+from data.tushare_client import TushareClient
+from data.web_scraper import fetch_pharma_news
 
 try:
     import akshare as ak
@@ -35,17 +42,27 @@ NAME_MAPPING = {
     "万科A": "000002",
     "浦发银行": "600000",
     "中国平安": "601318",
-    "恒瑞医药": "600276",
-    "爱尔眼科": "300015",
-    "药明康德": "603259",
     "天合光能": "688599",
 }
+
+for company in list_pharma_companies():
+    NAME_MAPPING[company["name"]] = company["symbol"]
+    for alias in company.get("aliases", []):
+        NAME_MAPPING[alias] = company["symbol"]
 
 
 class StockDataProvider:
     def __init__(self) -> None:
+        self.settings = get_settings()
         self._spot_cache = None
         self._spot_cache_time = 0.0
+        self.tushare_client = TushareClient()
+        self._sanitize_proxy_env()
+
+    def _sanitize_proxy_env(self) -> None:
+        for key in ["HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy"]:
+            if key in os.environ:
+                os.environ[key] = ""
 
     def _get_spot_df_cached(self):
         if ak is None:
@@ -62,6 +79,9 @@ class StockDataProvider:
             return None
 
     def resolve_symbol(self, message: str) -> str | None:
+        resolved = resolve_company_symbol(message)
+        if resolved:
+            return resolved
         for name, symbol in NAME_MAPPING.items():
             if name in message:
                 return symbol
@@ -88,6 +108,23 @@ class StockDataProvider:
                     }
             except Exception:
                 pass
+
+        info_map = self.get_company_info(symbol)
+        if info_map:
+            company = get_company(symbol)
+            latest = self._to_float(info_map.get("最新"))
+            return {
+                "symbol": symbol,
+                "name": info_map.get("股票简称") or (company.get("name") if company else symbol),
+                "price": latest,
+                "change": 0.0,
+                "change_percent": 0.0,
+                "open": latest,
+                "high": latest,
+                "low": latest,
+                "volume": str(info_map.get("流通股") or "0"),
+                "time": datetime.now().strftime("%H:%M:%S"),
+            }
 
         return MOCK_QUOTES.get(symbol, self._build_fallback_quote(symbol))
 
@@ -125,9 +162,10 @@ class StockDataProvider:
         return self._build_mock_kline(symbol, days)
 
     def _build_fallback_quote(self, symbol: str) -> dict:
+        company = get_company(symbol)
         return {
             "symbol": symbol,
-            "name": f"示例股票{symbol}",
+            "name": company["name"] if company else f"示例股票{symbol}",
             "price": 20.16,
             "change": 0.32,
             "change_percent": 1.61,
@@ -165,3 +203,206 @@ class StockDataProvider:
             current = close_price
 
         return data
+
+    def get_company_info(self, symbol: str) -> dict:
+        records, _ = self._safe_ak_call("stock_individual_info_em", symbol=symbol)
+        info = {}
+        for item in records:
+            key = item.get("item")
+            if key:
+                info[str(key)] = item.get("value")
+        return info
+
+    def collect_company_dataset(self, symbol: str, history_days: int = 180) -> dict:
+        company = get_company(symbol) or {
+            "symbol": symbol,
+            "name": symbol,
+            "exchange": to_market_prefix(symbol),
+            "aliases": [],
+        }
+        market_prefix = to_market_prefix(symbol)
+        market_lower = market_prefix.lower()
+        em_symbol = f"{market_prefix}{symbol}"
+
+        source_status: dict[str, dict] = {}
+
+        company_info_records, source_status["company_info"] = self._safe_ak_call(
+            "stock_individual_info_em",
+            symbol=symbol,
+        )
+        company_info = {
+            str(item.get("item")): item.get("value")
+            for item in company_info_records
+            if item.get("item")
+        }
+
+        financial_abstract, source_status["financial_abstract"] = self._safe_ak_call(
+            "stock_financial_abstract",
+            symbol=symbol,
+        )
+
+        financial_indicators, source_status["financial_indicators"] = self._safe_ak_call_any(
+            [
+                ("stock_financial_analysis_indicator", {"symbol": symbol}),
+                ("stock_financial_analysis_indicator_em", {"symbol": em_symbol, "indicator": "按报告期"}),
+            ]
+        )
+
+        main_business, source_status["main_business"] = self._safe_ak_call(
+            "stock_zygc_em",
+            symbol=em_symbol,
+        )
+
+        research_reports, source_status["research_reports"] = self._safe_ak_call(
+            "stock_research_report_em",
+            symbol=symbol,
+        )
+
+        announcements, source_status["announcements"] = self._safe_ak_call(
+            "stock_individual_notice_report",
+            security=symbol,
+            symbol="全部",
+            begin_date="20200101",
+            end_date=datetime.now().strftime("%Y%m%d"),
+        )
+
+        news, source_status["news"] = self._safe_ak_call(
+            "stock_news_em",
+            symbol=symbol,
+        )
+
+        fund_flow, source_status["fund_flow"] = self._safe_ak_call(
+            "stock_individual_fund_flow",
+            stock=symbol,
+            market=market_lower,
+        )
+
+        balance_sheet, source_status["balance_sheet"] = self._safe_ak_call(
+            "stock_balance_sheet_by_report_em",
+            symbol=em_symbol,
+        )
+
+        profit_sheet, source_status["profit_sheet"] = self._safe_ak_call(
+            "stock_profit_sheet_by_report_em",
+            symbol=em_symbol,
+        )
+
+        cash_flow_sheet, source_status["cash_flow_sheet"] = self._safe_ak_call(
+            "stock_cash_flow_sheet_by_report_em",
+            symbol=em_symbol,
+        )
+
+        try:
+            company_reports = fetch_pharma_news(symbol)
+            source_status["web_scraper_stock_reports"] = {
+                "ok": True,
+                "source": "web_scraper.fetch_pharma_news(symbol)",
+                "count": len(company_reports),
+            }
+        except Exception as exc:
+            company_reports = []
+            source_status["web_scraper_stock_reports"] = {
+                "ok": False,
+                "source": "web_scraper.fetch_pharma_news(symbol)",
+                "error": str(exc),
+            }
+
+        try:
+            industry_reports = fetch_pharma_news(None)
+            source_status["web_scraper_industry_reports"] = {
+                "ok": True,
+                "source": "web_scraper.fetch_pharma_news(None)",
+                "count": len(industry_reports),
+            }
+        except Exception as exc:
+            industry_reports = []
+            source_status["web_scraper_industry_reports"] = {
+                "ok": False,
+                "source": "web_scraper.fetch_pharma_news(None)",
+                "error": str(exc),
+            }
+
+        tushare_data, tushare_status = self.tushare_client.collect_company_data(symbol)
+        source_status.update(tushare_status)
+
+        quote = self.get_quote(symbol)
+        kline = self.get_kline(symbol, history_days)
+
+        return {
+            "symbol": symbol,
+            "name": company.get("name") or quote.get("name") or symbol,
+            "exchange": company.get("exchange") or market_prefix,
+            "aliases": company.get("aliases", []),
+            "collected_at": datetime.now().isoformat(timespec="seconds"),
+            "quote": quote,
+            "kline": kline,
+            "company_info": company_info,
+            "financial_abstract": financial_abstract,
+            "financial_indicators": financial_indicators,
+            "main_business": main_business,
+            "research_reports": research_reports,
+            "announcements": announcements,
+            "news": news,
+            "fund_flow": fund_flow,
+            "balance_sheet": balance_sheet,
+            "profit_sheet": profit_sheet,
+            "cash_flow_sheet": cash_flow_sheet,
+            "stock_reports": company_reports,
+            "industry_reports": industry_reports,
+            "tushare": tushare_data,
+            "source_status": source_status,
+        }
+
+    def _safe_ak_call(self, func_name: str, **kwargs) -> tuple[list[dict], dict]:
+        if ak is None:
+            return [], {"ok": False, "source": func_name, "error": "akshare 不可用"}
+        func = getattr(ak, func_name, None)
+        if func is None:
+            return [], {"ok": False, "source": func_name, "error": "接口不存在"}
+        try:
+            df = func(**kwargs)
+            records = self._df_to_records(df)
+            return records, {"ok": True, "source": func_name, "count": len(records)}
+        except Exception as exc:
+            return [], {"ok": False, "source": func_name, "error": str(exc)}
+
+    def _safe_ak_call_any(self, candidates: list[tuple[str, dict]]) -> tuple[list[dict], dict]:
+        errors = []
+        for func_name, kwargs in candidates:
+            records, status = self._safe_ak_call(func_name, **kwargs)
+            if status.get("ok"):
+                return records, status
+            errors.append(f"{func_name}: {status.get('error')}")
+        return [], {"ok": False, "source": ", ".join(name for name, _ in candidates), "error": " | ".join(errors)}
+
+    def _df_to_records(self, df) -> list[dict]:
+        if df is None or getattr(df, "empty", True):
+            return []
+        records = []
+        for item in df.to_dict(orient="records"):
+            row = {}
+            for key, value in item.items():
+                normalized_key = str(key).strip()
+                row[normalized_key] = self._normalize_value(value)
+            records.append(row)
+        return records
+
+    def _normalize_value(self, value):
+        if value is None:
+            return None
+        if hasattr(value, "item"):
+            try:
+                value = value.item()
+            except Exception:
+                pass
+        if isinstance(value, (datetime, date)):
+            return value.isoformat()
+        if isinstance(value, float) and math.isnan(value):
+            return None
+        return value
+
+    def _to_float(self, value) -> float:
+        try:
+            return float(value or 0)
+        except Exception:
+            return 0.0

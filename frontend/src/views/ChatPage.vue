@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
     <section class="card">
-      <h2 class="card-title">医药自选股</h2>
+      <h2 class="card-title">热门股票</h2>
       <div class="stock-list">
         <RouterLink
           v-for="item in watchlist"
@@ -45,7 +45,7 @@ async function handleSubmit(message) {
 
 onMounted(async () => {
   try {
-    watchlist.value = await getWatchlist(chatStore.userId)
+    watchlist.value = await getWatchlist()
   } catch (error) {
     watchlist.value = [
       { symbol: '600519', name: '贵州茅台' },

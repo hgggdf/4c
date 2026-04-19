@@ -1,5 +1,6 @@
 import re
 
+from data.company_data_store import CompanyDataStore
 from data.akshare_client import StockDataProvider
 from data.web_scraper import fetch_pharma_news
 from data.pdf_parser import extract_financial_highlights
@@ -8,6 +9,7 @@ from data.pdf_parser import extract_financial_highlights
 class AgentTools:
     def __init__(self) -> None:
         self.provider = StockDataProvider()
+        self.company_store = CompanyDataStore()
 
     def extract_symbol(self, message: str) -> str | None:
         code_match = re.search(r"\b(\d{6})\b", message)
@@ -17,6 +19,76 @@ class AgentTools:
 
     def get_quote(self, symbol: str) -> dict:
         return self.provider.get_quote(symbol)
+
+    def get_company_dataset(self, symbol: str, refresh: bool = False, compact: bool = True) -> dict | None:
+        dataset = None if refresh else self.company_store.load_company_dataset(symbol, compact=compact)
+        if dataset is not None:
+            return dataset
+
+        full_dataset = self.provider.collect_company_dataset(symbol)
+        self.company_store.save_company_dataset(full_dataset)
+        return self.company_store.to_compact_dataset(full_dataset) if compact else full_dataset
+
+    def get_company_context(self, symbol: str) -> str:
+        dataset = self.get_company_dataset(symbol, refresh=False, compact=True)
+        if not dataset:
+            return ""
+
+        parts: list[str] = []
+        info = dataset.get("company_info", {})
+        if info:
+            parts.append(
+                f"【公司资料】{dataset.get('name', symbol)}（{symbol}），行业：{info.get('行业', '未知')}，"
+                f"总市值：{info.get('总市值', '未知')}，流通市值：{info.get('流通市值', '未知')}，上市时间：{info.get('上市时间', '未知')}"
+            )
+
+        reports = dataset.get("research_reports", [])[:3]
+        if reports:
+            parts.append(
+                "【最新研报】\n" + "\n".join(
+                    f"- [{item.get('日期', '')}] {item.get('报告名称', '')}（{item.get('机构', '')}，评级 {item.get('东财评级', '')}）"
+                    for item in reports
+                )
+            )
+
+        notices = dataset.get("announcements", [])[:5]
+        if notices:
+            parts.append(
+                "【最新公告】\n" + "\n".join(
+                    f"- [{item.get('公告日期', '')}] {item.get('公告标题', '')}（{item.get('公告类型', '')}）"
+                    for item in notices
+                )
+            )
+
+        financial_abstract = dataset.get("financial_abstract", [])
+        key_metrics = []
+        metric_names = {"归母净利润", "营业总收入", "扣非净利润", "净资产收益率", "毛利率"}
+        for row in financial_abstract:
+            if row.get("指标") not in metric_names:
+                continue
+            latest_pairs = [
+                (key, value)
+                for key, value in row.items()
+                if key not in {"选项", "指标"} and value not in (None, "")
+            ]
+            if latest_pairs:
+                latest_key, latest_value = latest_pairs[0]
+                key_metrics.append(f"{row.get('指标')}（{latest_key}）：{latest_value}")
+            if len(key_metrics) >= 5:
+                break
+        if key_metrics:
+            parts.append("【财务摘要】" + "；".join(key_metrics))
+
+        main_business = dataset.get("main_business", [])[:5]
+        if main_business:
+            parts.append(
+                "【主营构成】\n" + "\n".join(
+                    f"- {item.get('分类类型', '')} / {item.get('主营构成', '')}：收入 {item.get('主营收入', '')}，毛利率 {item.get('毛利率', '')}"
+                    for item in main_business
+                )
+            )
+
+        return "\n\n".join(parts)
 
     def get_pharma_news(self, symbol: str | None = None) -> list[dict]:
         try:

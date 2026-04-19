@@ -1,14 +1,12 @@
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
+from data.pharma_company_registry import list_pharma_companies
 from models.watchlist import Watchlist
 
 DEFAULT_WATCHLIST = [
-    {"stock_code": "600519", "stock_name": "贵州茅台"},
-    {"stock_code": "000001", "stock_name": "平安银行"},
-    {"stock_code": "600036", "stock_name": "招商银行"},
-    {"stock_code": "300750", "stock_name": "宁德时代"},
-    {"stock_code": "002594", "stock_name": "比亚迪"},
+    {"stock_code": item["symbol"], "stock_name": item["name"]}
+    for item in list_pharma_companies()
 ]
 
 

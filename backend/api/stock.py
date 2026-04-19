@@ -45,6 +45,35 @@ def delete_watchlist(
     return stock_service.remove_watchlist(db, user_id, symbol)
 
 
+@router.get("/companies")
+def list_companies():
+    return stock_service.list_pharma_companies()
+
+
+@router.get("/company")
+def get_company_dataset(
+    symbol: str = Query(..., description="股票代码或公司名称"),
+    refresh: bool = Query(False, description="是否强制刷新本地数据"),
+    compact: bool = Query(True, description="是否返回压缩版数据"),
+):
+    return stock_service.get_company_dataset(symbol, refresh=refresh, compact=compact)
+
+
+@router.post("/company/refresh")
+def refresh_company_dataset(
+    symbol: str = Query(..., description="股票代码或公司名称"),
+    compact: bool = Query(True, description="是否返回压缩版数据"),
+):
+    return stock_service.get_company_dataset(symbol, refresh=True, compact=compact)
+
+
+@router.post("/companies/refresh")
+def refresh_all_companies(
+    compact: bool = Query(True, description="是否返回压缩版预览"),
+):
+    return stock_service.refresh_all_company_data(compact=compact)
+
+
 @router.get("/db/stats")
 def get_db_stats(db: Session = Depends(get_db)):
     """获取数据库中股票历史数据统计"""

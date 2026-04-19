@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from database.session import engine
 from data.akshare_client import StockDataProvider
+from data.company_data_store import CompanyDataStore
+from data.pharma_company_registry import list_pharma_companies
 from repository.stock_repo import StockDailyRepository
 
 # 默认导入的股票列表（可扩展）
@@ -28,6 +30,8 @@ DEFAULT_STOCKS = [
     "600276",  # 恒瑞医药
     "300015",  # 爱尔眼科
 ]
+
+PHARMA_STOCKS = [item["symbol"] for item in list_pharma_companies()]
 
 
 def import_stock_history(stock_code: str, days: int = 365) -> None:
@@ -68,6 +72,28 @@ def import_all_stocks(days: int = 365) -> None:
     print(f"导入完成: 成功 {success_count} 只，失败 {fail_count} 只")
 
 
+def import_company_dataset(stock_code: str, days: int = 180) -> None:
+    provider = StockDataProvider()
+    store = CompanyDataStore()
+
+    print(f"正在采集 {stock_code} 的多源公司数据...")
+    try:
+        dataset = provider.collect_company_dataset(stock_code, history_days=days)
+        summary = store.save_company_dataset(dataset)
+        print(f"[OK] {stock_code} 数据采集完成，更新时间 {summary.get('collected_at')}")
+    except Exception as exc:
+        print(f"[FAIL] {stock_code} 数据采集失败: {exc}")
+
+
+def import_all_pharma_companies(days: int = 180) -> None:
+    print(f"开始采集 {len(PHARMA_STOCKS)} 家医药公司多源数据...")
+    print("=" * 60)
+    for stock_code in PHARMA_STOCKS:
+        import_company_dataset(stock_code, days)
+    print("=" * 60)
+    print("医药公司数据采集完成")
+
+
 def check_data_status() -> None:
     """检查数据库中的股票数据状态"""
     from sqlalchemy import text
@@ -102,19 +128,27 @@ if __name__ == "__main__":
     parser.add_argument("--stock", type=str, help="导入指定股票代码")
     parser.add_argument("--days", type=int, default=365, help="导入天数（默认365天）")
     parser.add_argument("--all", action="store_true", help="导入所有默认股票")
+    parser.add_argument("--company", type=str, help="采集指定公司多源数据")
+    parser.add_argument("--pharma-all", action="store_true", help="采集 20 家医药公司全部多源数据")
     parser.add_argument("--status", action="store_true", help="查看数据状态")
 
     args = parser.parse_args()
 
     if args.status:
         check_data_status()
+    elif args.company:
+        import_company_dataset(args.company, args.days)
+    elif args.pharma_all:
+        import_all_pharma_companies(args.days)
     elif args.stock:
         import_stock_history(args.stock, args.days)
     elif args.all:
         import_all_stocks(args.days)
     else:
-        print("请指定操作: --stock <代码> | --all | --status")
+        print("请指定操作: --stock <代码> | --all | --company <代码> | --pharma-all | --status")
         print("示例:")
         print("  python import_stock_data.py --stock 600519 --days 180")
         print("  python import_stock_data.py --all")
+        print("  python import_stock_data.py --company 600276 --days 180")
+        print("  python import_stock_data.py --pharma-all --days 180")
         print("  python import_stock_data.py --status")

@@ -1,0 +1,2837 @@
+{
+  "600276": {
+    "symbol": "600276",
+    "name": "恒瑞医药",
+    "exchange": "SH",
+    "aliases": [
+      "恒瑞医药",
+      "恒瑞"
+    ],
+    "collected_at": "2026-04-19T22:28:49",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.600276 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 294
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1403
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 103
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 103
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 99
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "600276",
+      "name": "恒瑞医药",
+      "price": 38.45,
+      "change": -0.55,
+      "change_percent": -1.41,
+      "open": 39.0,
+      "high": 39.2,
+      "low": 38.3,
+      "volume": "22.67万手",
+      "time": "15:00:00"
+    }
+  },
+  "603259": {
+    "symbol": "603259",
+    "name": "药明康德",
+    "exchange": "SH",
+    "aliases": [
+      "药明康德",
+      "药明"
+    ],
+    "collected_at": "2026-04-19T22:29:23",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.603259 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 262
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1237
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 38
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 39
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 39
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "603259",
+      "name": "药明康德",
+      "price": 58.2,
+      "change": -1.1,
+      "change_percent": -1.85,
+      "open": 59.3,
+      "high": 59.5,
+      "low": 57.9,
+      "volume": "35.21万手",
+      "time": "15:00:00"
+    }
+  },
+  "600436": {
+    "symbol": "600436",
+    "name": "片仔癀",
+    "exchange": "SH",
+    "aliases": [
+      "片仔癀"
+    ],
+    "collected_at": "2026-04-19T22:30:08",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.600436 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 150
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 537
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 93
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 96
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 92
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "600436",
+      "name": "片仔癀",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "600085": {
+    "symbol": "600085",
+    "name": "同仁堂",
+    "exchange": "SH",
+    "aliases": [
+      "同仁堂"
+    ],
+    "collected_at": "2026-04-19T22:30:59",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.600085 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 33
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 557
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 109
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 109
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 101
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "600085",
+      "name": "同仁堂",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "601607": {
+    "symbol": "601607",
+    "name": "上海医药",
+    "exchange": "SH",
+    "aliases": [
+      "上海医药",
+      "上药"
+    ],
+    "collected_at": "2026-04-19T22:31:47",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.601607 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 101
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 954
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 112
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 112
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 100
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "601607",
+      "name": "上海医药",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "600332": {
+    "symbol": "600332",
+    "name": "白云山",
+    "exchange": "SH",
+    "aliases": [
+      "白云山",
+      "广药白云山"
+    ],
+    "collected_at": "2026-04-19T22:32:34",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.600332 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 33
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1027
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 103
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 103
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 98
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "600332",
+      "name": "白云山",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "600196": {
+    "symbol": "600196",
+    "name": "复星医药",
+    "exchange": "SH",
+    "aliases": [
+      "复星医药",
+      "复星"
+    ],
+    "collected_at": "2026-04-19T22:33:30",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.600196 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 102
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1921
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 108
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 108
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 100
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "600196",
+      "name": "复星医药",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "300760": {
+    "symbol": "300760",
+    "name": "迈瑞医疗",
+    "exchange": "SZ",
+    "aliases": [
+      "迈瑞医疗",
+      "迈瑞"
+    ],
+    "collected_at": "2026-04-19T22:34:04",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=0.300760 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 195
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 303
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 736
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 36
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 38
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 38
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "300760",
+      "name": "迈瑞医疗",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "300015": {
+    "symbol": "300015",
+    "name": "爱尔眼科",
+    "exchange": "SZ",
+    "aliases": [
+      "爱尔眼科",
+      "爱尔"
+    ],
+    "collected_at": "2026-04-19T22:34:46",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=0.300015 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 243
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1309
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 69
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 71
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 71
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "300015",
+      "name": "爱尔眼科",
+      "price": 11.28,
+      "change": 0.18,
+      "change_percent": 1.62,
+      "open": 11.1,
+      "high": 11.35,
+      "low": 11.05,
+      "volume": "18.44万手",
+      "time": "15:00:00"
+    }
+  },
+  "300347": {
+    "symbol": "300347",
+    "name": "泰格医药",
+    "exchange": "SZ",
+    "aliases": [
+      "泰格医药",
+      "泰格"
+    ],
+    "collected_at": "2026-04-19T22:35:22",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=0.300347 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 203
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 960
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 58
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 61
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 61
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "300347",
+      "name": "泰格医药",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "300759": {
+    "symbol": "300759",
+    "name": "康龙化成",
+    "exchange": "SZ",
+    "aliases": [
+      "康龙化成",
+      "康龙"
+    ],
+    "collected_at": "2026-04-19T22:35:55",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=0.300759 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 170
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 143
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1220
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 35
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 37
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 37
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "300759",
+      "name": "康龙化成",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "300896": {
+    "symbol": "300896",
+    "name": "爱美客",
+    "exchange": "SZ",
+    "aliases": [
+      "爱美客"
+    ],
+    "collected_at": "2026-04-19T22:36:25",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=0.300896 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 157
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 285
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 740
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 32
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 33
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 33
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "300896",
+      "name": "爱美客",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "000538": {
+    "symbol": "000538",
+    "name": "云南白药",
+    "exchange": "SZ",
+    "aliases": [
+      "云南白药"
+    ],
+    "collected_at": "2026-04-19T22:37:17",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=0.000538 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 50
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1230
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 116
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 117
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 101
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "000538",
+      "name": "云南白药",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "000999": {
+    "symbol": "000999",
+    "name": "华润三九",
+    "exchange": "SZ",
+    "aliases": [
+      "华润三九",
+      "三九医药",
+      "999"
+    ],
+    "collected_at": "2026-04-19T22:38:06",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=0.000999 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 99
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1064
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 104
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 105
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 99
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "000999",
+      "name": "华润三九",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "688137": {
+    "symbol": "688137",
+    "name": "近岸蛋白",
+    "exchange": "SH",
+    "aliases": [
+      "近岸蛋白"
+    ],
+    "collected_at": "2026-04-19T22:24:17",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.688137 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 142
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 5
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 341
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 20
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 22
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 22
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "688137",
+      "name": "近岸蛋白",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "002821": {
+    "symbol": "002821",
+    "name": "凯莱英",
+    "exchange": "SZ",
+    "aliases": [
+      "凯莱英"
+    ],
+    "collected_at": "2026-04-19T22:24:53",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=0.002821 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 179
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 218
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1234
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 44
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 46
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 46
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "002821",
+      "name": "凯莱英",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "000963": {
+    "symbol": "000963",
+    "name": "华东医药",
+    "exchange": "SZ",
+    "aliases": [
+      "华东医药"
+    ],
+    "collected_at": "2026-04-19T22:25:43",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=0.000963 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 158
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 908
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 103
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 105
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 99
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "000963",
+      "name": "华东医药",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "688271": {
+    "symbol": "688271",
+    "name": "联影医疗",
+    "exchange": "SH",
+    "aliases": [
+      "联影医疗",
+      "联影"
+    ],
+    "collected_at": "2026-04-19T22:26:13",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.688271 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 162
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 72
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 458
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 20
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 22
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 22
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "688271",
+      "name": "联影医疗",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "688235": {
+    "symbol": "688235",
+    "name": "百济神州",
+    "exchange": "SH",
+    "aliases": [
+      "百济神州",
+      "百济"
+    ],
+    "collected_at": "2026-04-19T22:26:56",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.688235 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 158
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 32
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 784
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 25
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 26
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 26
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "688235",
+      "name": "百济神州",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "688180": {
+    "symbol": "688180",
+    "name": "君实生物",
+    "exchange": "SH",
+    "aliases": [
+      "君实生物",
+      "君实"
+    ],
+    "collected_at": "2026-04-19T22:27:26",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "aliases",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "HTTPSConnectionPool(host='push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/get?fltt=2&invt=2&fields=f120%2Cf121%2Cf122%2Cf174%2Cf175%2Cf59%2Cf163%2Cf43%2Cf57%2Cf58%2Cf169%2Cf170%2Cf46%2Cf44%2Cf51%2Cf168%2Cf47%2Cf164%2Cf116%2Cf60%2Cf45%2Cf52%2Cf50%2Cf48%2Cf167%2Cf117%2Cf71%2Cf161%2Cf49%2Cf530%2Cf135%2Cf136%2Cf137%2Cf138%2Cf139%2Cf141%2Cf142%2Cf144%2Cf145%2Cf147%2Cf148%2Cf140%2Cf143%2Cf146%2Cf149%2Cf55%2Cf62%2Cf162%2Cf92%2Cf173%2Cf104%2Cf105%2Cf84%2Cf85%2Cf183%2Cf184%2Cf185%2Cf186%2Cf187%2Cf188%2Cf189%2Cf190%2Cf191%2Cf192%2Cf107%2Cf111%2Cf86%2Cf177%2Cf78%2Cf110%2Cf262%2Cf263%2Cf264%2Cf267%2Cf268%2Cf255%2Cf256%2Cf257%2Cf258%2Cf127%2Cf199%2Cf128%2Cf198%2Cf259%2Cf260%2Cf261%2Cf171%2Cf277%2Cf278%2Cf279%2Cf288%2Cf152%2Cf250%2Cf251%2Cf252%2Cf253%2Cf254%2Cf269%2Cf270%2Cf271%2Cf272%2Cf273%2Cf274%2Cf275%2Cf276%2Cf265%2Cf266%2Cf289%2Cf290%2Cf286%2Cf285%2Cf292%2Cf293%2Cf294%2Cf295%2Cf43&secid=1.688180 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 137
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 38
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1165
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 40
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 43
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 43
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "688180",
+      "name": "君实生物",
+      "price": 20.16,
+      "change": 0.32,
+      "change_percent": 1.61,
+      "open": 19.91,
+      "high": 20.33,
+      "low": 19.7,
+      "volume": "8.35万手",
+      "time": "15:00:00"
+    }
+  },
+  "600519": {
+    "symbol": "600519",
+    "name": "600519",
+    "exchange": "SH",
+    "aliases": [],
+    "collected_at": "2026-04-19T22:46:11",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 754
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 466
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 101
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 101
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 97
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "600519",
+      "name": "贵州茅台",
+      "price": 1688.88,
+      "change": 12.36,
+      "change_percent": 0.74,
+      "open": 1673.52,
+      "high": 1699.8,
+      "low": 1668.0,
+      "volume": "2.31万手",
+      "time": "15:00:00"
+    }
+  },
+  "300750": {
+    "symbol": "300750",
+    "name": "300750",
+    "exchange": "SZ",
+    "aliases": [],
+    "collected_at": "2026-04-19T22:46:13",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 170
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 472
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 1440
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 38
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 40
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 40
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "300750",
+      "name": "宁德时代",
+      "price": 191.62,
+      "change": 1.54,
+      "change_percent": 0.81,
+      "open": 189.9,
+      "high": 193.4,
+      "low": 188.75,
+      "volume": "18.05万手",
+      "time": "15:00:00"
+    }
+  },
+  "000001": {
+    "symbol": "000001",
+    "name": "000001",
+    "exchange": "SZ",
+    "aliases": [],
+    "collected_at": "2026-04-19T22:46:26",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 0
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 225
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 669
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 117
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 120
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 101
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "000001",
+      "name": "平安银行",
+      "price": 10.82,
+      "change": -0.08,
+      "change_percent": -0.73,
+      "open": 10.9,
+      "high": 10.96,
+      "low": 10.76,
+      "volume": "91.24万手",
+      "time": "15:00:00"
+    }
+  },
+  "600036": {
+    "symbol": "600036",
+    "name": "600036",
+    "exchange": "SH",
+    "aliases": [],
+    "collected_at": "2026-04-19T22:46:34",
+    "has_local_data": true,
+    "available_sections": [
+      "symbol",
+      "name",
+      "exchange",
+      "collected_at",
+      "quote",
+      "kline",
+      "financial_abstract",
+      "financial_indicators",
+      "main_business",
+      "research_reports",
+      "announcements",
+      "news",
+      "fund_flow",
+      "balance_sheet",
+      "profit_sheet",
+      "cash_flow_sheet",
+      "tushare"
+    ],
+    "source_status": {
+      "company_info": {
+        "ok": false,
+        "source": "stock_individual_info_em",
+        "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+      },
+      "financial_abstract": {
+        "ok": true,
+        "source": "stock_financial_abstract",
+        "count": 80
+      },
+      "financial_indicators": {
+        "ok": true,
+        "source": "stock_financial_analysis_indicator",
+        "count": 101
+      },
+      "main_business": {
+        "ok": true,
+        "source": "stock_zygc_em",
+        "count": 200
+      },
+      "research_reports": {
+        "ok": true,
+        "source": "stock_research_report_em",
+        "count": 226
+      },
+      "announcements": {
+        "ok": true,
+        "source": "stock_individual_notice_report",
+        "count": 619
+      },
+      "news": {
+        "ok": true,
+        "source": "stock_news_em",
+        "count": 10
+      },
+      "fund_flow": {
+        "ok": true,
+        "source": "stock_individual_fund_flow",
+        "count": 120
+      },
+      "balance_sheet": {
+        "ok": true,
+        "source": "stock_balance_sheet_by_report_em",
+        "count": 99
+      },
+      "profit_sheet": {
+        "ok": true,
+        "source": "stock_profit_sheet_by_report_em",
+        "count": 100
+      },
+      "cash_flow_sheet": {
+        "ok": true,
+        "source": "stock_cash_flow_sheet_by_report_em",
+        "count": 95
+      },
+      "web_scraper_stock_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(symbol)",
+        "count": 0
+      },
+      "web_scraper_industry_reports": {
+        "ok": true,
+        "source": "web_scraper.fetch_pharma_news(None)",
+        "count": 0
+      },
+      "tushare_daily_basic": {
+        "ok": false,
+        "source": "tushare.daily_basic",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      },
+      "tushare_fina_indicator": {
+        "ok": false,
+        "source": "tushare.fina_indicator",
+        "error": "未配置 tushare 或未安装 tushare 包"
+      }
+    },
+    "quote": {
+      "symbol": "600036",
+      "name": "招商银行",
+      "price": 34.57,
+      "change": 0.21,
+      "change_percent": 0.61,
+      "open": 34.26,
+      "high": 34.74,
+      "low": 34.11,
+      "volume": "24.61万手",
+      "time": "15:00:00"
+    }
+  }
+}

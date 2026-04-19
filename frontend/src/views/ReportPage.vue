@@ -10,9 +10,9 @@
         <div class="config-item">
           <label>目标公司</label>
           <select v-model="form.symbol">
-            <option value="600276">恒瑞医药 (600276)</option>
-            <option value="603259">药明康德 (603259)</option>
-            <option value="300015">爱尔眼科 (300015)</option>
+            <option v-for="company in companies" :key="company.symbol" :value="company.symbol">
+              {{ company.name }} ({{ company.symbol }})
+            </option>
           </select>
         </div>
         <div class="config-item">
@@ -88,11 +88,13 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, onMounted } from 'vue'
 import * as echarts from 'echarts'
 import { getDiagnose, getTrend } from '../api/analysis'
+import { getStockList } from '../api/stock'
 
 const form = ref({ symbol: '600276', year: '2024', userType: 'investor' })
+const companies = ref([])
 const report = ref(null)
 const loading = ref(false)
 const error = ref('')
@@ -155,7 +157,7 @@ async function generateReport() {
   report.value = null
   try {
     const res = await getDiagnose(form.value.symbol, form.value.year)
-    report.value = res.data
+    report.value = res
     await nextTick()
     loadTrend(activeTrend.value)
   } catch (e) {
@@ -172,7 +174,7 @@ async function loadTrend(metric) {
 
   try {
     const res = await getTrend(form.value.symbol, metric)
-    const trend = res.data.trend
+    const trend = res.trend
     const years = trend.map(t => t.year + '年')
     const values = trend.map(t => t.value ?? 0)
     const unit = trend[0]?.unit || ''
@@ -198,6 +200,22 @@ function copyReport() {
   const text = reportSections.value.map(s => s.title + '\n' + s.content).join('\n\n')
   navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板'))
 }
+
+onMounted(async () => {
+  try {
+    const stocks = await getStockList()
+    companies.value = stocks
+    if (stocks.length && !stocks.some(item => item.symbol === form.value.symbol)) {
+      form.value.symbol = stocks[0].symbol
+    }
+  } catch {
+    companies.value = [
+      { symbol: '600276', name: '恒瑞医药' },
+      { symbol: '603259', name: '药明康德' },
+      { symbol: '300015', name: '爱尔眼科' },
+    ]
+  }
+})
 </script>
 
 <style scoped>

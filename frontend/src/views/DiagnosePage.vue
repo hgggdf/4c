@@ -3,12 +3,12 @@
     <div class="page-header">
       <h2>企业运营诊断</h2>
       <div class="controls">
-        <select v-model="selectedSymbol" @change="loadData">
-          <option value="600276">恒瑞医药 (600276)</option>
-          <option value="603259">药明康德 (603259)</option>
-          <option value="300015">爱尔眼科 (300015)</option>
+        <select v-model="selectedSymbol">
+          <option v-for="company in companies" :key="company.symbol" :value="company.symbol">
+            {{ company.name }} ({{ company.symbol }})
+          </option>
         </select>
-        <select v-model="selectedYear" @change="loadData">
+        <select v-model="selectedYear">
           <option value="2024">2024年</option>
           <option value="2023">2023年</option>
           <option value="2022">2022年</option>
@@ -79,9 +79,11 @@
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { getDiagnose } from '../api/analysis'
+import { getStockList } from '../api/stock'
 
 const selectedSymbol = ref('600276')
 const selectedYear = ref('2024')
+const companies = ref([])
 const data = ref(null)
 const loading = ref(false)
 const error = ref('')
@@ -106,7 +108,7 @@ async function loadData() {
   error.value = ''
   try {
     const res = await getDiagnose(selectedSymbol.value, selectedYear.value)
-    data.value = res.data
+    data.value = res
     await nextTick()
     renderRadar()
   } catch (e) {
@@ -151,7 +153,26 @@ function renderRadar() {
   })
 }
 
-onMounted(loadData)
+async function loadCompanies() {
+  try {
+    const stocks = await getStockList()
+    companies.value = stocks
+    if (stocks.length && !stocks.some(item => item.symbol === selectedSymbol.value)) {
+      selectedSymbol.value = stocks[0].symbol
+    }
+  } catch {
+    companies.value = [
+      { symbol: '600276', name: '恒瑞医药' },
+      { symbol: '603259', name: '药明康德' },
+      { symbol: '300015', name: '爱尔眼科' },
+    ]
+  }
+}
+
+onMounted(async () => {
+  await loadCompanies()
+  await loadData()
+})
 watch([selectedSymbol, selectedYear], loadData)
 </script>
 

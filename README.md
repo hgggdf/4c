@@ -6,7 +6,7 @@
 - 前端：Vue3 + Vite + Pinia + Vue Router + Axios + ECharts
 - 后端：FastAPI + SQLAlchemy + PyMySQL
 - 数据库：MySQL 8.0
-- 数据源：AKShare（实时行情）
+- 数据源：AKShare、东方财富、个股公告/研报/新闻接口、可选 Tushare
 
 ## 项目结构
 ```text
@@ -63,6 +63,7 @@ backend/
 - `chat_history`：聊天记录表
 - `watchlist`：自选股表
 - `stock_daily`：股票历史日线缓存表
+- `backend/local_data/pharma_companies/`：20 家医药公司多源本地数据仓
 
 ## 三、启动前准备
 建议先确认本机已安装以下环境：
@@ -154,6 +155,10 @@ http://127.0.0.1:8000
 - `GET /api/stock/quote?symbol=600519`
 - `GET /api/stock/kline?symbol=600519&days=30`
 - `GET /api/stock/watchlist?user_id=1`
+- `GET /api/stock/companies`
+- `GET /api/stock/company?symbol=600276`
+- `POST /api/stock/company/refresh?symbol=600276`
+- `POST /api/stock/companies/refresh`
 
 ## 五、启动前端
 先把 `frontend/.env.example` 复制为 `frontend/.env`：
@@ -202,6 +207,8 @@ http://127.0.0.1:5173
 3. 问答结果写入 `chat_history`。
 4. 自选股从 `watchlist` 表读取。
 5. 股票历史日线优先查 `stock_daily`，不足时再从 AKShare 拉取并写回 MySQL。
+6. 20 家医药公司支持多源采集，本地保存到 `backend/local_data/pharma_companies/<股票代码>/dataset.json`。
+7. 聊天智能体会优先读取本地公司数据档案，再拼接行情、公告、研报和知识库内容生成回答。
 
 ## 八、示例提问
 - 帮我分析贵州茅台
@@ -213,3 +220,41 @@ http://127.0.0.1:5173
 1. 这是竞赛版结构，重点是演示完整链路，而不是完整金融终端。
 2. MySQL 主要用于持久化用户、自选股和聊天记录，同时缓存历史日线数据。
 3. AKShare 负责实时股票行情；如果接口异常，系统会回退到内置演示数据。
+
+## 十、多源公司数据采集
+项目内置了 20 家医药生物公司观察池：
+
+- 恒瑞医药、药明康德、片仔癀、同仁堂、上海医药、白云山、复星医药、迈瑞医疗、爱尔眼科、泰格医药
+- 康龙化成、爱美客、云南白药、华润三九、近岸蛋白、凯莱英、华东医药、联影医疗、百济神州、君实生物
+
+本地数据仓默认采集以下内容：
+
+- 实时行情、近 90 日 K 线
+- 个股基础资料
+- 财务摘要、财务分析指标、三大报表
+- 主营构成
+- 个股研报、公告、新闻
+- 个股资金流
+- 医药行业资讯
+- 可选 Tushare 数据补充（需在 `backend/.env` 中配置 `TUSHARE_TOKEN`）
+
+批量采集命令：
+
+```bash
+cd backend
+python scripts/import_stock_data.py --pharma-all --days 90
+```
+
+采集单家公司：
+
+```bash
+cd backend
+python scripts/import_stock_data.py --company 600276 --days 90
+```
+
+采集完成后，可在以下目录查看本地文件：
+
+```text
+backend/local_data/pharma_companies/index.json
+backend/local_data/pharma_companies/600276/dataset.json
+```

@@ -1,17 +1,33 @@
 from collections.abc import Generator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from config import get_settings
 
 settings = get_settings()
 
-engine = create_engine(
-    settings.database_url,
-    pool_pre_ping=True,
-    pool_recycle=3600,
-)
+
+def _build_engine():
+    primary_engine = create_engine(
+        settings.database_url,
+        pool_pre_ping=True,
+        pool_recycle=3600,
+    )
+    try:
+        with primary_engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return primary_engine
+    except Exception:
+        return create_engine(
+            settings.sqlite_database_url,
+            connect_args={"check_same_thread": False},
+            pool_pre_ping=True,
+            pool_recycle=3600,
+        )
+
+
+engine = _build_engine()
 
 SessionLocal = sessionmaker(
     bind=engine,
