@@ -8,6 +8,25 @@ from agent.tools import AgentTools
 from config import get_settings
 from data.retriever import route_query, search_structured, search_unstructured, hybrid_search
 
+# 触发诊断的关键词
+_DIAGNOSE_KW = ["诊断", "评估", "打分", "综合分析", "运营分析", "运营评估", "怎么样", "如何"]
+_RISK_KW     = ["风险", "预警", "危险", "集采", "负债", "风险扫描"]
+_REPORT_KW   = ["生成报告", "分析报告", "投资报告", "出报告", "写报告"]
+_COMPARE_KW  = ["对比", "比较", "横向", "哪家", "谁更"]
+
+
+def _detect_intent(message: str) -> str:
+    """返回意图：diagnose / risk / report / compare / default"""
+    if any(kw in message for kw in _REPORT_KW):
+        return "report"
+    if any(kw in message for kw in _DIAGNOSE_KW):
+        return "diagnose"
+    if any(kw in message for kw in _RISK_KW):
+        return "risk"
+    if any(kw in message for kw in _COMPARE_KW):
+        return "compare"
+    return "default"
+
 
 class StockAgent:
     def __init__(self) -> None:
@@ -42,8 +61,9 @@ class StockAgent:
         symbol = self.tools.extract_symbol(message)
         quote = None
         context_parts: list[str] = []
+        intent = _detect_intent(message)
 
-        # 子 Agent 1：实时行情
+        # ── 子 Agent 1：实时行情 ──────────────────────────────────────────────
         if symbol:
             quote = self.tools.get_quote(symbol)
             context_parts.append(
@@ -54,7 +74,7 @@ class StockAgent:
                 f"成交量 {quote['volume']}，时间 {quote['time']}"
             )
 
-        # 子 Agent 2：研报/资讯
+        # ── 子 Agent 2：研报/资讯 ─────────────────────────────────────────────
         if self._needs_news(message) or symbol:
             news = self.tools.get_pharma_news(symbol)
             valid = [n for n in news if "error" not in n and n.get("title")]
@@ -64,33 +84,53 @@ class StockAgent:
                 )
                 context_parts.append(f"【相关研报/资讯】\n{news_lines}")
 
-        # 子 Agent 3：智能检索路由（结构化 + 向量）
-        try:
-            query_type = route_query(message)
+        # ── 子 Agent 3：意图路由工具调用 ──────────────────────────────────────
+        if db is not None:
+            try:
+                if intent == "diagnose" and symbol:
+                    result = self.tools.diagnose_company(db, symbol)
+                    context_parts.append(f"【企业运营诊断】\n{result}")
 
-            if query_type == "structured" and db is not None:
-                result = search_structured(db, message)
-                if result:
-                    context_parts.append(f"【财务数据库查询结果】\n{result}")
+                elif intent == "risk":
+                    codes = [symbol] if symbol else ["600276", "603259", "300015"]
+                    result = self.tools.calculate_risk_score(db, codes[0])
+                    context_parts.append(f"【风险评估】\n{result}")
 
-            elif query_type == "unstructured":
-                result = search_unstructured(message)
-                if result:
-                    context_parts.append(f"【知识库相关内容】\n{result}")
+                elif intent == "report" and symbol:
+                    user_type = "管理者" if "管理" in message else \
+                                "监管" if "监管" in message else "投资者"
+                    result = self.tools.generate_report(db, symbol, user_type)
+                    context_parts.append(f"【报告生成指令】\n{result}")
 
-            else:  # hybrid
-                if db is not None:
-                    s_result = search_structured(db, message)
-                    if s_result:
-                        context_parts.append(f"【财务数据库查询结果】\n{s_result}")
-                u_result = search_unstructured(message)
-                if u_result:
-                    context_parts.append(f"【知识库相关内容】\n{u_result}")
+                elif intent == "compare":
+                    # 提取指标名
+                    from data.retriever import METRIC_ALIAS
+                    metric = next((k for k in METRIC_ALIAS if k in message), "毛利率")
+                    result = self.tools.compare_companies(db, metric)
+                    context_parts.append(f"【多公司对比】\n{result}")
 
-        except Exception:
-            pass
+                else:
+                    # 默认：智能检索路由
+                    query_type = route_query(message)
+                    if query_type == "structured":
+                        r = search_structured(db, message)
+                        if r:
+                            context_parts.append(f"【财务数据库查询结果】\n{r}")
+                    elif query_type == "unstructured":
+                        r = search_unstructured(message)
+                        if r:
+                            context_parts.append(f"【知识库相关内容】\n{r}")
+                    else:
+                        s, u = hybrid_search(db, message)
+                        if s:
+                            context_parts.append(f"【财务数据库查询结果】\n{s}")
+                        if u:
+                            context_parts.append(f"【知识库相关内容】\n{u}")
 
-        # 组装多轮对话历史
+            except Exception:
+                pass
+
+        # ── 组装多轮对话历史 ──────────────────────────────────────────────────
         messages: list[dict] = []
         if history:
             for item in history[:-1]:

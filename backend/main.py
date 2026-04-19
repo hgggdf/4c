@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.chat import router as chat_router
 from api.stock import router as stock_router
+from api.analysis import router as analysis_router
 from config import get_settings
 from database.init_db import init_database
 
@@ -20,6 +21,7 @@ app.add_middleware(
 
 app.include_router(chat_router)
 app.include_router(stock_router)
+app.include_router(analysis_router)
 
 
 @app.on_event("startup")
