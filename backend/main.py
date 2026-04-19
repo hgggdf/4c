@@ -29,10 +29,13 @@ def on_startup() -> None:
 
 @app.get("/health")
 def health_check():
+    from database.init_db import check_db_health
+    db_status = check_db_health()
     return {
         "status": "ok",
         "service": settings.app_name,
         "database": settings.mysql_database,
+        "db_health": db_status,
     }
 
 

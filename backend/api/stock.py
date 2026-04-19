@@ -43,3 +43,34 @@ def delete_watchlist(
     db: Session = Depends(get_db),
 ):
     return stock_service.remove_watchlist(db, user_id, symbol)
+
+
+@router.get("/db/stats")
+def get_db_stats(db: Session = Depends(get_db)):
+    """获取数据库中股票历史数据统计"""
+    from sqlalchemy import text
+
+    result = db.execute(text("""
+        SELECT
+            stock_code,
+            COUNT(*) as record_count,
+            MIN(trade_date) as earliest_date,
+            MAX(trade_date) as latest_date
+        FROM stock_daily
+        GROUP BY stock_code
+        ORDER BY stock_code
+    """))
+
+    rows = result.fetchall()
+    return {
+        "total_stocks": len(rows),
+        "stocks": [
+            {
+                "stock_code": r.stock_code,
+                "record_count": r.record_count,
+                "earliest_date": str(r.earliest_date),
+                "latest_date": str(r.latest_date),
+            }
+            for r in rows
+        ],
+    }

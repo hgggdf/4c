@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from database.base import Base
 from database.session import engine
@@ -17,3 +18,16 @@ def init_database() -> None:
         user = user_repo.get_or_create_demo_user(db)
         if not watchlist_repo.list_by_user(db, user.id):
             watchlist_repo.seed_default(db, user.id)
+
+
+def check_db_health() -> dict:
+    """检查数据库连接和各表数据量"""
+    try:
+        with Session(engine) as db:
+            result = db.execute(text("SELECT 1")).scalar()
+            counts = {}
+            for table in ["users", "chat_history", "watchlist", "stock_daily"]:
+                counts[table] = db.execute(text(f"SELECT COUNT(*) FROM {table}")).scalar()
+        return {"status": "ok", "tables": counts}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

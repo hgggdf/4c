@@ -36,3 +36,22 @@ async def upload_pdf(file: UploadFile = File(...)):
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+
+@router.get("/chat/history")
+def get_chat_history(
+    user_id: int = 1,
+    limit: int = 20,
+    db: Session = Depends(get_db)
+):
+    """获取用户聊天历史记录"""
+    from repository.chat_repo import ChatRepository
+    from schemas.chat import ChatHistoryRecord
+
+    repo = ChatRepository()
+    records = repo.list_recent(db, user_id, limit)
+
+    return {
+        "total": len(records),
+        "records": [ChatHistoryRecord.model_validate(r) for r in records]
+    }

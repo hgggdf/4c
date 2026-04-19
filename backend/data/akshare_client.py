@@ -16,6 +16,13 @@ MOCK_QUOTES = {
     "600036": {"symbol": "600036", "name": "招商银行", "price": 34.57, "change": 0.21, "change_percent": 0.61, "open": 34.26, "high": 34.74, "low": 34.11, "volume": "24.61万手", "time": "15:00:00"},
     "300750": {"symbol": "300750", "name": "宁德时代", "price": 191.62, "change": 1.54, "change_percent": 0.81, "open": 189.90, "high": 193.40, "low": 188.75, "volume": "18.05万手", "time": "15:00:00"},
     "002594": {"symbol": "002594", "name": "比亚迪", "price": 242.13, "change": -2.16, "change_percent": -0.88, "open": 244.00, "high": 245.28, "low": 240.86, "volume": "15.70万手", "time": "15:00:00"},
+    "000002": {"symbol": "000002", "name": "万科A", "price": 7.35, "change": -0.12, "change_percent": -1.61, "open": 7.48, "high": 7.52, "low": 7.30, "volume": "55.30万手", "time": "15:00:00"},
+    "600000": {"symbol": "600000", "name": "浦发银行", "price": 8.92, "change": 0.05, "change_percent": 0.56, "open": 8.87, "high": 8.96, "low": 8.85, "volume": "30.12万手", "time": "15:00:00"},
+    "601318": {"symbol": "601318", "name": "中国平安", "price": 52.30, "change": 0.68, "change_percent": 1.32, "open": 51.60, "high": 52.55, "low": 51.40, "volume": "40.88万手", "time": "15:00:00"},
+    "600276": {"symbol": "600276", "name": "恒瑞医药", "price": 38.45, "change": -0.55, "change_percent": -1.41, "open": 39.00, "high": 39.20, "low": 38.30, "volume": "22.67万手", "time": "15:00:00"},
+    "300015": {"symbol": "300015", "name": "爱尔眼科", "price": 11.28, "change": 0.18, "change_percent": 1.62, "open": 11.10, "high": 11.35, "low": 11.05, "volume": "18.44万手", "time": "15:00:00"},
+    "603259": {"symbol": "603259", "name": "药明康德", "price": 58.20, "change": -1.10, "change_percent": -1.85, "open": 59.30, "high": 59.50, "low": 57.90, "volume": "35.21万手", "time": "15:00:00"},
+    "688599": {"symbol": "688599", "name": "天合光能", "price": 8.15, "change": 0.22, "change_percent": 2.78, "open": 7.93, "high": 8.20, "low": 7.88, "volume": "28.90万手", "time": "15:00:00"},
 }
 
 NAME_MAPPING = {
@@ -24,6 +31,14 @@ NAME_MAPPING = {
     "招商银行": "600036",
     "宁德时代": "300750",
     "比亚迪": "002594",
+    "万科": "000002",
+    "万科A": "000002",
+    "浦发银行": "600000",
+    "中国平安": "601318",
+    "恒瑞医药": "600276",
+    "爱尔眼科": "300015",
+    "药明康德": "603259",
+    "天合光能": "688599",
 }
 
 
