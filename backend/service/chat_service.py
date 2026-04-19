@@ -17,7 +17,7 @@ class ChatService:
         if user is None:
             user = self.user_repo.get_or_create_demo_user(db)
 
-        result = self.agent.run(request.message, history=[h.model_dump() for h in request.history])
+        result = self.agent.run(request.message, history=[h.model_dump() for h in request.history], db=db)
         self.chat_repo.create(
             db,
             user_id=user.id,
