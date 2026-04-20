@@ -29,6 +29,7 @@ TEST_CASES = [
 
 
 def run_tests() -> None:
+    """执行检索路由和结果命中情况的回归测试。"""
     print("=" * 70)
     print("检索准确性测试")
     print("=" * 70)

@@ -1,3 +1,5 @@
+"""公司本地数据到结构化数据库表的同步仓储。"""
+
 from __future__ import annotations
 
 import json
@@ -18,6 +20,8 @@ from db.repository.financial_repo import FinancialDataRepository
 
 
 class CompanyDatasetSyncRepository:
+    """负责把本地 dataset.json 中的公告和财务数据拆解并同步到结构化表。"""
+
     def __init__(self) -> None:
         self.financial_repo = FinancialDataRepository()
 

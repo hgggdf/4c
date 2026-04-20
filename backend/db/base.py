@@ -1,5 +1,9 @@
+"""SQLAlchemy 声明式基类定义。"""
+
 from sqlalchemy.orm import DeclarativeBase
 
 
 class Base(DeclarativeBase):
+    """所有 ORM 模型共享的声明式基类。"""
+
     pass

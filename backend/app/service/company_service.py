@@ -1,3 +1,5 @@
+"""公司资料聚合服务，负责协调本地文件、数据库缓存和外部数据抓取。"""
+
 from __future__ import annotations
 
 from copy import deepcopy
@@ -16,6 +18,8 @@ from db.repository.company_dataset_sync_repo import CompanyDatasetSyncRepository
 
 
 class CompanyService:
+    """统一管理公司多源数据的读取、保存、刷新和上下文构建。"""
+
     def __init__(self) -> None:
         self.provider = StockDataProvider()
         self.local_store = LocalCompanyDataStore()
@@ -29,6 +33,7 @@ class CompanyService:
         *,
         compact: bool = False,
     ) -> dict | None:
+        """优先从数据库读取公司资料，未命中时回退到本地文件并同步入库。"""
         row = self.dataset_repo.get_by_symbol(db, symbol)
         if row is not None:
             return deepcopy(row.compact_json if compact else row.dataset_json)
@@ -41,6 +46,7 @@ class CompanyService:
         return self.local_store.to_compact_dataset(data) if compact else data
 
     def save_company_dataset(self, db: Session, data: dict) -> dict:
+        """把公司聚合资料同时写入本地文件、数据库摘要表和结构化明细表。"""
         summary = self.local_store.save_company_dataset(data)
         self.dataset_repo.upsert(
             db,
@@ -59,6 +65,7 @@ class CompanyService:
         return summary
 
     def list_company_summaries(self, db: Session) -> list[dict]:
+        """合并本地索引与数据库摘要，返回完整的公司概览列表。"""
         local_rows = {
             row["symbol"]: deepcopy(row) for row in self.local_store.list_company_summaries()
         }
@@ -88,6 +95,7 @@ class CompanyService:
         refresh: bool = False,
         compact: bool = True,
     ) -> dict:
+        """按股票代码或名称获取公司聚合资料，并支持按需刷新。"""
         resolved_symbol = resolve_company_symbol(symbol) or symbol
         dataset = None
         if not refresh:
@@ -100,6 +108,7 @@ class CompanyService:
         return self.local_store.to_compact_dataset(full_dataset) if compact else full_dataset
 
     def refresh_all_company_data(self, db: Session, *, compact: bool = True) -> dict:
+        """批量刷新观察池中全部公司的聚合资料。"""
         results = []
         for company in list_pharma_companies():
             dataset = self.provider.collect_company_dataset(company["symbol"])
@@ -111,6 +120,7 @@ class CompanyService:
         return {"total": len(results), "companies": results}
 
     def bootstrap_from_local_files(self, db: Session) -> dict:
+        """把已有的本地 dataset.json 批量导入数据库摘要表。"""
         imported = 0
         skipped = 0
         existing_symbols = set(self.dataset_repo.list_symbols(db))
@@ -134,6 +144,7 @@ class CompanyService:
         return {"imported": imported, "skipped": skipped}
 
     def backfill_structured_tables_from_local_files(self, db: Session) -> dict:
+        """根据本地 dataset.json 回填结构化财务表和公告表。"""
         imported = 0
         skipped = 0
 
@@ -156,6 +167,7 @@ class CompanyService:
         return {"imported": imported, "skipped": skipped}
 
     def build_company_agent_context(self, db: Session, symbol: str) -> str:
+        """为智能体拼装单家公司可直接消费的文本上下文。"""
         dataset = self.get_company_dataset(db, symbol, refresh=False, compact=True)
         company = get_company(symbol) or {"name": dataset.get("name", symbol)}
         parts: list[str] = []

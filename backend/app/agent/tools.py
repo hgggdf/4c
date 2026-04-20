@@ -1,3 +1,5 @@
+"""智能体工具集合，把行情、公司数据、风险分析等能力封装为可复用方法。"""
+
 import re
 
 from app.data.akshare_client import StockDataProvider
@@ -8,43 +10,52 @@ from app.service.company_service import CompanyService
 
 
 class AgentTools:
+    """为智能体提供统一的业务工具入口。"""
+
     def __init__(self) -> None:
         self.provider = StockDataProvider()
         self.company_service = CompanyService()
         self.analysis_service = AnalysisService()
 
     def extract_symbol(self, message: str) -> str | None:
+        """从用户消息中提取 6 位股票代码，或按公司名称解析代码。"""
         code_match = re.search(r"\b(\d{6})\b", message)
         if code_match:
             return code_match.group(1)
         return self.provider.resolve_symbol(message)
 
     def get_quote(self, symbol: str) -> dict:
+        """读取指定股票的最新行情。"""
         return self.provider.get_quote(symbol)
 
     def get_company_dataset(self, db, symbol: str, refresh: bool = False, compact: bool = True) -> dict | None:
+        """读取公司聚合资料；无数据库会话时直接返回空结果。"""
         if db is None:
             return None
         return self.company_service.get_company_dataset(db, symbol, refresh=refresh, compact=compact)
 
     def get_company_context(self, db, symbol: str) -> str:
+        """构造供大模型使用的公司背景上下文。"""
         if db is None:
             return ""
         return self.company_service.build_company_agent_context(db, symbol)
 
     def get_pharma_news(self, symbol: str | None = None) -> list[dict]:
+        """抓取医药行业资讯；失败时返回带错误信息的占位结果。"""
         try:
             return fetch_pharma_news(symbol)
         except Exception as exc:
             return [{"error": str(exc), "source": "资讯抓取"}]
 
     def analyze_financial_data(self, text: str) -> dict:
+        """从 PDF 或文本中提取财务摘要信息。"""
         try:
             return extract_financial_highlights(text)
         except Exception as exc:
             return {"error": str(exc)}
 
     def query_financial_metric(self, db, stock_code: str, year: int, metric_name: str) -> str:
+        """查询单家公司单年度的某项财务指标，并格式化为自然语言结果。"""
         metric = self.analysis_service.get_metric_snapshot(db, stock_code, year, metric_name)
         if metric is None:
             return f"未找到 {stock_code} {year}年 {metric_name} 的数据"
@@ -60,6 +71,7 @@ class AgentTools:
         year: int = 2024,
         stock_codes: list[str] | None = None,
     ) -> str:
+        """按指定指标对多家公司进行横向比较。"""
         result = self.analysis_service.compare_metric(db, metric_name, year, stock_codes)
         rows = result["data"]
         if not rows:
@@ -73,6 +85,7 @@ class AgentTools:
         return "\n".join(lines)
 
     def calculate_risk_score(self, db, stock_code: str, year: int = 2024) -> str:
+        """基于诊断结果和风险扫描生成风险评分说明。"""
         diagnose_result = self.analysis_service.diagnose(db, stock_code, year)
         if diagnose_result is None:
             risk_list = self.analysis_service.scan_risks(db, [stock_code])
@@ -96,6 +109,7 @@ class AgentTools:
         return "\n".join(lines)
 
     def diagnose_company(self, db, stock_code: str, year: int = 2024) -> str:
+        """生成人类可读的公司运营诊断摘要。"""
         result = self.analysis_service.diagnose(db, stock_code, year)
         if result is None:
             return f"未找到 {stock_code} 的财务数据，无法诊断"
@@ -118,6 +132,7 @@ class AgentTools:
         return "\n".join(lines)
 
     def generate_report(self, db, stock_code: str, user_type: str = "投资者") -> str:
+        """按用户角色拼装分析报告生成指令和关键信息摘要。"""
         diag = self.analysis_service.diagnose(db, stock_code)
         risks = self.analysis_service.scan_risks(db, [stock_code])
         risk_info = risks[0] if risks else {}

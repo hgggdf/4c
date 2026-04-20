@@ -57,6 +57,7 @@ def _parse_value(raw) -> float | None:
 
 
 def import_financial_data() -> None:
+    """抓取目标公司的年度财务摘要并写入 financial_data 表。"""
     repo = FinancialDataRepository()
 
     for code, name in COMPANIES:

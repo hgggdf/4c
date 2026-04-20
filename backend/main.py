@@ -1,3 +1,5 @@
+"""后端应用入口，负责创建 FastAPI 实例、注册路由并在启动时初始化数据库。"""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,11 +28,13 @@ app.include_router(analysis_router)
 
 @app.on_event("startup")
 def on_startup() -> None:
+    """应用启动时执行数据库初始化与本地数据导入。"""
     init_database()
 
 
 @app.get("/health")
 def health_check():
+    """返回服务与数据库的基础健康状态，供前端和部署环境探活使用。"""
     from db.init_db import check_db_health
     db_status = check_db_health()
     return {

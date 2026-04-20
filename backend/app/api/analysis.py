@@ -1,3 +1,5 @@
+"""财务诊断与风险分析相关接口，向前端暴露诊断、风险、对比和趋势查询能力。"""
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -10,6 +12,8 @@ analysis_service = AnalysisService()
 
 
 class DimensionOut(BaseModel):
+    """单个诊断维度的响应结构。"""
+
     name: str
     score: float
     comment: str
@@ -17,6 +21,8 @@ class DimensionOut(BaseModel):
 
 
 class DiagnoseOut(BaseModel):
+    """企业运营诊断接口的标准响应结构。"""
+
     stock_code: str
     stock_name: str
     year: int
@@ -34,6 +40,7 @@ def diagnose_company(
     year: int = Query(2024, description="年份"),
     db: Session = Depends(get_db),
 ):
+    """返回单家公司指定年份的财务诊断结果。"""
     result = analysis_service.diagnose(db, symbol, year)
     if result is None:
         from fastapi import HTTPException
@@ -69,6 +76,7 @@ def get_risks(
     ),
     db: Session = Depends(get_db),
 ):
+    """批量扫描公司风险与机会信号。"""
     codes = [s.strip() for s in symbols.split(",") if s.strip()]
     results = analysis_service.scan_risks(db, codes)
     return {"total": len(results), "data": results}
@@ -81,6 +89,7 @@ def compare_companies(
     symbols: str = Query("600276,603259,300015"),
     db: Session = Depends(get_db),
 ):
+    """对多家公司在同一指标上的表现进行横向比较。"""
     codes = [s.strip() for s in symbols.split(",") if s.strip()]
     return analysis_service.compare_metric(db, metric, year, codes)
 
@@ -91,4 +100,5 @@ def get_metric_trend(
     metric: str = Query(..., description="指标名"),
     db: Session = Depends(get_db),
 ):
+    """返回单家公司某项财务指标的历年趋势。"""
     return analysis_service.get_metric_trend(db, symbol, metric)

@@ -1,3 +1,5 @@
+"""医药公司注册表，维护观察池公司名单、别名和代码转换工具。"""
+
 from __future__ import annotations
 
 from copy import deepcopy
@@ -37,15 +39,18 @@ for company in PHARMA_COMPANIES:
 
 
 def list_pharma_companies() -> list[dict]:
+    """返回医药观察池公司的深拷贝列表，避免调用方误改全局注册表。"""
     return [deepcopy(item) for item in PHARMA_COMPANIES]
 
 
 def get_company(symbol: str) -> dict | None:
+    """按股票代码读取单家公司的注册信息。"""
     item = COMPANY_BY_SYMBOL.get(symbol)
     return deepcopy(item) if item else None
 
 
 def resolve_company_symbol(query: str) -> str | None:
+    """根据 6 位代码、公司全名或别名解析标准股票代码。"""
     if not query:
         return None
 
@@ -59,6 +64,7 @@ def resolve_company_symbol(query: str) -> str | None:
 
 
 def to_market_prefix(symbol: str) -> str:
+    """根据股票代码前缀推断交易所市场简称。"""
     if symbol.startswith(("0", "3")):
         return "SZ"
     if symbol.startswith(("4", "8")):
@@ -67,4 +73,5 @@ def to_market_prefix(symbol: str) -> str:
 
 
 def to_tushare_code(symbol: str) -> str:
+    """把纯数字股票代码转换为 Tushare 使用的代码格式。"""
     return f"{symbol}.{to_market_prefix(symbol)}"

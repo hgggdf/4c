@@ -1,3 +1,5 @@
+"""股票分析智能体主流程，负责意图识别、上下文拼装和大模型调用。"""
+
 from __future__ import annotations
 
 import requests
@@ -29,11 +31,14 @@ def _detect_intent(message: str) -> str:
 
 
 class StockAgent:
+    """面向聊天场景的股票分析智能体。"""
+
     def __init__(self) -> None:
         self.tools = AgentTools()
         self.settings = get_settings()
 
     def _call_llm(self, messages: list[dict]) -> str:
+        """调用大模型接口并返回纯文本回答。"""
         base_url = self.settings.anthropic_base_url.rstrip("/")
         resp = requests.post(
             f"{base_url}/v1/messages",
@@ -54,10 +59,12 @@ class StockAgent:
         return resp.json()["content"][0]["text"]
 
     def _needs_news(self, message: str) -> bool:
+        """根据问题关键词判断是否需要补充资讯或研报上下文。"""
         keywords = ["研报", "研究", "资讯", "新闻", "公告", "行业", "趋势", "政策", "集采", "医保", "管线"]
         return any(kw in message for kw in keywords)
 
     def run(self, message: str, history: list[dict] | None = None, db: Session | None = None) -> dict:
+        """执行一次智能问答，按意图整合行情、公司资料、风险诊断和检索结果。"""
         symbol = self.tools.extract_symbol(message)
         quote = None
         context_parts: list[str] = []

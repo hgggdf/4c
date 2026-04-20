@@ -17,6 +17,7 @@ from db.repository.macro_repo import MacroIndicatorRepository
 # 医疗保健类CPI数据（从国家统计局或akshare获取）
 # 由于国家统计局需要注册，这里用akshare的宏观数据接口
 def import_macro_data() -> None:
+    """抓取或回填 CPI、医疗保健 CPI 和 GDP 宏观指标。"""
     repo = MacroIndicatorRepository()
 
     try:

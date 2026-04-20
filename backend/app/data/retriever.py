@@ -57,6 +57,7 @@ METRIC_ALIAS = {
 
 
 def _extract_year(text: str) -> int | None:
+    """从查询文本中提取年份。"""
     m = re.search(r"(202[0-9]|201[0-9])", text)
     return int(m.group(1)) if m else None
 
@@ -70,6 +71,7 @@ def _extract_company(text: str) -> tuple[str | None, str | None]:
 
 
 def _extract_metric(text: str) -> str | None:
+    """把用户口语化指标名称映射为标准指标名。"""
     for alias, standard in METRIC_ALIAS.items():
         if alias in text:
             return standard

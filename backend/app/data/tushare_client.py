@@ -1,3 +1,5 @@
+"""Tushare 客户端封装，负责按股票代码抓取基础面数据。"""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -12,6 +14,8 @@ except Exception:
 
 
 class TushareClient:
+    """对 tushare.pro 的轻量包装，屏蔽令牌初始化和异常处理细节。"""
+
     def __init__(self) -> None:
         self.settings = get_settings()
         self._pro = None

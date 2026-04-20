@@ -1,3 +1,5 @@
+"""财务指标仓储。"""
+
 from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
 
@@ -5,6 +7,8 @@ from db.models.financial_data import FinancialData
 
 
 class FinancialDataRepository:
+    """负责标准化财务指标表的增量写入和查询。"""
+
     def upsert(
         self,
         db: Session,

@@ -1,3 +1,5 @@
+"""ORM 模型包，定义系统所有数据库表结构。"""
+
 from db.models.user import User
 from db.models.chat_history import ChatHistory
 from db.models.stock_daily import StockDaily

@@ -127,6 +127,7 @@ def build_report_text(report: dict, stock_name: str = "") -> str:
 
 
 def import_reports_to_knowledge_store() -> None:
+    """抓取行业与个股研报，并写入知识库供问答检索使用。"""
     store = get_store()
     total = 0
 

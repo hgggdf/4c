@@ -1,3 +1,5 @@
+"""股票日线仓储。"""
+
 from datetime import date, datetime
 
 from sqlalchemy import select
@@ -7,7 +9,10 @@ from db.models.stock_daily import StockDaily
 
 
 class StockDailyRepository:
+    """负责股票日线行情的读取与批量更新。"""
+
     def list_recent(self, db: Session, stock_code: str, days: int) -> list[StockDaily]:
+        """按时间正序返回最近若干个交易日的行情。"""
         stmt = (
             select(StockDaily)
             .where(StockDaily.stock_code == stock_code)
@@ -19,6 +24,7 @@ class StockDailyRepository:
         return rows
 
     def upsert_many(self, db: Session, stock_code: str, items: list[dict]) -> None:
+        """批量插入或更新某只股票的日线行情。"""
         if not items:
             return
 

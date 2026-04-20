@@ -34,6 +34,8 @@ DIMENSIONS = {
 
 @dataclass
 class DimensionScore:
+    """单个诊断维度的得分、指标明细和文字评价。"""
+
     name: str
     score: float
     metrics: dict
@@ -42,6 +44,8 @@ class DimensionScore:
 
 @dataclass
 class DiagnoseResult:
+    """单家公司诊断结果的聚合结构。"""
+
     stock_code: str
     stock_name: str
     year: int
@@ -54,6 +58,7 @@ class DiagnoseResult:
 
 
 def _normalize(value: float, benchmark: dict) -> float:
+    """根据行业基准把原始指标值归一化到 0 到 100 分。"""
     poor = benchmark["poor"]
     avg = benchmark["avg"]
     good = benchmark["good"]
@@ -78,6 +83,7 @@ def _normalize(value: float, benchmark: dict) -> float:
 
 
 def _score_to_level(score: float) -> str:
+    """把数值得分映射为可读的等级描述。"""
     if score >= 80:
         return "优秀"
     if score >= 65:
@@ -88,6 +94,8 @@ def _score_to_level(score: float) -> str:
 
 
 class AnalysisService:
+    """提供财务指标查询、趋势分析、企业诊断和风险扫描能力。"""
+
     def __init__(self) -> None:
         self.repo = FinancialDataRepository()
 
@@ -367,8 +375,10 @@ analysis_service = AnalysisService()
 
 
 def diagnose(db: Session, stock_code: str, year: int = 2024) -> DiagnoseResult | None:
+    """兼容旧调用方式的企业诊断函数。"""
     return analysis_service.diagnose(db, stock_code, year)
 
 
 def scan_risks(db: Session, stock_codes: list[str] | None = None) -> list[dict]:
+    """兼容旧调用方式的风险扫描函数。"""
     return analysis_service.scan_risks(db, stock_codes)

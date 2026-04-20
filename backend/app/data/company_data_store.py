@@ -1,9 +1,13 @@
+"""公司资料存储门面，兼容旧调用方式并转发到新的 CompanyService。"""
+
 from db.session import SessionLocal
 from app.data.local_company_dataset_store import LocalCompanyDataStore
 from app.service.company_service import CompanyService
 
 
 class CompanyDataStore:
+    """为脚本或旧代码提供无感知的公司资料读写接口。"""
+
     def __init__(self) -> None:
         self.local_store = LocalCompanyDataStore()
         self.company_service = CompanyService()

@@ -1,3 +1,5 @@
+"""系统用户 ORM 模型。"""
+
 from datetime import datetime
 
 from sqlalchemy import DateTime, Integer, String
@@ -7,6 +9,8 @@ from db.base import Base
 
 
 class User(Base):
+    """系统用户表，同时关联聊天记录和自选股。"""
+
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)

@@ -1,3 +1,5 @@
+"""宏观指标仓储。"""
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -5,6 +7,8 @@ from db.models.financial_data import MacroIndicator
 
 
 class MacroIndicatorRepository:
+    """负责宏观指标表的写入与查询。"""
+
     def upsert(
         self,
         db: Session,

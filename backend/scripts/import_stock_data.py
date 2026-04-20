@@ -73,6 +73,7 @@ def import_all_stocks(days: int = 365) -> None:
 
 
 def import_company_dataset(stock_code: str, days: int = 180) -> None:
+    """采集单家公司多源数据并保存为本地与数据库缓存。"""
     provider = StockDataProvider()
     store = CompanyDataStore()
 
@@ -86,6 +87,7 @@ def import_company_dataset(stock_code: str, days: int = 180) -> None:
 
 
 def import_all_pharma_companies(days: int = 180) -> None:
+    """批量采集医药观察池全部公司的多源资料。"""
     print(f"开始采集 {len(PHARMA_STOCKS)} 家医药公司多源数据...")
     print("=" * 60)
     for stock_code in PHARMA_STOCKS:

@@ -20,6 +20,7 @@ HEADERS = {
 
 
 def _get(url: str, timeout: int = 15, params: dict | None = None) -> requests.Response:
+    """统一发起带默认请求头的 HTTP GET 请求。"""
     resp = requests.get(url, headers=HEADERS, timeout=timeout, params=params)
     resp.raise_for_status()
     return resp

@@ -1,3 +1,5 @@
+"""通用财务指标与宏观指标 ORM 模型。"""
+
 from sqlalchemy import Date, DECIMAL, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -5,6 +7,8 @@ from db.base import Base
 
 
 class FinancialData(Base):
+    """标准化财务指标表，按公司、年份和指标名存储数值。"""
+
     __tablename__ = "financial_data"
     __table_args__ = (
         UniqueConstraint("stock_code", "year", "metric_name", name="uk_code_year_metric"),
@@ -22,6 +26,8 @@ class FinancialData(Base):
 
 
 class MacroIndicator(Base):
+    """宏观指标表，用于存储季度或年度宏观数据。"""
+
     __tablename__ = "macro_indicator"
     __table_args__ = (
         UniqueConstraint("indicator_name", "period", name="uk_indicator_period"),

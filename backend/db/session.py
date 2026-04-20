@@ -1,3 +1,5 @@
+"""数据库连接与会话管理模块，统一提供 engine、SessionLocal 和依赖注入入口。"""
+
 from collections.abc import Generator
 
 from sqlalchemy import create_engine, text
@@ -9,6 +11,7 @@ settings = get_settings()
 
 
 def _build_engine():
+    """优先连接 MySQL，失败时自动回退到本地 SQLite。"""
     primary_engine = create_engine(
         settings.database_url,
         pool_pre_ping=True,
@@ -39,6 +42,7 @@ SessionLocal = sessionmaker(
 
 
 def get_db() -> Generator[Session, None, None]:
+    """为 FastAPI 提供请求级数据库会话，并在请求结束后自动关闭。"""
     db = SessionLocal()
     try:
         yield db

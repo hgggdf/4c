@@ -1,3 +1,5 @@
+"""三大财务报表与财务附注 ORM 模型。"""
+
 from datetime import date
 
 from sqlalchemy import JSON, Date, DECIMAL, Index, Integer, String, UniqueConstraint
@@ -7,6 +9,8 @@ from db.base import Base
 
 
 class IncomeStatement(Base):
+    """利润表结构化数据。"""
+
     __tablename__ = "income_statement"
     __table_args__ = (
         UniqueConstraint("stock_code", "report_date", name="uk_income_code_report_date"),
@@ -28,6 +32,8 @@ class IncomeStatement(Base):
 
 
 class BalanceSheet(Base):
+    """资产负债表结构化数据。"""
+
     __tablename__ = "balance_sheet"
     __table_args__ = (
         UniqueConstraint("stock_code", "report_date", name="uk_balance_code_report_date"),
@@ -47,6 +53,8 @@ class BalanceSheet(Base):
 
 
 class CashflowStatement(Base):
+    """现金流量表结构化数据。"""
+
     __tablename__ = "cashflow_statement"
     __table_args__ = (
         UniqueConstraint("stock_code", "report_date", name="uk_cashflow_code_report_date"),
@@ -63,6 +71,8 @@ class CashflowStatement(Base):
 
 
 class FinancialNotes(Base):
+    """财务附注结构化数据。"""
+
     __tablename__ = "financial_notes"
     __table_args__ = (
         UniqueConstraint("stock_code", "report_date", "note_type", name="uk_notes_code_date_type"),

@@ -1,3 +1,5 @@
+"""聊天与 PDF 上传接口，负责问答请求分发和知识库补充。"""
+
 from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 
@@ -13,6 +15,7 @@ chat_service = ChatService()
 
 @router.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest, db: Session = Depends(get_db)) -> ChatResponse:
+    """处理一轮聊天请求，并返回智能体回复与可选行情信息。"""
     return chat_service.handle_chat(db, request)
 
 

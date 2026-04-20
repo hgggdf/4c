@@ -1,3 +1,5 @@
+"""行情与公司资料数据提供器，统一封装 AkShare、Tushare 和本地兜底数据。"""
+
 from __future__ import annotations
 
 from datetime import date, datetime, timedelta
@@ -52,6 +54,8 @@ for company in list_pharma_companies():
 
 
 class StockDataProvider:
+    """为业务层和智能体层提供统一的行情与公司信息读取接口。"""
+
     def __init__(self) -> None:
         self.settings = get_settings()
         self._spot_cache = None

@@ -1,3 +1,5 @@
+"""数据库初始化与健康检查服务。"""
+
 from db.repository.db_stats_repo import DatabaseStatsRepository
 from db.repository.user_repo import UserRepository
 from db.repository.watchlist_repo import WatchlistRepository
@@ -8,6 +10,8 @@ import db.models as models  # noqa: F401
 
 
 class DatabaseService:
+    """封装建表、演示数据初始化和健康检查逻辑。"""
+
     TABLE_NAMES = [
         "users",
         "chat_history",
@@ -33,6 +37,7 @@ class DatabaseService:
         self.company_service = CompanyService()
 
     def initialize_database(self) -> None:
+        """创建数据表，并在首次启动时导入本地数据和默认演示用户。"""
         Base.metadata.create_all(bind=engine)
 
         with SessionLocal() as db:
@@ -44,6 +49,7 @@ class DatabaseService:
                 self.watchlist_repo.seed_default(db, user.id)
 
     def check_health(self) -> dict:
+        """执行数据库连通性检查并返回关键表的记录数。"""
         try:
             with SessionLocal() as db:
                 self.stats_repo.ping(db)

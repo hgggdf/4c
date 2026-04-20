@@ -1,3 +1,5 @@
+"""本地公司数据文件仓库，负责 dataset.json 与索引文件的读写。"""
+
 from __future__ import annotations
 
 import json
@@ -27,6 +29,8 @@ HEAVY_SECTIONS = {
 
 
 class LocalCompanyDataStore:
+    """管理 backend/local_data/pharma_companies 下的本地 JSON 数据集。"""
+
     def __init__(self) -> None:
         STORE_ROOT.mkdir(parents=True, exist_ok=True)
 

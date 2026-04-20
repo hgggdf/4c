@@ -1,3 +1,5 @@
+"""股票日线行情 ORM 模型。"""
+
 from datetime import date
 
 from sqlalchemy import BigInteger, Date, DECIMAL, String, UniqueConstraint
@@ -7,6 +9,8 @@ from db.base import Base
 
 
 class StockDaily(Base):
+    """按股票代码和交易日存储的日线行情数据。"""
+
     __tablename__ = "stock_daily"
     __table_args__ = (
         UniqueConstraint("stock_code", "trade_date", name="uk_code_date"),

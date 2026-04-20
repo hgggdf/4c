@@ -1,3 +1,5 @@
+"""聊天历史 ORM 模型。"""
+
 from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, Index, Integer, String, Text
@@ -7,6 +9,8 @@ from db.base import Base
 
 
 class ChatHistory(Base):
+    """用户与智能体之间的问答记录。"""
+
     __tablename__ = "chat_history"
     __table_args__ = (
         Index("idx_user_time", "user_id", "create_time"),

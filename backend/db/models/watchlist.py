@@ -1,3 +1,5 @@
+"""用户自选股 ORM 模型。"""
+
 from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, String, UniqueConstraint
@@ -7,6 +9,8 @@ from db.base import Base
 
 
 class Watchlist(Base):
+    """保存用户关注的股票列表。"""
+
     __tablename__ = "watchlist"
     __table_args__ = (
         UniqueConstraint("user_id", "stock_code", name="uk_user_stock"),

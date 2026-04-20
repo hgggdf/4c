@@ -1,3 +1,5 @@
+"""公告及公告结构化拆解相关 ORM 模型。"""
+
 from datetime import date, datetime
 
 from sqlalchemy import JSON, Date, DateTime, DECIMAL, ForeignKey, Index, Integer, String, Text, UniqueConstraint
@@ -7,6 +9,8 @@ from db.base import Base
 
 
 class AnnouncementRaw(Base):
+    """公告原始表，保存公告标题、日期、正文和来源信息。"""
+
     __tablename__ = "announcement_raw"
     __table_args__ = (
         UniqueConstraint("stock_code", "title", "publish_date", name="uk_announcement_code_title_date"),
@@ -40,6 +44,8 @@ class AnnouncementRaw(Base):
 
 
 class AnnouncementStructured(Base):
+    """公告结构化抽取结果表，保存分类、风险等级和关键字段。"""
+
     __tablename__ = "announcement_structured"
     __table_args__ = (
         Index("idx_announcement_structured_announcement", "announcement_id"),
@@ -57,6 +63,8 @@ class AnnouncementStructured(Base):
 
 
 class DrugApproval(Base):
+    """药品审批公告结构化结果表。"""
+
     __tablename__ = "drug_approval"
     __table_args__ = (
         Index("idx_drug_approval_code_date", "stock_code", "approval_date"),
@@ -78,6 +86,8 @@ class DrugApproval(Base):
 
 
 class CapacityExpansion(Base):
+    """产能扩张公告结构化结果表。"""
+
     __tablename__ = "capacity_expansion"
     __table_args__ = (
         Index("idx_capacity_expansion_code_year", "stock_code", "completion_year"),

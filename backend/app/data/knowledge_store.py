@@ -19,6 +19,7 @@ _collection = None
 
 
 def _get_embedding_model():
+    """延迟加载中文向量模型，避免服务启动时立即拉起大模型依赖。"""
     global _embedding_model
     if _embedding_model is None:
         from sentence_transformers import SentenceTransformer
@@ -27,6 +28,7 @@ def _get_embedding_model():
 
 
 def _get_collection():
+    """延迟创建或获取 ChromaDB 集合实例。"""
     global _chroma_client, _collection
     if _collection is None:
         import chromadb
@@ -39,12 +41,14 @@ def _get_collection():
 
 
 def _embed(texts: list[str]) -> list[list[float]]:
+    """把文本列表编码为向量表示。"""
     model = _get_embedding_model()
     vecs = model.encode(texts, normalize_embeddings=True)
     return vecs.tolist()
 
 
 def _chunk(text: str, size: int = 500, overlap: int = 50) -> list[str]:
+    """按固定窗口切分长文本，供向量化与 TF-IDF 建索引使用。"""
     text = text.strip()
     if len(text) <= size:
         return [text]
@@ -121,11 +125,13 @@ from collections import defaultdict
 
 
 def _tokenize(text: str) -> list[str]:
+    """把中文文本和字母数字序列切分为检索用 token。"""
     text = re.sub(r"\s+", " ", text)
     return re.findall(r"[\u4e00-\u9fff]{1,4}|[a-zA-Z0-9]+", text)
 
 
 def _tfidf_vector(tokens, vocab, idf):
+    """根据 token、词表和 idf 权重构造 TF-IDF 向量。"""
     tf: dict[str, float] = defaultdict(float)
     for t in tokens:
         tf[t] += 1.0
@@ -138,6 +144,7 @@ def _tfidf_vector(tokens, vocab, idf):
 
 
 def _cosine(a, b):
+    """计算两个向量的余弦相似度。"""
     dot = sum(x * y for x, y in zip(a, b))
     na = math.sqrt(sum(x * x for x in a))
     nb = math.sqrt(sum(x * x for x in b))
@@ -218,6 +225,7 @@ def get_store() -> KnowledgeStore:
 
 
 def get_vector_store() -> VectorKnowledgeStore:
+    """返回向量知识库单例。"""
     global _vector_store
     if _vector_store is None:
         _vector_store = VectorKnowledgeStore()

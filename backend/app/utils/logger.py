@@ -1,3 +1,5 @@
+"""项目统一日志配置。"""
+
 import logging
 
 logging.basicConfig(
