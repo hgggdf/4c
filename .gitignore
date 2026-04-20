@@ -31,3 +31,12 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Local databases and vector stores
+*.db
+*.sqlite
+*.sqlite3
+backend/local_data/*.db
+backend/local_data/*.sqlite
+backend/local_data/*.sqlite3
+backend/chroma_db/
