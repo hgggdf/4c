@@ -15,6 +15,17 @@
       </span>
     </div>
 
+    <!-- PDF 上传进度 -->
+    <div v-if="uploadState.active" class="upload-progress">
+      <span class="upload-icon">📄</span>
+      <span class="upload-name">{{ uploadState.fileName }}</span>
+      <div class="upload-bar-wrap">
+        <div class="upload-bar-fill" :style="{ width: uploadState.percent + '%' }"></div>
+      </div>
+      <span class="upload-pct">{{ uploadState.percent }}%</span>
+      <span v-if="uploadState.done" class="upload-done">✓ 已入库</span>
+    </div>
+
     <textarea
       v-model="text"
       class="chat-textarea"
@@ -24,12 +35,25 @@
     />
 
     <div class="chat-toolbar">
-      <span class="chat-hint">
-        <template v-if="droppedItems.length">
-          已添加 {{ droppedItems.length }} 个标的 · 
-        </template>
-        Enter 发送 · Shift+Enter 换行
-      </span>
+      <div class="toolbar-left">
+        <span class="chat-hint">
+          <template v-if="droppedItems.length">
+            已添加 {{ droppedItems.length }} 个标的 ·
+          </template>
+          Enter 发送 · Shift+Enter 换行
+        </span>
+        <!-- PDF 上传按钮 -->
+        <label class="upload-btn" title="上传 PDF 到知识库">
+          <input
+            ref="fileInputRef"
+            type="file"
+            accept=".pdf"
+            style="display:none"
+            @change="handleFileChange"
+          />
+          📎 上传研报
+        </label>
+      </div>
       <button
         class="send-btn"
         :disabled="loading || (!text.trim() && !droppedItems.length)"
@@ -44,6 +68,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { uploadPDF } from '../api/chat'
 
 const props = defineProps({
   loading: { type: Boolean, default: false }
@@ -53,6 +78,9 @@ const emit = defineEmits(['submit'])
 const text = ref('')
 const isDragOver = ref(false)
 const droppedItems = ref([])
+const fileInputRef = ref(null)
+
+const uploadState = ref({ active: false, fileName: '', percent: 0, done: false })
 
 const placeholder = computed(() =>
   droppedItems.value.length
@@ -87,4 +115,58 @@ function handleSubmit() {
   text.value = ''
   droppedItems.value = []
 }
+
+async function handleFileChange(evt) {
+  const file = evt.target.files?.[0]
+  if (!file) return
+
+  uploadState.value = { active: true, fileName: file.name, percent: 0, done: false }
+
+  try {
+    await uploadPDF(file, pct => {
+      uploadState.value.percent = pct
+    })
+    uploadState.value.percent = 100
+    uploadState.value.done = true
+    setTimeout(() => { uploadState.value.active = false }, 3000)
+  } catch (err) {
+    uploadState.value.active = false
+    alert('上传失败：' + err.message)
+  } finally {
+    if (fileInputRef.value) fileInputRef.value.value = ''
+  }
+}
 </script>
+
+<style scoped>
+.toolbar-left {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.upload-btn {
+  font-size: 12px; color: var(--text-secondary);
+  cursor: pointer; padding: 3px 8px;
+  border: 1px solid var(--border); border-radius: 6px;
+  transition: all .2s; user-select: none;
+  white-space: nowrap;
+}
+.upload-btn:hover { color: var(--accent); border-color: var(--border-hl); }
+
+.upload-progress {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 14px 0;
+  font-size: 12px; color: var(--text-secondary);
+}
+.upload-icon { font-size: 14px; }
+.upload-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+.upload-bar-wrap {
+  width: 80px; height: 4px; background: var(--bg-card2);
+  border-radius: 2px; overflow: hidden; flex-shrink: 0;
+}
+.upload-bar-fill {
+  height: 100%; background: var(--accent);
+  border-radius: 2px; transition: width .3s ease;
+}
+.upload-pct { flex-shrink: 0; }
+.upload-done { color: var(--green); font-weight: 600; flex-shrink: 0; }
+</style>

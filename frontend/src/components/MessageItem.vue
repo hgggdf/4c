@@ -55,8 +55,8 @@ function getChangePercent(extra = {}) {
 }
 .msg-target-tag {
   font-size: 11px;
-  background: rgba(56,189,248,0.12);
-  border: 1px solid rgba(56,189,248,0.3);
+  background: rgba(75,169,154,0.12);
+  border: 1px solid rgba(75,169,154,0.3);
   border-radius: 20px;
   padding: 2px 8px; color: var(--accent);
 }

@@ -12,16 +12,16 @@
       <defs>
         <!-- 扇形渐变 -->
         <radialGradient id="g0" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.95" />
-          <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.75" />
+          <stop offset="0%" stop-color="#7dd3c8" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#4ba99a" stop-opacity="0.75" />
         </radialGradient>
         <radialGradient id="g1" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stop-color="#86efac" stop-opacity="0.95" />
-          <stop offset="100%" stop-color="#22c55e" stop-opacity="0.75" />
+          <stop offset="100%" stop-color="#2db87a" stop-opacity="0.75" />
         </radialGradient>
         <radialGradient id="g2" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stop-color="#fde68a" stop-opacity="0.95" />
-          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.75" />
+          <stop offset="100%" stop-color="#e8a020" stop-opacity="0.75" />
         </radialGradient>
         <!-- 发光滤镜 -->
         <filter id="glow">
@@ -91,7 +91,7 @@
         stroke="rgba(0,0,0,0.08)"
         stroke-width="1.5"
       />
-      <text :x="cx" :y="cy-6" text-anchor="middle" font-size="14" fill="#38bdf8">⚕</text>
+      <text :x="cx" :y="cy-6" text-anchor="middle" font-size="14" fill="#4ba99a">⚕</text>
       <text :x="cx" :y="cy+10" text-anchor="middle" font-size="9" fill="rgba(30,41,59,0.4)">投研</text>
     </svg>
 
@@ -131,9 +131,9 @@ const svgRef  = ref(null)
 
 // 三个扇形：均分 120°，从 -90° 开始（顶部）
 const SEGS_DEF = [
-  { key: 'stock',  label: '个股',   sub: '医药上市公司',  icon: '📈', color: '#38bdf8', startDeg: -90, endDeg: 30  },
-  { key: 'industry',label: '行业',  sub: '子板块行情',    icon: '🏭', color: '#22c55e', startDeg: 30,  endDeg: 150 },
-  { key: 'macro',  label: '宏观',   sub: '经济指标',      icon: '🌐', color: '#f59e0b', startDeg: 150, endDeg: 270 },
+  { key: 'stock',    label: '个股',   sub: '医药上市公司',  icon: '📈', color: '#4ba99a', startDeg: -90, endDeg: 30  },
+  { key: 'industry', label: '行业',   sub: '子板块行情',    icon: '🏭', color: '#2db87a', startDeg: 30,  endDeg: 150 },
+  { key: 'macro',    label: '宏观',   sub: '经济指标',      icon: '🌐', color: '#e8a020', startDeg: 150, endDeg: 270 },
 ]
 
 function toRad(deg) { return deg * Math.PI / 180 }
@@ -184,7 +184,7 @@ const segments = computed(() => SEGS_DEF.map(seg => {
 .pie-legend-item.active {
   color: var(--text-primary);
   border-color: var(--border-hl);
-  background: rgba(56,189,248,0.08);
+  background: rgba(75,169,154,0.08);
 }
 .legend-dot {
   width: 8px; height: 8px; border-radius: 50%;

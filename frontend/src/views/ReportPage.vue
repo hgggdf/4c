@@ -182,14 +182,14 @@ async function loadTrend(metric) {
     trendChart.setOption({
       backgroundColor: 'transparent',
       tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/>${metric}: ${p[0].value}${unit}` },
-      xAxis: { type: 'category', data: years, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } } },
-      yAxis: { type: 'value', axisLabel: { color: '#94a3b8', formatter: v => v + unit }, splitLine: { lineStyle: { color: '#1e293b' } } },
+      xAxis: { type: 'category', data: years, axisLabel: { color: '#64748b' }, axisLine: { lineStyle: { color: '#e2e8f0' } } },
+      yAxis: { type: 'value', axisLabel: { color: '#64748b', formatter: v => v + unit }, splitLine: { lineStyle: { color: '#f1f5f9' } } },
       series: [{
         type: 'line', data: values, smooth: true,
-        lineStyle: { color: '#6366f1', width: 3 },
-        itemStyle: { color: '#6366f1' },
-        areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(99,102,241,0.3)' }, { offset: 1, color: 'rgba(99,102,241,0)' }] } },
-        label: { show: true, color: '#e2e8f0', formatter: p => p.value + unit }
+        lineStyle: { color: '#4ba99a', width: 3 },
+        itemStyle: { color: '#4ba99a' },
+        areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(75,169,154,0.25)' }, { offset: 1, color: 'rgba(75,169,154,0)' }] } },
+        label: { show: true, color: '#1e293b', formatter: p => p.value + unit }
       }],
       grid: { left: 50, right: 20, top: 20, bottom: 40 }
     })
@@ -221,68 +221,81 @@ onMounted(async () => {
 <style scoped>
 .report-page { padding: 24px; max-width: 960px; margin: 0 auto; }
 .page-header { margin-bottom: 24px; }
-.page-header h2 { color: #e2e8f0; font-size: 20px; margin: 0; }
+.page-header h2 { color: var(--text-primary); font-size: 20px; margin: 0; }
 
-.config-card { background: #1e293b; border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+.config-card {
+  background: var(--bg-panel); border-radius: 16px; padding: 24px;
+  margin-bottom: 24px; border: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
 .config-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
 .config-item { display: flex; flex-direction: column; gap: 8px; }
-.config-item label { color: #94a3b8; font-size: 13px; }
+.config-item label { color: var(--text-secondary); font-size: 13px; }
 .config-item select {
-  background: #0f172a; color: #e2e8f0; border: 1px solid #334155;
+  background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border);
   padding: 8px 14px; border-radius: 8px; cursor: pointer; min-width: 180px;
+  transition: border-color .2s;
 }
+.config-item select:focus { outline: none; border-color: var(--border-hl); }
 .type-tabs { display: flex; gap: 8px; }
 .type-btn {
-  background: #0f172a; color: #94a3b8; border: 1px solid #334155;
-  padding: 7px 16px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border);
+  padding: 7px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all .2s;
 }
-.type-btn.active { background: #6366f1; color: #fff; border-color: #6366f1; }
+.type-btn.active { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+.type-btn:hover:not(.active) { border-color: var(--border-hl); color: var(--text-primary); }
 .gen-btn {
-  background: #6366f1; color: #fff; border: none;
+  background: var(--accent2); color: #fff; border: none;
   padding: 10px 32px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 600;
+  transition: background .2s, box-shadow .2s;
 }
-.gen-btn:hover { background: #4f46e5; }
+.gen-btn:hover { background: #3d9688; box-shadow: 0 4px 14px rgba(75,169,154,0.35); }
 .gen-btn:disabled { opacity: .5; cursor: not-allowed; }
-.error { color: #f87171; margin-bottom: 16px; }
+.error { color: var(--red); margin-bottom: 16px; }
 
-.report-card { background: #1e293b; border-radius: 16px; overflow: hidden; }
+.report-card {
+  background: var(--bg-panel); border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--border); box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
 .report-toolbar {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 16px 24px; border-bottom: 1px solid #334155;
+  padding: 16px 24px; border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
 }
-.report-title { color: #e2e8f0; font-weight: 600; font-size: 16px; }
+.report-title { color: var(--text-primary); font-weight: 600; font-size: 16px; }
 .copy-btn {
-  background: #0f172a; color: #94a3b8; border: 1px solid #334155;
-  padding: 5px 14px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  background: var(--bg-panel); color: var(--text-secondary); border: 1px solid var(--border);
+  padding: 5px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all .2s;
 }
-.copy-btn:hover { color: #e2e8f0; }
+.copy-btn:hover { color: var(--text-primary); border-color: var(--border-hl); }
 
 .report-overview {
-  display: flex; gap: 0; border-bottom: 1px solid #334155;
+  display: flex; gap: 0; border-bottom: 1px solid var(--border);
 }
 .ov-item {
   flex: 1; text-align: center; padding: 20px 12px;
-  border-right: 1px solid #334155;
+  border-right: 1px solid var(--border);
 }
 .ov-item:last-child { border-right: none; }
-.ov-val { font-size: 26px; font-weight: 700; color: #6366f1; margin-bottom: 4px; }
-.lv-excellent { color: #22c55e; }
-.lv-good      { color: #6366f1; }
-.lv-fair      { color: #f59e0b; }
-.lv-poor      { color: #ef4444; }
-.ov-label { color: #64748b; font-size: 12px; }
+.ov-val { font-size: 26px; font-weight: 700; color: var(--accent2); margin-bottom: 4px; }
+.lv-excellent { color: var(--green); }
+.lv-good      { color: var(--accent2); }
+.lv-fair      { color: var(--gold); }
+.lv-poor      { color: var(--red); }
+.ov-label { color: var(--text-muted); font-size: 12px; }
 
-.trend-section { padding: 20px 24px; border-bottom: 1px solid #334155; }
+.trend-section { padding: 20px 24px; border-bottom: 1px solid var(--border); }
 .trend-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
 .trend-tab {
-  background: #0f172a; color: #94a3b8; border: 1px solid #334155;
-  padding: 4px 12px; border-radius: 16px; cursor: pointer; font-size: 12px;
+  background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border);
+  padding: 4px 12px; border-radius: 16px; cursor: pointer; font-size: 12px; transition: all .2s;
 }
-.trend-tab.active { background: #6366f1; color: #fff; border-color: #6366f1; }
+.trend-tab.active { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+.trend-tab:hover:not(.active) { border-color: var(--border-hl); }
 .trend-chart { width: 100%; height: 220px; }
 
 .report-body { padding: 24px; }
 .report-section { margin-bottom: 20px; }
-.sec-title { color: #6366f1; font-weight: 600; font-size: 15px; margin-bottom: 8px; }
-.sec-content { color: #94a3b8; font-size: 14px; line-height: 1.8; }
+.sec-title { color: var(--accent2); font-weight: 600; font-size: 15px; margin-bottom: 8px; }
+.sec-content { color: var(--text-secondary); font-size: 14px; line-height: 1.8; }
 </style>

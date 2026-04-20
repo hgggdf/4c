@@ -94,18 +94,18 @@ async function loadAndRender() {
       data: data.values,
       smooth: !isBar,
       symbol: 'circle', symbolSize: 5,
-      lineStyle: { color: '#38bdf8', width: 2 },
+      lineStyle: { color: '#4ba99a', width: 2 },
       itemStyle: {
         color: (params) => {
           const v = params.value
-          if (isBar) return v >= 0 ? '#ef4444' : '#22c55e'
-          return '#38bdf8'
+          if (isBar) return v >= 0 ? '#e05252' : '#2db87a'
+          return '#4ba99a'
         },
       },
       areaStyle: isBar ? undefined : {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: 'rgba(56,189,248,0.2)' },
-          { offset: 1, color: 'rgba(56,189,248,0.01)' },
+          { offset: 0, color: 'rgba(75,169,154,0.2)' },
+          { offset: 1, color: 'rgba(75,169,154,0.01)' },
         ]),
       },
       markLine: {

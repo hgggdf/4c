@@ -21,7 +21,7 @@
 
       <!-- 内容区 -->
       <div class="content-area">
-        <div class="content-area-inner">
+        <div class="content-area-inner" :class="{ 'no-padding': selectedStock }">
 
           <template v-if="activeSection === 'stock'">
             <Transition name="detail-slide" mode="out-in">
@@ -64,16 +64,19 @@
       :class="{
         'handle-hover': isHovering,
         'handle-drag':  isDragging,
+        'handle-closed': !panelOpen,
       }"
       :style="handleStyle"
       @mousedown.prevent="onDragStart"
       @mouseenter="isHovering = true"
       @mouseleave="isHovering = false"
     >
-      <div class="handle-ripple ripple-1"></div>
-      <div class="handle-ripple ripple-2"></div>
-      <div class="handle-ripple ripple-3"></div>
-      <div class="handle-arrow">{{ panelOpen ? '‹' : '›' }}</div>
+      <!-- 弧形阴影背景（收起时可见） -->
+      <div class="handle-shadow-arc"></div>
+      <!-- 中央胶囊指示条 -->
+      <div class="handle-pill">
+        <div class="handle-arrow">{{ panelOpen ? '‹' : '›' }}</div>
+      </div>
     </div>
 
     <!-- ══════════════════════════════════════════
@@ -120,7 +123,13 @@ const TABS = [
 ]
 
 // ── 面板状态 ──────────────────────────────────────
-const panelWidth = ref(0)
+// 默认展开，初始宽度设为两列个股（约 360px）
+const getInitialWidth = () => {
+  const screenWidth = window.innerWidth
+  // 两列个股：每列约 160px + gap + padding = 360px
+  return Math.max(360, Math.min(400, Math.floor(screenWidth * 0.25)))
+}
+const panelWidth = ref(getInitialWidth())
 const panelOpen = computed(() => panelWidth.value > 0)
 const isDragging = ref(false)
 const isHovering = ref(false)
@@ -128,7 +137,9 @@ let dragStartX = 0
 let dragStartWidth = 0
 const isAnimating = ref(false)
 
-// 把手跟随面板右边界，收起时贴左边缘内侧
+// 把手跟随面板右边界
+// 收起时：left=0, translateX(0) → 把手左边缘贴屏幕左侧，弧形阴影向右散开
+// 展开时：left=panelWidth, translateX(-50%) → 把手中心线对齐面板右边界
 const handleStyle = computed(() => {
   const left = panelWidth.value === 0 ? 0 : panelWidth.value
   return {
@@ -173,9 +184,11 @@ function onDragMove(e) {
   if (!isDragging.value) return
   e.preventDefault()
   const total = wrapRef.value?.clientWidth || window.innerWidth
-  const maxW = Math.floor(total * 0.6)
-  // 鼠标 X 坐标直接就是面板宽度
-  let newW = Math.max(0, Math.min(e.clientX, maxW))
+  // 最大宽度：四列个股（约 720px）
+  const maxW = Math.min(720, Math.floor(total * 0.5))
+  // 用相对位移，避免面板跳动
+  const delta = e.clientX - dragStartX
+  let newW = Math.max(0, Math.min(dragStartWidth + delta, maxW))
   panelWidth.value = newW
 }
 
@@ -187,15 +200,19 @@ function onDragEnd() {
   document.body.style.cursor = ''
 
   const total = wrapRef.value?.clientWidth || window.innerWidth
-  const snapW = Math.floor(total * 0.42)
+  const twoCol  = Math.max(360, Math.min(400, Math.floor(total * 0.25)))
+  const fourCol = Math.min(720, Math.floor(total * 0.5))
   const threshold = 80
+  const w = panelWidth.value
 
   isAnimating.value = true
 
-  if (panelWidth.value >= threshold) {
-    panelWidth.value = snapW
-  } else {
+  if (w < threshold) {
     panelWidth.value = 0
+  } else if (w < (twoCol + fourCol) / 2) {
+    panelWidth.value = twoCol
+  } else {
+    panelWidth.value = fourCol
   }
 
   setTimeout(() => { isAnimating.value = false }, 700)
@@ -206,7 +223,7 @@ const activeSection = ref('stock')
 function onSectionSelect(key) {
   if (!panelOpen.value) {
     const total = wrapRef.value?.clientWidth || window.innerWidth
-    panelWidth.value = Math.floor(total * 0.42)
+    panelWidth.value = Math.max(360, Math.min(400, Math.floor(total * 0.25)))
   }
   if (activeSection.value === key) {
     panelWidth.value = 0
@@ -333,7 +350,7 @@ onBeforeUnmount(() => {
 .edge-handle {
   position: absolute;
   top: 0; bottom: 0;
-  width: 20px;
+  width: 48px;
   /* left 和 transform 由 handleStyle 动态控制 */
   cursor: col-resize;
   z-index: 50;
@@ -342,101 +359,93 @@ onBeforeUnmount(() => {
   justify-content: center;
 }
 
-/* 三层波纹 — 向右扩散 */
-.handle-ripple {
+/* 弧形阴影背景 — 收起时显示 */
+.handle-shadow-arc {
   position: absolute;
   top: 0; bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 50% / 40%;
+  left: 0; right: 0;
+  background: radial-gradient(
+    ellipse 160% 100% at 0% 50%,
+    rgba(75, 169, 154, 0.10) 0%,
+    rgba(75, 169, 154, 0.05) 35%,
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease, background 0.3s ease;
   pointer-events: none;
-  transition:
-    width 0.45s cubic-bezier(0.34, 1.4, 0.64, 1),
-    opacity 0.45s ease,
-    background 0.3s;
 }
 
-.ripple-1 {
+.handle-closed .handle-shadow-arc {
+  opacity: 1;
+}
+
+.handle-hover.handle-closed .handle-shadow-arc {
+  background: radial-gradient(
+    ellipse 160% 100% at 0% 50%,
+    rgba(75, 169, 154, 0.18) 0%,
+    rgba(75, 169, 154, 0.09) 35%,
+    transparent 65%
+  );
+  opacity: 1;
+}
+
+/* 中央胶囊指示条 */
+.handle-pill {
+  position: relative;
   width: 4px;
-  background: rgba(56, 189, 248, 0.18);
-  box-shadow: 0 0 8px 1px rgba(56, 189, 248, 0.10);
-  animation: rb 3.2s ease-in-out infinite;
-}
-.ripple-2 {
-  width: 8px;
-  background: rgba(56, 189, 248, 0.08);
-  box-shadow: 0 0 14px 2px rgba(56, 189, 248, 0.06);
-  animation: rb 3.2s ease-in-out 0.55s infinite;
-}
-.ripple-3 {
-  width: 14px;
-  background: rgba(56, 189, 248, 0.04);
-  box-shadow: 0 0 22px 4px rgba(56, 189, 248, 0.03);
-  animation: rb 3.2s ease-in-out 1.1s infinite;
+  height: 48px;
+  background: rgba(75, 169, 154, 0.2);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
+  box-shadow: 0 0 8px rgba(75, 169, 154, 0.1);
 }
 
-@keyframes rb {
-  0%, 100% { opacity: 0.45; }
-  50%       { opacity: 1; }
+.handle-closed .handle-pill {
+  width: 3px;
+  height: 40px;
+  background: rgba(75, 169, 154, 0.15);
+  box-shadow: 0 0 6px rgba(75, 169, 154, 0.08);
 }
 
-/* hover */
-.handle-hover .ripple-1 {
+.handle-hover .handle-pill {
   width: 6px;
-  background: rgba(56, 189, 248, 0.32);
-  box-shadow: 0 0 12px 2px rgba(56, 189, 248, 0.18);
-  animation: none; opacity: 1;
-}
-.handle-hover .ripple-2 {
-  width: 14px;
-  background: rgba(56, 189, 248, 0.14);
-  box-shadow: 0 0 22px 4px rgba(56, 189, 248, 0.10);
-  animation: none; opacity: 1;
-}
-.handle-hover .ripple-3 {
-  width: 24px;
-  background: rgba(56, 189, 248, 0.06);
-  box-shadow: 0 0 32px 6px rgba(56, 189, 248, 0.05);
-  animation: none; opacity: 1;
+  height: 56px;
+  background: rgba(75, 169, 154, 0.35);
+  box-shadow: 0 0 16px rgba(75, 169, 154, 0.2);
 }
 
-/* 拖拽中 */
-.handle-drag .ripple-1 {
+.handle-drag .handle-pill {
   width: 8px;
-  background: rgba(14, 165, 233, 0.45);
-  box-shadow: 0 0 16px 3px rgba(14, 165, 233, 0.25);
-  animation: none; opacity: 1;
-}
-.handle-drag .ripple-2 {
-  width: 18px;
-  background: rgba(14, 165, 233, 0.18);
-  box-shadow: 0 0 28px 5px rgba(14, 165, 233, 0.13);
-  animation: none; opacity: 1;
-}
-.handle-drag .ripple-3 {
-  width: 30px;
-  background: rgba(14, 165, 233, 0.07);
-  box-shadow: 0 0 40px 8px rgba(14, 165, 233, 0.06);
-  animation: none; opacity: 1;
+  height: 64px;
+  background: rgba(61, 150, 136, 0.5);
+  box-shadow: 0 0 24px rgba(61, 150, 136, 0.3);
 }
 
 /* 箭头 */
 .handle-arrow {
-  position: relative;
-  z-index: 1;
-  font-size: 13px;
-  font-weight: 400;
-  color: rgba(56, 189, 248, 0.22);
+  position: absolute;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(75, 169, 154, 0.4);
   user-select: none;
   pointer-events: none;
   transition: color 0.3s, transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
+
+.handle-closed .handle-arrow {
+  color: rgba(75, 169, 154, 0.3);
+}
+
 .handle-hover .handle-arrow {
-  color: rgba(56, 189, 248, 0.6);
+  color: rgba(75, 169, 154, 0.75);
   transform: translateX(1px);
 }
+
 .handle-drag .handle-arrow {
-  color: rgba(14, 165, 233, 0.85);
+  color: rgba(61, 150, 136, 0.9);
   transform: translateX(2px);
 }
 
@@ -461,7 +470,7 @@ onBeforeUnmount(() => {
 }
 .dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: #38bdf8;
+  background: #4ba99a;
   animation: bounce 1.2s infinite ease-in-out;
   display: inline-block;
 }

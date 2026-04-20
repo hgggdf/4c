@@ -269,3 +269,11 @@ export async function getMacroSeries() {
 export async function getWatchlist(userId = import.meta.env.VITE_DEMO_USER_ID || 1) {
   return request.get('/api/stock/watchlist', { params: { user_id: userId } })
 }
+
+export async function addToWatchlist(symbol, userId = import.meta.env.VITE_DEMO_USER_ID || 1) {
+  return request.post('/api/stock/watchlist', { symbol, user_id: userId })
+}
+
+export async function removeFromWatchlist(symbol, userId = import.meta.env.VITE_DEMO_USER_ID || 1) {
+  return request.delete('/api/stock/watchlist', { params: { symbol, user_id: userId } })
+}
