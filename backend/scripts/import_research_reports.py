@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 sys.stdout.reconfigure(encoding="utf-8")
 
 from bs4 import BeautifulSoup
-from data.knowledge_store import get_store
+from app.data.knowledge_store import get_store
 
 HEADERS = {
     "User-Agent": (

@@ -11,11 +11,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from database.session import engine
-from data.akshare_client import StockDataProvider
-from data.company_data_store import CompanyDataStore
-from data.pharma_company_registry import list_pharma_companies
-from repository.stock_repo import StockDailyRepository
+from db.session import engine
+from app.data.akshare_client import StockDataProvider
+from app.data.company_data_store import CompanyDataStore
+from app.data.pharma_company_registry import list_pharma_companies
+from db.repository.stock_repo import StockDailyRepository
 
 # 默认导入的股票列表（可扩展）
 DEFAULT_STOCKS = [
