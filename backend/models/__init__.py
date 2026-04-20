@@ -4,6 +4,13 @@ from models.stock_daily import StockDaily
 from models.watchlist import Watchlist
 from models.financial_data import FinancialData, MacroIndicator
 from models.company_dataset import CompanyDataset
+from models.financial_statement import BalanceSheet, CashflowStatement, FinancialNotes, IncomeStatement
+from models.announcement import (
+	AnnouncementRaw,
+	AnnouncementStructured,
+	CapacityExpansion,
+	DrugApproval,
+)
 
 __all__ = [
 	"User",
@@ -13,4 +20,12 @@ __all__ = [
 	"FinancialData",
 	"MacroIndicator",
 	"CompanyDataset",
+	"IncomeStatement",
+	"BalanceSheet",
+	"CashflowStatement",
+	"FinancialNotes",
+	"AnnouncementRaw",
+	"AnnouncementStructured",
+	"DrugApproval",
+	"CapacityExpansion",
 ]

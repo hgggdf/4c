@@ -17,6 +17,7 @@ def init_database() -> None:
     company_store = CompanyDataStore()
 
     company_store.bootstrap_from_local_files()
+    company_store.backfill_structured_tables_from_local_files()
 
     with Session(engine) as db:
         user = user_repo.get_or_create_demo_user(db)
@@ -38,6 +39,14 @@ def check_db_health() -> dict:
                 "financial_data",
                 "macro_indicator",
                 "company_dataset",
+                "income_statement",
+                "balance_sheet",
+                "cashflow_statement",
+                "financial_notes",
+                "announcement_raw",
+                "announcement_structured",
+                "drug_approval",
+                "capacity_expansion",
             ]:
                 counts[table] = db.execute(text(f"SELECT COUNT(*) FROM {table}")).scalar()
         return {"status": "ok", "tables": counts}
