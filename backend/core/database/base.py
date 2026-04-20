@@ -1,9 +1,3 @@
-"""SQLAlchemy 声明式基类定义。"""
+from core.core.database.base import Base, BIGINT_PK, BIGINT_FK
 
-from sqlalchemy.orm import DeclarativeBase
-
-
-class Base(DeclarativeBase):
-    """所有 ORM 模型共享的声明式基类。"""
-
-    pass
+__all__ = ["Base", "BIGINT_PK", "BIGINT_FK"]
