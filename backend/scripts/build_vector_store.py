@@ -10,10 +10,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 sys.stdout.reconfigure(encoding="utf-8")
 
 from sqlalchemy.orm import Session
-from db.session import engine
-from app.data.knowledge_store import get_store, get_vector_store
-from db.repository.financial_repo import FinancialDataRepository
-from db.repository.macro_repo import MacroIndicatorRepository
+from core.database.session import engine
+from knowledge.store import get_store, get_vector_store
+from core.repositories.financial_repo import FinancialDataRepository
+from core.repositories.macro_repo import MacroIndicatorRepository
 
 
 def migrate_tfidf_to_vector() -> None:

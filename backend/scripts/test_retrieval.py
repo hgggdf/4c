@@ -10,8 +10,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 sys.stdout.reconfigure(encoding="utf-8")
 
 from sqlalchemy.orm import Session
-from db.session import engine
-from app.data.retriever import route_query, search_structured, search_unstructured, hybrid_search
+from core.database.session import engine
+from knowledge.retriever import route_query, search_structured, search_unstructured, hybrid_search
 
 TEST_CASES = [
     # (问题, 期望路由类型, 期望结果包含关键词)

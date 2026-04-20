@@ -3,11 +3,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.chat import router as chat_router
-from app.api.stock import router as stock_router
-from app.api.analysis import router as analysis_router
+from modules.chat.router import router as chat_router
+from modules.stock.router import router as stock_router
+from modules.analysis.router import router as analysis_router
 from config import get_settings
-from db.init_db import init_database
+from core.database.init_db import init_database
 
 settings = get_settings()
 
@@ -35,7 +35,7 @@ def on_startup() -> None:
 @app.get("/health")
 def health_check():
     """返回服务与数据库的基础健康状态，供前端和部署环境探活使用。"""
-    from db.init_db import check_db_health
+    from core.database.init_db import check_db_health
     db_status = check_db_health()
     return {
         "status": "ok",

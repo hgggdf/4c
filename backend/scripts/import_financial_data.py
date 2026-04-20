@@ -13,8 +13,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 import akshare as ak
 from sqlalchemy.orm import Session
-from db.session import engine
-from db.repository.financial_repo import FinancialDataRepository
+from core.database.session import engine
+from core.repositories.financial_repo import FinancialDataRepository
 
 COMPANIES = [
     ("600276", "恒瑞医药"),
