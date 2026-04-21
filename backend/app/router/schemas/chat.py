@@ -1,8 +1,11 @@
 """聊天路由正式 schema。"""
 
 from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from .common import BaseRequestModel
 
 
 class ChatHistoryItem(BaseModel):
@@ -67,6 +70,33 @@ class ChatHistoryRecord(BaseModel):
 	model_config = ConfigDict(from_attributes=True)
 
 
+class ChatListSessionsModel(BaseRequestModel):
+	user_id: int
+	limit: int = 20
+
+
+class ChatSessionModel(BaseRequestModel):
+	session_id: int
+
+
+class ChatCreateSessionModel(BaseRequestModel):
+	user_id: int
+	session_title: str | None = None
+
+
+class ChatAppendMessageModel(BaseRequestModel):
+	session_id: int
+	content: str
+	stock_code: str | None = None
+	intent_type: str | None = None
+	tool_calls: dict[str, Any] | None = None
+
+
+class ChatUpdateCurrentStockModel(BaseRequestModel):
+	session_id: int
+	stock_code: str
+
+
 __all__ = [
 	"ChatHistoryItem",
 	"ChatTarget",
@@ -74,4 +104,9 @@ __all__ = [
 	"QuoteInfo",
 	"ChatResponse",
 	"ChatHistoryRecord",
+	"ChatListSessionsModel",
+	"ChatSessionModel",
+	"ChatCreateSessionModel",
+	"ChatAppendMessageModel",
+	"ChatUpdateCurrentStockModel",
 ]

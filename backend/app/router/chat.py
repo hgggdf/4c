@@ -4,11 +4,30 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from app.core.database.session import get_db
-from app.router.chat_service import ChatService
-from app.router.schemas.chat import ChatRequest, ChatResponse
+from app.router.chat_service import ChatService as RuntimeChatService
+from app.router.dependencies import get_container
+from app.router.schemas.chat import (
+	ChatAppendMessageModel,
+	ChatCreateSessionModel,
+	ChatListSessionsModel,
+	ChatRequest,
+	ChatResponse,
+	ChatSessionModel,
+	ChatUpdateCurrentStockModel,
+)
+
+from app.router.utils import build_request, service_result_response
+from app.service import ServiceContainer
+from app.service.requests import (
+	ChatAppendMessageRequest,
+	ChatCreateSessionRequest,
+	ChatListSessionsRequest,
+	ChatSessionRequest,
+	ChatUpdateCurrentStockRequest,
+)
 
 router = APIRouter(prefix="/api", tags=["chat"])
-chat_service = ChatService()
+chat_service = RuntimeChatService()
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -34,6 +53,46 @@ def get_chat_history(
 ):
 	"""获取用户聊天历史记录。"""
 	return chat_service.get_chat_history(db, user_id, limit)
+
+
+@router.post("/chat/session")
+def get_session(payload: ChatSessionModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.get_session(build_request(ChatSessionRequest, payload)))
+
+
+@router.post("/chat/sessions")
+def list_sessions(payload: ChatListSessionsModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.list_sessions(build_request(ChatListSessionsRequest, payload)))
+
+
+@router.post("/chat/messages")
+def list_messages(payload: ChatSessionModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.list_messages(build_request(ChatSessionRequest, payload)))
+
+
+@router.post("/chat/current-context")
+def get_current_context(payload: ChatSessionModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.get_current_context(build_request(ChatSessionRequest, payload)))
+
+
+@router.post("/chat/create-session")
+def create_session(payload: ChatCreateSessionModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.create_session(build_request(ChatCreateSessionRequest, payload)))
+
+
+@router.post("/chat/append-user-message")
+def append_user_message(payload: ChatAppendMessageModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.append_user_message(build_request(ChatAppendMessageRequest, payload)))
+
+
+@router.post("/chat/append-assistant-message")
+def append_assistant_message(payload: ChatAppendMessageModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.append_assistant_message(build_request(ChatAppendMessageRequest, payload)))
+
+
+@router.post("/chat/update-current-stock")
+def update_current_stock(payload: ChatUpdateCurrentStockModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.update_current_stock(build_request(ChatUpdateCurrentStockRequest, payload)))
 
 
 __all__ = ["router"]

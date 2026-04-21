@@ -5,7 +5,21 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.bootstrap import check_database_health, init_application_database
 from app.router.analysis import router as analysis_router
+from app.router.announcement import router as announcement_router
+from app.router.announcement_write import router as announcement_write_router
+from app.router.cache import router as cache_router
 from app.router.chat import router as chat_router
+from app.router.company import router as company_router
+from app.router.company_write import router as company_write_router
+from app.router.financial import router as financial_router
+from app.router.financial_write import router as financial_write_router
+from app.router.ingest import router as ingest_router
+from app.router.macro import router as macro_router
+from app.router.macro_write import router as macro_write_router
+from app.router.maintenance import router as maintenance_router
+from app.router.news import router as news_router
+from app.router.news_write import router as news_write_router
+from app.router.retrieval import router as retrieval_router
 from app.router.stock import router as stock_router
 from config import get_settings
 
@@ -24,6 +38,20 @@ app.add_middleware(
 app.include_router(chat_router)
 app.include_router(stock_router)
 app.include_router(analysis_router)
+app.include_router(announcement_router)
+app.include_router(announcement_write_router)
+app.include_router(cache_router)
+app.include_router(company_router)
+app.include_router(company_write_router)
+app.include_router(financial_router)
+app.include_router(financial_write_router)
+app.include_router(ingest_router)
+app.include_router(macro_router)
+app.include_router(macro_write_router)
+app.include_router(maintenance_router)
+app.include_router(news_router)
+app.include_router(news_write_router)
+app.include_router(retrieval_router)
 
 
 @app.on_event("startup")
