@@ -7,6 +7,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import make_url
 
 
+ENV_FILE = Path(__file__).resolve().with_name(".env")
+
+
 class Settings(BaseSettings):
     """封装应用运行时需要的基础配置、数据库配置和第三方服务配置。"""
 
@@ -33,7 +36,7 @@ class Settings(BaseSettings):
     tushare_token: str = ""
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=ENV_FILE,
         env_file_encoding="utf-8",
         extra="ignore"
     )

@@ -285,8 +285,8 @@ server {
 ## 📞 联系方式
 
 如有问题或建议，请参考：
-- 项目文档：`/c/Users/lenovo/Desktop/说明文档.md`
-- 后端代码：`/c/Users/lenovo/Desktop/4c/backend/`
+- 项目文档：仓库根目录 README.md
+- 后端代码：backend/
 
 ---
 

@@ -53,11 +53,10 @@
 ### 1. 启动与数据库适配
 
 - 应用启动入口在 backend/main.py。
-- 启动时会执行 backend/app_bootstrap.py 中的初始化逻辑。
-- 运行时优先尝试连接配置中的 MySQL。
-- 如果当前 MySQL 实际暴露的是旧竞赛表结构，而不是当前代码依赖的新热表结构，系统会自动切换到本地 SQLite。
-- SQLite 默认路径为 backend/local_data/stock_agent.db。
-- 切换到 SQLite 后，系统会自动按当前模型建表，并创建演示用户。
+- 启动时会执行 backend/app/bootstrap/runtime.py 中的初始化逻辑。
+- 当前运行模式为 MySQL-only，不再自动回退到 SQLite。
+- 后端启动前必须保证 .env 中配置的 MySQL 可连接，并且存在可用的 stock_agent 库。
+- 健康检查会返回当前真实数据库连接状态；如果 MySQL 不可用，应用会在启动阶段直接失败，而不是自动降级。
 
 ### 2. 聊天接口
 
@@ -88,9 +87,9 @@
 在当前工作区环境下，已经验证以下结果：
 
 - backend/main.py 可以正常导入。
-- modules.chat.service、modules.stock.service、modules.analysis.service 都可以正常导入。
+- app.router.chat、app.router.stock、app.router.analysis 等正式路由都可以正常导入。
 - /health 可以返回 200。
-- 当检测到当前 MySQL 是旧结构时，/health 会显示 dialect 为 sqlite，storage_mode 为 sqlite-fallback。
+- 当前环境下，/health 会显示 dialect 为 mysql，storage_mode 为 mysql-only。
 - POST /api/chat 可以返回占位型智能体响应。
 - GET /api/stock/companies 在空库场景下返回空数组。
 - GET /api/analysis/risks 在空库场景下返回空结果。
@@ -106,8 +105,16 @@ cd backend
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
+Copy-Item .env.example .env
 python main.py
 ```
+
+注意：
+
+- 必须先进入 backend 目录再执行 python main.py；如果在仓库根目录执行，会报找不到 main.py。
+- 推荐直接使用 backend/.venv 中的解释器，避免混用系统 Python 或 Conda 环境。
+- 首次启动前先基于 backend/.env.example 创建 backend/.env，再填入自己的 MySQL 连接信息。
+- 当前后端依赖 MySQL；如果 127.0.0.1:3306 不可用，或 stock_agent 库不存在，服务不会启动。
 
 默认地址：
 
@@ -122,6 +129,11 @@ cd frontend
 npm install
 npm run dev
 ```
+
+注意：
+
+- 如果终端提示 vite 不是内部或外部命令，说明 frontend 目录下还没有执行过 npm install。
+- 前端默认直接请求 http://127.0.0.1:8000，因此要先确认后端已经在 8000 端口监听。
 
 默认地址：
 
@@ -150,5 +162,5 @@ http://127.0.0.1:5173
 ## 当前限制
 
 - 智能体仍是占位实现，还没有正式接入 LangChain 执行链。
-- 如果 SQLite 本地库尚未导入公司数据，股票和分析接口会返回空结果或 404。
+- 如果 MySQL 中尚未导入公司数据，股票和分析接口会返回空结果或 404。
 - 当前 README 仅描述现有运行状态，不再对应旧竞赛版的 repository/service/api 目录结构。
