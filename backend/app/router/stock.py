@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database.session import get_db
 from app.router.schemas.stock import KlinePoint, QuoteResponse, WatchItem, WatchlistCreate
-from legacy.modules.stock.service import StockService
+from app.router.stock_service import StockService
 
 router = APIRouter(prefix="/api/stock", tags=["stock"])
 stock_service = StockService()

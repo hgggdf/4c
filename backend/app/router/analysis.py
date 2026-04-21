@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.database.session import get_db
+from app.router.analysis_service import AnalysisService
 from app.router.schemas.analysis import DiagnoseOut, DimensionOut
-from legacy.modules.analysis.service import AnalysisService
 
 router = APIRouter(prefix="/api/analysis", tags=["analysis"])
 analysis_service = AnalysisService()

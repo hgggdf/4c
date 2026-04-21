@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from app.core.database.session import get_db
+from app.router.chat_service import ChatService
 from app.router.schemas.chat import ChatRequest, ChatResponse
-from legacy.modules.chat.service import ChatService
 
 router = APIRouter(prefix="/api", tags=["chat"])
 chat_service = ChatService()
