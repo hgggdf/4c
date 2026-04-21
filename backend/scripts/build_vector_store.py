@@ -1,7 +1,17 @@
-"""
-将现有 TF-IDF 知识库内容 + 财务数据迁移到 ChromaDB 向量库
+"""已废弃的旧脚本。
+
+该脚本依赖旧的 financial_data / macro_indicator 数据入口，
+不属于当前 MySQL-only 运行主链，保留仅用于历史参考。
 """
 from __future__ import annotations
+
+LEGACY_SCRIPT_MESSAGE = (
+    "Deprecated legacy script: scripts/build_vector_store.py 依赖旧 financial_data/macro_indicator 链路，"
+    "当前主链已切换到 MySQL-only 结构化模型。该脚本仅保留作历史参考。"
+)
+
+if __name__ == "__main__":
+    raise SystemExit(LEGACY_SCRIPT_MESSAGE)
 
 import sys
 from pathlib import Path
@@ -95,7 +105,4 @@ def import_macro_to_vector() -> None:
 
 
 if __name__ == "__main__":
-    migrate_tfidf_to_vector()
-    import_financial_to_vector()
-    import_macro_to_vector()
-    print("\n全部完成！")
+    raise SystemExit(LEGACY_SCRIPT_MESSAGE)

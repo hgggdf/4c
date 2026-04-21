@@ -1,8 +1,19 @@
-"""
-股票数据导入脚本
-从 AKShare 批量导入股票历史数据到 MySQL
+"""已废弃的旧脚本。
+
+该脚本属于历史导入链，依赖旧仓储适配器与旧表命名
+（如 stock_daily、company_dataset），不再兼容当前 MySQL-only
+运行主链，保留仅用于历史参考。
 """
 from __future__ import annotations
+
+LEGACY_SCRIPT_MESSAGE = (
+    "Deprecated legacy script: scripts/import_stock_data.py 依赖旧仓储/旧表链路，"
+    "当前运行主链已切换到 MySQL-only + *_hot/*_archive 结构化模型。"
+    "该脚本仅保留作历史参考，不再作为当前导入入口。"
+)
+
+if __name__ == "__main__":
+    raise SystemExit(LEGACY_SCRIPT_MESSAGE)
 
 import sys
 from pathlib import Path
@@ -123,33 +134,4 @@ def check_data_status() -> None:
 
 
 if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser(description="股票数据导入工具")
-    parser.add_argument("--stock", type=str, help="导入指定股票代码")
-    parser.add_argument("--days", type=int, default=365, help="导入天数（默认365天）")
-    parser.add_argument("--all", action="store_true", help="导入所有默认股票")
-    parser.add_argument("--company", type=str, help="采集指定公司多源数据")
-    parser.add_argument("--pharma-all", action="store_true", help="采集 20 家医药公司全部多源数据")
-    parser.add_argument("--status", action="store_true", help="查看数据状态")
-
-    args = parser.parse_args()
-
-    if args.status:
-        check_data_status()
-    elif args.company:
-        import_company_dataset(args.company, args.days)
-    elif args.pharma_all:
-        import_all_pharma_companies(args.days)
-    elif args.stock:
-        import_stock_history(args.stock, args.days)
-    elif args.all:
-        import_all_stocks(args.days)
-    else:
-        print("请指定操作: --stock <代码> | --all | --company <代码> | --pharma-all | --status")
-        print("示例:")
-        print("  python import_stock_data.py --stock 600519 --days 180")
-        print("  python import_stock_data.py --all")
-        print("  python import_stock_data.py --company 600276 --days 180")
-        print("  python import_stock_data.py --pharma-all --days 180")
-        print("  python import_stock_data.py --status")
+    raise SystemExit(LEGACY_SCRIPT_MESSAGE)

@@ -1,8 +1,17 @@
-"""
-宏观经济数据采集脚本
-采集医疗保健类CPI数据
+"""已废弃的旧脚本。
+
+该脚本依赖旧的 macro_indicator 表/仓储命名，
+不再兼容当前 MySQL-only 结构化模型主链，保留仅用于历史参考。
 """
 from __future__ import annotations
+
+LEGACY_SCRIPT_MESSAGE = (
+    "Deprecated legacy script: scripts/import_macro_data.py 依赖旧 macro_indicator 链路，"
+    "当前主链已切换到结构化热表/归档表模型。该脚本仅保留作历史参考。"
+)
+
+if __name__ == "__main__":
+    raise SystemExit(LEGACY_SCRIPT_MESSAGE)
 
 import sys
 from pathlib import Path
@@ -125,4 +134,4 @@ def import_macro_data() -> None:
 
 
 if __name__ == "__main__":
-    import_macro_data()
+    raise SystemExit(LEGACY_SCRIPT_MESSAGE)
