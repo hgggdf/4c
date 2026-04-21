@@ -6,7 +6,7 @@ from datetime import date, datetime
 from sqlalchemy import JSON, Date, DateTime, DECIMAL, ForeignKey, Index, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship, synonym
 
-from core.database.base import Base, BIGINT_FK, BIGINT_PK
+from core.core.database.base import Base, BIGINT_FK, BIGINT_PK
 
 
 class NewsRawHot(Base):

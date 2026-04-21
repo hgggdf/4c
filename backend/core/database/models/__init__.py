@@ -4,9 +4,7 @@ import sys as _sys
 
 _pkg_dir = _Path(__file__).resolve().parent
 _inner_dir = _pkg_dir.parent.parent / "core" / "database" / "models"
-__path__ = [str(_pkg_dir)]
-if _inner_dir.exists():
-    __path__.append(str(_inner_dir))
+__path__ = [str(_inner_dir)] if _inner_dir.exists() else [str(_pkg_dir)]
 
 _inner_pkg = "core.core.database.models"
 _inner = _importlib.import_module(_inner_pkg)

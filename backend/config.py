@@ -4,6 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy.engine import make_url
 
 
 class Settings(BaseSettings):
@@ -44,9 +45,11 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
-        """优先使用显式覆盖项，否则按 MySQL 配置动态拼接连接串。"""
+        """返回运行主链使用的 MySQL 连接串。"""
         if self.database_url_override.strip():
-            return self.database_url_override.strip()
+            database_url = self.database_url_override.strip()
+            self._ensure_mysql_url(database_url, source="DATABASE_URL_OVERRIDE")
+            return database_url
         return (
             f"mysql+pymysql://{self.mysql_user}:{self.mysql_password}"
             f"@{self.mysql_host}:{self.mysql_port}/{self.mysql_database}?charset=utf8mb4"
@@ -54,10 +57,23 @@ class Settings(BaseSettings):
 
     @property
     def sqlite_database_url(self) -> str:
-        """构造 SQLite 兜底数据库连接串，并确保本地目录存在。"""
+        """保留给测试或手工迁移使用，不会在运行主链自动启用。"""
         database_path = Path(__file__).parent / self.local_database_path
         database_path.parent.mkdir(parents=True, exist_ok=True)
         return f"sqlite:///{database_path.resolve().as_posix()}"
+
+    def _ensure_mysql_url(self, database_url: str, *, source: str) -> None:
+        """确保显式覆盖项仍然指向 MySQL，而不是 SQLite 等其他方言。"""
+        try:
+            backend_name = make_url(database_url).get_backend_name()
+        except Exception as exc:  # noqa: BLE001
+            raise ValueError(
+                f"{source} 配置无效。当前运行模式只支持 MySQL。"
+            ) from exc
+        if backend_name != "mysql":
+            raise ValueError(
+                f"{source} 必须是 MySQL 连接串。当前运行模式只支持 MySQL。"
+            )
 
 
 @lru_cache

@@ -1,6 +1,6 @@
 """股票行情、自选股和公司资料相关接口。"""
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from core.database.session import get_db
@@ -12,9 +12,15 @@ stock_service = StockService()
 
 
 @router.get("/quote", response_model=QuoteResponse)
-def get_quote(symbol: str = Query(..., description="股票代码")):
+def get_quote(
+    symbol: str = Query(..., description="股票代码或公司名称"),
+    db: Session = Depends(get_db),
+):
     """返回指定股票的最新行情快照。"""
-    return stock_service.get_quote(symbol)
+    try:
+        return stock_service.get_quote(db, symbol)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.get("/kline", response_model=list[KlinePoint])
@@ -24,7 +30,10 @@ def get_kline(
     db: Session = Depends(get_db),
 ):
     """返回指定股票近 N 日 K 线数据，必要时会触发拉取与缓存。"""
-    return stock_service.get_kline(db, symbol, days)
+    try:
+        return stock_service.get_kline(db, symbol, days)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.get("/watchlist", response_model=list[WatchItem])
@@ -39,7 +48,10 @@ def get_watchlist(
 @router.post("/watchlist", response_model=WatchItem)
 def add_watchlist(payload: WatchlistCreate, db: Session = Depends(get_db)):
     """向用户自选股列表中新增一只股票。"""
-    return stock_service.add_watchlist(db, payload.user_id, payload.symbol, payload.name)
+    try:
+        return stock_service.add_watchlist(db, payload.user_id, payload.symbol, payload.name)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.delete("/watchlist")
@@ -66,7 +78,10 @@ def get_company_dataset(
     db: Session = Depends(get_db),
 ):
     """返回单家公司聚合后的多源资料，可选择强制刷新或压缩返回。"""
-    return stock_service.get_company_dataset(db, symbol, refresh=refresh, compact=compact)
+    try:
+        return stock_service.get_company_dataset(db, symbol, refresh=refresh, compact=compact)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.post("/company/refresh")

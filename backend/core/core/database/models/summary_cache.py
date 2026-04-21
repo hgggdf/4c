@@ -6,7 +6,7 @@ from datetime import datetime
 from sqlalchemy import JSON, DateTime, DECIMAL, ForeignKey, Index, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.database.base import Base, BIGINT_FK, BIGINT_PK
+from core.core.database.base import Base, BIGINT_FK, BIGINT_PK
 
 
 class StockDailySummaryYearly(Base):
@@ -140,7 +140,7 @@ class QueryResultCache(Base):
     )
 
     id: Mapped[int] = mapped_column(BIGINT_PK, primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(BIGINT_FK, ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     cache_key: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
     query_text: Mapped[str | None] = mapped_column(String(2000), nullable=True)
     result_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
@@ -171,7 +171,7 @@ class SessionContextCache(Base):
     __table_args__ = (Index("idx_session_context_cache_user", "user_id"),)
 
     session_id: Mapped[int] = mapped_column(BIGINT_FK, ForeignKey("chat_session.id"), primary_key=True)
-    user_id: Mapped[int] = mapped_column(BIGINT_FK, ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     context_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, nullable=False)
     expire_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
@@ -189,7 +189,7 @@ class ReportPreviewCache(Base):
     )
 
     id: Mapped[int] = mapped_column(BIGINT_PK, primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(BIGINT_FK, ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     stock_code: Mapped[str] = mapped_column(String(16), ForeignKey("company_master.stock_code"), nullable=False)
     report_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     report_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)

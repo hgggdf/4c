@@ -6,7 +6,7 @@ from datetime import datetime
 from sqlalchemy import DateTime, DECIMAL, Index, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.database.base import Base, BIGINT_PK
+from core.core.database.base import Base, BIGINT_PK
 
 
 class MacroIndicatorHot(Base):

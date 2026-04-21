@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import JSON, DateTime, ForeignKey, Index, SmallInteger, String, Text, UniqueConstraint, func
+from sqlalchemy import JSON, DateTime, ForeignKey, Index, Integer, SmallInteger, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.database.base import Base, BIGINT_FK, BIGINT_PK
+from core.core.database.base import Base, BIGINT_FK, BIGINT_PK
 
 
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(BIGINT_PK, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[str] = mapped_column(String(16), default="user", nullable=False)
@@ -31,7 +31,7 @@ class ChatSession(Base):
     __table_args__ = (Index("idx_chat_session_user_updated", "user_id", "updated_at"),)
 
     id: Mapped[int] = mapped_column(BIGINT_PK, primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(BIGINT_FK, ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     session_title: Mapped[str | None] = mapped_column(String(128), nullable=True)
     current_stock_code: Mapped[str | None] = mapped_column(ForeignKey("company_master.stock_code"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
@@ -68,7 +68,7 @@ class Watchlist(Base):
     __table_args__ = (UniqueConstraint("user_id", "stock_code", name="uk_watchlist_user_stock"),)
 
     id: Mapped[int] = mapped_column(BIGINT_PK, primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(BIGINT_FK, ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     stock_code: Mapped[str] = mapped_column(ForeignKey("company_master.stock_code"), nullable=False)
     remark: Mapped[str | None] = mapped_column(String(255), nullable=True)
     tags_json: Mapped[dict | list | None] = mapped_column(JSON, nullable=True)

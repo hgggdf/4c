@@ -9,5 +9,5 @@ if _inner_dir.exists():
     __path__.append(str(_inner_dir))
 
 _inner_pkg = "core.core.database"
-for _submodule in ["base", "session", "init_db", "models"]:
+for _submodule in ["base", "session", "init_db"]:
     _sys.modules[f"{__name__}.{_submodule}"] = _importlib.import_module(f"{_inner_pkg}.{_submodule}")

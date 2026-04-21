@@ -1,6 +1,6 @@
 """财务诊断与风险分析相关接口，向前端暴露诊断、风险、对比和趋势查询能力。"""
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
@@ -41,9 +41,11 @@ def diagnose_company(
     db: Session = Depends(get_db),
 ):
     """返回单家公司指定年份的财务诊断结果。"""
-    result = analysis_service.diagnose(db, symbol, year)
+    try:
+        result = analysis_service.diagnose(db, symbol, year)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     if result is None:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail=f"未找到 {symbol} 的财务数据")
 
     return DiagnoseOut(
@@ -101,4 +103,7 @@ def get_metric_trend(
     db: Session = Depends(get_db),
 ):
     """返回单家公司某项财务指标的历年趋势。"""
-    return analysis_service.get_metric_trend(db, symbol, metric)
+    try:
+        return analysis_service.get_metric_trend(db, symbol, metric)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc

@@ -6,7 +6,7 @@ from datetime import date, datetime
 from sqlalchemy import JSON, DateTime, Date, DECIMAL, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, synonym
 
-from core.database.base import Base, BIGINT_FK, BIGINT_PK
+from core.core.database.base import Base, BIGINT_FK, BIGINT_PK
 
 
 class IncomeStatementArchive(Base):
