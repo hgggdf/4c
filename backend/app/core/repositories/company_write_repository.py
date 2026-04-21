@@ -21,6 +21,15 @@ class CompanyWriteRepository(BaseRepository):
         values = {k: v for k, v in item.items() if k not in unique and k != "id"}
         return self.upsert(CompanyProfile, unique_fields=unique, values=values)
 
+    def delete_company_profile(self, stock_code: str) -> list[int]:
+        rows = self.list_by(CompanyProfile, stock_code=stock_code)
+        deleted_ids = [row.id for row in rows]
+        for row in rows:
+            self.delete(row, flush=False)
+        if deleted_ids:
+            self.db.flush()
+        return deleted_ids
+
     def batch_upsert_industries(self, items: list[dict]) -> tuple[list[IndustryMaster], int, int]:
         return self.bulk_upsert(IndustryMaster, items=items, unique_keys=["industry_code"])
 
@@ -33,3 +42,12 @@ class CompanyWriteRepository(BaseRepository):
         unique = {"user_id": item["user_id"], "stock_code": item["stock_code"]}
         values = {k: v for k, v in item.items() if k not in unique and k != "id"}
         return self.upsert(Watchlist, unique_fields=unique, values=values)
+
+    def delete_watchlist(self, user_id: int, stock_code: str) -> list[int]:
+        rows = self.list_by(Watchlist, user_id=user_id, stock_code=stock_code)
+        deleted_ids = [row.id for row in rows]
+        for row in rows:
+            self.delete(row, flush=False)
+        if deleted_ids:
+            self.db.flush()
+        return deleted_ids

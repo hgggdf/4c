@@ -16,4 +16,9 @@ def batch_upsert_macro_indicators(payload: BatchItemsModel, container: ServiceCo
 	return service_result_response(container.macro_write.batch_upsert_macro_indicators(build_request(BatchItemsRequest, payload)))
 
 
+@router.post("/delete-macro-indicators")
+def batch_delete_macro_indicators(payload: BatchItemsModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.macro_write.batch_delete_macro_indicators(build_request(BatchItemsRequest, payload)))
+
+
 __all__ = ["router"]

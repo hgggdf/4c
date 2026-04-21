@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends
 from app.router.dependencies import get_container
 from app.router.schemas.company import (
 	BatchUpsertIndustriesModel,
+	DeleteCompanyProfileModel,
+	DeleteWatchlistModel,
 	ReplaceCompanyIndustriesModel,
 	UpsertCompanyMasterModel,
 	UpsertCompanyProfileModel,
@@ -15,6 +17,8 @@ from app.router.utils import build_request, service_result_response
 from app.service import ServiceContainer
 from app.service.write_requests import (
 	BatchUpsertIndustriesRequest,
+	DeleteCompanyProfileRequest,
+	DeleteWatchlistRequest,
 	ReplaceCompanyIndustriesRequest,
 	UpsertCompanyMasterRequest,
 	UpsertCompanyProfileRequest,
@@ -39,6 +43,11 @@ def upsert_company_profile(payload: UpsertCompanyProfileModel, container: Servic
 	return service_result_response(container.company_write.upsert_company_profile(build_request(UpsertCompanyProfileRequest, payload)))
 
 
+@router.post("/delete-profile")
+def delete_company_profile(payload: DeleteCompanyProfileModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.company_write.delete_company_profile(build_request(DeleteCompanyProfileRequest, payload)))
+
+
 @router.post("/batch-upsert-industries")
 def batch_upsert_industries(payload: BatchUpsertIndustriesModel, container: ServiceContainer = Depends(get_container)):
 	return service_result_response(container.company_write.batch_upsert_industries(build_request(BatchUpsertIndustriesRequest, payload)))
@@ -52,6 +61,11 @@ def replace_company_industries(payload: ReplaceCompanyIndustriesModel, container
 @router.post("/upsert-watchlist")
 def upsert_watchlist(payload: UpsertWatchlistModel, container: ServiceContainer = Depends(get_container)):
 	return service_result_response(container.company_write.upsert_watchlist(build_request(UpsertWatchlistRequest, payload)))
+
+
+@router.post("/delete-watchlist")
+def delete_watchlist(payload: DeleteWatchlistModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.company_write.delete_watchlist(build_request(DeleteWatchlistRequest, payload)))
 
 
 __all__ = ["router"]

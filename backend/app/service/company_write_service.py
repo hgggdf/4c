@@ -9,6 +9,8 @@ from .guards import require_positive_int, require_stock_code
 from .serializers import model_to_dict
 from .write_requests import (
     BatchUpsertIndustriesRequest,
+    DeleteCompanyProfileRequest,
+    DeleteWatchlistRequest,
     ReplaceCompanyIndustriesRequest,
     UpsertCompanyMasterRequest,
     UpsertCompanyProfileRequest,
@@ -26,6 +28,9 @@ class CompanyWriteService(BaseService):
     def upsert_company_profile(self, req: UpsertCompanyProfileRequest):
         return self._run(lambda: self._with_db(lambda db: self._upsert_company_profile(db, req)), trace_id=req.trace_id)
 
+    def delete_company_profile(self, req: DeleteCompanyProfileRequest):
+        return self._run(lambda: self._with_db(lambda db: self._delete_company_profile(db, req)), trace_id=req.trace_id)
+
     def batch_upsert_industries(self, req: BatchUpsertIndustriesRequest):
         return self._run(lambda: self._with_db(lambda db: self._batch_upsert_industries(db, req)), trace_id=req.trace_id)
 
@@ -34,6 +39,9 @@ class CompanyWriteService(BaseService):
 
     def upsert_watchlist(self, req: UpsertWatchlistRequest):
         return self._run(lambda: self._with_db(lambda db: self._upsert_watchlist(db, req)), trace_id=req.trace_id)
+
+    def delete_watchlist(self, req: DeleteWatchlistRequest):
+        return self._run(lambda: self._with_db(lambda db: self._delete_watchlist(db, req)), trace_id=req.trace_id)
 
     def _upsert_company_master(self, db, req: UpsertCompanyMasterRequest) -> dict:
         stock_code = require_stock_code(req.stock_code)
@@ -104,6 +112,23 @@ class CompanyWriteService(BaseService):
         except Exception:
             return "skipped"
 
+    def _delete_company_profile(self, db, req: DeleteCompanyProfileRequest) -> dict:
+        stock_code = require_stock_code(req.stock_code)
+        deleted_ids = CompanyWriteRepository(db).delete_company_profile(stock_code)
+        result = {
+            "stock_code": stock_code,
+            "deleted_count": len(deleted_ids),
+            "total": len(deleted_ids),
+            "ids": deleted_ids,
+        }
+        if req.sync_vector_index:
+            result["deleted_chunks"] = self.ctx.vector_store.delete_by_source(
+                doc_type="company_profile",
+                source_table="company_profile",
+                source_pks=deleted_ids,
+            ) if deleted_ids else 0
+        return result
+
     def _batch_upsert_industries(self, db, req: BatchUpsertIndustriesRequest) -> dict:
         if not req.items:
             raise ValueError("items is required")
@@ -146,3 +171,15 @@ class CompanyWriteService(BaseService):
         result = model_to_dict(entity, ["id", "user_id", "stock_code", "remark", "tags_json", "alert_enabled", "created_at"])
         result["created"] = created
         return result
+
+    def _delete_watchlist(self, db, req: DeleteWatchlistRequest) -> dict:
+        user_id = require_positive_int(req.user_id, "user_id")
+        stock_code = require_stock_code(req.stock_code)
+        deleted_ids = CompanyWriteRepository(db).delete_watchlist(user_id, stock_code)
+        return {
+            "user_id": user_id,
+            "stock_code": stock_code,
+            "deleted_count": len(deleted_ids),
+            "total": len(deleted_ids),
+            "ids": deleted_ids,
+        }

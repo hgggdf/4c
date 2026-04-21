@@ -37,6 +37,11 @@ class UpsertCompanyProfileModel(BaseRequestModel):
 	sync_vector_index: bool = False
 
 
+class DeleteCompanyProfileModel(BaseRequestModel):
+	stock_code: str
+	sync_vector_index: bool = False
+
+
 class BatchUpsertIndustriesModel(BaseRequestModel):
 	items: list[dict] = Field(default_factory=list)
 
@@ -54,11 +59,18 @@ class UpsertWatchlistModel(BaseRequestModel):
 	alert_enabled: int = 1
 
 
+class DeleteWatchlistModel(BaseRequestModel):
+	user_id: int
+	stock_code: str
+
+
 __all__ = [
 	"TextResolveModel",
 	"UpsertCompanyMasterModel",
 	"UpsertCompanyProfileModel",
+	"DeleteCompanyProfileModel",
 	"BatchUpsertIndustriesModel",
 	"ReplaceCompanyIndustriesModel",
 	"UpsertWatchlistModel",
+	"DeleteWatchlistModel",
 ]

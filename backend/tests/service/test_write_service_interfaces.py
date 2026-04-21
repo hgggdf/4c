@@ -16,6 +16,8 @@ from app.service.write_requests import (
     BatchItemsRequest,
     BatchUpsertFinancialRequest,
     BatchUpsertIndustriesRequest,
+    DeleteCompanyProfileRequest,
+    DeleteWatchlistRequest,
     IngestAnnouncementPackageRequest,
     IngestCompanyPackageRequest,
     IngestFinancialPackageRequest,
@@ -35,11 +37,11 @@ from app.service.write_requests import (
 
 
 EXPECTED_PUBLIC_METHODS = {
-    CompanyWriteService: {"upsert_company_master", "batch_upsert_company_master", "upsert_company_profile", "batch_upsert_industries", "replace_company_industries", "upsert_watchlist"},
-    FinancialWriteService: {"batch_upsert_income_statements", "batch_upsert_balance_sheets", "batch_upsert_cashflow_statements", "batch_upsert_financial_metrics", "batch_upsert_financial_notes", "batch_upsert_business_segments", "batch_upsert_stock_daily"},
-    AnnouncementWriteService: {"batch_upsert_raw_announcements", "batch_upsert_structured_announcements", "batch_upsert_drug_approvals", "batch_upsert_clinical_trials", "batch_upsert_procurement_events", "batch_upsert_regulatory_risks"},
-    MacroWriteService: {"batch_upsert_macro_indicators"},
-    NewsWriteService: {"batch_upsert_news_raw", "batch_upsert_news_structured", "replace_news_industry_map", "replace_news_company_map", "batch_upsert_industry_impact_events"},
+    CompanyWriteService: {"upsert_company_master", "batch_upsert_company_master", "upsert_company_profile", "delete_company_profile", "batch_upsert_industries", "replace_company_industries", "upsert_watchlist", "delete_watchlist"},
+    FinancialWriteService: {"batch_upsert_income_statements", "batch_delete_income_statements", "batch_upsert_balance_sheets", "batch_delete_balance_sheets", "batch_upsert_cashflow_statements", "batch_delete_cashflow_statements", "batch_upsert_financial_metrics", "batch_delete_financial_metrics", "batch_upsert_financial_notes", "batch_delete_financial_notes", "batch_upsert_business_segments", "batch_delete_business_segments", "batch_upsert_stock_daily", "batch_delete_stock_daily"},
+    AnnouncementWriteService: {"batch_upsert_raw_announcements", "batch_delete_raw_announcements", "batch_upsert_structured_announcements", "batch_delete_structured_announcements", "batch_upsert_drug_approvals", "batch_delete_drug_approvals", "batch_upsert_clinical_trials", "batch_delete_clinical_trials", "batch_upsert_procurement_events", "batch_delete_procurement_events", "batch_upsert_regulatory_risks", "batch_delete_regulatory_risks"},
+    MacroWriteService: {"batch_upsert_macro_indicators", "batch_delete_macro_indicators"},
+    NewsWriteService: {"batch_upsert_news_raw", "batch_delete_news_raw", "batch_upsert_news_structured", "batch_delete_news_structured", "replace_news_industry_map", "replace_news_company_map", "batch_upsert_industry_impact_events", "batch_delete_industry_impact_events"},
     MaintenanceService: {"archive_hot_data", "rebuild_financial_metric_summary_yearly", "rebuild_announcement_summary_monthly", "rebuild_drug_pipeline_summary_yearly", "rebuild_industry_news_summary_monthly", "invalidate_stock_related_caches"},
     IngestGatewayService: {"ingest_company_package", "ingest_financial_package", "ingest_announcement_package", "ingest_news_package"},
 }
@@ -53,6 +55,7 @@ def test_write_service_public_methods_complete():
 
 def test_company_write_service_all_methods(services, monkeypatch):
     company_write = services["company_write"]
+    monkeypatch.setattr(company_write.ctx.vector_store, "delete_by_source", lambda **kwargs: len(kwargs["source_pks"]))
 
     master = company_write.upsert_company_master(
         UpsertCompanyMasterRequest(
@@ -102,11 +105,18 @@ def test_company_write_service_all_methods(services, monkeypatch):
     watch = company_write.upsert_watchlist(UpsertWatchlistRequest(user_id=1, stock_code="600001", remark="重点跟踪", tags_json=["新股", "创新药"], alert_enabled=1))
     assert watch.success is True and watch.data["stock_code"] == "600001"
 
+    deleted_profile = company_write.delete_company_profile(DeleteCompanyProfileRequest(stock_code="600001", sync_vector_index=True))
+    assert deleted_profile.success is True and deleted_profile.data["deleted_count"] == 1 and deleted_profile.data["deleted_chunks"] == 1
+
+    deleted_watch = company_write.delete_watchlist(DeleteWatchlistRequest(user_id=1, stock_code="600001"))
+    assert deleted_watch.success is True and deleted_watch.data["deleted_count"] == 1
+
 
 def test_financial_write_service_all_methods(services, monkeypatch):
     financial_write = services["financial_write"]
     import app.knowledge.sync as kg_sync
     monkeypatch.setattr(kg_sync, "sync_financial_notes_by_ids", lambda db, source_ids, is_hot=True: len(source_ids))
+    monkeypatch.setattr(financial_write.ctx.vector_store, "delete_by_source", lambda **kwargs: len(kwargs["source_pks"]))
 
     assert financial_write.batch_upsert_income_statements(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "fiscal_year": 2026, "report_type": "q1", "revenue": 100, "net_profit": 10, "source_type": "manual"}])).success is True
     assert financial_write.batch_upsert_balance_sheets(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "fiscal_year": 2026, "report_type": "q1", "total_assets": 500, "total_liabilities": 100, "source_type": "manual"}])).success is True
@@ -117,11 +127,21 @@ def test_financial_write_service_all_methods(services, monkeypatch):
     assert financial_write.batch_upsert_business_segments(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "segment_name": "创新药", "segment_type": "drug", "revenue": 80, "revenue_ratio": 0.8, "gross_margin": 0.7, "source_type": "manual"}])).success is True
     assert financial_write.batch_upsert_stock_daily(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "trade_date": date(2026, 4, 21), "open_price": 10.1, "close_price": 10.5, "high_price": 10.6, "low_price": 10.0, "volume": 1000, "turnover": 10500, "source_type": "manual"}])).success is True
 
+    assert financial_write.batch_delete_income_statements(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "report_type": "q1"}])).success is True
+    assert financial_write.batch_delete_balance_sheets(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "report_type": "q1"}])).success is True
+    assert financial_write.batch_delete_cashflow_statements(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "report_type": "q1"}])).success is True
+    assert financial_write.batch_delete_financial_metrics(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "metric_name": "gross_margin"}])).success is True
+    deleted_notes = financial_write.batch_delete_financial_notes(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "note_type": "rd_pipeline"}], sync_vector_index=True))
+    assert deleted_notes.success is True and deleted_notes.data["deleted_count"] == 1 and deleted_notes.data["deleted_chunks"] == 1
+    assert financial_write.batch_delete_business_segments(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "segment_name": "创新药", "segment_type": "drug"}])).success is True
+    assert financial_write.batch_delete_stock_daily(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "trade_date": date(2026, 4, 21)}])).success is True
+
 
 def test_announcement_write_service_all_methods(services, monkeypatch):
     announcement_write = services["announcement_write"]
     import app.knowledge.sync as kg_sync
     monkeypatch.setattr(kg_sync, "sync_announcements_by_ids", lambda db, source_ids, is_hot=True: len(source_ids))
+    monkeypatch.setattr(announcement_write.ctx.vector_store, "delete_by_source", lambda **kwargs: len(kwargs["source_pks"]))
 
     raw = announcement_write.batch_upsert_raw_announcements(BatchItemsRequest(items=[{"stock_code": "600001", "title": "测试公告", "publish_date": date(2026, 4, 21), "announcement_type": "clinical_trial", "exchange": "SSE", "content": "公告正文", "source_type": "manual", "source_url": "https://example.com/ann-600001"}], sync_vector_index=True))
     assert raw.success is True and raw.data["sync_status"] in {"synced", "skipped"}
@@ -133,14 +153,26 @@ def test_announcement_write_service_all_methods(services, monkeypatch):
     assert announcement_write.batch_upsert_procurement_events(BatchItemsRequest(items=[{"stock_code": "600001", "drug_name": "药物Y", "procurement_round": "第九批", "bid_result": "中标", "event_date": date(2026, 4, 21), "source_announcement_id": ann_id}])).success is True
     assert announcement_write.batch_upsert_regulatory_risks(BatchItemsRequest(items=[{"stock_code": "600001", "risk_type": "合规", "event_date": date(2026, 4, 21), "risk_level": "medium", "source_announcement_id": ann_id}])).success is True
 
+    assert announcement_write.batch_delete_structured_announcements(BatchItemsRequest(items=[{"announcement_id": ann_id, "category": "clinical_trial"}])).success is True
+    assert announcement_write.batch_delete_drug_approvals(BatchItemsRequest(items=[{"stock_code": "600001", "drug_name": "药物X", "approval_date": date(2026, 4, 21), "approval_type": "IND"}])).success is True
+    assert announcement_write.batch_delete_clinical_trials(BatchItemsRequest(items=[{"stock_code": "600001", "drug_name": "药物X", "trial_phase": "II期", "event_date": date(2026, 4, 21), "event_type": "启动"}])).success is True
+    assert announcement_write.batch_delete_procurement_events(BatchItemsRequest(items=[{"stock_code": "600001", "drug_name": "药物Y", "procurement_round": "第九批", "event_date": date(2026, 4, 21)}])).success is True
+    assert announcement_write.batch_delete_regulatory_risks(BatchItemsRequest(items=[{"stock_code": "600001", "risk_type": "合规", "event_date": date(2026, 4, 21)}])).success is True
+    deleted_raw = announcement_write.batch_delete_raw_announcements(BatchItemsRequest(items=[{"stock_code": "600001", "title": "测试公告", "publish_date": date(2026, 4, 21)}], sync_vector_index=True))
+    assert deleted_raw.success is True and deleted_raw.data["deleted_count"] == 1 and deleted_raw.data["deleted_chunks"] == 1
+
 
 def test_macro_news_write_service_all_methods(services, monkeypatch):
     macro_write = services["macro_write"]
     news_write = services["news_write"]
     import app.knowledge.sync as kg_sync
     monkeypatch.setattr(kg_sync, "sync_news_by_ids", lambda db, source_ids, is_hot=True: len(source_ids))
+    monkeypatch.setattr(news_write.ctx.vector_store, "delete_by_source", lambda **kwargs: len(kwargs["source_pks"]))
 
     assert macro_write.batch_upsert_macro_indicators(BatchItemsRequest(items=[{"indicator_name": "创新药景气度", "period": "2026-04", "value": 5.6, "unit": "%", "source_type": "manual"}])).success is True
+    deleted_macro = macro_write.batch_delete_macro_indicators(BatchItemsRequest(items=[{"indicator_name": "创新药景气度", "period": "2026-04"}]))
+    assert deleted_macro.success is True and deleted_macro.data["deleted_count"] == 1
+
     raw = news_write.batch_upsert_news_raw(BatchItemsRequest(items=[{"news_uid": "news-600001", "title": "测试新闻", "publish_time": datetime.now(timezone.utc), "source_name": "测试源", "source_url": "https://example.com/news-600001", "content": "新闻正文", "news_type": "company_news", "language": "zh", "file_hash": "hash-600001"}], sync_vector_index=True))
     assert raw.success is True and raw.data["sync_status"] in {"synced", "skipped"}
     news_id = raw.data["ids"][0]
@@ -148,6 +180,11 @@ def test_macro_news_write_service_all_methods(services, monkeypatch):
     assert news_write.replace_news_industry_map(ReplaceNewsIndustryMapRequest(news_id=news_id, items=[{"industry_code": "IND001", "impact_direction": "positive", "impact_strength": 0.8, "reason_text": "利好创新药"}])).success is True
     assert news_write.replace_news_company_map(ReplaceNewsCompanyMapRequest(news_id=news_id, items=[{"stock_code": "600001", "impact_direction": "positive", "impact_strength": 0.7, "reason_text": "公司受益"}])).success is True
     assert news_write.batch_upsert_industry_impact_events(BatchItemsRequest(items=[{"industry_code": "IND001", "source_news_id": news_id, "event_name": "news_event", "impact_direction": "positive", "impact_level": "medium", "impact_horizon": "short", "summary_text": "行业影响", "event_date": date(2026, 4, 21)}])).success is True
+
+    assert news_write.batch_delete_news_structured(BatchItemsRequest(items=[{"news_id": news_id, "topic_category": "company"}])).success is True
+    assert news_write.batch_delete_industry_impact_events(BatchItemsRequest(items=[{"industry_code": "IND001", "source_news_id": news_id, "event_date": date(2026, 4, 21)}])).success is True
+    deleted_news = news_write.batch_delete_news_raw(BatchItemsRequest(items=[{"news_uid": "news-600001"}], sync_vector_index=True))
+    assert deleted_news.success is True and deleted_news.data["deleted_count"] == 1 and deleted_news.data["deleted_chunks"] == 1
 
 
 def test_maintenance_service_all_methods(services):

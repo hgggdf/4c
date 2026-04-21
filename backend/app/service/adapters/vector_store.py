@@ -38,6 +38,8 @@ class KnowledgeVectorStoreAdapter:
         filters: dict[str, Any] | None = None,
         doc_types: list[str] | None = None,
     ) -> list[dict]:
+        typed_retrieval = bool(filters or doc_types)
+
         try:
             from app.knowledge.store import get_store, get_vector_store
         except Exception:
@@ -54,6 +56,8 @@ class KnowledgeVectorStoreAdapter:
                     doc_types=doc_types,
                     filters=filters or None,
                 )
+            elif typed_retrieval:
+                hits = []
             else:
                 hits = get_store().search(
                     query,
@@ -62,15 +66,18 @@ class KnowledgeVectorStoreAdapter:
                     doc_types=doc_types,
                 )
         except Exception:
-            try:
-                hits = get_store().search(
-                    query,
-                    top_k=max(top_k * 3, top_k),
-                    filters=filters or None,
-                    doc_types=doc_types,
-                )
-            except Exception:
+            if typed_retrieval:
                 hits = []
+            else:
+                try:
+                    hits = get_store().search(
+                        query,
+                        top_k=max(top_k * 3, top_k),
+                        filters=filters or None,
+                        doc_types=doc_types,
+                    )
+                except Exception:
+                    hits = []
 
         if not filters and not doc_types:
             return hits[:top_k]

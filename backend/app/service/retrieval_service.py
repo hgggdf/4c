@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from sqlalchemy import select
+
 from .base import BaseService
 from .guards import require_non_empty, require_positive_int
 from .requests import RebuildEmbeddingsRequest, SearchRequest
-from .serializers import normalize_value
+from .serializers import model_to_dict, normalize_value
 
 
 class RetrievalService(BaseService):
@@ -26,6 +28,58 @@ class RetrievalService(BaseService):
         "news": "news_raw_hot",
         "company_profile": "company_profile",
     }
+
+    ANNOUNCEMENT_SOURCE_FIELDS = (
+        "id",
+        "stock_code",
+        "title",
+        "publish_date",
+        "announcement_type",
+        "exchange",
+        "content",
+        "source_url",
+        "source_type",
+        "file_hash",
+        "created_at",
+    )
+
+    FINANCIAL_NOTE_SOURCE_FIELDS = (
+        "id",
+        "stock_code",
+        "report_date",
+        "note_type",
+        "note_json",
+        "note_text",
+        "source_type",
+        "source_url",
+        "created_at",
+    )
+
+    NEWS_SOURCE_FIELDS = (
+        "id",
+        "news_uid",
+        "title",
+        "publish_time",
+        "source_name",
+        "source_url",
+        "author_name",
+        "content",
+        "news_type",
+        "language",
+        "file_hash",
+        "created_at",
+    )
+
+    COMPANY_PROFILE_SOURCE_FIELDS = (
+        "id",
+        "stock_code",
+        "business_summary",
+        "core_products_json",
+        "main_segments_json",
+        "market_position",
+        "management_summary",
+        "updated_at",
+    )
 
     def search_announcements(self, req: SearchRequest):
         return self._run(lambda: self._search(req, doc_type="announcement"), trace_id=req.trace_id)
@@ -123,13 +177,94 @@ class RetrievalService(BaseService):
             doc_types=doc_types,
         )
 
+        items = self._normalize_hits(hits)
+        hydrated_items = self._hydrate_items(items)
+
         return {
             "query": query,
             "resolved_stock_code": filters.get("stock_code"),
             "top_k": top_k,
             "doc_types": doc_types,
-            "items": self._normalize_hits(hits),
+            "items": hydrated_items,
         }
+
+    def _hydrate_items(self, items: list[dict]) -> list[dict]:
+        if not items:
+            return items
+
+        return self._with_db(lambda db: self._hydrate_items_with_db(db, items))
+
+    def _hydrate_items_with_db(self, db, items: list[dict]) -> list[dict]:
+        cache: dict[tuple[str, str], dict | None] = {}
+        hydrated_items: list[dict] = []
+
+        for item in items:
+            metadata = dict(item.get("metadata") or {})
+            doc_type = str(metadata.get("doc_type") or "")
+            source_pk = str(metadata.get("source_pk") or "")
+            key = (doc_type, source_pk)
+
+            source_record = None
+            if doc_type and source_pk:
+                if key not in cache:
+                    cache[key] = self._load_source_record(db, doc_type=doc_type, source_pk=source_pk)
+                source_record = cache[key]
+
+            hydrated_item = dict(item)
+            hydrated_item["metadata"] = metadata
+            hydrated_item["source_found"] = source_record is not None
+            hydrated_item["source_record"] = normalize_value(source_record)
+            hydrated_items.append(hydrated_item)
+
+        return hydrated_items
+
+    def _load_source_record(self, db, *, doc_type: str, source_pk: str) -> dict | None:
+        try:
+            source_id = int(source_pk)
+        except (TypeError, ValueError):
+            return None
+
+        if doc_type == "announcement":
+            from app.core.repositories.announcement_repository import AnnouncementRepository
+
+            entity = AnnouncementRepository(db).get_raw_by_id(source_id)
+            if not entity:
+                return None
+            return model_to_dict(entity, self.ANNOUNCEMENT_SOURCE_FIELDS)
+
+        if doc_type == "financial_note":
+            from app.core.repositories.financial_repository import FinancialRepository
+
+            entity = FinancialRepository(db).get_financial_note_by_id(source_id)
+            if not entity:
+                return None
+            return model_to_dict(entity, self.FINANCIAL_NOTE_SOURCE_FIELDS)
+
+        if doc_type == "news":
+            from app.core.repositories.news_repository import NewsRepository
+
+            entity = NewsRepository(db).get_news_raw_by_id(source_id)
+            if not entity:
+                return None
+            return model_to_dict(entity, self.NEWS_SOURCE_FIELDS)
+
+        if doc_type == "company_profile":
+            from app.core.database.models.company import CompanyMaster, CompanyProfile
+
+            row = db.execute(
+                select(CompanyProfile, CompanyMaster.stock_name)
+                .outerjoin(CompanyMaster, CompanyProfile.stock_code == CompanyMaster.stock_code)
+                .where(CompanyProfile.id == source_id)
+            ).first()
+            if not row:
+                return None
+
+            profile, stock_name = row
+            payload = model_to_dict(profile, self.COMPANY_PROFILE_SOURCE_FIELDS)
+            payload["stock_name"] = normalize_value(stock_name)
+            return payload
+
+        return None
 
     def _rebuild_document_embeddings(self, req: RebuildEmbeddingsRequest):
         doc_type = require_non_empty(req.doc_type, "doc_type")

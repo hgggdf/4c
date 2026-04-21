@@ -44,6 +44,12 @@ class UpsertCompanyProfileRequest(BaseRequest):
 
 
 @dataclass(slots=True)
+class DeleteCompanyProfileRequest(BaseRequest):
+    stock_code: str = ""
+    sync_vector_index: bool = False
+
+
+@dataclass(slots=True)
 class BatchUpsertIndustriesRequest(BaseRequest):
     items: list[dict] = field(default_factory=list)
 
@@ -61,6 +67,12 @@ class UpsertWatchlistRequest(BaseRequest):
     remark: str | None = None
     tags_json: list | dict | None = None
     alert_enabled: int = 1
+
+
+@dataclass(slots=True)
+class DeleteWatchlistRequest(BaseRequest):
+    user_id: int = 0
+    stock_code: str = ""
 
 
 @dataclass(slots=True)

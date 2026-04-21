@@ -18,11 +18,9 @@ _embedding_model = None
 _chroma_client = None
 _collection_cache: dict[str, Any] = {}
 
-COLLECTION_MAP = {
+ACTIVE_COLLECTIONS = {
     "announcement": "announcement_chunks",
     "financial_note": "financial_note_chunks",
-    "report": "report_chunks",
-    "policy": "policy_chunks",
     "news": "news_chunks",
     "company_profile": "company_profile_chunks",
 }
@@ -69,8 +67,8 @@ def _get_embedding_model():
     return _embedding_model
 
 
-def _get_collection_name(doc_type: str) -> str:
-    return COLLECTION_MAP.get(doc_type, "pharma_knowledge")
+def _get_collection_name(doc_type: str) -> str | None:
+    return ACTIVE_COLLECTIONS.get(doc_type)
 
 
 def _get_collection(collection_name: str):
@@ -81,6 +79,7 @@ def _get_collection(collection_name: str):
     if _chroma_client is None:
         import chromadb
 
+        CHROMA_PATH.mkdir(parents=True, exist_ok=True)
         _chroma_client = chromadb.PersistentClient(path=str(CHROMA_PATH))
 
     collection = _chroma_client.get_or_create_collection(
@@ -160,6 +159,8 @@ class VectorKnowledgeStore:
 
         try:
             collection_name = _get_collection_name(doc_type)
+            if not collection_name:
+                return 0
             collection = _get_collection(collection_name)
             embeddings = _embed(chunks)
         except Exception:
@@ -198,8 +199,12 @@ class VectorKnowledgeStore:
         top_k: int,
         filters: dict[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
+        collection_name = _get_collection_name(doc_type)
+        if not collection_name:
+            return []
+
         try:
-            collection = _get_collection(_get_collection_name(doc_type))
+            collection = _get_collection(collection_name)
             count = collection.count()
         except Exception:
             return []
@@ -252,7 +257,13 @@ class VectorKnowledgeStore:
         except Exception:
             return []
 
-        target_doc_types = doc_types or list(COLLECTION_MAP.keys())
+        target_doc_types = [
+            doc_type for doc_type in (doc_types or list(ACTIVE_COLLECTIONS.keys()))
+            if doc_type in ACTIVE_COLLECTIONS
+        ]
+        if not target_doc_types:
+            return []
+
         hot_hits: list[dict] = []
         cold_hits: list[dict] = []
 
@@ -290,11 +301,16 @@ class VectorKnowledgeStore:
     def count(self, doc_type: str | None = None) -> int:
         try:
             if doc_type:
-                return _get_collection(_get_collection_name(doc_type)).count()
+                collection_name = _get_collection_name(doc_type)
+                if not collection_name:
+                    return 0
+                return _get_collection(collection_name).count()
 
             total = 0
-            for dt in COLLECTION_MAP:
-                total += _get_collection(_get_collection_name(dt)).count()
+            for dt, collection_name in ACTIVE_COLLECTIONS.items():
+                if not collection_name:
+                    continue
+                total += _get_collection(collection_name).count()
             return total
         except Exception:
             return 0
@@ -306,8 +322,12 @@ class VectorKnowledgeStore:
         source_table: str,
         source_pks: list[str],
     ) -> int:
+        collection_name = _get_collection_name(doc_type)
+        if not collection_name:
+            return 0
+
         try:
-            collection = _get_collection(_get_collection_name(doc_type))
+            collection = _get_collection(collection_name)
         except Exception:
             return 0
 
