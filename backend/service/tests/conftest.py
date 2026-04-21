@@ -11,14 +11,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-for subdir in ("core", "service", "knowledge"):
-    path = PROJECT_ROOT / subdir
-    if str(path) not in sys.path:
-        sys.path.insert(0, str(path))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-import core.database.models  # noqa: F401
-from core.database.base import Base
-from core.database.models.announcement_hot import (
+import app.core.database.models  # noqa: F401
+from app.core.database.base import Base
+from app.core.database.models.announcement_hot import (
     AnnouncementRawHot,
     AnnouncementStructuredHot,
     CentralizedProcurementEventHot,
@@ -26,8 +24,8 @@ from core.database.models.announcement_hot import (
     DrugApprovalHot,
     RegulatoryRiskEventHot,
 )
-from core.database.models.company import CompanyIndustryMap, CompanyMaster, CompanyProfile, IndustryMaster
-from core.database.models.financial_hot import (
+from app.core.database.models.company import CompanyIndustryMap, CompanyMaster, CompanyProfile, IndustryMaster
+from app.core.database.models.financial_hot import (
     BalanceSheetHot,
     BusinessSegmentHot,
     CashflowStatementHot,
@@ -36,31 +34,31 @@ from core.database.models.financial_hot import (
     IncomeStatementHot,
     StockDailyHot,
 )
-from core.database.models.macro_hot import MacroIndicatorHot
-from core.database.models.news_hot import (
+from app.core.database.models.macro_hot import MacroIndicatorHot
+from app.core.database.models.news_hot import (
     IndustryImpactEventHot,
     NewsCompanyMapHot,
     NewsIndustryMapHot,
     NewsRawHot,
     NewsStructuredHot,
 )
-from core.database.models.user import User
-from service.announcement_service import AnnouncementService
-from service.announcement_write_service import AnnouncementWriteService
-from service.cache_service import CacheService
-from service.chat_service import ChatService
-from service.company_service import CompanyService
-from service.company_write_service import CompanyWriteService
-from service.context import ServiceContext
-from service.financial_service import FinancialService
-from service.financial_write_service import FinancialWriteService
-from service.ingest_gateway_service import IngestGatewayService
-from service.macro_service import MacroService
-from service.macro_write_service import MacroWriteService
-from service.maintenance_service import MaintenanceService
-from service.news_service import NewsService
-from service.news_write_service import NewsWriteService
-from service.retrieval_service import RetrievalService
+from app.core.database.models.user import User
+from app.service.announcement_service import AnnouncementService
+from app.service.announcement_write_service import AnnouncementWriteService
+from app.service.cache_service import CacheService
+from app.service.chat_service import ChatService
+from app.service.company_service import CompanyService
+from app.service.company_write_service import CompanyWriteService
+from app.service.context import ServiceContext
+from app.service.financial_service import FinancialService
+from app.service.financial_write_service import FinancialWriteService
+from app.service.ingest_gateway_service import IngestGatewayService
+from app.service.macro_service import MacroService
+from app.service.macro_write_service import MacroWriteService
+from app.service.maintenance_service import MaintenanceService
+from app.service.news_service import NewsService
+from app.service.news_write_service import NewsWriteService
+from app.service.retrieval_service import RetrievalService
 
 
 class FakeVectorStore:

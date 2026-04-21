@@ -1,10 +1,13 @@
+"""compat package: 旧 service.* 导入路径转发到 legacy/compat/service。"""
+
 from pathlib import Path as _Path
 
 _pkg_dir = _Path(__file__).resolve().parent
-_inner_dir = _pkg_dir / "service"
+_compat_dir = _pkg_dir.parent / "legacy" / "compat" / "service"
+
 __path__ = [str(_pkg_dir)]
-if _inner_dir.exists():
-    __path__.append(str(_inner_dir))
+if _compat_dir.exists():
+    __path__.append(str(_compat_dir))
 
 from .service import (
     AnnouncementService,

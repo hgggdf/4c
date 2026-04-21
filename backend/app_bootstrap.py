@@ -1,4 +1,6 @@
-"""应用启动与健康检查适配层。"""
+"""兼容旧导入路径 `app_bootstrap`。"""
+
+from app.bootstrap import *  # noqa: F401,F403"""应用启动与健康检查适配层。"""
 
 from __future__ import annotations
 

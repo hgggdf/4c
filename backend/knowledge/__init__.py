@@ -1,12 +1,17 @@
+"""compat package: 旧 knowledge.* 导入路径转发到 legacy/compat/knowledge。"""
+
 from pathlib import Path as _Path
 
 _pkg_dir = _Path(__file__).resolve().parent
-_inner_dir = _pkg_dir / "knowledge"
+_compat_dir = _pkg_dir.parent / "legacy" / "compat" / "knowledge"
+
 __path__ = [str(_pkg_dir)]
-if _inner_dir.exists():
-    __path__.append(str(_inner_dir))
+if _compat_dir.exists():
+    __path__.append(str(_compat_dir))
 
 try:
-    from .knowledge import *  # noqa: F401,F403
+    from . import retriever, store, sync  # noqa: F401
 except Exception:
     pass
+
+__all__ = ["retriever", "store", "sync"]

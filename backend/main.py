@@ -3,10 +3,10 @@
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from app_bootstrap import check_database_health, init_application_database
-from modules.chat.router import router as chat_router
-from modules.stock.router import router as stock_router
-from modules.analysis.router import router as analysis_router
+from app.bootstrap import check_database_health, init_application_database
+from app.router.analysis import router as analysis_router
+from app.router.chat import router as chat_router
+from app.router.stock import router as stock_router
 from config import get_settings
 
 settings = get_settings()

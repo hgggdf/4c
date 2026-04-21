@@ -1,20 +1,32 @@
-from .announcement_service import AnnouncementService
-from .announcement_write_service import AnnouncementWriteService
-from .cache_service import CacheService
-from .chat_service import ChatService
-from .company_service import CompanyService
-from .company_write_service import CompanyWriteService
-from .container import ServiceContainer
-from .context import ServiceContext, build_default_context
-from .financial_service import FinancialService
-from .financial_write_service import FinancialWriteService
-from .ingest_gateway_service import IngestGatewayService
-from .macro_service import MacroService
-from .macro_write_service import MacroWriteService
-from .maintenance_service import MaintenanceService
-from .news_service import NewsService
-from .news_write_service import NewsWriteService
-from .retrieval_service import RetrievalService
+from pathlib import Path as _Path
+
+_pkg_dir = _Path(__file__).resolve().parent
+_app_dir = _pkg_dir.parent.parent / "app" / "service"
+
+__path__ = [str(_pkg_dir)]
+if _app_dir.exists():
+    __path__.append(str(_app_dir))
+
+from app.service import (
+    AnnouncementService,
+    AnnouncementWriteService,
+    CacheService,
+    ChatService,
+    CompanyService,
+    CompanyWriteService,
+    FinancialService,
+    FinancialWriteService,
+    IngestGatewayService,
+    MacroService,
+    MacroWriteService,
+    MaintenanceService,
+    NewsService,
+    NewsWriteService,
+    RetrievalService,
+    ServiceContainer,
+    ServiceContext,
+    build_default_context,
+)
 
 __all__ = [
     "ServiceContext",

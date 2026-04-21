@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, timedelta, timezone
 
-from service import (
+from app.service import (
     AnnouncementWriteService,
     CompanyWriteService,
     FinancialWriteService,
@@ -11,7 +11,7 @@ from service import (
     MaintenanceService,
     NewsWriteService,
 )
-from service.write_requests import (
+from app.service.write_requests import (
     ArchiveHotDataRequest,
     BatchItemsRequest,
     BatchUpsertFinancialRequest,
@@ -88,7 +88,7 @@ def test_company_write_service_all_methods(services, monkeypatch):
     )
     assert industries.success is True and set(industries.data["industry_codes"]) >= {"IND003", "IND004"}
 
-    import knowledge.sync as kg_sync
+    import app.knowledge.sync as kg_sync
     monkeypatch.setattr(kg_sync, "sync_company_profiles_by_ids", lambda db, source_ids: len(source_ids))
     profile = company_write.upsert_company_profile(
         UpsertCompanyProfileRequest(stock_code="600001", business_summary="聚焦肿瘤创新药", market_position="成长型公司", sync_vector_index=True)
@@ -107,7 +107,7 @@ def test_company_write_service_all_methods(services, monkeypatch):
 
 def test_financial_write_service_all_methods(services, monkeypatch):
     financial_write = services["financial_write"]
-    import knowledge.sync as kg_sync
+    import app.knowledge.sync as kg_sync
     monkeypatch.setattr(kg_sync, "sync_financial_notes_by_ids", lambda db, source_ids, is_hot=True: len(source_ids))
 
     assert financial_write.batch_upsert_income_statements(BatchUpsertFinancialRequest(items=[{"stock_code": "600001", "report_date": date(2026, 3, 31), "fiscal_year": 2026, "report_type": "q1", "revenue": 100, "net_profit": 10, "source_type": "manual"}])).success is True
@@ -123,7 +123,7 @@ def test_financial_write_service_all_methods(services, monkeypatch):
 
 def test_announcement_write_service_all_methods(services, monkeypatch):
     announcement_write = services["announcement_write"]
-    import knowledge.sync as kg_sync
+    import app.knowledge.sync as kg_sync
     monkeypatch.setattr(kg_sync, "sync_announcements_by_ids", lambda db, source_ids, is_hot=True: len(source_ids))
 
     raw = announcement_write.batch_upsert_raw_announcements(BatchItemsRequest(items=[{"stock_code": "600001", "title": "测试公告", "publish_date": date(2026, 4, 21), "announcement_type": "clinical_trial", "exchange": "SSE", "content": "公告正文", "source_type": "manual", "source_url": "https://example.com/ann-600001"}], sync_vector_index=True))
@@ -141,7 +141,7 @@ def test_announcement_write_service_all_methods(services, monkeypatch):
 def test_macro_news_write_service_all_methods(services, monkeypatch):
     macro_write = services["macro_write"]
     news_write = services["news_write"]
-    import knowledge.sync as kg_sync
+    import app.knowledge.sync as kg_sync
     monkeypatch.setattr(kg_sync, "sync_news_by_ids", lambda db, source_ids, is_hot=True: len(source_ids))
 
     assert macro_write.batch_upsert_macro_indicators(BatchItemsRequest(items=[{"indicator_name": "创新药景气度", "period": "2026-04", "value": 5.6, "unit": "%", "source_type": "manual"}])).success is True
@@ -158,8 +158,8 @@ def test_macro_news_write_service_all_methods(services, monkeypatch):
 def test_maintenance_service_all_methods(services):
     maintenance = services["maintenance"]
     # 先制造与股票相关的缓存
-    services["cache"].set_query_cache(__import__('service.requests', fromlist=['CacheSetQueryRequest']).CacheSetQueryRequest(user_id=1, cache_key='cache:600001', query_text='600001 query', result={'ok': 1}, source_signature='600001', ttl_seconds=60))
-    services["cache"].set_hot_data(__import__('service.requests', fromlist=['CacheSetHotDataRequest']).CacheSetHotDataRequest(data_type='company', cache_key='summary:600001', value={'ok': 1}, ttl_seconds=60))
+    services["cache"].set_query_cache(__import__('app.service.requests', fromlist=['CacheSetQueryRequest']).CacheSetQueryRequest(user_id=1, cache_key='cache:600001', query_text='600001 query', result={'ok': 1}, source_signature='600001', ttl_seconds=60))
+    services["cache"].set_hot_data(__import__('app.service.requests', fromlist=['CacheSetHotDataRequest']).CacheSetHotDataRequest(data_type='company', cache_key='summary:600001', value={'ok': 1}, ttl_seconds=60))
 
     assert maintenance.rebuild_financial_metric_summary_yearly(RebuildFinancialMetricSummaryRequest(stock_code="600276", year=date.today().year)).success is True
     assert maintenance.rebuild_announcement_summary_monthly(RebuildAnnouncementSummaryRequest(stock_code="600276", year_month=date.today().strftime("%Y-%m"))).success is True
@@ -174,7 +174,7 @@ def test_maintenance_service_all_methods(services):
 
 def test_ingest_gateway_service_all_methods(services, monkeypatch):
     ingest = services["ingest"]
-    import knowledge.sync as kg_sync
+    import app.knowledge.sync as kg_sync
     monkeypatch.setattr(kg_sync, "sync_company_profiles_by_ids", lambda db, source_ids: len(source_ids))
     monkeypatch.setattr(kg_sync, "sync_financial_notes_by_ids", lambda db, source_ids, is_hot=True: len(source_ids))
     monkeypatch.setattr(kg_sync, "sync_announcements_by_ids", lambda db, source_ids, is_hot=True: len(source_ids))

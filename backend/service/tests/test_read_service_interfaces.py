@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from service import (
+from app.service import (
     AnnouncementService,
     CacheService,
     ChatService,
@@ -10,7 +10,7 @@ from service import (
     NewsService,
     RetrievalService,
 )
-from service.requests import (
+from app.service.requests import (
     CacheGetHotDataRequest,
     CacheGetSessionContextRequest,
     CacheInvalidateRequest,
@@ -149,7 +149,7 @@ def test_macro_chat_cache_retrieval_all_methods(services, monkeypatch):
     assert retrieval.search_financial_note_evidence(SearchRequest(query="附注", stock_code="600276", top_k=5)).success is True
     assert retrieval.search_news_evidence(SearchRequest(query="新闻", stock_code="600276", top_k=5)).success is True
 
-    import knowledge.sync as kg_sync
+    import app.knowledge.sync as kg_sync
 
     monkeypatch.setattr(kg_sync, "sync_announcements_by_ids", lambda db, source_ids, is_hot=True: len(source_ids))
     rebuilt = retrieval.rebuild_document_embeddings(RebuildEmbeddingsRequest(doc_type="announcement", source_ids=[1, 2]))
