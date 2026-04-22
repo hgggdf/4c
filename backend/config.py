@@ -38,6 +38,14 @@ class Settings(BaseSettings):
     glm_model: str = ""
     tushare_token: str = ""
 
+    crawler_enable_playwright_fallback: bool = False
+    crawler_retry_times: int = 3
+    crawler_backoff_base: float = 0.8
+    crawler_min_delay: float = 0.6
+    crawler_max_delay: float = 1.5
+    crawler_use_random_ua: bool = True
+    crawler_source_mode: str = "auto"
+
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
         env_file_encoding="utf-8",

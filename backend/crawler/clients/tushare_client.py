@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from crawler.reference.pharma_company_registry import to_tushare_code
+from crawler.clients.http_client import build_crawl_result
 from config import get_settings
 
 try:
@@ -88,3 +89,46 @@ class TushareClient:
             }
 
         return result, source_status
+
+    def fetch_financial_indicators(self, symbol: str, *, limit: int = 8) -> dict:
+        if not self.available():
+            return build_crawl_result(
+                success=False,
+                source="tushare",
+                strategy="sdk",
+                data={"daily_basic": [], "fina_indicator": []},
+                warnings=["tushare token is missing or tushare is not installed"],
+                error_message="tushare is unavailable",
+                error_type="parameter_error",
+            )
+
+        pro = self.get_pro()
+        ts_code = to_tushare_code(symbol)
+        today = datetime.now().strftime("%Y%m%d")
+        warnings: list[str] = []
+        data = {"daily_basic": [], "fina_indicator": []}
+
+        try:
+            daily_basic_df = pro.daily_basic(ts_code=ts_code, start_date="20200101", end_date=today)
+            if daily_basic_df is not None and not daily_basic_df.empty:
+                data["daily_basic"] = daily_basic_df.fillna("").head(limit).to_dict(orient="records")
+        except Exception as exc:
+            warnings.append(f"daily_basic failed: {exc}")
+
+        try:
+            fina_indicator_df = pro.fina_indicator(ts_code=ts_code)
+            if fina_indicator_df is not None and not fina_indicator_df.empty:
+                data["fina_indicator"] = fina_indicator_df.fillna("").head(limit).to_dict(orient="records")
+        except Exception as exc:
+            warnings.append(f"fina_indicator failed: {exc}")
+
+        success = bool(data["daily_basic"] or data["fina_indicator"])
+        return build_crawl_result(
+            success=success,
+            source="tushare",
+            strategy="sdk",
+            data=data,
+            warnings=warnings,
+            error_message=None if success else "tushare returned no financial indicator data",
+            error_type=None if success else "no_data",
+        )

@@ -5,12 +5,23 @@ import re
 from decimal import Decimal, InvalidOperation
 from time import time
 from urllib.parse import urlencode
+from urllib.parse import urljoin
 
 import requests
+from bs4 import BeautifulSoup
+
+from crawler.clients.http_client import (
+    CrawlerRuntimeConfig,
+    CrawlRequestError,
+    SiteHttpClient,
+    build_crawl_result,
+    load_sample_json,
+)
 
 
 DEFAULT_ENDPOINT = "https://data.stats.gov.cn/easyquery.htm"
 DEFAULT_DBCODE = "hgyd"
+RELEASE_LISTING_URL = "https://www.stats.gov.cn/sj/zxfb/"
 DEFAULT_HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -31,6 +42,24 @@ _QUARTER_TEXT_MAP = {
     "三季度": "Q3",
     "四季度": "Q4",
 }
+
+DEFAULT_INDICATOR_SPECS = [
+    {
+        "indicator_name": "居民消费价格指数(上年同月=100)",
+        "indicator_code": "A01010101",
+        "unit": "%",
+    },
+    {
+        "indicator_name": "医疗保健类居民消费价格指数(上年同月=100)",
+        "indicator_code": "A01010801",
+        "unit": "%",
+    },
+    {
+        "indicator_name": "工业生产者出厂价格指数(上年同月=100)",
+        "indicator_code": "A01020101",
+        "unit": "%",
+    },
+]
 
 
 class StatsGovFetchError(RuntimeError):
@@ -432,9 +461,273 @@ def build_macro_items(series_result: dict, *, source_type: str = "stats_gov") ->
     return items
 
 
+class StatsGovClient:
+    def __init__(self, *, config: CrawlerRuntimeConfig | None = None) -> None:
+        self.config = config or CrawlerRuntimeConfig.from_settings()
+        self.http = SiteHttpClient("stats_gov", config=self.config)
+
+    def fetch_series_bundle(
+        self,
+        indicators: list[dict] | None = None,
+        *,
+        dbcode: str = DEFAULT_DBCODE,
+        limit_per_indicator: int = 12,
+        strategy: str = "auto",
+        source_mode: str | None = None,
+    ) -> dict:
+        indicator_specs = indicators or list(DEFAULT_INDICATOR_SPECS)
+        effective_mode = str(source_mode or self.config.source_mode or "auto").lower()
+        if strategy == "fallback" or effective_mode == "fallback":
+            return build_crawl_result(
+                success=False,
+                source="stats_gov",
+                strategy="fallback",
+                data={"series_results": []},
+                warnings=[],
+                error_message="fallback mode is disabled for production macro crawling",
+                error_type="parameter_error",
+            )
+
+        warnings: list[str] = []
+        request_strategy = "playwright" if strategy == "playwright" else "requests"
+        try:
+            series_results = self._fetch_release_series(
+                indicator_specs,
+                limit_per_indicator=max(limit_per_indicator, 1),
+                strategy=request_strategy,
+            )
+        except CrawlRequestError as exc:
+            warnings.append(f"stats.gov release fetch failed: {exc.error_type}")
+            series_results = []
+
+        if series_results:
+            expected_names = {
+                str(item.get("indicator_name") or "").strip()
+                for item in indicator_specs
+                if str(item.get("indicator_name") or "").strip()
+            }
+            observed_names = {
+                str(item.get("indicator_name") or "").strip()
+                for item in series_results
+                if str(item.get("indicator_name") or "").strip()
+            }
+            missing = sorted(name for name in expected_names if name and name not in observed_names)
+            if missing:
+                warnings.append(f"missing stats.gov release series for: {', '.join(missing)}")
+            return build_crawl_result(
+                success=not missing,
+                source="stats_gov",
+                strategy="playwright" if request_strategy == "playwright" else "requests/html",
+                data={"series_results": series_results},
+                warnings=warnings,
+                error_message=None if not missing else f"missing macro indicators: {', '.join(missing)}",
+                error_type=None if not missing else "no_data",
+            )
+
+        return build_crawl_result(
+            success=False,
+            source="stats_gov",
+            strategy=strategy,
+            data={"series_results": []},
+            warnings=warnings,
+            error_message="stats.gov series fetch failed",
+            error_type="blocked" if any("blocked" in item for item in warnings) else "no_data",
+        )
+
+    def _fetch_release_series(self, indicators: list[dict], *, limit_per_indicator: int, strategy: str) -> list[dict]:
+        topic_links: dict[str, list[tuple[str, str]]] = {}
+        results: list[dict] = []
+        for indicator in indicators:
+            topic = self._indicator_topic(indicator)
+            if topic not in topic_links:
+                topic_links[topic] = self._collect_release_links(topic, needed=max(limit_per_indicator, 3), strategy=strategy)
+            article_links = topic_links.get(topic) or []
+            results.extend(self._extract_series_from_articles(indicator, article_links[:limit_per_indicator], strategy=strategy))
+        deduped: dict[tuple[str, str], dict] = {}
+        for item in results:
+            key = (str(item.get("indicator_name") or "").strip(), str(item.get("period") or "").strip())
+            if key[0] and key[1]:
+                deduped[key] = item
+        return sorted(deduped.values(), key=lambda item: (item["indicator_name"], item["period"]), reverse=True)
+
+    def _collect_release_links(self, topic: str, *, needed: int, strategy: str) -> list[tuple[str, str]]:
+        links: list[tuple[str, str]] = []
+        seen: set[str] = set()
+        for page_index in range(6):
+            page_url = RELEASE_LISTING_URL if page_index == 0 else urljoin(RELEASE_LISTING_URL, f"index_{page_index}.html")
+            html, _ = self.http.get_text(
+                page_url,
+                strategy=strategy,
+                headers={
+                    "Referer": RELEASE_LISTING_URL,
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                },
+            )
+            html = self._normalize_html_text(html)
+            soup = BeautifulSoup(html, "lxml")
+            for anchor in soup.select("a[href]"):
+                href = str(anchor.get("href") or "").strip()
+                title = " ".join(anchor.stripped_strings)
+                if not href or not title:
+                    continue
+                if not re.search(r"(?:^|/)(?:\d{6}/t\d+_\d+\.html)$", href):
+                    continue
+                if not self._title_matches_topic(title, topic):
+                    continue
+                url = urljoin(RELEASE_LISTING_URL, href)
+                if url in seen:
+                    continue
+                seen.add(url)
+                links.append((title, url))
+                if len(links) >= needed:
+                    return links
+        return links
+
+    def _extract_series_from_articles(self, indicator: dict, article_links: list[tuple[str, str]], *, strategy: str) -> list[dict]:
+        indicator_name = str(indicator.get("indicator_name") or "").strip()
+        unit = str(indicator.get("unit") or "%").strip() or "%"
+        items: list[dict] = []
+        for title, url in article_links:
+            html, _ = self.http.get_text(
+                url,
+                strategy=strategy,
+                headers={
+                    "Referer": RELEASE_LISTING_URL,
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                },
+            )
+            html = self._normalize_html_text(html)
+            article_title, publish_date, article_text = self._parse_release_article(html, fallback_title=title)
+            value = self._extract_release_value(indicator_name, article_text)
+            period = self._extract_release_period(article_title, publish_date)
+            if value is None or not period:
+                continue
+            items.append(
+                {
+                    "indicator_name": indicator_name,
+                    "period": period,
+                    "value": value,
+                    "unit": unit,
+                    "source_type": "stats_gov_release",
+                    "source_url": url,
+                }
+            )
+        return items
+
+    def _indicator_topic(self, indicator: dict) -> str:
+        indicator_name = str(indicator.get("indicator_name") or "").strip()
+        if "采购经理指数" in indicator_name:
+            return "pmi"
+        if "工业生产者出厂价格" in indicator_name:
+            return "ppi"
+        return "cpi"
+
+    def _title_matches_topic(self, title: str, topic: str) -> bool:
+        normalized = str(title or "").strip()
+        if topic == "cpi":
+            return "居民消费价格" in normalized
+        if topic == "ppi":
+            return "工业生产者出厂价格" in normalized
+        return "采购经理指数运行情况" in normalized
+
+    def _parse_release_article(self, html: str, *, fallback_title: str) -> tuple[str, str | None, str]:
+        soup = BeautifulSoup(html, "lxml")
+        title = " ".join((soup.select_one("h1") or soup.select_one("title") or soup).stripped_strings)
+        title = title.strip() or fallback_title
+        text = "\n".join(part.strip() for part in soup.stripped_strings if part and part.strip())
+        publish_match = re.search(r"(20\d{2})/(\d{2})/(\d{2})", text)
+        publish_date = None
+        if publish_match:
+            publish_date = f"{publish_match.group(1)}-{publish_match.group(2)}-{publish_match.group(3)}"
+        return title, publish_date, text
+
+    def _extract_release_period(self, title: str, publish_date: str | None) -> str | None:
+        title_match = re.search(r"(20\d{2})年(\d{1,2})月", title)
+        if title_match:
+            return f"{title_match.group(1)}-{int(title_match.group(2)):02d}"
+        return normalize_period(publish_date)
+
+    def _extract_release_value(self, indicator_name: str, article_text: str) -> str | None:
+        flat_text = re.sub(r"\s+", " ", article_text).strip()
+        if "医疗保健" in indicator_name:
+            table_match = re.search(r"七、医疗保健\s*([-0-9.]+)\s*([-0-9.]+)\s*([-0-9.]+)", flat_text)
+            if table_match:
+                return table_match.group(2)
+            return self._extract_signed_percent(flat_text, r"医疗保健[^。；]*?(上涨|下降)\s*([0-9]+(?:\.[0-9]+)?)%")
+        if "居民消费价格" in indicator_name:
+            return self._extract_signed_percent(flat_text, r"全国居民消费价格同比\s*(上涨|下降)\s*([0-9]+(?:\.[0-9]+)?)%")
+        if "工业生产者出厂价格" in indicator_name:
+            return self._extract_signed_percent(flat_text, r"全国工业生产者出厂价格同比(?:由上月(?:上涨|下降)\s*[0-9]+(?:\.[0-9]+)?%\s*转为)?\s*(上涨|下降)\s*([0-9]+(?:\.[0-9]+)?)%")
+        if "采购经理指数" in indicator_name:
+            match = re.search(r"制造业采购经理指数（PMI）为\s*([0-9]+(?:\.[0-9]+)?)%", flat_text)
+            return match.group(1) if match else None
+        return None
+
+    def _extract_signed_percent(self, text: str, pattern: str) -> str | None:
+        match = re.search(pattern, text, re.S)
+        if not match:
+            return None
+        direction = str(match.group(1) or "").strip()
+        value = str(match.group(2) or "").strip()
+        if not value:
+            return None
+        return f"-{value}" if direction == "下降" else value
+
+    def _normalize_html_text(self, text: str) -> str:
+        if not text:
+            return text
+        if any(token in text for token in ("居民消费价格", "工业生产者出厂价格", "采购经理指数")):
+            return text
+        try:
+            repaired = text.encode("latin-1", errors="ignore").decode("utf-8", errors="ignore")
+        except UnicodeError:
+            return text
+        return repaired or text
+
+    def _fetch_indicator_json(self, indicator: dict, *, dbcode: str, limit_per_indicator: int) -> dict:
+        params = _build_query_params(
+            indicator["indicator_code"],
+            dbcode=dbcode,
+            rowcode="sj",
+            colcode="zb",
+            wds=None,
+            dfwds=None,
+            page=1,
+            pagesize=max(limit_per_indicator, 12),
+        )
+        payload, _ = self.http.get_json(DEFAULT_ENDPOINT, params=params)
+        return _build_series_result(
+            payload,
+            indicator_code=indicator["indicator_code"],
+            indicator_name=indicator.get("indicator_name"),
+            unit=indicator.get("unit"),
+            dbcode=dbcode,
+            query_url=_build_query_url(DEFAULT_ENDPOINT, params),
+        )
+
+    def _fetch_html_probe(self) -> None:
+        html, _ = self.http.get_text(DEFAULT_HEADERS["Referer"], strategy="requests")
+        if "403 Forbidden" in html or "UrlACL" in html:
+            raise CrawlRequestError("blocked", "stats.gov HTML landing page is blocked", strategy="requests")
+        raise CrawlRequestError("structure_changed", "stats.gov HTML page does not embed the requested series payload", strategy="requests")
+
+    def _fallback_bundle(self, *, warning: str | None = None) -> dict:
+        return build_crawl_result(
+            success=False,
+            source="stats_gov",
+            strategy="fallback",
+            data={"series_results": []},
+            warnings=[warning] if warning else [],
+            error_message="macro fallback is disabled",
+            error_type="parameter_error",
+        )
+
+
 __all__ = [
+    "DEFAULT_INDICATOR_SPECS",
     "DEFAULT_DBCODE",
     "DEFAULT_ENDPOINT",
+    "StatsGovClient",
     "StatsGovFetchError",
     "build_macro_items",
     "fetch_indicator_series",

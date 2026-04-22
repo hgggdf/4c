@@ -9,9 +9,9 @@ import random
 import time
 
 from config import get_settings
+from crawler.clients.http_client import CrawlerRuntimeConfig, build_crawl_result, load_sample_json
 from crawler.clients.tushare_client import TushareClient
 from crawler.reference.pharma_company_registry import get_company, list_pharma_companies, resolve_company_symbol, to_market_prefix
-from crawler.scrapers.web_scraper import fetch_pharma_news
 
 try:
     import akshare as ak
@@ -51,6 +51,246 @@ for company in list_pharma_companies():
     NAME_MAPPING[company["name"]] = company["symbol"]
     for alias in company.get("aliases", []):
         NAME_MAPPING[alias] = company["symbol"]
+
+
+def _collapse_whitespace(value: object) -> str:
+    return " ".join(str(value or "").split())
+
+
+def _normalize_scalar(value):
+    if value is None:
+        return None
+    if hasattr(value, "item"):
+        try:
+            value = value.item()
+        except Exception:
+            pass
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    if isinstance(value, float) and math.isnan(value):
+        return None
+    return value
+
+
+def _df_to_records(df) -> list[dict]:
+    if df is None or getattr(df, "empty", True):
+        return []
+    records = []
+    for item in df.to_dict(orient="records"):
+        row = {}
+        for key, value in item.items():
+            row[str(key).strip()] = _normalize_scalar(value)
+        records.append(row)
+    return records
+
+
+def _normalize_stock_code(value: str | None) -> str:
+    digits = "".join(ch for ch in str(value or "").strip() if ch.isdigit())
+    return digits[-6:] if len(digits) >= 6 else digits
+
+
+def _normalize_exchange(stock_code: str) -> str:
+    market = to_market_prefix(stock_code)
+    if market == "SH":
+        return "SSE"
+    if market == "SZ":
+        return "SZSE"
+    if market == "BJ":
+        return "BSE"
+    return market or "SSE"
+
+
+def _market_variants(stock_code: str) -> tuple[str, str, str]:
+    market = to_market_prefix(stock_code)
+    lower = market.lower()
+    upper = market.upper()
+    return f"{lower}{stock_code}", f"{upper}{stock_code}", _normalize_exchange(stock_code)
+
+
+class AkshareCrawlerClient:
+    def __init__(self, *, config: CrawlerRuntimeConfig | None = None, tushare_client: TushareClient | None = None) -> None:
+        self.settings = get_settings()
+        self.config = config or CrawlerRuntimeConfig.from_settings()
+        self.tushare_client = tushare_client or TushareClient()
+
+    def fetch_financial_bundle(
+        self,
+        stock_code: str,
+        *,
+        history_days: int = 120,
+        source_mode: str | None = None,
+        strategy: str = "auto",
+    ) -> dict:
+        normalized_stock_code = _normalize_stock_code(stock_code)
+        if not normalized_stock_code:
+            return build_crawl_result(
+                success=False,
+                source="akshare",
+                strategy=strategy,
+                data={},
+                warnings=[],
+                error_message="stock_code is required",
+                error_type="parameter_error",
+            )
+
+        effective_mode = str(source_mode or self.config.source_mode or "auto").lower()
+        if strategy == "fallback" or effective_mode == "fallback":
+            return build_crawl_result(
+                success=False,
+                source="akshare",
+                strategy="fallback",
+                data={},
+                warnings=[],
+                error_message="fallback mode is disabled for production financial crawling",
+                error_type="parameter_error",
+            )
+
+        warnings: list[str] = []
+        try:
+            data = self._collect_live_bundle(normalized_stock_code, history_days=history_days)
+        except Exception as exc:
+            return build_crawl_result(
+                success=False,
+                source="akshare",
+                strategy="sdk",
+                data={},
+                warnings=[],
+                error_message=str(exc),
+                error_type="network_error",
+            )
+
+        tushare_result = self.tushare_client.fetch_financial_indicators(normalized_stock_code, limit=8)
+        if tushare_result.get("success"):
+            data["tushare"] = tushare_result.get("data")
+        else:
+            warnings.extend(tushare_result.get("warnings") or [])
+            data["tushare"] = tushare_result.get("data") or {"daily_basic": [], "fina_indicator": []}
+
+        success = any(
+            data.get(section)
+            for section in (
+                "financial_abstract",
+                "income_statements_raw",
+                "balance_sheets_raw",
+                "cashflow_statements_raw",
+                "financial_indicators",
+            )
+        )
+
+        return build_crawl_result(
+            success=success,
+            source="akshare",
+            strategy="sdk",
+            data=data,
+            warnings=warnings,
+            error_message=None if success else "akshare returned no usable financial data",
+            error_type=None if success else "no_data",
+        )
+
+    def _collect_live_bundle(self, stock_code: str, *, history_days: int) -> dict:
+        market_lower_code, market_upper_code, exchange = _market_variants(stock_code)
+        company = get_company(stock_code) or {}
+        company_info_records = self._safe_ak_records("stock_individual_info_em", symbol=stock_code)
+        company_info = {
+            str(item.get("item") or "").strip(): _collapse_whitespace(item.get("value")) or item.get("value")
+            for item in company_info_records
+            if str(item.get("item") or "").strip()
+        }
+
+        financial_abstract = self._safe_ak_records("stock_financial_abstract", symbol=stock_code)
+        financial_indicators = self._safe_ak_records_any(
+            [
+                ("stock_financial_analysis_indicator_em", {"symbol": market_upper_code, "indicator": "按报告期"}),
+                ("stock_financial_analysis_indicator", {"symbol": stock_code}),
+            ]
+        )
+        income_statements_raw = self._safe_statement(stock=market_lower_code, symbol="利润表")
+        balance_sheets_raw = self._safe_statement(stock=market_lower_code, symbol="资产负债表")
+        cashflow_statements_raw = self._safe_statement(stock=market_lower_code, symbol="现金流量表")
+        business_segments_raw = self._safe_ak_records("stock_zygc_em", symbol=market_upper_code)
+        stock_daily_raw = self._safe_daily_history(stock_code, history_days=history_days)
+
+        return {
+            "stock_code": stock_code,
+            "name": str(company_info.get("股票简称") or company.get("name") or stock_code).strip() or stock_code,
+            "exchange": exchange,
+            "aliases": company.get("aliases") or [],
+            "company_info": company_info,
+            "financial_abstract": financial_abstract,
+            "financial_indicators": financial_indicators,
+            "income_statements_raw": income_statements_raw,
+            "balance_sheets_raw": balance_sheets_raw,
+            "cashflow_statements_raw": cashflow_statements_raw,
+            "business_segments_raw": business_segments_raw,
+            "stock_daily_raw": stock_daily_raw,
+            "source_refs": {
+                "financial_abstract": f"https://vip.stock.finance.sina.com.cn/corp/go.php/vFD_FinanceSummary/stockid/{stock_code}.phtml",
+                "financial_indicators": f"https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code={market_upper_code}&color=b#/cwfx",
+                "income_statements_raw": f"https://money.finance.sina.com.cn/corp/go.php/vFD_FinancialGuideLine/stockid/{stock_code}/displaytype/4.phtml",
+                "balance_sheets_raw": f"https://money.finance.sina.com.cn/corp/go.php/vFD_FinancialGuideLine/stockid/{stock_code}/displaytype/4.phtml",
+                "cashflow_statements_raw": f"https://money.finance.sina.com.cn/corp/go.php/vFD_FinancialGuideLine/stockid/{stock_code}/displaytype/4.phtml",
+                "business_segments_raw": f"https://emweb.securities.eastmoney.com/pc_hsf10/pages/index.html?type=web&code={market_upper_code}&color=b#/zygc",
+                "stock_daily_raw": f"https://quote.eastmoney.com/concept/{stock_code}.html",
+            },
+        }
+
+    def _safe_ak_records(self, func_name: str, **kwargs) -> list[dict]:
+        if ak is None:
+            return []
+        func = getattr(ak, func_name, None)
+        if func is None:
+            return []
+        try:
+            return _df_to_records(func(**kwargs))
+        except Exception:
+            return []
+
+    def _safe_ak_records_any(self, candidates: list[tuple[str, dict]]) -> list[dict]:
+        for func_name, kwargs in candidates:
+            records = self._safe_ak_records(func_name, **kwargs)
+            if records:
+                return records
+        return []
+
+    def _safe_statement(self, *, stock: str, symbol: str) -> list[dict]:
+        if ak is None:
+            return []
+        try:
+            return _df_to_records(ak.stock_financial_report_sina(stock=stock, symbol=symbol))
+        except Exception:
+            return []
+
+    def _safe_daily_history(self, stock_code: str, *, history_days: int) -> list[dict]:
+        if ak is None:
+            return []
+        try:
+            end_date = datetime.now().strftime("%Y%m%d")
+            start_date = (datetime.now() - timedelta(days=max(history_days, 1) * 3)).strftime("%Y%m%d")
+            return _df_to_records(
+                ak.stock_zh_a_hist(
+                    symbol=stock_code,
+                    period="daily",
+                    start_date=start_date,
+                    end_date=end_date,
+                    adjust="",
+                )
+            )
+        except Exception:
+            return []
+
+    def _fallback_financial_bundle(self, stock_code: str, *, warning: str | None = None) -> dict:
+        payload = load_sample_json("financial_sample.json")
+        data = dict(payload.get("data") or {})
+        data["stock_code"] = stock_code
+        return build_crawl_result(
+            success=bool(data),
+            source="local-sample",
+            strategy="fallback",
+            data=data,
+            warnings=[warning] if warning else [],
+            error_message=None if data else "financial sample is empty",
+            error_type=None if data else "no_data",
+        )
 
 
 class StockDataProvider:
@@ -218,6 +458,8 @@ class StockDataProvider:
         return info
 
     def collect_company_dataset(self, symbol: str, history_days: int = 180) -> dict:
+        from crawler.scrapers.web_scraper import fetch_pharma_news
+
         company = get_company(symbol) or {
             "symbol": symbol,
             "name": symbol,
