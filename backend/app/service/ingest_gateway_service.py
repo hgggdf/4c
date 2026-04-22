@@ -3,6 +3,7 @@ from __future__ import annotations
 from .announcement_write_service import AnnouncementWriteService
 from .base import BaseService
 from .company_write_service import CompanyWriteService
+from .exceptions import ServiceException
 from .financial_write_service import FinancialWriteService
 from .macro_write_service import MacroWriteService
 from .news_write_service import NewsWriteService
@@ -30,6 +31,11 @@ class IngestGatewayService(BaseService):
         self.announcement_write = announcement_write
         self.macro_write = macro_write
         self.news_write = news_write
+
+    def _require_success(self, result, *, operation: str):
+        if result.success:
+            return result.data
+        raise ServiceException(result.message or f"{operation} failed", error_code=result.error_code)
 
     def ingest_company_package(self, req: IngestCompanyPackageRequest):
         return self._run(lambda: self._ingest_company_package(req), trace_id=req.trace_id)
@@ -72,35 +78,78 @@ class IngestGatewayService(BaseService):
     def _ingest_financial_package(self, req: IngestFinancialPackageRequest) -> dict:
         result: dict = {}
         if req.income_statements:
-            result["income_statements"] = self.financial_write.batch_upsert_income_statements(BatchUpsertFinancialRequest(items=req.income_statements)).data
+            result["income_statements"] = self._require_success(
+                self.financial_write.batch_upsert_income_statements(BatchUpsertFinancialRequest(items=req.income_statements)),
+                operation="income_statements",
+            )
         if req.balance_sheets:
-            result["balance_sheets"] = self.financial_write.batch_upsert_balance_sheets(BatchUpsertFinancialRequest(items=req.balance_sheets)).data
+            result["balance_sheets"] = self._require_success(
+                self.financial_write.batch_upsert_balance_sheets(BatchUpsertFinancialRequest(items=req.balance_sheets)),
+                operation="balance_sheets",
+            )
         if req.cashflow_statements:
-            result["cashflow_statements"] = self.financial_write.batch_upsert_cashflow_statements(BatchUpsertFinancialRequest(items=req.cashflow_statements)).data
+            result["cashflow_statements"] = self._require_success(
+                self.financial_write.batch_upsert_cashflow_statements(BatchUpsertFinancialRequest(items=req.cashflow_statements)),
+                operation="cashflow_statements",
+            )
         if req.financial_metrics:
-            result["financial_metrics"] = self.financial_write.batch_upsert_financial_metrics(BatchUpsertFinancialRequest(items=req.financial_metrics)).data
+            result["financial_metrics"] = self._require_success(
+                self.financial_write.batch_upsert_financial_metrics(BatchUpsertFinancialRequest(items=req.financial_metrics)),
+                operation="financial_metrics",
+            )
         if req.financial_notes:
-            result["financial_notes"] = self.financial_write.batch_upsert_financial_notes(BatchUpsertFinancialRequest(items=req.financial_notes, sync_vector_index=req.sync_vector_index)).data
+            result["financial_notes"] = self._require_success(
+                self.financial_write.batch_upsert_financial_notes(
+                    BatchUpsertFinancialRequest(items=req.financial_notes, sync_vector_index=req.sync_vector_index)
+                ),
+                operation="financial_notes",
+            )
         if req.business_segments:
-            result["business_segments"] = self.financial_write.batch_upsert_business_segments(BatchUpsertFinancialRequest(items=req.business_segments)).data
+            result["business_segments"] = self._require_success(
+                self.financial_write.batch_upsert_business_segments(BatchUpsertFinancialRequest(items=req.business_segments)),
+                operation="business_segments",
+            )
         if req.stock_daily:
-            result["stock_daily"] = self.financial_write.batch_upsert_stock_daily(BatchUpsertFinancialRequest(items=req.stock_daily)).data
+            result["stock_daily"] = self._require_success(
+                self.financial_write.batch_upsert_stock_daily(BatchUpsertFinancialRequest(items=req.stock_daily)),
+                operation="stock_daily",
+            )
         return result
 
     def _ingest_announcement_package(self, req: IngestAnnouncementPackageRequest) -> dict:
         result: dict = {}
         if req.raw_announcements:
-            result["raw_announcements"] = self.announcement_write.batch_upsert_raw_announcements(BatchItemsRequest(items=req.raw_announcements, sync_vector_index=req.sync_vector_index)).data
+            result["raw_announcements"] = self._require_success(
+                self.announcement_write.batch_upsert_raw_announcements(
+                    BatchItemsRequest(items=req.raw_announcements, sync_vector_index=req.sync_vector_index)
+                ),
+                operation="raw_announcements",
+            )
         if req.structured_announcements:
-            result["structured_announcements"] = self.announcement_write.batch_upsert_structured_announcements(BatchItemsRequest(items=req.structured_announcements)).data
+            result["structured_announcements"] = self._require_success(
+                self.announcement_write.batch_upsert_structured_announcements(BatchItemsRequest(items=req.structured_announcements)),
+                operation="structured_announcements",
+            )
         if req.drug_approvals:
-            result["drug_approvals"] = self.announcement_write.batch_upsert_drug_approvals(BatchItemsRequest(items=req.drug_approvals)).data
+            result["drug_approvals"] = self._require_success(
+                self.announcement_write.batch_upsert_drug_approvals(BatchItemsRequest(items=req.drug_approvals)),
+                operation="drug_approvals",
+            )
         if req.clinical_trials:
-            result["clinical_trials"] = self.announcement_write.batch_upsert_clinical_trials(BatchItemsRequest(items=req.clinical_trials)).data
+            result["clinical_trials"] = self._require_success(
+                self.announcement_write.batch_upsert_clinical_trials(BatchItemsRequest(items=req.clinical_trials)),
+                operation="clinical_trials",
+            )
         if req.procurement_events:
-            result["procurement_events"] = self.announcement_write.batch_upsert_procurement_events(BatchItemsRequest(items=req.procurement_events)).data
+            result["procurement_events"] = self._require_success(
+                self.announcement_write.batch_upsert_procurement_events(BatchItemsRequest(items=req.procurement_events)),
+                operation="procurement_events",
+            )
         if req.regulatory_risks:
-            result["regulatory_risks"] = self.announcement_write.batch_upsert_regulatory_risks(BatchItemsRequest(items=req.regulatory_risks)).data
+            result["regulatory_risks"] = self._require_success(
+                self.announcement_write.batch_upsert_regulatory_risks(BatchItemsRequest(items=req.regulatory_risks)),
+                operation="regulatory_risks",
+            )
         return result
 
     def _ingest_news_package(self, req: IngestNewsPackageRequest) -> dict:
