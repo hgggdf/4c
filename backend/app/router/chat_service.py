@@ -25,6 +25,8 @@ class ChatService:
         user = ensure_demo_user(db, request.user_id)
         session = self._get_or_create_session(db, user.id, request.session_id, request.message)
         stock_code = self._resolve_stock_code(db, request)
+        if not stock_code:
+            stock_code = session.current_stock_code
 
         if stock_code and session.current_stock_code != stock_code:
             session.current_stock_code = stock_code
@@ -44,6 +46,9 @@ class ChatService:
             request.message,
             history=[item.model_dump() for item in request.history],
             targets=[item.model_dump() for item in request.targets],
+            current_stock_code=session.current_stock_code,
+            user_id=user.id,
+            session_id=session.id,
         )
 
         db.add(
@@ -52,10 +57,13 @@ class ChatService:
                 role="assistant",
                 content=agent_result["answer"],
                 stock_code=stock_code,
-                intent_type="langchain_stub",
+                intent_type=agent_result.get("agent_mode") or "glm-5.1-minimal",
                 tool_calls_json={
                     "framework": agent_result.get("framework"),
                     "agent_mode": agent_result.get("agent_mode"),
+                    "suggestion": agent_result.get("suggestion"),
+                    "chart_desc": agent_result.get("chart_desc"),
+                    "report_markdown": agent_result.get("report_markdown"),
                 },
             )
         )
@@ -66,6 +74,9 @@ class ChatService:
         quote = self._build_quote(db, stock_code) if stock_code else None
         return ChatResponse(
             answer=agent_result["answer"],
+            suggestion=agent_result.get("suggestion"),
+            chart_desc=agent_result.get("chart_desc"),
+            report_markdown=agent_result.get("report_markdown"),
             quote=quote,
             session_id=session.id,
             agent_mode=agent_result.get("agent_mode"),

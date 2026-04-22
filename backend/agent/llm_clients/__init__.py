@@ -1,3 +1,5 @@
-"""预留给外部大模型客户端实现。"""
+"""外部大模型客户端实现。"""
 
-__all__: list[str] = []
+from .glm_client import GLMClient
+
+__all__ = ["GLMClient"]

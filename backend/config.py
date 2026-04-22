@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     anthropic_base_url: str = "https://api.anthropic.com"
     claude_model: str = "claude-sonnet-4-6"
+    glm_api_key: str = ""
+    glm_base_url: str = ""
+    glm_model: str = ""
     tushare_token: str = ""
 
     model_config = SettingsConfigDict(

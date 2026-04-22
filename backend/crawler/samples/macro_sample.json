@@ -1,0 +1,70 @@
+{
+  "series_results": [
+    {
+      "indicator_code": "A01010101",
+      "indicator_name": "居民消费价格指数(上年同月=100)",
+      "unit": "%",
+      "query_url": "local://crawler/samples/macro_sample.json",
+      "response": {
+        "returndata": {
+          "wdnodes": [
+            {
+              "wdcode": "zb",
+              "nodes": [
+                {
+                  "code": "A01010101",
+                  "cname": "居民消费价格指数(上年同月=100)"
+                }
+              ]
+            },
+            {
+              "wdcode": "sj",
+              "nodes": [
+                {
+                  "code": "202403",
+                  "cname": "2024年03月"
+                },
+                {
+                  "code": "202402",
+                  "cname": "2024年02月"
+                }
+              ]
+            }
+          ],
+          "datanodes": [
+            {
+              "wds": [
+                {
+                  "wdcode": "zb",
+                  "valuecode": "A01010101"
+                },
+                {
+                  "wdcode": "sj",
+                  "valuecode": "202403"
+                }
+              ],
+              "data": {
+                "strdata": "100.2"
+              }
+            },
+            {
+              "wds": [
+                {
+                  "wdcode": "zb",
+                  "valuecode": "A01010101"
+                },
+                {
+                  "wdcode": "sj",
+                  "valuecode": "202402"
+                }
+              ],
+              "data": {
+                "strdata": "100.8"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

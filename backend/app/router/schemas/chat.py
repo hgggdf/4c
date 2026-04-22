@@ -52,6 +52,9 @@ class ChatResponse(BaseModel):
 	"""聊天接口响应体。"""
 
 	answer: str
+	suggestion: str | None = None
+	chart_desc: str | None = None
+	report_markdown: str | None = None
 	quote: QuoteInfo | None = None
 	session_id: int | None = None
 	agent_mode: str | None = None
