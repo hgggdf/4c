@@ -81,7 +81,7 @@ import * as echarts from 'echarts'
 import { getDiagnose } from '../api/analysis'
 import { getStockList } from '../api/stock'
 
-const selectedSymbol = ref('600276')
+const selectedSymbol = ref('')
 const selectedYear = ref('2024')
 const companies = ref([])
 const data = ref(null)
@@ -157,23 +157,23 @@ async function loadCompanies() {
   try {
     const stocks = await getStockList()
     companies.value = stocks
-    if (stocks.length && !stocks.some(item => item.symbol === selectedSymbol.value)) {
-      selectedSymbol.value = stocks[0].symbol
+    if (stocks.length) {
+      if (!selectedSymbol.value || !stocks.some(item => item.symbol === selectedSymbol.value)) {
+        selectedSymbol.value = stocks[0].symbol
+      }
     }
   } catch {
-    companies.value = [
-      { symbol: '600276', name: '恒瑞医药' },
-      { symbol: '603259', name: '药明康德' },
-      { symbol: '300015', name: '爱尔眼科' },
-    ]
+    companies.value = []
   }
 }
 
 onMounted(async () => {
   await loadCompanies()
-  await loadData()
+  if (selectedSymbol.value) await loadData()
 })
-watch([selectedSymbol, selectedYear], loadData)
+watch([selectedSymbol, selectedYear], () => {
+  if (selectedSymbol.value) loadData()
+})
 </script>
 
 <style scoped>

@@ -281,7 +281,7 @@ async function loadRiskData() {
   riskLoading.value = true
   riskError.value = ''
   try {
-    const res = await getRisks()
+    const res = await getRisks(props.stock.symbol)
     const found = res.data.find(item => item.stock_code === props.stock.symbol)
     riskData.value = found || null
     if (!found) riskError.value = '未找到该股票的风险数据'

@@ -93,7 +93,7 @@ import * as echarts from 'echarts'
 import { getDiagnose, getTrend } from '../api/analysis'
 import { getStockList } from '../api/stock'
 
-const form = ref({ symbol: '600276', year: '2024', userType: 'investor' })
+const form = ref({ symbol: '', year: '2024', userType: 'investor' })
 const companies = ref([])
 const report = ref(null)
 const loading = ref(false)
@@ -205,15 +205,13 @@ onMounted(async () => {
   try {
     const stocks = await getStockList()
     companies.value = stocks
-    if (stocks.length && !stocks.some(item => item.symbol === form.value.symbol)) {
-      form.value.symbol = stocks[0].symbol
+    if (stocks.length) {
+      if (!form.value.symbol || !stocks.some(item => item.symbol === form.value.symbol)) {
+        form.value.symbol = stocks[0].symbol
+      }
     }
   } catch {
-    companies.value = [
-      { symbol: '600276', name: '恒瑞医药' },
-      { symbol: '603259', name: '药明康德' },
-      { symbol: '300015', name: '爱尔眼科' },
-    ]
+    companies.value = []
   }
 })
 </script>

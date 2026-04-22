@@ -261,11 +261,6 @@ export async function getReports(symbol) {
   return mapReports(dataset, symbol)
 }
 
-// ── 宏观指标 ──────────────────────────────────────────
-export async function getMacroSeries() {
-  return null
-}
-
 export async function getWatchlist(userId = import.meta.env.VITE_DEMO_USER_ID || 1) {
   return request.get('/api/stock/watchlist', { params: { user_id: userId } })
 }
