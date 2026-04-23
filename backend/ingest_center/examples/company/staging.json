@@ -1,0 +1,32 @@
+{
+  "payload": {
+    "company_master": {
+      "stock_code": "000001",
+      "stock_name": "平安银行",
+      "exchange": "SZSE"
+    },
+    "company_profile": {
+      "stock_code": "000001",
+      "business_summary": "平安银行是中国首家上市银行，主要业务包括公司银行业务、个人银行业务和资金业务等。",
+      "main_segments_json": [
+        "公司银行业务",
+        "个人银行业务",
+        "资金业务"
+      ],
+      "market_position": "国内领先的股份制商业银行"
+    },
+    "industries": [
+      {
+        "industry_code": "J66",
+        "industry_name": "货币金融服务"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "000001",
+        "industry_code": "J66",
+        "is_primary": true
+      }
+    ]
+  }
+}

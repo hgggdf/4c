@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "income_statements": [],
+    "balance_sheets": [],
+    "cashflow_statements": [],
+    "financial_metrics": [],
+    "financial_notes": [],
+    "business_segments": [],
+    "stock_daily": [
+      {
+        "stock_code": "000001",
+        "trade_date": "2026-04-23",
+        "open_price": 10.0,
+        "close_price": 10.5,
+        "high_price": 10.8,
+        "low_price": 9.9
+      }
+    ],
+    "sync_vector_index": false
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "spec_version": "1.0",
+  "staging_format_version": "1.0",
+  "job_id": "e2e_patent_001",
+  "created_at": "2026-04-23T11:11:16.876205+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "E2EGenerator",
+    "run_id": "run_e2e_e2e_patent_001"
+  },
+  "data_category": "patent",
+  "time_window": {
+    "begin_date": "2026-01-01",
+    "end_date": "2026-03-31"
+  },
+  "target": {
+    "endpoint": "/api/ingest/patent-package",
+    "ingest_package": "patent-package",
+    "ingest_field": "patent",
+    "target_table": "patent_hot"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/e2e/e2e_patent_001.json",
+    "staging_path": "backend/crawler/staging/e2e/e2e_patent_001.json",
+    "quality_report_path": "backend/crawler/staging/quality_reports/e2e/e2e_patent_001_quality_report.json"
+  },
+  "record_stats": {
+    "raw_count": 50,
+    "staging_count": 50,
+    "expected_write_count": 0
+  },
+  "checksum": {
+    "staging_sha256": "0ebc2c83d3edd1797904a0826cc72f77ed848170f416cbda627514a76ec99788"
+  },
+  "status": "ready"
+}

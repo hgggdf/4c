@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "job_id": "stock_daily_stress_1000",
+  "data_category": "stock_daily",
+  "staging_path": "backend/crawler/staging/stress/stock_daily_1000.json",
+  "checksum_sha256": "55bdf641cc02c10cd1e271e2322eb3a5cc6f6ee306ab1d7dbd0f2cceeea4fc58",
+  "record_count": 1000,
+  "time_window": {
+    "begin_date": "2026-01-01",
+    "end_date": "2026-04-23"
+  },
+  "fields": {
+    "stock_code": "string",
+    "trade_date": "string",
+    "open_price": "float",
+    "close_price": "float",
+    "high_price": "float",
+    "low_price": "float",
+    "volume": "integer",
+    "turnover": "float",
+    "source_type": "string"
+  },
+  "null_checks": {
+    "stock_code": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "trade_date": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "close_price": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {
+    "close_price": {
+      "min": 5.0,
+      "max": 500.0
+    },
+    "volume": {
+      "min": 1000000,
+      "max": 100000000
+    }
+  },
+  "quality_score": 1.0,
+  "status": "ready"
+}

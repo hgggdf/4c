@@ -1,0 +1,36 @@
+{
+  "spec_version": "1.0",
+  "staging_format_version": "1.0",
+  "job_id": "company_stress_0471",
+  "created_at": "2026-04-23T10:14:48.839680+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "CompanyTransformer",
+    "run_id": "run_company_stress_0471"
+  },
+  "data_category": "company",
+  "time_window": {
+    "begin_date": "2026-01-01",
+    "end_date": "2026-04-23"
+  },
+  "target": {
+    "endpoint": "/api/ingest/company-package",
+    "ingest_package": "company-package",
+    "ingest_field": "company_master",
+    "target_table": "company_master"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/stress/company_0471.json",
+    "staging_path": "backend/crawler/staging/stress/company_0471.json",
+    "quality_report_path": "backend/crawler/staging/quality_reports/stress/company_0471_quality_report.json"
+  },
+  "record_stats": {
+    "raw_count": 1,
+    "staging_count": 1,
+    "expected_write_count": 1
+  },
+  "checksum": {
+    "staging_sha256": "04f89d79b0b3d08e1e6bfaa3d169e67ad92f36384bac6ee130471853138f37d3"
+  },
+  "status": "ready"
+}

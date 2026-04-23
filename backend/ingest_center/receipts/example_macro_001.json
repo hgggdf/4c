@@ -1,0 +1,15 @@
+{
+  "job_id": "example_macro_001",
+  "data_category": "macro",
+  "manifest_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\manifests\\macro_manifest.json",
+  "staging_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\examples\\macro\\staging.json",
+  "endpoint": "/api/macro-write/macro-indicators",
+  "status": "done",
+  "success": true,
+  "written_count": 1,
+  "error_code": null,
+  "error_message": null,
+  "trace_id": null,
+  "warnings": [],
+  "created_at": "2026-04-23T09:52:41.182504+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "spec_version": "1.0",
+  "job_id": "example_stock_daily_001",
+  "created_at": "2026-04-23T12:00:00+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "example_stock_daily",
+    "run_id": "run_example_stock_daily_001"
+  },
+  "data_category": "stock_daily",
+  "time_window": {
+    "begin_date": "2026-04-23",
+    "end_date": "2026-04-23"
+  },
+  "target": {
+    "endpoint": "/api/ingest/financial-package",
+    "ingest_package": "financial-package",
+    "ingest_field": "stock_daily",
+    "target_table": "stock_daily"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/stock_daily/raw.json",
+    "staging_path": "backend/ingest_center/examples/stock_daily/staging.json",
+    "quality_report_path": "backend/ingest_center/examples/stock_daily/quality_report.json"
+  },
+  "record_stats": {
+    "raw_count": 1,
+    "staging_count": 1,
+    "expected_write_count": 1
+  },
+  "checksum": {
+    "staging_sha256": "301cf2fbc5ea1d7d75805c59b455ff11f0f6cb3a3e817f699d77d7b26118101f"
+  },
+  "status": "ready"
+}

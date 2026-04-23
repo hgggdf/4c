@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "job_id": "company_stress_0291",
+  "data_category": "company",
+  "staging_path": "backend/crawler/staging/stress/company_0291.json",
+  "checksum_sha256": "80eff81edfe517b3a2fa97502f3997ca818d690ff6362427a4c0dfec7ef447f6",
+  "record_count": 1,
+  "time_window": {
+    "begin_date": "2026-01-01",
+    "end_date": "2026-04-23"
+  },
+  "fields": {
+    "stock_code": "string",
+    "stock_name": "string",
+    "full_name": "string",
+    "exchange": "string",
+    "industry_level1": "string",
+    "industry_level2": "string",
+    "listing_date": "string",
+    "status": "string",
+    "source_type": "string"
+  },
+  "null_checks": {
+    "stock_code": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "stock_name": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "listing_date": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {},
+  "quality_score": 1.0,
+  "status": "ready"
+}

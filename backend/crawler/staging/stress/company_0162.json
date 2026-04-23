@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990162",
+      "stock_name": "航机械62股份有限公司",
+      "full_name": "北地产62股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "汽车",
+      "industry_level2": "房地产开发",
+      "listing_date": "2012-11-14",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990162",
+      "business_summary": "这是西机械公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A162",
+        "产品B162"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块162A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块162B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

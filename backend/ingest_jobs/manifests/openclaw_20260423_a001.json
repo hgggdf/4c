@@ -1,0 +1,36 @@
+{
+  "spec_version": "1.0",
+  "staging_format_version": "1.0",
+  "job_id": "openclaw_20260423_a001",
+  "created_at": "2026-04-23T07:24:42.592008+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "AnnouncementTransformer",
+    "run_id": "run_20260423_a001"
+  },
+  "data_category": "announcement_raw",
+  "time_window": {
+    "begin_date": "2026-04-01",
+    "end_date": "2026-04-23"
+  },
+  "target": {
+    "endpoint": "/api/ingest/announcement-package",
+    "ingest_package": "announcement-package",
+    "ingest_field": "raw_announcements",
+    "target_table": "announcement_raw_hot"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/announcements/sse/announcement_sse_20260423.json",
+    "staging_path": "backend/crawler/staging/announcement_package.json",
+    "quality_report_path": "backend/crawler/staging/quality_reports/announcement_quality_report.json"
+  },
+  "record_stats": {
+    "staging_count": 2,
+    "expected_write_count": 2,
+    "raw_count": 2
+  },
+  "checksum": {
+    "staging_sha256": "fdd13d41ed7a1f795b64b53da2a74b6e23a7762da52f1413b0a50523aa03ec56"
+  },
+  "status": "ready"
+}

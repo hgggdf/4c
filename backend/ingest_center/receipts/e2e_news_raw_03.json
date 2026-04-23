@@ -1,0 +1,15 @@
+{
+  "job_id": "e2e_news_raw_03",
+  "data_category": "research_report",
+  "manifest_path": "ingest_center/manifests_e2e\\e2e_news_raw_03.json",
+  "staging_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\crawler\\staging\\e2e\\e2e_news_raw_03.json",
+  "endpoint": "/api/ingest/news-package",
+  "status": "done",
+  "success": true,
+  "written_count": 20,
+  "error_code": null,
+  "error_message": null,
+  "trace_id": null,
+  "warnings": [],
+  "created_at": "2026-04-23T11:49:10.892130+00:00"
+}

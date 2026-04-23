@@ -1,0 +1,233 @@
+{
+  "generated_at": "2026-04-23T11:11:16.861767+00:00",
+  "payload": {
+    "macro_indicators": [],
+    "news_raw": [
+      {
+        "news_uid": "e2e_news_0061",
+        "title": "联影医疗深度报告：创新药管线价值重估",
+        "publish_time": "2026-03-30T18:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/61",
+        "author_name": "E2E Author",
+        "content": "联影医疗深度报告：创新药管线价值重估详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0062",
+        "title": "复星医药季报点评：业绩符合预期，研发稳步推进",
+        "publish_time": "2026-02-02T10:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/62",
+        "author_name": "E2E Author",
+        "content": "复星医药季报点评：业绩符合预期，研发稳步推进详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0063",
+        "title": "智飞生物首次覆盖：生物药龙头，成长空间广阔",
+        "publish_time": "2026-02-05T20:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/63",
+        "author_name": "E2E Author",
+        "content": "智飞生物首次覆盖：生物药龙头，成长空间广阔详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0064",
+        "title": "恒瑞医药事件点评：核心产品获批，利好兑现",
+        "publish_time": "2026-02-18T14:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/64",
+        "author_name": "E2E Author",
+        "content": "恒瑞医药事件点评：核心产品获批，利好兑现详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0065",
+        "title": "复星医药年度策略：国际化布局加速",
+        "publish_time": "2026-01-08T12:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/65",
+        "author_name": "E2E Author",
+        "content": "复星医药年度策略：国际化布局加速详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0066",
+        "title": "华兰生物深度报告：创新药管线价值重估",
+        "publish_time": "2026-01-23T15:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/66",
+        "author_name": "E2E Author",
+        "content": "华兰生物深度报告：创新药管线价值重估详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0067",
+        "title": "智飞生物季报点评：业绩符合预期，研发稳步推进",
+        "publish_time": "2026-03-04T11:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/67",
+        "author_name": "E2E Author",
+        "content": "智飞生物季报点评：业绩符合预期，研发稳步推进详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0068",
+        "title": "天坛生物首次覆盖：生物药龙头，成长空间广阔",
+        "publish_time": "2026-02-20T10:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/68",
+        "author_name": "E2E Author",
+        "content": "天坛生物首次覆盖：生物药龙头，成长空间广阔详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0069",
+        "title": "爱尔眼科事件点评：核心产品获批，利好兑现",
+        "publish_time": "2026-01-14T10:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/69",
+        "author_name": "E2E Author",
+        "content": "爱尔眼科事件点评：核心产品获批，利好兑现详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0070",
+        "title": "华熙生物年度策略：国际化布局加速",
+        "publish_time": "2026-02-25T11:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/70",
+        "author_name": "E2E Author",
+        "content": "华熙生物年度策略：国际化布局加速详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0071",
+        "title": "创新药行业周报：医保谈判结果超预期",
+        "publish_time": "2026-03-24T09:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/71",
+        "author_name": "E2E Author",
+        "content": "创新药行业周报：医保谈判结果超预期详细内容...",
+        "news_type": "industry_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0072",
+        "title": "医疗器械行业动态：集采政策趋于温和",
+        "publish_time": "2026-02-03T09:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/72",
+        "author_name": "E2E Author",
+        "content": "医疗器械行业动态：集采政策趋于温和详细内容...",
+        "news_type": "industry_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0073",
+        "title": "生物医药板块资金流向分析",
+        "publish_time": "2026-01-10T09:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/73",
+        "author_name": "E2E Author",
+        "content": "生物医药板块资金流向分析详细内容...",
+        "news_type": "industry_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0074",
+        "title": "CXO行业跟踪：订单需求保持韧性",
+        "publish_time": "2026-02-02T20:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/74",
+        "author_name": "E2E Author",
+        "content": "CXO行业跟踪：订单需求保持韧性详细内容...",
+        "news_type": "industry_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0075",
+        "title": "创新药行业周报：医保谈判结果超预期",
+        "publish_time": "2026-01-03T15:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/75",
+        "author_name": "E2E Author",
+        "content": "创新药行业周报：医保谈判结果超预期详细内容...",
+        "news_type": "industry_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0076",
+        "title": "国家医保局发布新版医保目录调整方案",
+        "publish_time": "2026-03-25T18:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/76",
+        "author_name": "E2E Author",
+        "content": "国家医保局发布新版医保目录调整方案详细内容...",
+        "news_type": "policy_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0077",
+        "title": "CDE发布创新药审评审批改革意见",
+        "publish_time": "2026-01-05T18:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/77",
+        "author_name": "E2E Author",
+        "content": "CDE发布创新药审评审批改革意见详细内容...",
+        "news_type": "policy_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0078",
+        "title": "联影医疗与海外药企达成战略合作",
+        "publish_time": "2026-02-04T10:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/78",
+        "author_name": "E2E Author",
+        "content": "联影医疗与海外药企达成战略合作详细内容...",
+        "news_type": "company_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0079",
+        "title": "复星医药新一代抗体药物获批临床",
+        "publish_time": "2026-02-20T17:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/79",
+        "author_name": "E2E Author",
+        "content": "复星医药新一代抗体药物获批临床详细内容...",
+        "news_type": "company_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "e2e_news_0080",
+        "title": "恒瑞医药生产基地通过FDA现场检查",
+        "publish_time": "2026-03-07T19:00:00",
+        "source_name": "E2E Mock News",
+        "source_url": "http://e2e.example.com/news/80",
+        "author_name": "E2E Author",
+        "content": "恒瑞医药生产基地通过FDA现场检查详细内容...",
+        "news_type": "company_news",
+        "language": "zh"
+      }
+    ],
+    "news_structured": [],
+    "news_industry_maps": {},
+    "news_company_maps": {},
+    "industry_impact_events": [],
+    "sync_vector_index": true
+  }
+}

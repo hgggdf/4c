@@ -1,0 +1,15 @@
+{
+  "job_id": "e2e_macro_01",
+  "data_category": "macro",
+  "manifest_path": "ingest_center/manifests_e2e\\e2e_macro_01.json",
+  "staging_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\crawler\\staging\\e2e\\e2e_macro_01.json",
+  "endpoint": "/api/ingest/macro-package",
+  "status": "failed",
+  "success": false,
+  "written_count": null,
+  "error_code": "VALIDATION_ERROR",
+  "error_message": "endpoint mismatch: manifest says /api/ingest/macro-package, dispatcher expects /api/macro-write/macro-indicators",
+  "trace_id": null,
+  "warnings": null,
+  "created_at": "2026-04-23T11:49:10.967237+00:00"
+}

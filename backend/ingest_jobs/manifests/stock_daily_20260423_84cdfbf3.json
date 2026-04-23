@@ -1,0 +1,36 @@
+{
+  "spec_version": "1.0",
+  "staging_format_version": "1.0",
+  "job_id": "stock_daily_20260423_84cdfbf3",
+  "created_at": "2026-04-23T08:09:09.405254+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "StockDailyTransformer",
+    "run_id": "run_stock_daily_20260423_84cdfbf3"
+  },
+  "data_category": "stock_daily",
+  "time_window": {
+    "begin_date": "2026-04-23",
+    "end_date": "2026-04-23"
+  },
+  "target": {
+    "endpoint": "/api/ingest/financial-package",
+    "ingest_package": "financial-package",
+    "ingest_field": "stock_daily",
+    "target_table": "stock_daily_hot"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/financial_data/akshare/stock_daily_akshare_20260423.json",
+    "staging_path": "backend/crawler/staging/stock_daily_package.json",
+    "quality_report_path": "backend/crawler/staging/quality_reports/stock_daily_quality_report.json"
+  },
+  "record_stats": {
+    "staging_count": 5,
+    "expected_write_count": 5,
+    "raw_count": 5
+  },
+  "checksum": {
+    "staging_sha256": "1e68c83f79969ed4c31fdf7fe2de0438c180f330210ee2610c25112202283266"
+  },
+  "status": "ready"
+}

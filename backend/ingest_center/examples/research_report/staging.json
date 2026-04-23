@@ -1,0 +1,19 @@
+{
+  "payload": {
+    "macro_indicators": [],
+    "news_raw": [
+      {
+        "title": "研报标题",
+        "publish_time": "2026-04-23T10:00:00",
+        "content": "研报内容",
+        "news_type": "company_research_report",
+        "source_url": "http://example.com/report/1"
+      }
+    ],
+    "news_structured": [],
+    "news_industry_maps": {},
+    "news_company_maps": {},
+    "industry_impact_events": [],
+    "sync_vector_index": true
+  }
+}

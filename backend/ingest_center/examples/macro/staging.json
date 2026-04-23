@@ -1,0 +1,12 @@
+{
+  "records": [
+    {
+      "indicator_name": "GDP",
+      "period": "2026-Q1",
+      "value": 5.2,
+      "unit": "%",
+      "source_type": "统计局",
+      "source_url": "http://example.com/macro/1"
+    }
+  ]
+}
