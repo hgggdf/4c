@@ -21,7 +21,7 @@
 
       <!-- 内容区 -->
       <div class="content-area">
-        <div class="content-area-inner" :class="{ 'no-padding': selectedStock }">
+        <div class="content-area-inner" :class="{ 'no-padding': selectedStock || selectedIndustry }">
 
           <template v-if="activeSection === 'stock'">
             <Transition name="detail-slide" mode="out-in">
@@ -29,6 +29,7 @@
                 v-if="selectedStock"
                 :key="selectedStock.symbol"
                 :stock="selectedStock"
+                :panel-width="panelWidth"
                 @back="selectedStock = null"
               />
               <StockGrid
@@ -41,11 +42,22 @@
           </template>
 
           <template v-else-if="activeSection === 'industry'">
-            <StockGrid
-              mode="industry"
-              :industries="industries"
-              @open-industry="onIndustryClick"
-            />
+            <Transition name="detail-slide" mode="out-in">
+              <IndustryDetailPanel
+                v-if="selectedIndustry"
+                :key="selectedIndustry.code"
+                :industry="selectedIndustry"
+                :stocks="stocks"
+                :panel-width="panelWidth"
+                @back="selectedIndustry = null"
+              />
+              <StockGrid
+                v-else
+                mode="industry"
+                :industries="industries"
+                @open-industry="selectedIndustry = $event"
+              />
+            </Transition>
           </template>
 
           <template v-else-if="activeSection === 'macro'">
@@ -83,36 +95,23 @@
          右侧：对话区
     ═══════════════════════════════════════════ -->
     <div class="chat-side" :style="chatSideStyle">
-      <div class="chat-panel">
-        <div ref="msgListRef" class="message-list">
-          <MessageItem
-            v-for="(msg, i) in chatStore.messages"
-            :key="`${msg.createdAt}-${i}`"
-            :message="msg"
-          />
-          <div v-if="chatStore.loading" class="message-item message-assistant thinking">
-            <span class="dot"/><span class="dot"/><span class="dot"/>
-          </div>
-        </div>
-        <ChatBox :loading="chatStore.loading" @submit="handleSubmit" />
-      </div>
+      <ChatPanel />
     </div>
 
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted, onBeforeUnmount, watch, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue'
 import { useChatStore } from '../store/chatStore'
-import ChatBox from '../components/ChatBox.vue'
-import MessageItem from '../components/MessageItem.vue'
 import StockGrid from '../components/StockGrid.vue'
 import StockDetailPanel from '../components/StockDetailPanel.vue'
+import IndustryDetailPanel from '../components/IndustryDetailPanel.vue'
 import MacroPanel from '../components/MacroPanel.vue'
+import ChatPanel from '../components/ChatPanel.vue'
 import { getStockList, getIndustryList } from '../api/stock'
 
 const chatStore = useChatStore()
-const msgListRef = ref(null)
 const wrapRef = ref(null)
 
 // ── Tab 定义 ──────────────────────────────────────
@@ -123,13 +122,11 @@ const TABS = [
 ]
 
 // ── 面板状态 ──────────────────────────────────────
-// 默认展开，初始宽度设为两列个股（约 360px）
-const getInitialWidth = () => {
-  const screenWidth = window.innerWidth
-  // 两列个股：每列约 160px + gap + padding = 360px
-  return Math.max(360, Math.min(400, Math.floor(screenWidth * 0.25)))
-}
-const panelWidth = ref(getInitialWidth())
+// 三档：关闭(0) / 两列(~320px) / 五列(~600px)
+const SNAP_TWO  = 320   // 两列
+const SNAP_FIVE = 600   // 五列
+
+const panelWidth = ref(SNAP_TWO)
 const panelOpen = computed(() => panelWidth.value > 0)
 const isDragging = ref(false)
 const isHovering = ref(false)
@@ -140,16 +137,14 @@ const isAnimating = ref(false)
 // 把手跟随面板右边界
 // 收起时：left=0, translateX(0) → 把手左边缘贴屏幕左侧，弧形阴影向右散开
 // 展开时：left=panelWidth, translateX(-50%) → 把手中心线对齐面板右边界
-const handleStyle = computed(() => {
-  const left = panelWidth.value === 0 ? 0 : panelWidth.value
-  return {
-    left: `${left}px`,
-    transform: panelWidth.value === 0 ? 'translateX(0)' : 'translateX(-50%)',
-    transition: isDragging.value
-      ? 'none'
-      : 'left 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1)',
-  }
-})
+// 把手贴在面板右边缘，向右侧伸出（left = panelWidth，不偏移）
+const handleStyle = computed(() => ({
+  left: `${panelWidth.value}px`,
+  transform: 'translateX(0)',
+  transition: isDragging.value
+    ? 'none'
+    : 'left 0.6s cubic-bezier(0.34, 1.4, 0.64, 1)',
+}))
 
 // 探索区宽度动画
 const exploreSideStyle = computed(() => ({
@@ -183,12 +178,8 @@ function onDragStart(e) {
 function onDragMove(e) {
   if (!isDragging.value) return
   e.preventDefault()
-  const total = wrapRef.value?.clientWidth || window.innerWidth
-  // 最大宽度：四列个股（约 720px）
-  const maxW = Math.min(720, Math.floor(total * 0.5))
-  // 用相对位移，避免面板跳动
   const delta = e.clientX - dragStartX
-  let newW = Math.max(0, Math.min(dragStartWidth + delta, maxW))
+  let newW = Math.max(0, Math.min(dragStartWidth + delta, SNAP_FIVE))
   panelWidth.value = newW
 }
 
@@ -199,20 +190,18 @@ function onDragEnd() {
   document.body.style.userSelect = ''
   document.body.style.cursor = ''
 
-  const total = wrapRef.value?.clientWidth || window.innerWidth
-  const twoCol  = Math.max(360, Math.min(400, Math.floor(total * 0.25)))
-  const fourCol = Math.min(720, Math.floor(total * 0.5))
-  const threshold = 80
   const w = panelWidth.value
+  const threshold = 80
+  const midpoint = (SNAP_TWO + SNAP_FIVE) / 2
 
   isAnimating.value = true
 
   if (w < threshold) {
     panelWidth.value = 0
-  } else if (w < (twoCol + fourCol) / 2) {
-    panelWidth.value = twoCol
+  } else if (w < midpoint) {
+    panelWidth.value = SNAP_TWO
   } else {
-    panelWidth.value = fourCol
+    panelWidth.value = SNAP_FIVE
   }
 
   setTimeout(() => { isAnimating.value = false }, 700)
@@ -222,8 +211,7 @@ function onDragEnd() {
 const activeSection = ref('stock')
 function onSectionSelect(key) {
   if (!panelOpen.value) {
-    const total = wrapRef.value?.clientWidth || window.innerWidth
-    panelWidth.value = Math.max(360, Math.min(400, Math.floor(total * 0.25)))
+    panelWidth.value = SNAP_TWO
   }
   if (activeSection.value === key) {
     panelWidth.value = 0
@@ -231,44 +219,20 @@ function onSectionSelect(key) {
   }
   activeSection.value = key
   selectedStock.value = null
+  selectedIndustry.value = null
 }
 
 // ── 数据 ─────────────────────────────────────────
 const stocks     = ref([])
 const industries = ref([])
-const selectedStock = ref(null)
+const selectedStock    = ref(null)
+const selectedIndustry = ref(null)
 
 async function loadData() {
   const [s, ind] = await Promise.all([getStockList(), getIndustryList()])
   stocks.value     = s
   industries.value = ind
 }
-
-function onIndustryClick(industry) {
-  chatStore.ask({
-    message: `请分析 ${industry.name} 板块的整体情况，包括龙头公司、近期表现和投资机会`,
-    targets: [{ symbol: industry.code, name: industry.name, type: 'industry' }],
-  })
-}
-
-// ── 发送消息 ─────────────────────────────────────
-async function handleSubmit(payload) {
-  await chatStore.ask(payload)
-  await nextTick()
-  if (msgListRef.value) {
-    msgListRef.value.scrollTop = msgListRef.value.scrollHeight
-  }
-}
-
-watch(
-  () => chatStore.messages.length,
-  async () => {
-    await nextTick()
-    if (msgListRef.value) {
-      msgListRef.value.scrollTop = msgListRef.value.scrollHeight
-    }
-  }
-)
 
 onMounted(loadData)
 onBeforeUnmount(() => {
@@ -283,10 +247,20 @@ onBeforeUnmount(() => {
    ═══════════════════════════════════════════════ */
 .main-wrap {
   display: flex;
+  align-items: stretch;
   width: 100%; height: 100%;
   overflow: hidden;
   position: relative;
 }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.explore-side  { animation: fadeUp .5s ease both; }
+.edge-handle   { animation: fadeUp .5s ease .1s both; }
+.chat-side     { animation: fadeUp .5s ease .18s both; }
 
 .explore-side {
   flex-shrink: 0;
@@ -301,7 +275,8 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
   overflow: hidden;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: stretch;
   position: relative;
 }
 
@@ -314,6 +289,7 @@ onBeforeUnmount(() => {
   border-bottom: 1px solid var(--border);
   background: rgba(248, 250, 252, 0.9);
   padding: 0 8px;
+  height: 44px;
 }
 
 .explore-tab-btn {
@@ -345,109 +321,65 @@ onBeforeUnmount(() => {
 .tab-icon { font-size: 15px; line-height: 1; }
 
 /* ═══════════════════════════════════════════════
-   把手 — 绝对定位，跟随面板右边界
+   把手 — 实体圆角矩形，向右侧伸出
    ═══════════════════════════════════════════════ */
 .edge-handle {
   position: absolute;
   top: 0; bottom: 0;
-  width: 48px;
-  /* left 和 transform 由 handleStyle 动态控制 */
+  width: 12px;
   cursor: col-resize;
   z-index: 50;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
-/* 弧形阴影背景 — 收起时显示 */
-.handle-shadow-arc {
-  position: absolute;
-  top: 0; bottom: 0;
-  left: 0; right: 0;
-  background: radial-gradient(
-    ellipse 160% 100% at 0% 50%,
-    rgba(75, 169, 154, 0.10) 0%,
-    rgba(75, 169, 154, 0.05) 35%,
-    transparent 65%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease, background 0.3s ease;
-  pointer-events: none;
-}
+/* 弧形阴影背景 — 不再需要，隐藏 */
+.handle-shadow-arc { display: none; }
 
-.handle-closed .handle-shadow-arc {
-  opacity: 1;
-}
-
-.handle-hover.handle-closed .handle-shadow-arc {
-  background: radial-gradient(
-    ellipse 160% 100% at 0% 50%,
-    rgba(75, 169, 154, 0.18) 0%,
-    rgba(75, 169, 154, 0.09) 35%,
-    transparent 65%
-  );
-  opacity: 1;
-}
-
-/* 中央胶囊指示条 */
+/* 实体把手矩形 */
 .handle-pill {
-  position: relative;
-  width: 4px;
-  height: 48px;
-  background: rgba(75, 169, 154, 0.2);
-  border-radius: 2px;
+  width: 10px;
+  height: 40px;
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
-  box-shadow: 0 0 8px rgba(75, 169, 154, 0.1);
-}
-
-.handle-closed .handle-pill {
-  width: 3px;
-  height: 40px;
-  background: rgba(75, 169, 154, 0.15);
-  box-shadow: 0 0 6px rgba(75, 169, 154, 0.08);
+  transition: background .2s, box-shadow .2s, width .15s;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.06);
+  flex-shrink: 0;
+  margin-left: -1px;
 }
 
 .handle-hover .handle-pill {
-  width: 6px;
-  height: 56px;
-  background: rgba(75, 169, 154, 0.35);
-  box-shadow: 0 0 16px rgba(75, 169, 154, 0.2);
+  background: var(--bg-card);
+  border-color: var(--border-hl);
+  box-shadow: 2px 0 10px rgba(75,169,154,0.15);
+  width: 12px;
 }
 
 .handle-drag .handle-pill {
-  width: 8px;
-  height: 64px;
-  background: rgba(61, 150, 136, 0.5);
-  box-shadow: 0 0 24px rgba(61, 150, 136, 0.3);
+  background: rgba(75,169,154,0.12);
+  border-color: var(--accent);
+  box-shadow: 2px 0 12px rgba(75,169,154,0.2);
+  width: 12px;
 }
 
 /* 箭头 */
 .handle-arrow {
-  position: absolute;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(75, 169, 154, 0.4);
+  font-size: 11px;
+  color: var(--text-muted);
   user-select: none;
   pointer-events: none;
-  transition: color 0.3s, transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+  transition: color .2s;
+  line-height: 1;
 }
 
-.handle-closed .handle-arrow {
-  color: rgba(75, 169, 154, 0.3);
-}
-
-.handle-hover .handle-arrow {
-  color: rgba(75, 169, 154, 0.75);
-  transform: translateX(1px);
-}
-
-.handle-drag .handle-arrow {
-  color: rgba(61, 150, 136, 0.9);
-  transform: translateX(2px);
-}
+.handle-hover .handle-arrow { color: var(--accent); }
+.handle-drag  .handle-arrow { color: var(--accent2); }
 
 /* ═══════════════════════════════════════════════
    详情滑入

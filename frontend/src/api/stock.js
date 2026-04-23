@@ -148,6 +148,39 @@ function mapReports(dataset = {}, symbol = '') {
   }))
 }
 
+function mapConcepts(dataset = {}) {
+  const aliases = Array.isArray(dataset.aliases) ? dataset.aliases : []
+  const reports = Array.isArray(dataset.research_reports) ? dataset.research_reports : []
+  const industries = [...new Set(reports.map(r => r['行业']).filter(Boolean))]
+  return { aliases, industries }
+}
+
+function mapEvents(dataset = {}) {
+  const anns = Array.isArray(dataset.announcements) ? dataset.announcements : []
+  const news = Array.isArray(dataset.news) ? dataset.news : []
+
+  const annEvents = anns.slice(0, 30).map(a => ({
+    type: 'announcement',
+    title: a['公告标题'] || a['标题'] || '公告',
+    category: a['公告类型'] || a['类型'] || '',
+    date: a['公告日期'] || a['日期'] || '',
+    url: a['网址'] || a['链接'] || '',
+  }))
+
+  const newsEvents = news.slice(0, 20).map(n => ({
+    type: 'news',
+    title: n['新闻标题'] || n['标题'] || '新闻',
+    category: n['新闻来源'] || n['来源'] || '',
+    date: (n['发布时间'] || n['时间'] || '').slice(0, 10),
+    url: n['新闻链接'] || n['链接'] || '',
+    summary: n['新闻内容'] || n['摘要'] || '',
+  }))
+
+  return [...annEvents, ...newsEvents]
+    .filter(e => e.title)
+    .sort((a, b) => (b.date > a.date ? 1 : -1))
+}
+
 function buildIndustryList(stocks = []) {
   const groups = new Map()
 
@@ -259,6 +292,26 @@ export async function getIndustryList() {
 export async function getReports(symbol) {
   const dataset = await getCompanyDataset(symbol)
   return mapReports(dataset, symbol)
+}
+
+// ── 概念题材 ──────────────────────────────────────────
+const CONCEPT_MOCK = {
+  '300015': {
+    aliases: ['爱尔眼科', '眼科龙头', '连锁医疗'],
+    industries: ['医疗服务', '眼科医疗', '消费医疗', '院外连锁'],
+  },
+}
+
+export async function getConcepts(symbol) {
+  if (CONCEPT_MOCK[symbol]) return CONCEPT_MOCK[symbol]
+  const dataset = await getCompanyDataset(symbol)
+  return mapConcepts(dataset)
+}
+
+// ── 大事件列表 ────────────────────────────────────────
+export async function getEvents(symbol) {
+  const dataset = await getCompanyDataset(symbol)
+  return mapEvents(dataset)
 }
 
 export async function getWatchlist(userId = import.meta.env.VITE_DEMO_USER_ID || 1) {
