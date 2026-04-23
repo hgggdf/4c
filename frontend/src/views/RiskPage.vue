@@ -83,12 +83,14 @@
 import { ref, onMounted, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { getRisks, getCompare } from '../api/analysis'
+import { getStockList } from '../api/stock'
 
 const data = ref([])
 const loading = ref(false)
 const error = ref('')
 const barRef = ref(null)
 let barChart = null
+const symbols = ref('')
 
 const metrics = ['毛利率', 'ROE', '资产负债率', '净利润', '营业总收入']
 const activeMetric = ref('毛利率')
@@ -101,7 +103,18 @@ async function loadData() {
   loading.value = true
   error.value = ''
   try {
-    const res = await getRisks()
+    // 先获取公司列表，取前 3 只股票
+    if (!symbols.value) {
+      const stocks = await getStockList()
+      if (!stocks || stocks.length === 0) {
+        error.value = '暂无可用公司数据'
+        loading.value = false
+        return
+      }
+      symbols.value = stocks.slice(0, 3).map(s => s.symbol).join(',')
+    }
+
+    const res = await getRisks(symbols.value)
     data.value = res.data
     await nextTick()
     renderBar(activeMetric.value)
@@ -122,7 +135,7 @@ async function renderBar(metric) {
   if (!barChart) barChart = echarts.init(barRef.value)
 
   try {
-    const res = await getCompare(metric)
+    const res = await getCompare(metric, 2024, symbols.value)
     const items = res.data
     const names = items.map(i => i.stock_name)
     const values = items.map(i => i.value ?? 0)

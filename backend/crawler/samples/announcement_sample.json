@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "stock_code": "600276",
+      "title": "恒瑞医药关于获得药物临床试验批准通知书的公告",
+      "publish_date": "2026-04-21",
+      "exchange": "SSE",
+      "announcement_type": "其他重大事项",
+      "source_url": "https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-04-21/600276_20260421_TNBK.pdf",
+      "source_type": "local_sample_sse",
+      "content": "恒瑞医药关于获得药物临床试验批准通知书的公告\n2026-04-21\n来源: 上交所样例",
+      "file_hash": "ann_sample_600276"
+    },
+    {
+      "stock_code": "300015",
+      "title": "爱尔眼科2025年年度报告摘要",
+      "publish_date": "2026-03-28",
+      "exchange": "SZSE",
+      "announcement_type": "年度报告",
+      "source_url": "https://www.szse.cn/disclosure/listed/bulletinDetail/index.html?123456",
+      "source_type": "local_sample_szse",
+      "content": "爱尔眼科2025年年度报告摘要\n2026-03-28\n来源: 深交所样例",
+      "file_hash": "ann_sample_300015"
+    },
+    {
+      "stock_code": "430047",
+      "title": "某北交所医药公司关于创新产品取得注册证的公告",
+      "publish_date": "2026-02-17",
+      "exchange": "BSE",
+      "announcement_type": "重大事项",
+      "source_url": "https://www.bse.cn/disclosure/announcement/2026-02-17/430047.pdf",
+      "source_type": "local_sample_bse",
+      "content": "某北交所医药公司关于创新产品取得注册证的公告\n2026-02-17\n来源: 北交所样例",
+      "file_hash": "ann_sample_430047"
+    }
+  ]
+}

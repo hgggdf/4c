@@ -46,12 +46,8 @@ async function handleSubmit(message) {
 onMounted(async () => {
   try {
     watchlist.value = await getWatchlist()
-  } catch (error) {
-    watchlist.value = [
-      { symbol: '600519', name: '贵州茅台' },
-      { symbol: '000001', name: '平安银行' },
-      { symbol: '600036', name: '招商银行' }
-    ]
+  } catch {
+    watchlist.value = []
   }
 })
 </script>

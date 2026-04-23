@@ -27,6 +27,10 @@
                 {
                   "code": "202402",
                   "cname": "2024年02月"
+                },
+                {
+                  "code": "202401",
+                  "cname": "2024年01月"
                 }
               ]
             }
@@ -60,6 +64,191 @@
               ],
               "data": {
                 "strdata": "100.8"
+              }
+            },
+            {
+              "wds": [
+                {
+                  "wdcode": "zb",
+                  "valuecode": "A01010101"
+                },
+                {
+                  "wdcode": "sj",
+                  "valuecode": "202401"
+                }
+              ],
+              "data": {
+                "strdata": "100.7"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "indicator_code": "A01010801",
+      "indicator_name": "医疗保健类居民消费价格指数(上年同月=100)",
+      "unit": "%",
+      "query_url": "local://crawler/samples/macro_sample.json",
+      "response": {
+        "returndata": {
+          "wdnodes": [
+            {
+              "wdcode": "zb",
+              "nodes": [
+                {
+                  "code": "A01010801",
+                  "cname": "医疗保健类居民消费价格指数(上年同月=100)"
+                }
+              ]
+            },
+            {
+              "wdcode": "sj",
+              "nodes": [
+                {
+                  "code": "202403",
+                  "cname": "2024年03月"
+                },
+                {
+                  "code": "202402",
+                  "cname": "2024年02月"
+                },
+                {
+                  "code": "202401",
+                  "cname": "2024年01月"
+                }
+              ]
+            }
+          ],
+          "datanodes": [
+            {
+              "wds": [
+                {
+                  "wdcode": "zb",
+                  "valuecode": "A01010801"
+                },
+                {
+                  "wdcode": "sj",
+                  "valuecode": "202403"
+                }
+              ],
+              "data": {
+                "strdata": "101.1"
+              }
+            },
+            {
+              "wds": [
+                {
+                  "wdcode": "zb",
+                  "valuecode": "A01010801"
+                },
+                {
+                  "wdcode": "sj",
+                  "valuecode": "202402"
+                }
+              ],
+              "data": {
+                "strdata": "101.0"
+              }
+            },
+            {
+              "wds": [
+                {
+                  "wdcode": "zb",
+                  "valuecode": "A01010801"
+                },
+                {
+                  "wdcode": "sj",
+                  "valuecode": "202401"
+                }
+              ],
+              "data": {
+                "strdata": "100.9"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "indicator_code": "A01020101",
+      "indicator_name": "工业生产者出厂价格指数(上年同月=100)",
+      "unit": "%",
+      "query_url": "local://crawler/samples/macro_sample.json",
+      "response": {
+        "returndata": {
+          "wdnodes": [
+            {
+              "wdcode": "zb",
+              "nodes": [
+                {
+                  "code": "A01020101",
+                  "cname": "工业生产者出厂价格指数(上年同月=100)"
+                }
+              ]
+            },
+            {
+              "wdcode": "sj",
+              "nodes": [
+                {
+                  "code": "202403",
+                  "cname": "2024年03月"
+                },
+                {
+                  "code": "202402",
+                  "cname": "2024年02月"
+                },
+                {
+                  "code": "202401",
+                  "cname": "2024年01月"
+                }
+              ]
+            }
+          ],
+          "datanodes": [
+            {
+              "wds": [
+                {
+                  "wdcode": "zb",
+                  "valuecode": "A01020101"
+                },
+                {
+                  "wdcode": "sj",
+                  "valuecode": "202403"
+                }
+              ],
+              "data": {
+                "strdata": "97.2"
+              }
+            },
+            {
+              "wds": [
+                {
+                  "wdcode": "zb",
+                  "valuecode": "A01020101"
+                },
+                {
+                  "wdcode": "sj",
+                  "valuecode": "202402"
+                }
+              ],
+              "data": {
+                "strdata": "97.4"
+              }
+            },
+            {
+              "wds": [
+                {
+                  "wdcode": "zb",
+                  "valuecode": "A01020101"
+                },
+                {
+                  "wdcode": "sj",
+                  "valuecode": "202401"
+                }
+              ],
+              "data": {
+                "strdata": "97.8"
               }
             }
           ]

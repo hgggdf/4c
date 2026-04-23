@@ -108,13 +108,14 @@ button, input, textarea { font: inherit; }
   display: flex; overflow: hidden;
 }
 
-/* 左侧：对话区 */
+/* 右侧：对话区 */
 .chat-side {
   flex-shrink: 0;
   overflow: hidden;
-  display: flex; flex-direction: column;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
   position: relative;
-  /* transition 由 MainPage inline style 控制 */
 }
 
 /* 右侧：数据探索区 */
@@ -126,57 +127,8 @@ button, input, textarea { font: inherit; }
 }
 
 /* ============================================
-   对话面板
+   对话面板（ChatPanel.vue scoped 内处理，此处仅保留 ChatBox 相关全局样式）
    ============================================ */
-.chat-panel {
-  height: 100%;
-  display: flex; flex-direction: column;
-  padding: 20px 24px 16px;
-  background: var(--bg-panel);
-}
-
-.message-list {
-  flex: 1; overflow-y: auto;
-  display: flex; flex-direction: column; gap: 14px;
-  padding-right: 8px; padding-bottom: 8px;
-  /* 滚动条叠在内容上方，不占空间，避免和右侧把手冲突 */
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(75,169,154,0.2) transparent;
-}
-
-.message-item {
-  max-width: 86%;
-  padding: 11px 15px;
-  border-radius: 16px;
-  white-space: pre-wrap;
-  font-size: 14px;
-  line-height: 1.6;
-  animation: msgIn .25s ease;
-}
-
-@keyframes msgIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.message-user {
-  align-self: flex-end;
-  background: linear-gradient(135deg, #4ba99a, #3d9688);
-  color: #fff;
-  border-bottom-right-radius: 4px;
-}
-
-.message-assistant {
-  align-self: flex-start;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-bottom-left-radius: 4px;
-}
-
-.message-meta {
-  font-size: 11px; color: var(--text-muted); margin-bottom: 4px;
-}
 
 /* 拖入卡片标签 */
 .dragged-tags {
@@ -217,7 +169,7 @@ button, input, textarea { font: inherit; }
 
 .chat-textarea {
   width: 100%; min-height: 72px; max-height: 160px;
-  resize: vertical;
+  resize: none;
   background: transparent;
   border: none; outline: none;
   padding: 12px 14px 0;
@@ -276,7 +228,7 @@ button, input, textarea { font: inherit; }
 .content-area {
   flex: 1; overflow: hidden;
   display: flex; flex-direction: column;
-  background: var(--bg-deep);
+  background: var(--bg-panel);
   position: relative;
 }
 
@@ -288,6 +240,7 @@ button, input, textarea { font: inherit; }
   padding: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* ============================================
@@ -303,7 +256,9 @@ button, input, textarea { font: inherit; }
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 14px 12px;
+  padding: 10px 8px;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .stock-card:active { cursor: grabbing; }
@@ -318,11 +273,22 @@ button, input, textarea { font: inherit; }
   to   { opacity: 1; transform: translateY(0) translateX(0); }
 }
 
-.sc-name { font-size: 14px; font-weight: 700; }
-.sc-code { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-.sc-price { font-size: 20px; font-weight: 800; margin-top: 10px; }
-.sc-change { font-size: 12px; margin-top: 3px; }
-.sc-industry { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+.sc-name {
+  font-size: 13px; font-weight: 700;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.sc-code { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+.sc-price { font-size: 16px; font-weight: 800; margin-top: 6px; }
+.sc-change { font-size: 11px; margin-top: 2px; }
+.sc-industry {
+  font-size: 10px; color: var(--text-muted); margin-top: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
 /* ============================================
    股票详情子页
@@ -493,7 +459,7 @@ button, input, textarea { font: inherit; }
   border-radius: var(--radius-md);
   padding: 14px 16px;
 }
-.ic-name  { font-size: 14px; font-weight: 700; }
+.ic-name  { font-size: 13px; font-weight: 700; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .ic-count { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
 .ic-change{ font-size: 18px; font-weight: 800; margin-top: 8px; }
 .ic-bar {
