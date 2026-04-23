@@ -6,7 +6,7 @@ import re
 from hashlib import md5
 from typing import Any
 
-from agent.llm_clients import GLMClient
+from agent.llm_clients import ClaudeClient
 from agent.prompts import build_chat_messages
 from app.knowledge.store import get_store
 from app.service.container import ServiceContainer
@@ -51,15 +51,15 @@ def _extract_json_object(text: str) -> dict[str, Any] | None:
 
 
 class GLMMinimalAgent:
-    framework = "glm"
-    agent_mode = "glm-5.1-minimal"
+    framework = "claude"
+    agent_mode = "claude-sonnet"
 
     def __init__(self) -> None:
         self.container = ServiceContainer.build_default()
         from app.router.analysis_service import AnalysisService
 
         self.analysis_service = AnalysisService()
-        self.llm_client = GLMClient()
+        self.llm_client = ClaudeClient()
 
     def run(
         self,
@@ -88,7 +88,7 @@ class GLMMinimalAgent:
             payload = {
                 **local_fallback,
                 "framework": self.framework,
-                "agent_mode": "glm-config-missing",
+                "agent_mode": "claude-config-missing",
             }
             return payload
 
