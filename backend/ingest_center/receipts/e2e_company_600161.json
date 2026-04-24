@@ -1,7 +1,7 @@
 {
   "job_id": "e2e_company_600161",
   "data_category": "company",
-  "manifest_path": "ingest_center/manifests_e2e\\e2e_company_600161.json",
+  "manifest_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\manifests_e2e\\e2e_company_600161.json",
   "staging_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\crawler\\staging\\e2e\\e2e_company_600161.json",
   "endpoint": "/api/ingest/company-package",
   "status": "done",
@@ -11,5 +11,7 @@
   "error_message": null,
   "trace_id": null,
   "warnings": [],
-  "created_at": "2026-04-23T11:49:00.198781+00:00"
+  "http_status": null,
+  "dry_run": false,
+  "created_at": "2026-04-24T04:49:05.063145+00:00"
 }

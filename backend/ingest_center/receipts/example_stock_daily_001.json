@@ -1,15 +1,17 @@
 {
   "job_id": "example_stock_daily_001",
   "data_category": "stock_daily",
-  "manifest_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\manifests\\stock_daily_manifest.json",
+  "manifest_path": "ingest_center/examples/stock_daily/manifest.json",
   "staging_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\examples\\stock_daily\\staging.json",
   "endpoint": "/api/ingest/financial-package",
-  "status": "done",
+  "status": "validated",
   "success": true,
-  "written_count": 1,
+  "written_count": null,
   "error_code": null,
   "error_message": null,
   "trace_id": null,
-  "warnings": [],
-  "created_at": "2026-04-23T09:52:40.787543+00:00"
+  "warnings": null,
+  "http_status": null,
+  "dry_run": true,
+  "created_at": "2026-04-24T04:17:11.889536+00:00"
 }

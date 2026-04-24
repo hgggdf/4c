@@ -139,7 +139,7 @@ def run(
     category: Optional[str] = None,
     job_id: Optional[str] = None,
     fail_fast: bool = False,
-) -> None:
+) -> Dict[str, Any]:
     """
     执行批量入库主流程。
 
@@ -149,6 +149,9 @@ def run(
         category: 若指定，只处理该 data_category。
         job_id: 若指定，只处理该 job_id（精确匹配）。
         fail_fast: 为 True 时首个失败后立即退出。
+
+    Returns:
+        {"success": bool, "details": [...]}
     """
     manifests = collect_manifest_paths(manifest_dir)
 
@@ -162,7 +165,7 @@ def run(
 
     if not manifests:
         print("[INFO] no ready manifests to process.")
-        return
+        return {"success": True, "details": []}
 
     results: List[Dict[str, Any]] = []
 
@@ -212,6 +215,9 @@ def run(
                 break
 
     _print_summary(results)
+
+    failed_count = sum(1 for r in results if r["result"] == "failed")
+    return {"success": failed_count == 0, "details": results}
 
 
 def main() -> None:

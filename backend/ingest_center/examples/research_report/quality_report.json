@@ -1,4 +1,12 @@
 {
+  "data_category": "research_report",
   "quality_score": 1.0,
-  "issues": []
+  "checks": {
+    "format": {
+      "passed": true,
+      "missing_fields": []
+    }
+  },
+  "warnings": [],
+  "generated_at": "2026-04-23T14:00:00+08:00"
 }

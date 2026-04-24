@@ -1,0 +1,121 @@
+{
+  "job_type": "news_l3",
+  "category": "news_industry_maps",
+  "staging_dir": "C:\\Users\\17614\\Desktop\\4c\\backend\\crawler\\staging\\e2e",
+  "dry_run": false,
+  "processed_files": 4,
+  "per_category_counts": {
+    "news_industry_maps": {
+      "read": 8,
+      "skipped_invalid": 0,
+      "resolve_attempted": 8,
+      "resolve_success": 8,
+      "resolve_failed": 0,
+      "group_count": 8,
+      "total": 8
+    }
+  },
+  "executed_categories": [
+    "news_industry_maps"
+  ],
+  "failed_categories": [],
+  "results": {
+    "news_industry_maps": {
+      "group_count": 8,
+      "total": 8,
+      "details": [
+        {
+          "news_id": 2,
+          "ok": true,
+          "data": {
+            "news_id": 2,
+            "mapping_count": 1,
+            "industry_codes": [
+              "C27"
+            ]
+          }
+        },
+        {
+          "news_id": 3,
+          "ok": true,
+          "data": {
+            "news_id": 3,
+            "mapping_count": 1,
+            "industry_codes": [
+              "C35"
+            ]
+          }
+        },
+        {
+          "news_id": 22,
+          "ok": true,
+          "data": {
+            "news_id": 22,
+            "mapping_count": 1,
+            "industry_codes": [
+              "C27"
+            ]
+          }
+        },
+        {
+          "news_id": 23,
+          "ok": true,
+          "data": {
+            "news_id": 23,
+            "mapping_count": 1,
+            "industry_codes": [
+              "C35"
+            ]
+          }
+        },
+        {
+          "news_id": 42,
+          "ok": true,
+          "data": {
+            "news_id": 42,
+            "mapping_count": 1,
+            "industry_codes": [
+              "C27"
+            ]
+          }
+        },
+        {
+          "news_id": 43,
+          "ok": true,
+          "data": {
+            "news_id": 43,
+            "mapping_count": 1,
+            "industry_codes": [
+              "C35"
+            ]
+          }
+        },
+        {
+          "news_id": 62,
+          "ok": true,
+          "data": {
+            "news_id": 62,
+            "mapping_count": 1,
+            "industry_codes": [
+              "C27"
+            ]
+          }
+        },
+        {
+          "news_id": 63,
+          "ok": true,
+          "data": {
+            "news_id": 63,
+            "mapping_count": 1,
+            "industry_codes": [
+              "C35"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "status": "done",
+  "success": true,
+  "created_at": "2026-04-23T16:40:56.604573+00:00"
+}

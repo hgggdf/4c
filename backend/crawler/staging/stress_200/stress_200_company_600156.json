@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-04-23T17:11:28.658438+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "600156",
+      "stock_name": "Stress公司156",
+      "full_name": "Stress公司156股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "C",
+      "industry_level2": "C39",
+      "listing_date": "2010-01-01",
+      "status": "active",
+      "source_type": "stress_mock"
+    },
+    "company_profile": {
+      "stock_code": "600156",
+      "business_summary": "Stress公司156主营业务涵盖医药研发、生产制造及销售。",
+      "main_segments_json": [
+        "医药制造",
+        "医疗器械",
+        "研发服务"
+      ],
+      "market_position": "Stress公司156在细分领域具有较强竞争力。"
+    },
+    "industries": [
+      {
+        "industry_code": "C39",
+        "industry_name": "C39行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "600156",
+        "industry_code": "C39",
+        "is_primary": true
+      }
+    ]
+  }
+}

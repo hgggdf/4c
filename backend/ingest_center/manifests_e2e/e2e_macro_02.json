@@ -14,7 +14,7 @@
     "end_date": "2026-03-31"
   },
   "target": {
-    "endpoint": "/api/ingest/macro-package",
+    "endpoint": "/api/macro-write/macro-indicators",
     "ingest_package": "macro-package",
     "ingest_field": "macro_indicators",
     "target_table": "macro_indicator_hot"

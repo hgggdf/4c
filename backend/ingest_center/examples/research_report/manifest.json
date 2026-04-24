@@ -1,25 +1,25 @@
 {
   "spec_version": "1.0",
   "job_id": "example_research_report_001",
-  "created_at": "2026-04-23T12:00:00+00:00",
+  "created_at": "2026-04-23T14:00:00+08:00",
   "producer": {
-    "system": "openclaw",
-    "module": "example_research_report",
-    "run_id": "run_example_research_report_001"
+    "system": "OpenClaw",
+    "module": "research_report_extractor",
+    "run_id": "run_20260423_001"
   },
   "data_category": "research_report",
   "time_window": {
-    "begin_date": "2026-04-23",
-    "end_date": "2026-04-23"
+    "begin_date": "2025-12-31",
+    "end_date": "2025-12-31"
   },
   "target": {
     "endpoint": "/api/ingest/news-package",
-    "ingest_package": "news-package",
+    "ingest_package": "news_package",
     "ingest_field": "news_raw",
-    "target_table": "news_raw_hot"
+    "target_table": "news_raw"
   },
   "files": {
-    "raw_path": "backend/crawler/raw/research_report/raw.json",
+    "raw_path": "backend/ingest_center/examples/research_report/raw.json",
     "staging_path": "backend/ingest_center/examples/research_report/staging.json",
     "quality_report_path": "backend/ingest_center/examples/research_report/quality_report.json"
   },
@@ -29,7 +29,7 @@
     "expected_write_count": 1
   },
   "checksum": {
-    "staging_sha256": "df95668c095f30d1ffce19f1315532a6fa739086cda50ed6d5686e3d6865c1a8"
+    "staging_sha256": "d4770905ef5373c9630a6994d06fe19d42a2971b335b0bb9d24c075f1e52e92e"
   },
   "status": "ready"
 }

@@ -1,0 +1,36 @@
+{
+  "spec_version": "1.0",
+  "staging_format_version": "1.0",
+  "job_id": "financial_600030_2024-12-31_年报",
+  "created_at": "2026-04-23T19:26:40.504588+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "FinancialTransformer",
+    "run_id": "run_financial_600030"
+  },
+  "data_category": "financial_package",
+  "time_window": {
+    "begin_date": "2024-12-31",
+    "end_date": "2024-12-31"
+  },
+  "target": {
+    "endpoint": "/api/ingest/financial-package",
+    "ingest_package": "financial-package",
+    "ingest_field": "income_statements",
+    "target_table": "income_statement_hot"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/financial/financial_600030_2024-12-31_年报.json",
+    "staging_path": "backend/crawler/staging/financial/financial_600030_2024-12-31_年报.json",
+    "quality_report_path": "backend/crawler/staging/quality_reports/financial/financial_600030_2024-12-31_年报_quality_report.json"
+  },
+  "record_stats": {
+    "raw_count": 1,
+    "staging_count": 11,
+    "expected_write_count": 11
+  },
+  "checksum": {
+    "staging_sha256": "3de44fe4f9982cbe425ed1c06a370f7d93159c769196480769522f00676fa246"
+  },
+  "status": "ready"
+}

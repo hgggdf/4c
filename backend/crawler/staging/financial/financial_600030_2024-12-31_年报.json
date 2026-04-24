@@ -1,0 +1,159 @@
+{
+  "generated_at": "2026-04-23T19:26:40.504588+00:00",
+  "payload": {
+    "income_statements": [
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "report_type": "年报",
+        "revenue": 65000000000.0,
+        "operating_cost": 42000000000.0,
+        "gross_profit": 23000000000.0,
+        "selling_expense": 8000000000.0,
+        "admin_expense": 12000000000.0,
+        "rd_expense": 0.0,
+        "operating_profit": 25000000000.0,
+        "net_profit": 19000000000.0,
+        "net_profit_deducted": 18000000000.0,
+        "eps": 1.35,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600030.shtml"
+      }
+    ],
+    "balance_sheets": [
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "report_type": "年报",
+        "total_assets": 15000000000000.0,
+        "total_liabilities": 12000000000000.0,
+        "accounts_receivable": 8000000000.0,
+        "inventory": 0.0,
+        "cash": 3200000000000.0,
+        "equity": 3000000000000.0,
+        "goodwill": 1800000000.0,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600030.shtml"
+      }
+    ],
+    "cashflow_statements": [
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "report_type": "年报",
+        "operating_cashflow": 38000000000.0,
+        "investing_cashflow": -5000000000.0,
+        "financing_cashflow": -15000000000.0,
+        "free_cashflow": 33000000000.0,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600030.shtml"
+      }
+    ],
+    "financial_metrics": [
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "metric_name": "ROE",
+        "metric_value": 0.63,
+        "metric_unit": "%",
+        "calc_method": "净利润/平均净资产",
+        "source_ref_json": {
+          "source": "company_report"
+        }
+      },
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "metric_name": "毛利率",
+        "metric_value": 35.38,
+        "metric_unit": "%",
+        "calc_method": "毛利润/营业收入",
+        "source_ref_json": {
+          "source": "company_report"
+        }
+      },
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "metric_name": "净利率",
+        "metric_value": 29.23,
+        "metric_unit": "%",
+        "calc_method": "净利润/营业收入",
+        "source_ref_json": {
+          "source": "company_report"
+        }
+      },
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "metric_name": "EPS",
+        "metric_value": 1.35,
+        "metric_unit": "元/股",
+        "calc_method": "净利润/总股本",
+        "source_ref_json": {
+          "source": "company_report"
+        }
+      }
+    ],
+    "financial_notes": [
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "note_type": "accounting_policy",
+        "note_json": {
+          "policy_change": "适用新收入准则",
+          "assessment_method": "逾期天数法"
+        },
+        "note_text": "公司2024-12-31年度财务报告已按照新会计准则编制。",
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600030.shtml"
+      }
+    ],
+    "business_segments": [
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "segment_name": "证券经纪业务",
+        "segment_type": "product",
+        "revenue": 28000000000.0,
+        "revenue_ratio": 0.4308,
+        "gross_margin": 0.52,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600030.shtml"
+      },
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "segment_name": "投资银行业务",
+        "segment_type": "product",
+        "revenue": 12000000000.0,
+        "revenue_ratio": 0.1846,
+        "gross_margin": 0.38,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600030.shtml"
+      },
+      {
+        "stock_code": "600030",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "segment_name": "资产管理业务",
+        "segment_type": "product",
+        "revenue": 15000000000.0,
+        "revenue_ratio": 0.2308,
+        "gross_margin": 0.48,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600030.shtml"
+      }
+    ],
+    "sync_vector_index": true
+  }
+}

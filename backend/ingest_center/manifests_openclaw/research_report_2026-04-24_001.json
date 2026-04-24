@@ -1,0 +1,36 @@
+{
+  "spec_version": "1.0",
+  "staging_format_version": "1.0",
+  "job_id": "research_report_2026-04-24_001",
+  "created_at": "2026-04-23T19:23:10.922677+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "ResearchReportTransformer",
+    "run_id": "run_report_2026-04-24"
+  },
+  "data_category": "research_report",
+  "time_window": {
+    "begin_date": "1776953248",
+    "end_date": "2026-04-24"
+  },
+  "target": {
+    "endpoint": "/api/ingest/news-package",
+    "ingest_package": "news-package",
+    "ingest_field": "news_raw",
+    "target_table": "news_raw_hot"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/news/news_2026-04-24_001.json",
+    "staging_path": "backend/crawler/staging/news/news_2026-04-24_001.json",
+    "quality_report_path": "backend/crawler/staging/quality_reports/news/news_2026-04-24_001_quality_report.json"
+  },
+  "record_stats": {
+    "raw_count": 100,
+    "staging_count": 100,
+    "expected_write_count": 100
+  },
+  "checksum": {
+    "staging_sha256": "f8c59f8f74513646918588904181f98f11e3fb9e42214cdf3c85115daca89622"
+  },
+  "status": "ready"
+}

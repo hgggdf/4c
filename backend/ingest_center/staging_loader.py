@@ -55,6 +55,20 @@ def extract_records(data_category: str, staging: Dict[str, Any]) -> List[Any]:
     if data_category == "research_report":
         return payload["news_raw"]
 
+    if data_category == "financial_package":
+        payload = staging.get("payload", {})
+        records = []
+        for key in (
+            "income_statements",
+            "balance_sheets",
+            "cashflow_statements",
+            "financial_metrics",
+            "financial_notes",
+            "business_segments",
+        ):
+            records.extend(payload.get(key) or [])
+        return records
+
     if data_category in ("macro", "patent"):
         return staging["records"]
 

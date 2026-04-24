@@ -1,8 +1,8 @@
 {
   "records": [
     {
-      "patent_id": "CN12345",
-      "title": "专利标题"
+      "patent_id": "CN123456789",
+      "title": "Test Patent"
     }
   ]
 }

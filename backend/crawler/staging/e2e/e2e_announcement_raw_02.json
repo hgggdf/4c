@@ -36,38 +36,14 @@
     "structured_announcements": [
       {
         "category": "普通公告",
-        "summary_text": "公司发布回购股份公告。",
-        "signal_type": "positive",
-        "risk_level": "low",
-        "stock_code": "600196",
-        "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/structured_announcements/1_0",
-        "key_fields_json": {
-          "key": "value"
-        }
-      },
-      {
-        "category": "普通公告",
-        "summary_text": "公司发布对外投资公告。",
-        "signal_type": "neutral",
-        "risk_level": "low",
-        "stock_code": "600161",
-        "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/structured_announcements/1_1",
-        "key_fields_json": {
-          "key": "value"
-        }
-      },
-      {
-        "category": "普通公告",
         "summary_text": "公司发布日常经营公告。",
         "signal_type": "neutral",
         "risk_level": "low",
-        "stock_code": "600161",
-        "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/structured_announcements/1_2",
+        "stock_code": "600276",
+        "title": "2025年第三季度报告",
+        "publish_date": "2026-01-09",
         "key_fields_json": {
-          "key": "value"
+          "key": "value_0"
         }
       },
       {
@@ -75,15 +51,40 @@
         "summary_text": "公司发布股东减持预披露公告。",
         "signal_type": "negative",
         "risk_level": "medium",
-        "stock_code": "300760",
-        "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/structured_announcements/1_3",
+        "stock_code": "300122",
+        "title": "关于召开2025年度业绩说明会的公告",
+        "publish_date": "2026-02-14",
         "key_fields_json": {
-          "key": "value"
+          "key": "value_1"
+        }
+      },
+      {
+        "category": "普通公告",
+        "summary_text": "公司发布回购股份公告。",
+        "signal_type": "positive",
+        "risk_level": "low",
+        "stock_code": "300015",
+        "title": "2025年年度报告",
+        "publish_date": "2026-01-22",
+        "key_fields_json": {
+          "key": "value_2"
         }
       }
     ],
     "drug_approvals": [
+      {
+        "drug_name": "注射用卡瑞利珠单抗",
+        "approval_type": "新药上市",
+        "indication": "晚期肝细胞癌",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 1,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "stock_code": "600276",
+        "source_type": "e2e_mock",
+        "source_url": "http://e2e.example.com/drug_approvals/1_0",
+        "event_date": "2026-03-15"
+      },
       {
         "drug_name": "马来酸吡咯替尼片",
         "approval_type": "新增适应症",
@@ -92,10 +93,10 @@
         "is_innovative_drug": 1,
         "review_status": "已通过",
         "market_scope": "国内",
-        "stock_code": "688363",
+        "stock_code": "300122",
         "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/drug_approvals/1_0",
-        "event_date": "2026-01-14"
+        "source_url": "http://e2e.example.com/drug_approvals/1_1",
+        "event_date": "2026-03-15"
       },
       {
         "drug_name": "甲苯磺酸瑞马唑仑",
@@ -105,26 +106,24 @@
         "is_innovative_drug": 1,
         "review_status": "已通过",
         "market_scope": "国内",
-        "stock_code": "688271",
-        "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/drug_approvals/1_1",
-        "event_date": "2026-01-14"
-      },
-      {
-        "drug_name": "注射用卡瑞利珠单抗",
-        "approval_type": "新药上市",
-        "indication": "晚期肝细胞癌",
-        "drug_stage": "已上市",
-        "is_innovative_drug": 1,
-        "review_status": "已通过",
-        "market_scope": "国内",
-        "stock_code": "600196",
+        "stock_code": "300015",
         "source_type": "e2e_mock",
         "source_url": "http://e2e.example.com/drug_approvals/1_2",
-        "event_date": "2026-03-13"
+        "event_date": "2026-03-15"
       }
     ],
     "clinical_trials": [
+      {
+        "drug_name": "SHR-1316注射液",
+        "trial_phase": "III期",
+        "event_type": "入组完成",
+        "indication": "小细胞肺癌",
+        "summary_text": "III期临床试验完成患者入组。",
+        "stock_code": "600276",
+        "source_type": "e2e_mock",
+        "source_url": "http://e2e.example.com/clinical_trials/1_0",
+        "event_date": "2026-03-15"
+      },
       {
         "drug_name": "SHR-1701注射液",
         "trial_phase": "II期",
@@ -133,8 +132,8 @@
         "summary_text": "获得国家药监局临床试验批准。",
         "stock_code": "300122",
         "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/clinical_trials/1_0",
-        "event_date": "2026-02-08"
+        "source_url": "http://e2e.example.com/clinical_trials/1_1",
+        "event_date": "2026-03-15"
       },
       {
         "drug_name": "SHR-1802注射液",
@@ -142,34 +141,34 @@
         "event_type": "首例给药",
         "indication": "晚期恶性肿瘤",
         "summary_text": "I期临床试验完成首例患者给药。",
-        "stock_code": "688363",
-        "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/clinical_trials/1_1",
-        "event_date": "2026-03-01"
-      },
-      {
-        "drug_name": "SHR-1316注射液",
-        "trial_phase": "III期",
-        "event_type": "入组完成",
-        "indication": "小细胞肺癌",
-        "summary_text": "III期临床试验完成患者入组。",
-        "stock_code": "688271",
+        "stock_code": "300015",
         "source_type": "e2e_mock",
         "source_url": "http://e2e.example.com/clinical_trials/1_2",
-        "event_date": "2026-03-17"
+        "event_date": "2026-03-15"
       }
     ],
     "procurement_events": [
+      {
+        "drug_name": "注射用卡瑞利珠单抗",
+        "procurement_round": "国家医保谈判",
+        "bid_result": "中选",
+        "price_change_ratio": -0.35,
+        "impact_summary": "成功进入国家医保目录，预计放量增长。",
+        "stock_code": "600276",
+        "source_type": "e2e_mock",
+        "source_url": "http://e2e.example.com/procurement_events/1_0",
+        "event_date": "2026-03-15"
+      },
       {
         "drug_name": "马来酸吡咯替尼片",
         "procurement_round": "国家医保谈判",
         "bid_result": "中选",
         "price_change_ratio": -0.28,
         "impact_summary": "续约成功，维持医保支付标准。",
-        "stock_code": "688271",
+        "stock_code": "300122",
         "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/procurement_events/1_0",
-        "event_date": "2026-01-31"
+        "source_url": "http://e2e.example.com/procurement_events/1_1",
+        "event_date": "2026-03-15"
       },
       {
         "drug_name": "甲苯磺酸瑞马唑仑",
@@ -177,59 +176,39 @@
         "bid_result": "中选",
         "price_change_ratio": -0.22,
         "impact_summary": "首次纳入医保目录，有助于快速放量。",
-        "stock_code": "600161",
-        "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/procurement_events/1_1",
-        "event_date": "2026-02-01"
-      },
-      {
-        "drug_name": "注射用卡瑞利珠单抗",
-        "procurement_round": "国家医保谈判",
-        "bid_result": "中选",
-        "price_change_ratio": -0.35,
-        "impact_summary": "成功进入国家医保目录，预计放量增长。",
-        "stock_code": "688363",
+        "stock_code": "300015",
         "source_type": "e2e_mock",
         "source_url": "http://e2e.example.com/procurement_events/1_2",
-        "event_date": "2026-01-21"
+        "event_date": "2026-03-15"
       }
     ],
     "regulatory_risks": [
       {
+        "risk_type": "药品不良反应",
+        "risk_level": "medium",
+        "summary_text": "国家药监局发布关于本品不良反应的警示信息。",
+        "stock_code": "600276",
+        "source_type": "e2e_mock",
+        "source_url": "http://e2e.example.com/regulatory_risks/1_0",
+        "event_date": "2026-03-15"
+      },
+      {
         "risk_type": "环保处罚",
         "risk_level": "low",
         "summary_text": "子公司收到地方环保局行政处罚决定书。",
-        "stock_code": "300015",
+        "stock_code": "300122",
         "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/regulatory_risks/1_0",
-        "event_date": "2026-02-19"
+        "source_url": "http://e2e.example.com/regulatory_risks/1_1",
+        "event_date": "2026-03-15"
       },
       {
         "risk_type": "临床试验暂停",
         "risk_level": "high",
         "summary_text": "某海外临床试验因安全性数据被监管机构要求暂停。",
-        "stock_code": "300122",
-        "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/regulatory_risks/1_1",
-        "event_date": "2026-02-13"
-      },
-      {
-        "risk_type": "药品不良反应",
-        "risk_level": "medium",
-        "summary_text": "国家药监局发布关于本品不良反应的警示信息。",
-        "stock_code": "603259",
+        "stock_code": "300015",
         "source_type": "e2e_mock",
         "source_url": "http://e2e.example.com/regulatory_risks/1_2",
-        "event_date": "2026-03-30"
-      },
-      {
-        "risk_type": "环保处罚",
-        "risk_level": "low",
-        "summary_text": "子公司收到地方环保局行政处罚决定书。",
-        "stock_code": "600161",
-        "source_type": "e2e_mock",
-        "source_url": "http://e2e.example.com/regulatory_risks/1_3",
-        "event_date": "2026-02-25"
+        "event_date": "2026-03-15"
       }
     ],
     "sync_vector_index": true

@@ -34,10 +34,18 @@ def build_payload(data_category: str, staging: Dict[str, Any]) -> Dict[str, Any]
         return staging["payload"]
 
     if data_category == "announcement_raw":
-        return staging["payload"]
+        payload = staging["payload"]
+        return {
+            "raw_announcements": payload.get("raw_announcements", []),
+            "sync_vector_index": payload.get("sync_vector_index", False),
+        }
 
     if data_category == "research_report":
-        return staging["payload"]
+        payload = staging["payload"]
+        return {
+            "news_raw": payload.get("news_raw", []),
+            "sync_vector_index": payload.get("sync_vector_index", False),
+        }
 
     if data_category == "macro":
         records = staging["records"]
@@ -54,6 +62,18 @@ def build_payload(data_category: str, staging: Dict[str, Any]) -> Dict[str, Any]
         return {
             "items": items,
             "sync_vector_index": False,
+        }
+
+    if data_category == "financial_package":
+        payload = staging.get("payload") or {}
+        return {
+            "income_statements": payload.get("income_statements", []),
+            "balance_sheets": payload.get("balance_sheets", []),
+            "cashflow_statements": payload.get("cashflow_statements", []),
+            "financial_metrics": payload.get("financial_metrics", []),
+            "financial_notes": payload.get("financial_notes", []),
+            "business_segments": payload.get("business_segments", []),
+            "sync_vector_index": payload.get("sync_vector_index", False),
         }
 
     if data_category == "patent":

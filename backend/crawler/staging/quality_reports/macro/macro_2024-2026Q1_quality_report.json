@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-04-23T19:25:03.758699+00:00",
+  "job_id": "macro_2024-2026Q1",
+  "data_category": "macro",
+  "staging_path": "backend/crawler/staging/macro/macro_2024-2026Q1.json",
+  "checksum_sha256": "b1314956be386241e9a098ac872956acb7ed500af3f2f46ef2d900359ee655cf",
+  "record_count": 56,
+  "time_window": {
+    "begin_date": "2020",
+    "end_date": "2026-03"
+  },
+  "fields": {
+    "indicator_name": "string",
+    "period": "string",
+    "value": "float",
+    "unit": "string",
+    "source_type": "string",
+    "source_url": "string",
+    "fetched_at": "string"
+  },
+  "null_checks": {
+    "indicator_name": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "period": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "value": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {
+    "value": {
+      "min": -0.1,
+      "max": 13500000000000
+    }
+  },
+  "quality_score": 1.0,
+  "status": "ready"
+}

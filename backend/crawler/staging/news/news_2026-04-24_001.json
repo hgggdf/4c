@@ -1,0 +1,3488 @@
+{
+  "generated_at": "2026-04-23T19:23:10.922677+00:00",
+  "payload": {
+    "news_raw": [
+      {
+        "news_uid": "news_26a3abd19bb9",
+        "title": "若执掌美联储，凯文·沃什将如何“打破常规”？",
+        "publish_time": "1776971302",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkn4697869.shtml",
+        "author_name": "",
+        "content": "如果凯文·沃什最终获得确认成为下一任美联储主席，他准备在从通胀框架到资产负债表管理等关键领域推行深刻的改革。这位前美联储理事在4月21日的参议院确认听证会上清晰地勾...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_0b6771f78f3c",
+        "title": "美国运通一季度盈利超预期，消费支出增速创三年新高",
+        "publish_time": "1776971219",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqku3496343.shtml",
+        "author_name": "",
+        "content": "美国运通周四公布的第一季度财报显示，受高端客户强劲消费推动，公司盈利超出市场预期，持卡人消费增速创下三年新高。 核心业绩全面超预期 财报显示...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_d99c3571a144",
+        "title": "电力设备需求激增，西门子能源再度上调年度业绩指引",
+        "publish_time": "1776971166",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqku3496232.shtml",
+        "author_name": "",
+        "content": " 德国西门子能源公司周四宣布，鉴于数据中心扩建带动的电力设备需求持续高涨，公司再度上调2026财年业绩指引，并对全年增长持乐观预期。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_a7bbb262061e",
+        "title": "Amazon两部门废传统头衔，“Builder”成岗位新称谓",
+        "publish_time": "1776971101",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqku3496045.shtml",
+        "author_name": "",
+        "content": "在年度考核季期间，亚马逊正对其两家子公司的数百名白领员工进行一场非同寻常的“头衔革命”。从亚马逊旗下智能家居部门Ring和Blink下月开始...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_7aa51a615fbc",
+        "title": "意外增持！裕信银行将Generali持股比例提升至8.7%",
+        "publish_time": "1776971047",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5070587.shtml",
+        "author_name": "",
+        "content": " 意大利裕信银行在意外操作下，将其在保险巨头Generali的持股比例从此前的6.7%提升至8.72%。这一消息由Generali董事长在周四的年度股东大会上披露，令市场颇感意外。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_7da50a7c297a",
+        "title": "中东局势不确定性拖累，铜价从数周高位回落",
+        "publish_time": "1776970977",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqku3495554.shtml",
+        "author_name": "",
+        "content": " 受美伊停火谈判陷入僵局以及霍尔木兹海峡持续关闭的影响，伦敦金属交易所铜价周四从数周高点回落，美元走强也进一步加大了价格压力。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_760490d20ee5",
+        "title": "美国FDA批准再生元基因疗法，用于治疗遗传性耳聋",
+        "publish_time": "1776970906",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5070006.shtml",
+        "author_name": "",
+        "content": "美国食品药品监督管理局近日批准了再生元制药公司开发的基因疗法DB-OTO，用于治疗由OTOF基因突变导致的先天性深度听力损失。这是全球首款获批用于治疗遗传性耳聋的药物疗法...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_f1c8e778aee7",
+        "title": "中东僵局压制市场情绪，美股周四尾盘承压走低",
+        "publish_time": "1776970858",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqku3495119.shtml",
+        "author_name": "",
+        "content": " 当地时间4月23日尾盘，美国股市延续开盘时的弱势格局，三大指数集体下跌，投资者对中东局势持续僵持及企业财报表现分化保持谨慎。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_172ebd9e155e",
+        "title": "美国司法部将医用大麻重新归类为低危险性毒品",
+        "publish_time": "1776970624",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5069150.shtml",
+        "author_name": "",
+        "content": "美国司法部代理部长托德·布兰奇于4月23日签署命令，将获得州许可的医用大麻从《管制物质法案》中最严格的附表一重新归类为危险性较低的附表三。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_3708e89328e1",
+        "title": "Bending Spoons选定投行筹备200亿美元美国IPO",
+        "publish_time": "1776970571",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkq8291776.shtml",
+        "author_name": "",
+        "content": "意大利科技公司Bending Spoons已选定多家投行，为其潜在的200亿美元美国首次公开募股进行筹备工作。据两位知情人士透露，这家总部位于米兰...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_5d2501c12ac6",
+        "title": "美伊谈判陷僵局，墨西哥比索承压走低",
+        "publish_time": "1776970522",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkn4695602.shtml",
+        "author_name": "",
+        "content": " 受美国与伊朗谈判停滞消息影响，墨西哥比索周四走弱。投资者对地缘政治前景的不确定性感到不安，导致新兴市场货币普遍承压。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_f1f08c21243b",
+        "title": "育碧官宣：《刺客信条：黑旗》重制版7月9日发售",
+        "publish_time": "1776970455",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqku3494082.shtml",
+        "author_name": "",
+        "content": " 育碧当地时间周四正式宣布，传闻已久的《刺客信条IV：黑旗》重制版定名为《刺客信条：黑旗 同步重置》，将于2026年7月9日全球发售，登陆PS5、Xbox Series X|S及PC平台。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_7ece91c913f1",
+        "title": "未经证实消息称伊朗首席谈判代表辞职，布伦特原油突破每桶104美元",
+        "publish_time": "1776970297",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqku3493560.shtml",
+        "author_name": "",
+        "content": "在以色列广播公司N12报道伊朗与美国谈判的首席代表辞职后，布伦特原油价格大涨逾3%。 截至美东时间周四下午2：05，布伦特原油上涨近3%，至每桶104.79美元。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_3c0d65427794",
+        "title": "尾盘：美股尾盘走低 科技股跌幅领先",
+        "publish_time": "1776970152",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5067309.shtml",
+        "author_name": "",
+        "content": "北京时间4月24日凌晨，美股周四尾盘走低，科技股跌幅领先。标普指数一度创盘中历史新高。市场继续关注美伊关系发展与美股财报。特朗普声称已完全掌控霍尔木兹海峡。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_cf2150f6cd3b",
+        "title": "中东局势与财报交织，欧股收盘波澜不惊",
+        "publish_time": "1776970004",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkn4693932.shtml",
+        "author_name": "",
+        "content": " 欧洲股市周四收盘基本持平，投资者在评估中东地缘政治紧张局势与密集出炉的企业财报之间陷入两难。泛欧斯托克600指数微跌0.1%，主要股指涨跌互现，市场情绪整体谨慎。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_a2f0ca08d8e1",
+        "title": "伊莱克斯拟增资9.8亿美元，携手美的组建北美合资企业",
+        "publish_time": "1776969913",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkq8289421.shtml",
+        "author_name": "",
+        "content": " 瑞典家电制造商伊莱克斯周四宣布，将启动90亿瑞典克朗的供股计划，并同步披露与中国美的集团达成合作，双方将在北美组建三家合资企业，以推进业务重组。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_9e655bff967b",
+        "title": "特朗普：没有急于结束战争的压力 协议必须对美国有利",
+        "publish_time": "1776969897",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkq8289368.shtml",
+        "author_name": "",
+        "content": "美国总统特朗普表示，只有在对美国及盟友“合适且有利”时，才会与伊朗达成协议。 特朗普在Truth Social上发帖。 针对有报道称他“急于”结束战争...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_8ba375532dc4",
+        "title": "墨西哥健康税实施首季，Arca饮料销量持稳股价大涨",
+        "publish_time": "1776969860",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkq8289272.shtml",
+        "author_name": "",
+        "content": "墨西哥瓶装饮料巨头Arca Continental周四股价大涨逾4%，此前该公司公布的第一季度业绩显示，尽管墨西哥今年年初刚实施了新的含糖饮料健康税，其饮料销量依然超越预期...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_14dfee091924",
+        "title": "美国FDA拒绝批准Grace Therapeutics脑卒中药物",
+        "publish_time": "1776969809",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5066320.shtml",
+        "author_name": "",
+        "content": " 美国食品药品监督管理局（FDA）近日已向Grace Therapeutics发出完整回应函（CRL），拒绝批准其候选药物治疗特定类型脑卒中（中风）的上市申请。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_cdd000e748a9",
+        "title": "科技就业开启“从农场到工厂”转型之路",
+        "publish_time": "1776969771",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqku3492059.shtml",
+        "author_name": "",
+        "content": "人工智能正以远超历次技术革命的速度重塑就业市场，科技行业的劳动力结构正经历一场“从农场到工厂”式的深刻转型。 回顾历史，每一次重大技术跃迁都伴随着就业迁徙。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_e3fa03b5ee71",
+        "title": "丹纳赫就疫情后业绩展望误导投资者达成和解 将支付1.725亿美元和解金",
+        "publish_time": "1776969726",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkq8288863.shtml",
+        "author_name": "",
+        "content": " 丹纳赫公司已同意支付1.725亿美元，以和解一项股东集体诉讼。该诉讼指控这家生命科学与诊断巨头在疫情后时期，就其业务前景和产品需求作出了具有误导性的陈述。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_4b2c621f05e9",
+        "title": "纳斯达克延长交易时间前夕，先行推出配套产品",
+        "publish_time": "1776969659",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkn4693065.shtml",
+        "author_name": "",
+        "content": "纳斯达克交易所周四宣布，将推出一系列新产品，以支持其计划将美国股票交易时间延长至每周五天、每天23小时的举措。此举旨在顺应全球投资者对高需求美股日益增长的交易需求...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_a9538cb42ba7",
+        "title": "琼斯法案豁免生效，外籍油轮首航得州至宾州",
+        "publish_time": "1776969617",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkq8288502.shtml",
+        "author_name": "",
+        "content": " 一艘马耳他籍油轮已成功将一批美国原油从得克萨斯州运往宾夕法尼亚州炼油厂，成为特朗普政府3月宣布豁免《琼斯法案》以来首艘利用该政策进行国内原油运输的外籍船舶。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_b2c6d1a30ef1",
+        "title": "ADP拟出售印度GMR机场7.3%股份，套现至多10.5亿美元",
+        "publish_time": "1776969538",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5065450.shtml",
+        "author_name": "",
+        "content": " 法国机场集团ADP周四宣布，已与印度GMR集团达成协议，将出售其所持GMR Airports Ltd最多7.3%的股份，预计现金收入约为9.24亿欧元，合10.5亿美元。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_ba2c21f20bcf",
+        "title": "巴西监管机构批准深化对谷歌新闻内容使用的调查",
+        "publish_time": "1776969488",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkq8288077.shtml",
+        "author_name": "",
+        "content": " 巴西反垄断监管机构经济保护行政委员会周四批准了一项建议，将深化对谷歌使用新闻内容的调查，重点评估生成式人工智能工具是否加剧了这家科技巨头对出版商的权力失衡。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_6d9a163d1b6b",
+        "title": "必和必拓纳入中国铁矿石新指数，中澳长协僵局终告破",
+        "publish_time": "1776969440",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkq8287919.shtml",
+        "author_name": "",
+        "content": " 据多位知情人士透露，为终结长达七个月的对华供应僵局，全球矿业巨头必和必拓已同意在其铁矿石长协定价中采纳一项中国人民币现货指数。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_a93c30572386",
+        "title": "迈赫尔通讯社：德黑兰启动防空系统以应对“敌对”目标",
+        "publish_time": "1776969103",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5063810.shtml",
+        "author_name": "",
+        "content": "伊朗半官方的迈赫尔通讯社报道称，德黑兰部分地区启动防空系统以应对“敌对目标”，报道未透露这些目标具体何指。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_19c9125ef676",
+        "title": "Palantir股价今日下跌原因：AI大单难抵市场疲软",
+        "publish_time": "1776969103",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkn4691077.shtml",
+        "author_name": "",
+        "content": " Palantir Technologies股价周四下跌4%，前一个交易日该股曾大幅上涨。更广泛的技术板块疲软和获利回吐似乎压过了新的合同消息。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_59396508658a",
+        "title": "洛克希德·马丁盈利与营收不及预期，股价下跌",
+        "publish_time": "1776969061",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5063621.shtml",
+        "author_name": "",
+        "content": " 洛克希德·马丁股价下跌约5%，此前该公司第一季度财报在盈利和营收两项指标上均未达到华尔街预期，尽管利润同比有所改善。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_9281366315b3",
+        "title": "英特尔股价获BNP Paribas上调目标价，AI服务器成焦点",
+        "publish_time": "1776969017",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5063480.shtml",
+        "author_name": "",
+        "content": "英特尔股价周四午后上涨约3.5%，此前法国巴黎银行在这家芯片制造商于4月23日公布第一季度业绩之前上调了其评级。 分析师大卫·奥康纳将英特尔从中性评级上调至更高评级...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_2d5cbbd78b3e",
+        "title": "泛林集团发布强劲Q3业绩，AI需求持续推动增长",
+        "publish_time": "1776968889",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5062942.shtml",
+        "author_name": "",
+        "content": "泛林集团公布了令人印象深刻的季度业绩，尽管表现强劲且对第四季度（6月）给出了乐观预测，其股价仍出现小幅下跌。这家半导体行业晶圆制造设备的领先供应商实现调整后每股...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_4caef0172673",
+        "title": "德州仪器股价飙升18%，有望创下2000年以来最佳单日表现",
+        "publish_time": "1776968802",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqks5062617.shtml",
+        "author_name": "",
+        "content": "由于芯片制造商德州仪器公布的季度业绩好于预期，并且因对其在AI数据中心建设中至关重要的模拟芯片需求旺盛而给出了乐观的业绩指引...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_d80fb9f03e07",
+        "title": "美国称“布什号”航母已经在中央司令部责任区航行",
+        "publish_time": "1776968538",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkn4689358.shtml",
+        "author_name": "",
+        "content": "美国中央司令部在X平台上发帖称，“乔治·H·W·布什号”航空母舰正在印度洋的“美国中央司令部责任区”内航行。 注：特朗普看好与伊朗达成协议的前景 称以黎同意停火10天 。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_c3ead010278c",
+        "title": "Meta内部宣布将裁员10%以提升效率 弥补AI方面高额支出",
+        "publish_time": "1776967967",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpqkn4687382.shtml",
+        "author_name": "",
+        "content": "Meta Platforms计划裁员10%以提升效率并对冲在人工智能方面的高额支出，约8000名员工受到影响。 该公司在周四发给员工的一份备忘录中披露了这一举措...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_10e8aceea9a9",
+        "title": "美国空军拟大增洛克希德隐形导弹库存",
+        "publish_time": "1776965708",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkas8401238.shtml",
+        "author_name": "",
+        "content": " 根据最新预算文件，美国空军计划在未来五年内从洛克希德马丁采购近4300枚远程隐身巡航导弹。此前美军对伊朗目标使用了这些武器。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_e487b2e9e12e",
+        "title": "欧洲债市：英国国债跑输 交易员上调对英国央行加息押注",
+        "publish_time": "1776965649",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkau5178124.shtml",
+        "author_name": "",
+        "content": "英国国债延续跌势，交易员上调对英国央行加息的押注，此前英国公布的采购经理指数强于预期。 随着霍尔木兹海峡紧张局势升级，市场风险情绪恶化，午后提振了对债券的需求。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_cf78ee88592f",
+        "title": "受ServiceNow、IBM财报拖累叠加AI替代担忧加剧，软件股集体暴跌",
+        "publish_time": "1776964847",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkau5174702.shtml",
+        "author_name": "",
+        "content": "核心要点因 ServiceNow 与 IBM 财报表现不及预期，周四软件板块大幅下挫。市场持续担忧传统软件企业将被人工智能部分替代，赛富时、Workday、甲骨文同步大跌。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_f9604258eff6",
+        "title": "微软首次推出自愿离职买断计划，覆盖美国至多7%员工",
+        "publish_time": "1776963238",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkaq4794269.shtml",
+        "author_name": "",
+        "content": "核心要点微软推出一次性自愿退休方案，面向高级总监及以下层级的美国员工，要求工龄与年龄相加满 70 年及以上。公司将在年度绩效奖励机制中，拆分股票奖励与现金奖金...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_62be08d2f0a1",
+        "title": "瑞银：科技股是冲突爆发以来股市反弹的核心驱动力",
+        "publish_time": "1776962993",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkaq4791814.shtml",
+        "author_name": "",
+        "content": " 瑞银数据显示，科技板块是本轮冲突过后市场反弹的主要推手。尽管科技股在指数中权重仅占 35%，却贡献了约 57% 的涨幅。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_f80b1bf580c0",
+        "title": "分析师：股市正艰难维持平衡态势",
+        "publish_time": "1776962889",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkas8386323.shtml",
+        "author_name": "",
+        "content": "B． 莱利财富首席市场策略师阿特・霍根表示：“当前市场正处于多方博弈的平衡状态。过去两周财报季的大部分时间里，市场关注点发生转移，从地缘政治等宏观风险...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_7936b54ac205",
+        "title": "微软向约7%美国员工提供自愿退休方案 工龄与年龄之和需至少达到70",
+        "publish_time": "1776962824",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkau5163190.shtml",
+        "author_name": "",
+        "content": "微软公司向部分美国员工提供自愿退休方案。 据一位了解相关计划的人士称，约7%的美国员工将符合此次买断条件，这是微软首次开展如此大规模的买断计划。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_52b728118c4f",
+        "title": "美国商务部长：特朗普金卡签证项目迄今只有一人获批",
+        "publish_time": "1776962049",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkaq4786350.shtml",
+        "author_name": "",
+        "content": "美国商务部长霍华德·卢特尼克周四表示，截至目前，特朗普推出的“金卡”签证项目仅批准了一人。 该项目允许外国人支付100万美元获得美国居留权。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_28c128d7449a",
+        "title": "伊朗战争期间 Pimco通过私募交易向海湾地区提供逾100亿美元借款",
+        "publish_time": "1776961832",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkas8379928.shtml",
+        "author_name": "",
+        "content": "在波斯湾国家建立现金缓冲以应对伊朗战争潜在经济影响之际，一位大型买家已经入场，那就是品浩（Pimco）。 据知情人士称，自2月28日冲突爆发以来...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_bb7cb8cfb108",
+        "title": "以色列国防部长卡茨：以方准备重启对伊战争",
+        "publish_time": "1776961588",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkau5156023.shtml",
+        "author_name": "",
+        "content": "以色列国防部长卡茨表示，以色列准备恢复对伊朗的战争。 卡茨在声明中称：“我们在等待美国批准，以完成对哈梅内伊政权的彻底铲除。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_2e1279f11003",
+        "title": "午盘：标普500创盘中新高后转跌",
+        "publish_time": "1776960484",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-24/doc-inhvpkas8371838.shtml",
+        "author_name": "",
+        "content": "北京时间4月24日凌晨，美股周四午盘小幅下滑，标普指数一度创盘中历史新高。市场继续关注美伊关系发展与美股财报。特朗普声称已完全掌控霍尔木兹海峡。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_73346320b007",
+        "title": "小麦期货上涨 恶劣天气使全球产量受限",
+        "publish_time": "1776959959",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpkas8368650.shtml",
+        "author_name": "",
+        "content": "小麦期货价格上涨，市场预计，恶劣天气可能导致包括最大出口国俄罗斯以及印度和美国在内的主要小麦生产国减产。 交易员正在关注黑海产区气温下降的影响...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_27fd463b50b7",
+        "title": "德州仪器创近 26 年最佳单日表现",
+        "publish_time": "1776959902",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpkau5145691.shtml",
+        "author_name": "",
+        "content": " 德州仪器周四大涨 18%。若涨幅维持收盘，将创下这家芯片制造商自 2000 年 10 月 19 日以来的最强单日涨幅；该股当日曾暴涨 24.1%。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_98af7e5f1288",
+        "title": "美国航空下调2026年盈利预期 午盘逆势大涨超4%",
+        "publish_time": "1776959682",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpkaw3571787.shtml",
+        "author_name": "",
+        "content": " 受伊朗局势影响，燃油价格持续走高，全球多家航空公司因航空燃油短缺、油价暴涨被迫取消航班、缩减航线。高昂成本与运营压力持续加剧。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_e5476246c35d",
+        "title": "霍尔木兹海峡紧张局势升级 和谈前景渺茫",
+        "publish_time": "1776959428",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5274851.shtml",
+        "author_name": "",
+        "content": " 随着美国和伊朗双方都在维持对霍尔木兹海峡的封锁，围绕这一关键水道的紧张局势不断升级，形成了一种令人不安的对峙局面，且暂无恢复和平谈判的迹象。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_11f66e9490bb",
+        "title": "Kalshi交易员预计霍尔木兹海峡航运要到7月才能恢复正常",
+        "publish_time": "1776959409",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3700962.shtml",
+        "author_name": "",
+        "content": "核心要点预测市场平台 Kalshi 的投注者目前认为，霍尔木兹海峡航运在 6 月恢复正常的概率低于 50%。这些投注者认为，到 7 月恢复正常航运的概率为 59%，到 8 月则为 61%。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_762d52dfa599",
+        "title": "微软向约7%的美国员工提供自愿退休方案",
+        "publish_time": "1776958862",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8495181.shtml",
+        "author_name": "",
+        "content": "微软公司向在美国的数千名员工提供自愿退休方案。 据一位知情人士透露，约有7%的美国员工将符合买断条件。该人士还表示，微软此前从未进行过如此大规模的买断。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_b413fb5808b8",
+        "title": "欧洲央行管委Nagel称特朗普对美联储的攻击引发了避险行为",
+        "publish_time": "1776958352",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3693530.shtml",
+        "author_name": "",
+        "content": " 欧洲央行管理委员会成员Joachim Nagel表示，特朗普对美联储的反复攻击正在产生反作用，导致人们对美国机构失去信任，并导致资金从美国资产和美元中流出。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_cc0a1ea727aa",
+        "title": "法尔斯通讯社：伊朗已收到的霍尔木兹海峡通行费按硬通货结算",
+        "publish_time": "1776958124",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3692347.shtml",
+        "author_name": "",
+        "content": "伊朗半官方的法尔斯通讯社报道，伊朗央行否认曾以加密货币形式收取霍尔木兹海峡通行费。 报道称，央行称船只缴纳的通行费用已存入该行账户，且以硬通货形式结算。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_295194cd0aa0",
+        "title": "B. Riley的霍根表示，股市正在进行“平衡行为”",
+        "publish_time": "1776958069",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8492666.shtml",
+        "author_name": "",
+        "content": "B． Riley Wealth首席市场策略师阿特·霍根表示：“眼下美股市场正在进行的是一场平衡行为。在过去两周的大部分财报季中，市场焦点已经从对地缘政治的宏观担忧转向了逐家公司...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_438702ff1286",
+        "title": "软件业务销售未能驱散人工智能之忧 IBM股价重挫",
+        "publish_time": "1776957837",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4891793.shtml",
+        "author_name": "",
+        "content": "国际商业机器（IBM）公布的软件部门季度销售额与预期相符，但未能消除投资者对人工智能可能冲击其业务的担忧。 该公司周三在声明中表示，截至3月31日的季度...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_d04d02d12ac5",
+        "title": "星巴克会员计划调整，成功吸引价格敏感型消费者",
+        "publish_time": "1776957674",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4889953.shtml",
+        "author_name": "",
+        "content": "核心要点星巴克上月对其沿用已久的会员积分体系进行重大改革。这家咖啡连锁品牌已显现初步成效，改版计划正吸引注重性价比的顾客。公司将于周二收盘后发布季度财报。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_f4a8452505e2",
+        "title": "特斯拉财报出炉后股价下跌，但市场传闻或支撑其短期企稳",
+        "publish_time": "1776957485",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8489740.shtml",
+        "author_name": "",
+        "content": " 周三特斯拉公布一季度财报后，受公司资本开支扩张规模超预期影响，股价应声走低；不过，华尔街正热议一则市场传闻，有望在短期内为特斯拉股价提供支撑。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_feaa6dd1f2c5",
+        "title": "美国将特定大麻产品重新归类为危险性较低的毒品",
+        "publish_time": "1776957049",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5264256.shtml",
+        "author_name": "",
+        "content": "美国司法部周四宣布，将经食品药品监督管理局批准或获得州许可的医用大麻产品从《管制物质法案》中最严格的附表一重新归类为危险性较低的附表三。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_3a1b831794c4",
+        "title": "意大利拟出售国有资产，规模达GDP的0.8%",
+        "publish_time": "1776956975",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3681187.shtml",
+        "author_name": "",
+        "content": " 意大利政府周四公布的一份预算文件显示，该国计划在2026年至2028年间通过出售国有资产获得约占国内生产总值0.8%的收入，即近190亿欧元，以应对日益沉重的债务负担。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_74248fd11e70",
+        "title": "芯片制造商股价延续史上最长涨势 受德州仪器强劲业绩提振",
+        "publish_time": "1776956943",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8486397.shtml",
+        "author_name": "",
+        "content": "受德州仪器强劲财报提振，半导体公司股价周四上涨，延续了创纪录的连涨势头。 费城证券交易所半导体指数上涨2%，有望实现连续第17个交易日上涨...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_4ae3e54cfd42",
+        "title": "SpaceX招股书披露 马斯克IPO后仍可保留董事会控制权",
+        "publish_time": "1776956903",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8486228.shtml",
+        "author_name": "",
+        "content": "根据SpaceX首次公开募股招股说明书摘录，该公司计划在上市后维持“受控公司”地位，这意味着创始人埃隆·马斯克将继续保留对董事会的绝对控制权...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_3088dfc0103e",
+        "title": "黑石：中东冲突若解决，IPO市场将迎来爆发",
+        "publish_time": "1776956780",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5262906.shtml",
+        "author_name": "",
+        "content": "全球最大另类资产管理公司黑石集团预计，若中东地缘冲突能够得到解决，压抑已久的首次公开募股市场将迎来显著复苏。 黑石总裁乔纳森·格雷周四在接受采访时作出上述表态。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_a16fca69912e",
+        "title": "SpaceX征服星辰大海后 剑指企业AI市场",
+        "publish_time": "1776956717",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3678745.shtml",
+        "author_name": "",
+        "content": "在成功征服太空领域后，马斯克的SpaceX正将目光投向新的增长引擎——企业级人工智能市场。这家航天巨头近期与AI编程初创公司Cursor达成深度合作...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_2f658ddc41bd",
+        "title": "英国SEGRO扩大数据中心布局，押注AI热潮",
+        "publish_time": "1776956572",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8484640.shtml",
+        "author_name": "",
+        "content": " 为抓住人工智能投资热潮带来的机遇，英国仓储地产巨头SEGRO正加速向数据中心领域扩张，计划在法国、德国、意大利和波兰等地布局新项目。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_072023bbbdf1",
+        "title": "瑞士政客力挺瑞银，拟在资本规则上施以援手",
+        "publish_time": "1776956511",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4878198.shtml",
+        "author_name": "",
+        "content": " 随着瑞士政府推进针对瑞银集团的严格资本新规，部分瑞士政界人士正试图为这家银行业巨头提供政治支持，以缓冲新规可能带来的冲击。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_98d7d1b0cc4f",
+        "title": "需求回暖，特斯拉格林海德工厂将扩招1000人并提升产量",
+        "publish_time": "1776956406",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4877516.shtml",
+        "author_name": "",
+        "content": " 美国电动汽车制造商特斯拉周三宣布，计划在其位于柏林附近的欧洲唯一超级工厂增加1000名员工，并自7月起将周产量提升20%，以应对市场对Model Y车型的强劲需求。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_ffbd9fbb8fe9",
+        "title": "华纳兄弟投资者批准以1100亿美元将公司出售给派拉蒙影业",
+        "publish_time": "1776956365",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4877361.shtml",
+        "author_name": "",
+        "content": "这场多年来规模最大的媒体并购案正逐步接近收官。 华纳兄弟探索股东于周四投票批准派拉蒙天空之舞（Paramount Skydance）对该公司的收购。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_78a59adc5d5c",
+        "title": "预测市场Kalshi的交易员预计霍尔木兹海峡航运要到7月才能恢复正常",
+        "publish_time": "1776956030",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3674457.shtml",
+        "author_name": "",
+        "content": "预测市场平台Kalshi上的投注者目前认为，霍尔木兹海峡航运在6月恢复正常水平的几率低于50%。 这些投注者认为，到7月恢复正常航运的概率为59%，到8月则为61%。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_cf0d7fbd350d",
+        "title": "路透：当下最大的投资风险竟是“回避风险”",
+        "publish_time": "1776955730",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3672246.shtml",
+        "author_name": "",
+        "content": "在地缘冲突升温、油价突破100美元的背景下，过度避险行为可能导致投资者错失AI浪潮带来的结构性机遇。 路透社分析文章指出，当前市场最大的悖论在于：最大的投资风险...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_5a65b25b1336",
+        "title": "莱迪奥斯获美军6.17亿美元合同，加速防空系统量产",
+        "publish_time": "1776955646",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5257277.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，美国国防科技公司莱迪奥斯（Leidos）宣布获得美国陆军一份价值6.17亿美元的合同，用于建造和交付更多“集成防护能力2型”（IFPC Inc...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_1755a8a491a1",
+        "title": "避险情绪升温，全球科技股承压",
+        "publish_time": "1776955542",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5256527.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，随着中东地缘政治局势持续紧张，全球市场避险情绪显著升温，投资者纷纷从风险资产中撤出，转向黄金、美元等避险资产。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_20b4133c191d",
+        "title": "欧莱雅Q1销售超预期，股价飙升近9%",
+        "publish_time": "1776955495",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3670539.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，全球美妆巨头欧莱雅（L‘Oréal）发布2026年第一季度财报，销售额达121.5亿欧元，按可比口径计算同比增长7.6%，大幅超出分析师3-4%的预期。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_657eddc2a937",
+        "title": "雀巢超脱伊朗局势影响，中国市场成复苏关键",
+        "publish_time": "1776955432",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4871389.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，全球食品巨头雀巢（Nestlé）正展现出对中东地缘政治动荡的“免疫力”，并将战略重心重新聚焦于中国市场的复苏。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_a672865dc984",
+        "title": "捷蓝航空陷“监控定价”风波，遭集体诉讼指控滥用数据",
+        "publish_time": "1776955251",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8476958.shtml",
+        "author_name": "",
+        "content": " 据媒体4月23日报道，美国捷蓝航空（JetBlue）因被指控利用乘客个人数据动态调整票价，在纽约布鲁克林联邦法院遭到集体诉讼。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_0698b96adf48",
+        "title": "意法半导体股价大涨，5月4日将召开投资者会议",
+        "publish_time": "1776955179",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8476360.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，意法半导体（STMicroelectronics）宣布将于5月4日召开投资者电话会议，届时将深入探讨公司在当前市场环境下的机遇与挑战。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_f8c1445be585",
+        "title": "美国企业活动在4月份加速扩张 价格指标显示通胀形势堪忧",
+        "publish_time": "1776955165",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/world/2026-04-23/doc-inhvpcuu8476272.shtml",
+        "author_name": "",
+        "content": "美国4月份企业活动加速，受益于战争相关的供应干扰促使企业争相囤积物资，进而推动制造业创下近四年来最强劲增长。 周四公布的数据显示...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_289314d17d8a",
+        "title": "绝味鸭脖上市9年首亏！连续5年隐匿营收，补税3.4亿，现金流萎缩，过去近2年平均每天关店约6家",
+        "publish_time": "1776955140",
+        "source_name": "",
+        "source_url": "https://finance.sina.com.cn/wm/2026-04-23/doc-inhvpcus4872962.shtml",
+        "author_name": "",
+        "content": "红星资本局4月23日消息，“鸭脖大王”绝味食品（603517.SH，简称：ST绝味）出现上市9年以来的首次亏损。 绝味食品的亏损，一方面是由于财务管理失控导致的补缴税款及滞纳金超...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_6b7e429db8a9",
+        "title": "300475，一季度净利暴增7835%",
+        "publish_time": "1776955136",
+        "source_name": "市场资讯",
+        "source_url": "https://finance.sina.com.cn/jjxw/2026-04-23/doc-inhvpcuy3670172.shtml",
+        "author_name": "",
+        "content": "来源：中国基金报 【导读】香农芯创一季度净利润同比增长7835.06% 中国基金报记者 夏天 4月23日晚间，国内存储分销龙头香农芯创（证券代码：300475）发布2026年一季报...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_9d558a572a12",
+        "title": "巴西银行：农业重组显现复苏迹象，CFO重申“综合集团”战略",
+        "publish_time": "1776955115",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3667264.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，巴西银行（Banco do Brasil）正在密切监控农业信贷重组领域的复苏迹象。该行首席财务官（CFO）今日重申，尽管市场存在质疑...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_50501fc7e45b",
+        "title": "高油价与关税双重夹击，美企利润承压",
+        "publish_time": "1776955046",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8475551.shtml",
+        "author_name": "",
+        "content": " 据媒体4月23日报道，随着中东冲突推高燃油价格，叠加特朗普政府关税政策的不确定性，美国企业正面临成本激增与利润受压的双重挑战。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_e46afa973a9e",
+        "title": "欧洲企业Q1盈利预期上调，但增长依旧乏力",
+        "publish_time": "1776954832",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5251379.shtml",
+        "author_name": "",
+        "content": "最新数据显示，欧洲企业第一季度的盈利预期虽有所上调，但整体增长依然乏力，且严重依赖能源板块的支撑。 根据伦敦证券交易所集团（LSEG）的数据...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_3112c5268f0f",
+        "title": "瑞士政府微调资本新规，瑞银仍需增资200亿美元",
+        "publish_time": "1776954775",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3663883.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，瑞士政府周三宣布对瑞银集团（UBS）的新资本规则提案作出部分让步，但坚持要求其为海外业务提供全额资本支持...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_bdf4425ff1f1",
+        "title": "应用数字斩获75亿美元AI数据中心大单",
+        "publish_time": "1776954711",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3663190.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，应用数字公司（Applied Digital）宣布与一家美国本土超大规模企业签署了一份价值75亿美元的长期租赁协议，为其位于美国南部的“Delta Forge...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_8ddffb6f65dd",
+        "title": "燃油成本飙升，美国航空腰斩2026年盈利预期",
+        "publish_time": "1776954642",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5250286.shtml",
+        "author_name": "",
+        "content": " 据媒体4月23日报道，受中东冲突推高航空燃油成本影响，美国航空（American Airlines）周四大幅下调2026年全年盈利预期，直言利润空间正遭受严重侵蚀。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_2e4d19eba38f",
+        "title": "黑石CEO：基金设计已考量信贷周期",
+        "publish_time": "1776954442",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3661107.shtml",
+        "author_name": "",
+        "content": "据4月23日报道，全球最大另类资产管理公司黑石集团（Blackstone）今日公布季度业绩。面对私募信贷募资放缓和散户投资者加速赎回的压力...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_a8decde6042c",
+        "title": "日本财务大臣就日元疲弱走势发出警告 称美日官员保持密切联系",
+        "publish_time": "1776954377",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/world/2026-04-23/doc-inhvpcuu8471817.shtml",
+        "author_name": "",
+        "content": " 日本财务大臣片山皋月警告称，在东京对令日元维持弱势的投机性走势保持高度警惕之际，官员们正与美国对口官员昼夜不停地保持密切联系。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_2e0dd2d58908",
+        "title": "减肥药意外带火豌豆扁豆，美国农民弃麦种豆",
+        "publish_time": "1776954307",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5248599.shtml",
+        "author_name": "",
+        "content": " 据媒体4月23日报道，受社交媒体“蛋白质最大化”风潮及GLP-1减肥药副作用影响，美国爱达荷州与蒙大拿州的农民正大规模将麦田改种豌豆与扁豆，以寻求更高的利润空间。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_3051cb8d6bed",
+        "title": "美军登上从伊朗运载原油的油轮 德黑兰继续威胁霍尔木兹海峡过往船只",
+        "publish_time": "1776954294",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/world/2026-04-23/doc-inhvpcuu8471318.shtml",
+        "author_name": "",
+        "content": "美国军方表示，美军在印度洋登上一艘从伊朗运载原油的受制裁超级油轮。这是美国对伊朗海运封锁中的最新行动。 五角大楼在X平台声明中称...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_afa9458eb2b7",
+        "title": "CNBC调查：油价高企令美国人削减开支，短期内看不到缓解迹象",
+        "publish_time": "1776954174",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3658861.shtml",
+        "author_name": "",
+        "content": "核心要点CNBC 全美经济调查显示，美国民众正深受油价上涨之苦。他们正减少在娱乐、旅游方面的支出，甚至压缩食品杂货、医疗保健等必需品开支。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_90e4f97cba26",
+        "title": "普京：俄罗斯将坚定捍卫北极地缘政治利益",
+        "publish_time": "1776954146",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8470333.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，俄罗斯总统普京在叶卡捷琳堡发表讲话时明确表示，俄罗斯愿意与北极地区的所有邻国及外国伙伴进行对话，但同时也将坚定而持续地捍卫本国在该地区的地缘...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_8bfdc120446c",
+        "title": "美参议员要求调查FAA局长股票交易",
+        "publish_time": "1776954091",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4859385.shtml",
+        "author_name": "",
+        "content": "据媒体4月23日报道，三位民主党参议员已致函美国交通部，要求对联邦航空管理局（FAA）局长布赖恩·贝德福德（Brian Bedford）的股票交易行为展开调查...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_5cc06e546f3c",
+        "title": "受益于AI数据中心强劲需求，道弗发布乐观盈利预测",
+        "publish_time": "1776954035",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuu8469793.shtml",
+        "author_name": "",
+        "content": " 工业设备制造商道弗公司（Dover Corporation）周四发布了乐观的2026年盈利预测，主要得益于人工智能（AI）数据中心对液冷组件的强劲需求。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_16ee43038f13",
+        "title": "特朗普下令海军“击沉任何在霍尔木兹海峡布雷的船只”",
+        "publish_time": "1776954016",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5246922.shtml",
+        "author_name": "",
+        "content": "核心要点总统唐纳德・特朗普表示，他已下令美国海军 “击沉任何在霍尔木兹海峡布设水雷的船只”。特朗普还称，他正命令美国扫雷舰 “以三倍力度” 继续清理该海峡。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_6bdbb6e73c59",
+        "title": "中东局势不确定性笼罩，华尔街周四低开",
+        "publish_time": "1776953977",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4858310.shtml",
+        "author_name": "",
+        "content": "受中东地区紧张局势持续发酵影响，华尔街主要股指周四开盘走低，投资者避险情绪升温。截至北京时间4月23日晚，道琼斯工业平均指数下跌170.37点，跌幅0.34%，报49319...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_a59aebb7f728",
+        "title": "美国将大麻重新归类为“危险性较低”药物，相关概念股集体飙升",
+        "publish_time": "1776953931",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5246648.shtml",
+        "author_name": "",
+        "content": "据内涂4月23日报道，特朗普政府计划将大麻从《管制物质法案》中管制最严的“一级”降至“三级”，与氯胺酮等药物并列。此举标志着美国联邦层面首次承认大麻的医疗用途...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_649cd00d8635",
+        "title": "美伊战争压力暂未显现，美国就业市场趋稳",
+        "publish_time": "1776953846",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5246337.shtml",
+        "author_name": "",
+        "content": "尽管伊朗冲突引发油价飙升并拖累部分行业，但美国劳动力市场整体尚未显现系统性压力，就业数据保持相对稳定。 高盛此前预测，受能源价格上涨影响...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_3193af1d0514",
+        "title": "美国西南航空CEO预警：高油价将持续全年",
+        "publish_time": "1776953688",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuy3655145.shtml",
+        "author_name": "",
+        "content": "美国西南航空（Southwest Airlines）首席执行官鲍勃·乔丹（Bob Jordan）周四明确表示，预计今年剩余时间内，航空燃油价格将维持在高位。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_b92cb26860d5",
+        "title": "美国航空因燃油成本飙升大幅下调全年盈利预期",
+        "publish_time": "1776953632",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4855948.shtml",
+        "author_name": "",
+        "content": " 美国航空（American Airlines）周四大幅下调2026年全年盈利预期，直言伊朗战事引发的航空燃油成本飙升正在严重侵蚀其利润空间。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_8fceedee56af",
+        "title": "奈飞批准250亿美元股票回购计划",
+        "publish_time": "1776953396",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcus4852738.shtml",
+        "author_name": "",
+        "content": " 奈飞已批准一项新的250亿美元股票回购计划，此举标志着在放弃一项重大收购计划后，公司重新将重心转向向股东返还资本。",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      },
+      {
+        "news_uid": "news_620610a085fb",
+        "title": "诺和诺德计划在美国推出儿童版口服版“减肥神药”Ozempic",
+        "publish_time": "1776953248",
+        "source_name": "环球市场播报",
+        "source_url": "https://finance.sina.com.cn/stock/usstock/c/2026-04-23/doc-inhvpcuw5241841.shtml",
+        "author_name": "",
+        "content": "诺和诺德宣布，在该药物针对儿童和青少年的后期试验中达到主要目标后，将在美国推出Ozempic的口服版本。 这种口服形式的司美格鲁肽（semaglutide）可能有助于公司扩大其占...",
+        "news_type": "company_news",
+        "language": "zh",
+        "file_hash": "d41d8cd98f00b204"
+      }
+    ],
+    "news_structured": [
+      {
+        "news_uid": "news_26a3abd19bb9",
+        "summary_text": "如果凯文·沃什最终获得确认成为下一任美联储主席，他准备在从通胀框架到资产负债表管理等关键领域推行深刻的改革。这位前美联储理事在4月21日的参议院确认听证会上清晰地勾...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_0b6771f78f3c",
+        "summary_text": "美国运通周四公布的第一季度财报显示，受高端客户强劲消费推动，公司盈利超出市场预期，持卡人消费增速创下三年新高。 核心业绩全面超预期 财报显示...",
+        "sentiment": "positive"
+      },
+      {
+        "news_uid": "news_d99c3571a144",
+        "summary_text": " 德国西门子能源公司周四宣布，鉴于数据中心扩建带动的电力设备需求持续高涨，公司再度上调2026财年业绩指引，并对全年增长持乐观预期。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_a7bbb262061e",
+        "summary_text": "在年度考核季期间，亚马逊正对其两家子公司的数百名白领员工进行一场非同寻常的“头衔革命”。从亚马逊旗下智能家居部门Ring和Blink下月开始...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_7aa51a615fbc",
+        "summary_text": " 意大利裕信银行在意外操作下，将其在保险巨头Generali的持股比例从此前的6.7%提升至8.72%。这一消息由Generali董事长在周四的年度股东大会上披露，令市场颇感意外。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_7da50a7c297a",
+        "summary_text": " 受美伊停火谈判陷入僵局以及霍尔木兹海峡持续关闭的影响，伦敦金属交易所铜价周四从数周高点回落，美元走强也进一步加大了价格压力。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_760490d20ee5",
+        "summary_text": "美国食品药品监督管理局近日批准了再生元制药公司开发的基因疗法DB-OTO，用于治疗由OTOF基因突变导致的先天性深度听力损失。这是全球首款获批用于治疗遗传性耳聋的药物疗法...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_f1c8e778aee7",
+        "summary_text": " 当地时间4月23日尾盘，美国股市延续开盘时的弱势格局，三大指数集体下跌，投资者对中东局势持续僵持及企业财报表现分化保持谨慎。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_172ebd9e155e",
+        "summary_text": "美国司法部代理部长托德·布兰奇于4月23日签署命令，将获得州许可的医用大麻从《管制物质法案》中最严格的附表一重新归类为危险性较低的附表三。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_3708e89328e1",
+        "summary_text": "意大利科技公司Bending Spoons已选定多家投行，为其潜在的200亿美元美国首次公开募股进行筹备工作。据两位知情人士透露，这家总部位于米兰...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_5d2501c12ac6",
+        "summary_text": " 受美国与伊朗谈判停滞消息影响，墨西哥比索周四走弱。投资者对地缘政治前景的不确定性感到不安，导致新兴市场货币普遍承压。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_f1f08c21243b",
+        "summary_text": " 育碧当地时间周四正式宣布，传闻已久的《刺客信条IV：黑旗》重制版定名为《刺客信条：黑旗 同步重置》，将于2026年7月9日全球发售，登陆PS5、Xbox Series X|S及PC平台。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_7ece91c913f1",
+        "summary_text": "在以色列广播公司N12报道伊朗与美国谈判的首席代表辞职后，布伦特原油价格大涨逾3%。 截至美东时间周四下午2：05，布伦特原油上涨近3%，至每桶104.79美元。",
+        "sentiment": "positive"
+      },
+      {
+        "news_uid": "news_3c0d65427794",
+        "summary_text": "北京时间4月24日凌晨，美股周四尾盘走低，科技股跌幅领先。标普指数一度创盘中历史新高。市场继续关注美伊关系发展与美股财报。特朗普声称已完全掌控霍尔木兹海峡。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_cf2150f6cd3b",
+        "summary_text": " 欧洲股市周四收盘基本持平，投资者在评估中东地缘政治紧张局势与密集出炉的企业财报之间陷入两难。泛欧斯托克600指数微跌0.1%，主要股指涨跌互现，市场情绪整体谨慎。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_a2f0ca08d8e1",
+        "summary_text": " 瑞典家电制造商伊莱克斯周四宣布，将启动90亿瑞典克朗的供股计划，并同步披露与中国美的集团达成合作，双方将在北美组建三家合资企业，以推进业务重组。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_9e655bff967b",
+        "summary_text": "美国总统特朗普表示，只有在对美国及盟友“合适且有利”时，才会与伊朗达成协议。 特朗普在Truth Social上发帖。 针对有报道称他“急于”结束战争...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_8ba375532dc4",
+        "summary_text": "墨西哥瓶装饮料巨头Arca Continental周四股价大涨逾4%，此前该公司公布的第一季度业绩显示，尽管墨西哥今年年初刚实施了新的含糖饮料健康税，其饮料销量依然超越预期...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_14dfee091924",
+        "summary_text": " 美国食品药品监督管理局（FDA）近日已向Grace Therapeutics发出完整回应函（CRL），拒绝批准其候选药物治疗特定类型脑卒中（中风）的上市申请。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_cdd000e748a9",
+        "summary_text": "人工智能正以远超历次技术革命的速度重塑就业市场，科技行业的劳动力结构正经历一场“从农场到工厂”式的深刻转型。 回顾历史，每一次重大技术跃迁都伴随着就业迁徙。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_e3fa03b5ee71",
+        "summary_text": " 丹纳赫公司已同意支付1.725亿美元，以和解一项股东集体诉讼。该诉讼指控这家生命科学与诊断巨头在疫情后时期，就其业务前景和产品需求作出了具有误导性的陈述。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_4b2c621f05e9",
+        "summary_text": "纳斯达克交易所周四宣布，将推出一系列新产品，以支持其计划将美国股票交易时间延长至每周五天、每天23小时的举措。此举旨在顺应全球投资者对高需求美股日益增长的交易需求...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_a9538cb42ba7",
+        "summary_text": " 一艘马耳他籍油轮已成功将一批美国原油从得克萨斯州运往宾夕法尼亚州炼油厂，成为特朗普政府3月宣布豁免《琼斯法案》以来首艘利用该政策进行国内原油运输的外籍船舶。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_b2c6d1a30ef1",
+        "summary_text": " 法国机场集团ADP周四宣布，已与印度GMR集团达成协议，将出售其所持GMR Airports Ltd最多7.3%的股份，预计现金收入约为9.24亿欧元，合10.5亿美元。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_ba2c21f20bcf",
+        "summary_text": " 巴西反垄断监管机构经济保护行政委员会周四批准了一项建议，将深化对谷歌使用新闻内容的调查，重点评估生成式人工智能工具是否加剧了这家科技巨头对出版商的权力失衡。",
+        "sentiment": "negative"
+      },
+      {
+        "news_uid": "news_6d9a163d1b6b",
+        "summary_text": " 据多位知情人士透露，为终结长达七个月的对华供应僵局，全球矿业巨头必和必拓已同意在其铁矿石长协定价中采纳一项中国人民币现货指数。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_a93c30572386",
+        "summary_text": "伊朗半官方的迈赫尔通讯社报道称，德黑兰部分地区启动防空系统以应对“敌对目标”，报道未透露这些目标具体何指。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_19c9125ef676",
+        "summary_text": " Palantir Technologies股价周四下跌4%，前一个交易日该股曾大幅上涨。更广泛的技术板块疲软和获利回吐似乎压过了新的合同消息。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_59396508658a",
+        "summary_text": " 洛克希德·马丁股价下跌约5%，此前该公司第一季度财报在盈利和营收两项指标上均未达到华尔街预期，尽管利润同比有所改善。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_9281366315b3",
+        "summary_text": "英特尔股价周四午后上涨约3.5%，此前法国巴黎银行在这家芯片制造商于4月23日公布第一季度业绩之前上调了其评级。 分析师大卫·奥康纳将英特尔从中性评级上调至更高评级...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_2d5cbbd78b3e",
+        "summary_text": "泛林集团公布了令人印象深刻的季度业绩，尽管表现强劲且对第四季度（6月）给出了乐观预测，其股价仍出现小幅下跌。这家半导体行业晶圆制造设备的领先供应商实现调整后每股...",
+        "sentiment": "positive"
+      },
+      {
+        "news_uid": "news_4caef0172673",
+        "summary_text": "由于芯片制造商德州仪器公布的季度业绩好于预期，并且因对其在AI数据中心建设中至关重要的模拟芯片需求旺盛而给出了乐观的业绩指引...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_d80fb9f03e07",
+        "summary_text": "美国中央司令部在X平台上发帖称，“乔治·H·W·布什号”航空母舰正在印度洋的“美国中央司令部责任区”内航行。 注：特朗普看好与伊朗达成协议的前景 称以黎同意停火10天 。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_c3ead010278c",
+        "summary_text": "Meta Platforms计划裁员10%以提升效率并对冲在人工智能方面的高额支出，约8000名员工受到影响。 该公司在周四发给员工的一份备忘录中披露了这一举措...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_10e8aceea9a9",
+        "summary_text": " 根据最新预算文件，美国空军计划在未来五年内从洛克希德马丁采购近4300枚远程隐身巡航导弹。此前美军对伊朗目标使用了这些武器。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_e487b2e9e12e",
+        "summary_text": "英国国债延续跌势，交易员上调对英国央行加息的押注，此前英国公布的采购经理指数强于预期。 随着霍尔木兹海峡紧张局势升级，市场风险情绪恶化，午后提振了对债券的需求。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_cf78ee88592f",
+        "summary_text": "核心要点因 ServiceNow 与 IBM 财报表现不及预期，周四软件板块大幅下挫。市场持续担忧传统软件企业将被人工智能部分替代，赛富时、Workday、甲骨文同步大跌。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_f9604258eff6",
+        "summary_text": "核心要点微软推出一次性自愿退休方案，面向高级总监及以下层级的美国员工，要求工龄与年龄相加满 70 年及以上。公司将在年度绩效奖励机制中，拆分股票奖励与现金奖金...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_62be08d2f0a1",
+        "summary_text": " 瑞银数据显示，科技板块是本轮冲突过后市场反弹的主要推手。尽管科技股在指数中权重仅占 35%，却贡献了约 57% 的涨幅。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_f80b1bf580c0",
+        "summary_text": "B． 莱利财富首席市场策略师阿特・霍根表示：“当前市场正处于多方博弈的平衡状态。过去两周财报季的大部分时间里，市场关注点发生转移，从地缘政治等宏观风险...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_7936b54ac205",
+        "summary_text": "微软公司向部分美国员工提供自愿退休方案。 据一位了解相关计划的人士称，约7%的美国员工将符合此次买断条件，这是微软首次开展如此大规模的买断计划。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_52b728118c4f",
+        "summary_text": "美国商务部长霍华德·卢特尼克周四表示，截至目前，特朗普推出的“金卡”签证项目仅批准了一人。 该项目允许外国人支付100万美元获得美国居留权。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_28c128d7449a",
+        "summary_text": "在波斯湾国家建立现金缓冲以应对伊朗战争潜在经济影响之际，一位大型买家已经入场，那就是品浩（Pimco）。 据知情人士称，自2月28日冲突爆发以来...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_bb7cb8cfb108",
+        "summary_text": "以色列国防部长卡茨表示，以色列准备恢复对伊朗的战争。 卡茨在声明中称：“我们在等待美国批准，以完成对哈梅内伊政权的彻底铲除。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_2e1279f11003",
+        "summary_text": "北京时间4月24日凌晨，美股周四午盘小幅下滑，标普指数一度创盘中历史新高。市场继续关注美伊关系发展与美股财报。特朗普声称已完全掌控霍尔木兹海峡。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_73346320b007",
+        "summary_text": "小麦期货价格上涨，市场预计，恶劣天气可能导致包括最大出口国俄罗斯以及印度和美国在内的主要小麦生产国减产。 交易员正在关注黑海产区气温下降的影响...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_27fd463b50b7",
+        "summary_text": " 德州仪器周四大涨 18%。若涨幅维持收盘，将创下这家芯片制造商自 2000 年 10 月 19 日以来的最强单日涨幅；该股当日曾暴涨 24.1%。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_98af7e5f1288",
+        "summary_text": " 受伊朗局势影响，燃油价格持续走高，全球多家航空公司因航空燃油短缺、油价暴涨被迫取消航班、缩减航线。高昂成本与运营压力持续加剧。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_e5476246c35d",
+        "summary_text": " 随着美国和伊朗双方都在维持对霍尔木兹海峡的封锁，围绕这一关键水道的紧张局势不断升级，形成了一种令人不安的对峙局面，且暂无恢复和平谈判的迹象。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_11f66e9490bb",
+        "summary_text": "核心要点预测市场平台 Kalshi 的投注者目前认为，霍尔木兹海峡航运在 6 月恢复正常的概率低于 50%。这些投注者认为，到 7 月恢复正常航运的概率为 59%，到 8 月则为 61%。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_762d52dfa599",
+        "summary_text": "微软公司向在美国的数千名员工提供自愿退休方案。 据一位知情人士透露，约有7%的美国员工将符合买断条件。该人士还表示，微软此前从未进行过如此大规模的买断。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_b413fb5808b8",
+        "summary_text": " 欧洲央行管理委员会成员Joachim Nagel表示，特朗普对美联储的反复攻击正在产生反作用，导致人们对美国机构失去信任，并导致资金从美国资产和美元中流出。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_cc0a1ea727aa",
+        "summary_text": "伊朗半官方的法尔斯通讯社报道，伊朗央行否认曾以加密货币形式收取霍尔木兹海峡通行费。 报道称，央行称船只缴纳的通行费用已存入该行账户，且以硬通货形式结算。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_295194cd0aa0",
+        "summary_text": "B． Riley Wealth首席市场策略师阿特·霍根表示：“眼下美股市场正在进行的是一场平衡行为。在过去两周的大部分财报季中，市场焦点已经从对地缘政治的宏观担忧转向了逐家公司...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_438702ff1286",
+        "summary_text": "国际商业机器（IBM）公布的软件部门季度销售额与预期相符，但未能消除投资者对人工智能可能冲击其业务的担忧。 该公司周三在声明中表示，截至3月31日的季度...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_d04d02d12ac5",
+        "summary_text": "核心要点星巴克上月对其沿用已久的会员积分体系进行重大改革。这家咖啡连锁品牌已显现初步成效，改版计划正吸引注重性价比的顾客。公司将于周二收盘后发布季度财报。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_f4a8452505e2",
+        "summary_text": " 周三特斯拉公布一季度财报后，受公司资本开支扩张规模超预期影响，股价应声走低；不过，华尔街正热议一则市场传闻，有望在短期内为特斯拉股价提供支撑。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_feaa6dd1f2c5",
+        "summary_text": "美国司法部周四宣布，将经食品药品监督管理局批准或获得州许可的医用大麻产品从《管制物质法案》中最严格的附表一重新归类为危险性较低的附表三。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_3a1b831794c4",
+        "summary_text": " 意大利政府周四公布的一份预算文件显示，该国计划在2026年至2028年间通过出售国有资产获得约占国内生产总值0.8%的收入，即近190亿欧元，以应对日益沉重的债务负担。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_74248fd11e70",
+        "summary_text": "受德州仪器强劲财报提振，半导体公司股价周四上涨，延续了创纪录的连涨势头。 费城证券交易所半导体指数上涨2%，有望实现连续第17个交易日上涨...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_4ae3e54cfd42",
+        "summary_text": "根据SpaceX首次公开募股招股说明书摘录，该公司计划在上市后维持“受控公司”地位，这意味着创始人埃隆·马斯克将继续保留对董事会的绝对控制权...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_3088dfc0103e",
+        "summary_text": "全球最大另类资产管理公司黑石集团预计，若中东地缘冲突能够得到解决，压抑已久的首次公开募股市场将迎来显著复苏。 黑石总裁乔纳森·格雷周四在接受采访时作出上述表态。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_a16fca69912e",
+        "summary_text": "在成功征服太空领域后，马斯克的SpaceX正将目光投向新的增长引擎——企业级人工智能市场。这家航天巨头近期与AI编程初创公司Cursor达成深度合作...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_2f658ddc41bd",
+        "summary_text": " 为抓住人工智能投资热潮带来的机遇，英国仓储地产巨头SEGRO正加速向数据中心领域扩张，计划在法国、德国、意大利和波兰等地布局新项目。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_072023bbbdf1",
+        "summary_text": " 随着瑞士政府推进针对瑞银集团的严格资本新规，部分瑞士政界人士正试图为这家银行业巨头提供政治支持，以缓冲新规可能带来的冲击。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_98d7d1b0cc4f",
+        "summary_text": " 美国电动汽车制造商特斯拉周三宣布，计划在其位于柏林附近的欧洲唯一超级工厂增加1000名员工，并自7月起将周产量提升20%，以应对市场对Model Y车型的强劲需求。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_ffbd9fbb8fe9",
+        "summary_text": "这场多年来规模最大的媒体并购案正逐步接近收官。 华纳兄弟探索股东于周四投票批准派拉蒙天空之舞（Paramount Skydance）对该公司的收购。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_78a59adc5d5c",
+        "summary_text": "预测市场平台Kalshi上的投注者目前认为，霍尔木兹海峡航运在6月恢复正常水平的几率低于50%。 这些投注者认为，到7月恢复正常航运的概率为59%，到8月则为61%。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_cf0d7fbd350d",
+        "summary_text": "在地缘冲突升温、油价突破100美元的背景下，过度避险行为可能导致投资者错失AI浪潮带来的结构性机遇。 路透社分析文章指出，当前市场最大的悖论在于：最大的投资风险...",
+        "sentiment": "negative"
+      },
+      {
+        "news_uid": "news_5a65b25b1336",
+        "summary_text": "据媒体4月23日报道，美国国防科技公司莱迪奥斯（Leidos）宣布获得美国陆军一份价值6.17亿美元的合同，用于建造和交付更多“集成防护能力2型”（IFPC Inc...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_1755a8a491a1",
+        "summary_text": "据媒体4月23日报道，随着中东地缘政治局势持续紧张，全球市场避险情绪显著升温，投资者纷纷从风险资产中撤出，转向黄金、美元等避险资产。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_20b4133c191d",
+        "summary_text": "据媒体4月23日报道，全球美妆巨头欧莱雅（L‘Oréal）发布2026年第一季度财报，销售额达121.5亿欧元，按可比口径计算同比增长7.6%，大幅超出分析师3-4%的预期。",
+        "sentiment": "positive"
+      },
+      {
+        "news_uid": "news_657eddc2a937",
+        "summary_text": "据媒体4月23日报道，全球食品巨头雀巢（Nestlé）正展现出对中东地缘政治动荡的“免疫力”，并将战略重心重新聚焦于中国市场的复苏。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_a672865dc984",
+        "summary_text": " 据媒体4月23日报道，美国捷蓝航空（JetBlue）因被指控利用乘客个人数据动态调整票价，在纽约布鲁克林联邦法院遭到集体诉讼。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_0698b96adf48",
+        "summary_text": "据媒体4月23日报道，意法半导体（STMicroelectronics）宣布将于5月4日召开投资者电话会议，届时将深入探讨公司在当前市场环境下的机遇与挑战。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_f8c1445be585",
+        "summary_text": "美国4月份企业活动加速，受益于战争相关的供应干扰促使企业争相囤积物资，进而推动制造业创下近四年来最强劲增长。 周四公布的数据显示...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_289314d17d8a",
+        "summary_text": "红星资本局4月23日消息，“鸭脖大王”绝味食品（603517.SH，简称：ST绝味）出现上市9年以来的首次亏损。 绝味食品的亏损，一方面是由于财务管理失控导致的补缴税款及滞纳金超...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_6b7e429db8a9",
+        "summary_text": "来源：中国基金报 【导读】香农芯创一季度净利润同比增长7835.06% 中国基金报记者 夏天 4月23日晚间，国内存储分销龙头香农芯创（证券代码：300475）发布2026年一季报...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_9d558a572a12",
+        "summary_text": "据媒体4月23日报道，巴西银行（Banco do Brasil）正在密切监控农业信贷重组领域的复苏迹象。该行首席财务官（CFO）今日重申，尽管市场存在质疑...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_50501fc7e45b",
+        "summary_text": " 据媒体4月23日报道，随着中东冲突推高燃油价格，叠加特朗普政府关税政策的不确定性，美国企业正面临成本激增与利润受压的双重挑战。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_e46afa973a9e",
+        "summary_text": "最新数据显示，欧洲企业第一季度的盈利预期虽有所上调，但整体增长依然乏力，且严重依赖能源板块的支撑。 根据伦敦证券交易所集团（LSEG）的数据...",
+        "sentiment": "positive"
+      },
+      {
+        "news_uid": "news_3112c5268f0f",
+        "summary_text": "据媒体4月23日报道，瑞士政府周三宣布对瑞银集团（UBS）的新资本规则提案作出部分让步，但坚持要求其为海外业务提供全额资本支持...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_bdf4425ff1f1",
+        "summary_text": "据媒体4月23日报道，应用数字公司（Applied Digital）宣布与一家美国本土超大规模企业签署了一份价值75亿美元的长期租赁协议，为其位于美国南部的“Delta Forge...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_8ddffb6f65dd",
+        "summary_text": " 据媒体4月23日报道，受中东冲突推高航空燃油成本影响，美国航空（American Airlines）周四大幅下调2026年全年盈利预期，直言利润空间正遭受严重侵蚀。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_2e4d19eba38f",
+        "summary_text": "据4月23日报道，全球最大另类资产管理公司黑石集团（Blackstone）今日公布季度业绩。面对私募信贷募资放缓和散户投资者加速赎回的压力...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_a8decde6042c",
+        "summary_text": " 日本财务大臣片山皋月警告称，在东京对令日元维持弱势的投机性走势保持高度警惕之际，官员们正与美国对口官员昼夜不停地保持密切联系。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_2e0dd2d58908",
+        "summary_text": " 据媒体4月23日报道，受社交媒体“蛋白质最大化”风潮及GLP-1减肥药副作用影响，美国爱达荷州与蒙大拿州的农民正大规模将麦田改种豌豆与扁豆，以寻求更高的利润空间。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_3051cb8d6bed",
+        "summary_text": "美国军方表示，美军在印度洋登上一艘从伊朗运载原油的受制裁超级油轮。这是美国对伊朗海运封锁中的最新行动。 五角大楼在X平台声明中称...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_afa9458eb2b7",
+        "summary_text": "核心要点CNBC 全美经济调查显示，美国民众正深受油价上涨之苦。他们正减少在娱乐、旅游方面的支出，甚至压缩食品杂货、医疗保健等必需品开支。",
+        "sentiment": "negative"
+      },
+      {
+        "news_uid": "news_90e4f97cba26",
+        "summary_text": "据媒体4月23日报道，俄罗斯总统普京在叶卡捷琳堡发表讲话时明确表示，俄罗斯愿意与北极地区的所有邻国及外国伙伴进行对话，但同时也将坚定而持续地捍卫本国在该地区的地缘...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_8bfdc120446c",
+        "summary_text": "据媒体4月23日报道，三位民主党参议员已致函美国交通部，要求对联邦航空管理局（FAA）局长布赖恩·贝德福德（Brian Bedford）的股票交易行为展开调查...",
+        "sentiment": "negative"
+      },
+      {
+        "news_uid": "news_5cc06e546f3c",
+        "summary_text": " 工业设备制造商道弗公司（Dover Corporation）周四发布了乐观的2026年盈利预测，主要得益于人工智能（AI）数据中心对液冷组件的强劲需求。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_16ee43038f13",
+        "summary_text": "核心要点总统唐纳德・特朗普表示，他已下令美国海军 “击沉任何在霍尔木兹海峡布设水雷的船只”。特朗普还称，他正命令美国扫雷舰 “以三倍力度” 继续清理该海峡。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_6bdbb6e73c59",
+        "summary_text": "受中东地区紧张局势持续发酵影响，华尔街主要股指周四开盘走低，投资者避险情绪升温。截至北京时间4月23日晚，道琼斯工业平均指数下跌170.37点，跌幅0.34%，报49319...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_a59aebb7f728",
+        "summary_text": "据内涂4月23日报道，特朗普政府计划将大麻从《管制物质法案》中管制最严的“一级”降至“三级”，与氯胺酮等药物并列。此举标志着美国联邦层面首次承认大麻的医疗用途...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_649cd00d8635",
+        "summary_text": "尽管伊朗冲突引发油价飙升并拖累部分行业，但美国劳动力市场整体尚未显现系统性压力，就业数据保持相对稳定。 高盛此前预测，受能源价格上涨影响...",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_3193af1d0514",
+        "summary_text": "美国西南航空（Southwest Airlines）首席执行官鲍勃·乔丹（Bob Jordan）周四明确表示，预计今年剩余时间内，航空燃油价格将维持在高位。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_b92cb26860d5",
+        "summary_text": " 美国航空（American Airlines）周四大幅下调2026年全年盈利预期，直言伊朗战事引发的航空燃油成本飙升正在严重侵蚀其利润空间。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_8fceedee56af",
+        "summary_text": " 奈飞已批准一项新的250亿美元股票回购计划，此举标志着在放弃一项重大收购计划后，公司重新将重心转向向股东返还资本。",
+        "sentiment": "neutral"
+      },
+      {
+        "news_uid": "news_620610a085fb",
+        "summary_text": "诺和诺德宣布，在该药物针对儿童和青少年的后期试验中达到主要目标后，将在美国推出Ozempic的口服版本。 这种口服形式的司美格鲁肽（semaglutide）可能有助于公司扩大其占...",
+        "sentiment": "neutral"
+      }
+    ],
+    "news_company_maps": {
+      "news_26a3abd19bb9": [
+        {
+          "stock_code": "600276",
+          "impact_direction": "neutral",
+          "impact_strength": 0.49,
+          "reason_text": "若执掌美联储，凯文·沃什将如何“打破常规”？"
+        }
+      ],
+      "news_a7bbb262061e": [
+        {
+          "stock_code": "600016",
+          "impact_direction": "neutral",
+          "impact_strength": 0.78,
+          "reason_text": "Amazon两部门废传统头衔，“Builder”成岗位新称谓"
+        }
+      ],
+      "news_760490d20ee5": [
+        {
+          "stock_code": "000002",
+          "impact_direction": "neutral",
+          "impact_strength": 0.9,
+          "reason_text": "美国FDA批准再生元基因疗法，用于治疗遗传性耳聋"
+        }
+      ],
+      "news_3708e89328e1": [
+        {
+          "stock_code": "002594",
+          "impact_direction": "neutral",
+          "impact_strength": 0.32,
+          "reason_text": "Bending Spoons选定投行筹备200亿美元美国IP"
+        }
+      ],
+      "news_7ece91c913f1": [
+        {
+          "stock_code": "600050",
+          "impact_direction": "positive",
+          "impact_strength": 0.39,
+          "reason_text": "未经证实消息称伊朗首席谈判代表辞职，布伦特原油突破每桶104"
+        }
+      ],
+      "news_a2f0ca08d8e1": [
+        {
+          "stock_code": "600309",
+          "impact_direction": "neutral",
+          "impact_strength": 0.98,
+          "reason_text": "伊莱克斯拟增资9.8亿美元，携手美的组建北美合资企业"
+        }
+      ],
+      "news_14dfee091924": [
+        {
+          "stock_code": "600887",
+          "impact_direction": "neutral",
+          "impact_strength": 0.45,
+          "reason_text": "美国FDA拒绝批准Grace Therapeutics脑卒中"
+        }
+      ],
+      "news_4b2c621f05e9": [
+        {
+          "stock_code": "600519",
+          "impact_direction": "neutral",
+          "impact_strength": 0.97,
+          "reason_text": "纳斯达克延长交易时间前夕，先行推出配套产品"
+        }
+      ],
+      "news_ba2c21f20bcf": [
+        {
+          "stock_code": "601318",
+          "impact_direction": "negative",
+          "impact_strength": 0.61,
+          "reason_text": "巴西监管机构批准深化对谷歌新闻内容使用的调查"
+        }
+      ],
+      "news_19c9125ef676": [
+        {
+          "stock_code": "000858",
+          "impact_direction": "neutral",
+          "impact_strength": 0.75,
+          "reason_text": "Palantir股价今日下跌原因：AI大单难抵市场疲软"
+        }
+      ],
+      "news_2d5cbbd78b3e": [
+        {
+          "stock_code": "600030",
+          "impact_direction": "positive",
+          "impact_strength": 0.77,
+          "reason_text": "泛林集团发布强劲Q3业绩，AI需求持续推动增长"
+        }
+      ],
+      "news_c3ead010278c": [
+        {
+          "stock_code": "601012",
+          "impact_direction": "neutral",
+          "impact_strength": 0.61,
+          "reason_text": "Meta内部宣布将裁员10%以提升效率 弥补AI方面高额支出"
+        }
+      ],
+      "news_cf78ee88592f": [
+        {
+          "stock_code": "600585",
+          "impact_direction": "neutral",
+          "impact_strength": 0.62,
+          "reason_text": "受ServiceNow、IBM财报拖累叠加AI替代担忧加剧，"
+        }
+      ],
+      "news_f80b1bf580c0": [
+        {
+          "stock_code": "600009",
+          "impact_direction": "neutral",
+          "impact_strength": 0.66,
+          "reason_text": "分析师：股市正艰难维持平衡态势"
+        }
+      ],
+      "news_28c128d7449a": [
+        {
+          "stock_code": "600036",
+          "impact_direction": "neutral",
+          "impact_strength": 0.34,
+          "reason_text": "伊朗战争期间 Pimco通过私募交易向海湾地区提供逾100亿"
+        }
+      ],
+      "news_73346320b007": [
+        {
+          "stock_code": "000001",
+          "impact_direction": "neutral",
+          "impact_strength": 0.46,
+          "reason_text": "小麦期货上涨 恶劣天气使全球产量受限"
+        }
+      ],
+      "news_e5476246c35d": [
+        {
+          "stock_code": "000651",
+          "impact_direction": "neutral",
+          "impact_strength": 0.75,
+          "reason_text": "霍尔木兹海峡紧张局势升级 和谈前景渺茫"
+        }
+      ],
+      "news_b413fb5808b8": [
+        {
+          "stock_code": "601166",
+          "impact_direction": "neutral",
+          "impact_strength": 0.46,
+          "reason_text": "欧洲央行管委Nagel称特朗普对美联储的攻击引发了避险行为"
+        }
+      ],
+      "news_438702ff1286": [
+        {
+          "stock_code": "600104",
+          "impact_direction": "neutral",
+          "impact_strength": 0.42,
+          "reason_text": "软件业务销售未能驱散人工智能之忧 IBM股价重挫"
+        }
+      ],
+      "news_feaa6dd1f2c5": [
+        {
+          "stock_code": "600690",
+          "impact_direction": "neutral",
+          "impact_strength": 0.83,
+          "reason_text": "美国将特定大麻产品重新归类为危险性较低的毒品"
+        }
+      ],
+      "news_4ae3e54cfd42": [
+        {
+          "stock_code": "600276",
+          "impact_direction": "neutral",
+          "impact_strength": 0.86,
+          "reason_text": "SpaceX招股书披露 马斯克IPO后仍可保留董事会控制权"
+        }
+      ],
+      "news_2f658ddc41bd": [
+        {
+          "stock_code": "600016",
+          "impact_direction": "neutral",
+          "impact_strength": 0.35,
+          "reason_text": "英国SEGRO扩大数据中心布局，押注AI热潮"
+        }
+      ],
+      "news_ffbd9fbb8fe9": [
+        {
+          "stock_code": "000002",
+          "impact_direction": "neutral",
+          "impact_strength": 0.87,
+          "reason_text": "华纳兄弟投资者批准以1100亿美元将公司出售给派拉蒙影业"
+        }
+      ],
+      "news_5a65b25b1336": [
+        {
+          "stock_code": "002594",
+          "impact_direction": "neutral",
+          "impact_strength": 0.98,
+          "reason_text": "莱迪奥斯获美军6.17亿美元合同，加速防空系统量产"
+        }
+      ],
+      "news_657eddc2a937": [
+        {
+          "stock_code": "600050",
+          "impact_direction": "neutral",
+          "impact_strength": 0.9,
+          "reason_text": "雀巢超脱伊朗局势影响，中国市场成复苏关键"
+        }
+      ],
+      "news_f8c1445be585": [
+        {
+          "stock_code": "600309",
+          "impact_direction": "neutral",
+          "impact_strength": 0.87,
+          "reason_text": "美国企业活动在4月份加速扩张 价格指标显示通胀形势堪忧"
+        }
+      ],
+      "news_9d558a572a12": [
+        {
+          "stock_code": "600887",
+          "impact_direction": "neutral",
+          "impact_strength": 0.67,
+          "reason_text": "巴西银行：农业重组显现复苏迹象，CFO重申“综合集团”战略"
+        }
+      ],
+      "news_3112c5268f0f": [
+        {
+          "stock_code": "600519",
+          "impact_direction": "neutral",
+          "impact_strength": 0.5,
+          "reason_text": "瑞士政府微调资本新规，瑞银仍需增资200亿美元"
+        }
+      ],
+      "news_2e4d19eba38f": [
+        {
+          "stock_code": "601318",
+          "impact_direction": "neutral",
+          "impact_strength": 0.31,
+          "reason_text": "黑石CEO：基金设计已考量信贷周期"
+        }
+      ],
+      "news_3051cb8d6bed": [
+        {
+          "stock_code": "000858",
+          "impact_direction": "neutral",
+          "impact_strength": 0.74,
+          "reason_text": "美军登上从伊朗运载原油的油轮 德黑兰继续威胁霍尔木兹海峡过往"
+        }
+      ],
+      "news_8bfdc120446c": [
+        {
+          "stock_code": "600030",
+          "impact_direction": "negative",
+          "impact_strength": 0.34,
+          "reason_text": "美参议员要求调查FAA局长股票交易"
+        }
+      ],
+      "news_6bdbb6e73c59": [
+        {
+          "stock_code": "601012",
+          "impact_direction": "neutral",
+          "impact_strength": 0.75,
+          "reason_text": "中东局势不确定性笼罩，华尔街周四低开"
+        }
+      ],
+      "news_3193af1d0514": [
+        {
+          "stock_code": "600585",
+          "impact_direction": "neutral",
+          "impact_strength": 0.34,
+          "reason_text": "美国西南航空CEO预警：高油价将持续全年"
+        }
+      ],
+      "news_620610a085fb": [
+        {
+          "stock_code": "600009",
+          "impact_direction": "neutral",
+          "impact_strength": 0.75,
+          "reason_text": "诺和诺德计划在美国推出儿童版口服版“减肥神药”Ozempic"
+        }
+      ]
+    },
+    "news_industry_maps": {
+      "news_26a3abd19bb9": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "neutral",
+          "impact_strength": 0.52,
+          "reason_text": "行业动态：若执掌美联储，凯文·沃什将如何“打破常规"
+        }
+      ],
+      "news_0b6771f78f3c": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "positive",
+          "impact_strength": 0.87,
+          "reason_text": "行业动态：美国运通一季度盈利超预期，消费支出增速创"
+        }
+      ],
+      "news_d99c3571a144": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "neutral",
+          "impact_strength": 0.3,
+          "reason_text": "行业动态：电力设备需求激增，西门子能源再度上调年度"
+        }
+      ],
+      "news_a7bbb262061e": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.84,
+          "reason_text": "行业动态：Amazon两部门废传统头衔，“Buil"
+        }
+      ],
+      "news_7aa51a615fbc": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "neutral",
+          "impact_strength": 0.62,
+          "reason_text": "行业动态：意外增持！裕信银行将Generali持股"
+        }
+      ],
+      "news_7da50a7c297a": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.88,
+          "reason_text": "行业动态：中东局势不确定性拖累，铜价从数周高位回落"
+        }
+      ],
+      "news_760490d20ee5": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.68,
+          "reason_text": "行业动态：美国FDA批准再生元基因疗法，用于治疗遗"
+        }
+      ],
+      "news_f1c8e778aee7": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.24,
+          "reason_text": "行业动态：中东僵局压制市场情绪，美股周四尾盘承压走"
+        }
+      ],
+      "news_172ebd9e155e": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "neutral",
+          "impact_strength": 0.26,
+          "reason_text": "行业动态：美国司法部将医用大麻重新归类为低危险性毒"
+        }
+      ],
+      "news_3708e89328e1": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.67,
+          "reason_text": "行业动态：Bending Spoons选定投行筹备"
+        }
+      ],
+      "news_5d2501c12ac6": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "neutral",
+          "impact_strength": 0.28,
+          "reason_text": "行业动态：美伊谈判陷僵局，墨西哥比索承压走低"
+        }
+      ],
+      "news_f1f08c21243b": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "neutral",
+          "impact_strength": 0.3,
+          "reason_text": "行业动态：育碧官宣：《刺客信条：黑旗》重制版7月9"
+        }
+      ],
+      "news_7ece91c913f1": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "positive",
+          "impact_strength": 0.9,
+          "reason_text": "行业动态：未经证实消息称伊朗首席谈判代表辞职，布伦"
+        }
+      ],
+      "news_3c0d65427794": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.96,
+          "reason_text": "行业动态：尾盘：美股尾盘走低 科技股跌幅领先"
+        }
+      ],
+      "news_cf2150f6cd3b": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "neutral",
+          "impact_strength": 0.45,
+          "reason_text": "行业动态：中东局势与财报交织，欧股收盘波澜不惊"
+        }
+      ],
+      "news_a2f0ca08d8e1": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.33,
+          "reason_text": "行业动态：伊莱克斯拟增资9.8亿美元，携手美的组建"
+        }
+      ],
+      "news_9e655bff967b": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.59,
+          "reason_text": "行业动态：特朗普：没有急于结束战争的压力 协议必须"
+        }
+      ],
+      "news_8ba375532dc4": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.37,
+          "reason_text": "行业动态：墨西哥健康税实施首季，Arca饮料销量持"
+        }
+      ],
+      "news_14dfee091924": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "neutral",
+          "impact_strength": 0.93,
+          "reason_text": "行业动态：美国FDA拒绝批准Grace Thera"
+        }
+      ],
+      "news_cdd000e748a9": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.93,
+          "reason_text": "行业动态：科技就业开启“从农场到工厂”转型之路"
+        }
+      ],
+      "news_e3fa03b5ee71": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "neutral",
+          "impact_strength": 0.24,
+          "reason_text": "行业动态：丹纳赫就疫情后业绩展望误导投资者达成和解"
+        }
+      ],
+      "news_4b2c621f05e9": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "neutral",
+          "impact_strength": 0.6,
+          "reason_text": "行业动态：纳斯达克延长交易时间前夕，先行推出配套产"
+        }
+      ],
+      "news_a9538cb42ba7": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "neutral",
+          "impact_strength": 0.57,
+          "reason_text": "行业动态：琼斯法案豁免生效，外籍油轮首航得州至宾州"
+        }
+      ],
+      "news_b2c6d1a30ef1": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.35,
+          "reason_text": "行业动态：ADP拟出售印度GMR机场7.3%股份，"
+        }
+      ],
+      "news_ba2c21f20bcf": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "negative",
+          "impact_strength": 0.45,
+          "reason_text": "行业动态：巴西监管机构批准深化对谷歌新闻内容使用的"
+        }
+      ],
+      "news_6d9a163d1b6b": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.69,
+          "reason_text": "行业动态：必和必拓纳入中国铁矿石新指数，中澳长协僵"
+        }
+      ],
+      "news_a93c30572386": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.98,
+          "reason_text": "行业动态：迈赫尔通讯社：德黑兰启动防空系统以应对“"
+        }
+      ],
+      "news_19c9125ef676": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.89,
+          "reason_text": "行业动态：Palantir股价今日下跌原因：AI大"
+        }
+      ],
+      "news_59396508658a": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "neutral",
+          "impact_strength": 0.36,
+          "reason_text": "行业动态：洛克希德·马丁盈利与营收不及预期，股价下"
+        }
+      ],
+      "news_9281366315b3": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.37,
+          "reason_text": "行业动态：英特尔股价获BNP Paribas上调目"
+        }
+      ],
+      "news_2d5cbbd78b3e": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "positive",
+          "impact_strength": 0.37,
+          "reason_text": "行业动态：泛林集团发布强劲Q3业绩，AI需求持续推"
+        }
+      ],
+      "news_4caef0172673": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "neutral",
+          "impact_strength": 0.49,
+          "reason_text": "行业动态：德州仪器股价飙升18%，有望创下2000"
+        }
+      ],
+      "news_d80fb9f03e07": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "neutral",
+          "impact_strength": 0.99,
+          "reason_text": "行业动态：美国称“布什号”航母已经在中央司令部责任"
+        }
+      ],
+      "news_c3ead010278c": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.24,
+          "reason_text": "行业动态：Meta内部宣布将裁员10%以提升效率 "
+        }
+      ],
+      "news_10e8aceea9a9": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "neutral",
+          "impact_strength": 0.83,
+          "reason_text": "行业动态：美国空军拟大增洛克希德隐形导弹库存"
+        }
+      ],
+      "news_e487b2e9e12e": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.93,
+          "reason_text": "行业动态：欧洲债市：英国国债跑输 交易员上调对英国"
+        }
+      ],
+      "news_cf78ee88592f": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.85,
+          "reason_text": "行业动态：受ServiceNow、IBM财报拖累叠"
+        }
+      ],
+      "news_f9604258eff6": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.99,
+          "reason_text": "行业动态：微软首次推出自愿离职买断计划，覆盖美国至"
+        }
+      ],
+      "news_62be08d2f0a1": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "neutral",
+          "impact_strength": 0.39,
+          "reason_text": "行业动态：瑞银：科技股是冲突爆发以来股市反弹的核心"
+        }
+      ],
+      "news_f80b1bf580c0": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.42,
+          "reason_text": "行业动态：分析师：股市正艰难维持平衡态势"
+        }
+      ],
+      "news_7936b54ac205": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "neutral",
+          "impact_strength": 0.7,
+          "reason_text": "行业动态：微软向约7%美国员工提供自愿退休方案 工"
+        }
+      ],
+      "news_52b728118c4f": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "neutral",
+          "impact_strength": 0.98,
+          "reason_text": "行业动态：美国商务部长：特朗普金卡签证项目迄今只有"
+        }
+      ],
+      "news_28c128d7449a": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "neutral",
+          "impact_strength": 0.28,
+          "reason_text": "行业动态：伊朗战争期间 Pimco通过私募交易向海"
+        }
+      ],
+      "news_bb7cb8cfb108": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.59,
+          "reason_text": "行业动态：以色列国防部长卡茨：以方准备重启对伊战争"
+        }
+      ],
+      "news_2e1279f11003": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "neutral",
+          "impact_strength": 0.35,
+          "reason_text": "行业动态：午盘：标普500创盘中新高后转跌"
+        }
+      ],
+      "news_73346320b007": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.83,
+          "reason_text": "行业动态：小麦期货上涨 恶劣天气使全球产量受限"
+        }
+      ],
+      "news_27fd463b50b7": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.35,
+          "reason_text": "行业动态：德州仪器创近 26 年最佳单日表现"
+        }
+      ],
+      "news_98af7e5f1288": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.3,
+          "reason_text": "行业动态：美国航空下调2026年盈利预期 午盘逆势"
+        }
+      ],
+      "news_e5476246c35d": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "neutral",
+          "impact_strength": 0.32,
+          "reason_text": "行业动态：霍尔木兹海峡紧张局势升级 和谈前景渺茫"
+        }
+      ],
+      "news_11f66e9490bb": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.53,
+          "reason_text": "行业动态：Kalshi交易员预计霍尔木兹海峡航运要"
+        }
+      ],
+      "news_762d52dfa599": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "neutral",
+          "impact_strength": 0.87,
+          "reason_text": "行业动态：微软向约7%的美国员工提供自愿退休方案"
+        }
+      ],
+      "news_b413fb5808b8": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "neutral",
+          "impact_strength": 0.61,
+          "reason_text": "行业动态：欧洲央行管委Nagel称特朗普对美联储的"
+        }
+      ],
+      "news_cc0a1ea727aa": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "neutral",
+          "impact_strength": 0.83,
+          "reason_text": "行业动态：法尔斯通讯社：伊朗已收到的霍尔木兹海峡通"
+        }
+      ],
+      "news_295194cd0aa0": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.4,
+          "reason_text": "行业动态：B. Riley的霍根表示，股市正在进行"
+        }
+      ],
+      "news_438702ff1286": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "neutral",
+          "impact_strength": 0.57,
+          "reason_text": "行业动态：软件业务销售未能驱散人工智能之忧 IBM"
+        }
+      ],
+      "news_d04d02d12ac5": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.96,
+          "reason_text": "行业动态：星巴克会员计划调整，成功吸引价格敏感型消"
+        }
+      ],
+      "news_f4a8452505e2": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.73,
+          "reason_text": "行业动态：特斯拉财报出炉后股价下跌，但市场传闻或支"
+        }
+      ],
+      "news_feaa6dd1f2c5": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.79,
+          "reason_text": "行业动态：美国将特定大麻产品重新归类为危险性较低的"
+        }
+      ],
+      "news_3a1b831794c4": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "neutral",
+          "impact_strength": 0.76,
+          "reason_text": "行业动态：意大利拟出售国有资产，规模达GDP的0."
+        }
+      ],
+      "news_74248fd11e70": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.9,
+          "reason_text": "行业动态：芯片制造商股价延续史上最长涨势 受德州仪"
+        }
+      ],
+      "news_4ae3e54cfd42": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "neutral",
+          "impact_strength": 0.71,
+          "reason_text": "行业动态：SpaceX招股书披露 马斯克IPO后仍"
+        }
+      ],
+      "news_3088dfc0103e": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "neutral",
+          "impact_strength": 0.24,
+          "reason_text": "行业动态：黑石：中东冲突若解决，IPO市场将迎来爆"
+        }
+      ],
+      "news_a16fca69912e": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "neutral",
+          "impact_strength": 0.82,
+          "reason_text": "行业动态：SpaceX征服星辰大海后 剑指企业AI"
+        }
+      ],
+      "news_2f658ddc41bd": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.71,
+          "reason_text": "行业动态：英国SEGRO扩大数据中心布局，押注AI"
+        }
+      ],
+      "news_072023bbbdf1": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "neutral",
+          "impact_strength": 0.77,
+          "reason_text": "行业动态：瑞士政客力挺瑞银，拟在资本规则上施以援手"
+        }
+      ],
+      "news_98d7d1b0cc4f": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.89,
+          "reason_text": "行业动态：需求回暖，特斯拉格林海德工厂将扩招100"
+        }
+      ],
+      "news_ffbd9fbb8fe9": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.36,
+          "reason_text": "行业动态：华纳兄弟投资者批准以1100亿美元将公司"
+        }
+      ],
+      "news_78a59adc5d5c": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.65,
+          "reason_text": "行业动态：预测市场Kalshi的交易员预计霍尔木兹"
+        }
+      ],
+      "news_cf0d7fbd350d": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "negative",
+          "impact_strength": 0.91,
+          "reason_text": "行业动态：路透：当下最大的投资风险竟是“回避风险”"
+        }
+      ],
+      "news_5a65b25b1336": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.54,
+          "reason_text": "行业动态：莱迪奥斯获美军6.17亿美元合同，加速防"
+        }
+      ],
+      "news_1755a8a491a1": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "neutral",
+          "impact_strength": 0.86,
+          "reason_text": "行业动态：避险情绪升温，全球科技股承压"
+        }
+      ],
+      "news_20b4133c191d": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "positive",
+          "impact_strength": 0.29,
+          "reason_text": "行业动态：欧莱雅Q1销售超预期，股价飙升近9%"
+        }
+      ],
+      "news_657eddc2a937": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "neutral",
+          "impact_strength": 0.45,
+          "reason_text": "行业动态：雀巢超脱伊朗局势影响，中国市场成复苏关键"
+        }
+      ],
+      "news_a672865dc984": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.4,
+          "reason_text": "行业动态：捷蓝航空陷“监控定价”风波，遭集体诉讼指"
+        }
+      ],
+      "news_0698b96adf48": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "neutral",
+          "impact_strength": 0.57,
+          "reason_text": "行业动态：意法半导体股价大涨，5月4日将召开投资者"
+        }
+      ],
+      "news_f8c1445be585": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.21,
+          "reason_text": "行业动态：美国企业活动在4月份加速扩张 价格指标显"
+        }
+      ],
+      "news_289314d17d8a": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.94,
+          "reason_text": "行业动态：绝味鸭脖上市9年首亏！连续5年隐匿营收，"
+        }
+      ],
+      "news_6b7e429db8a9": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.83,
+          "reason_text": "行业动态：300475，一季度净利暴增7835%"
+        }
+      ],
+      "news_9d558a572a12": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "neutral",
+          "impact_strength": 0.62,
+          "reason_text": "行业动态：巴西银行：农业重组显现复苏迹象，CFO重"
+        }
+      ],
+      "news_50501fc7e45b": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.37,
+          "reason_text": "行业动态：高油价与关税双重夹击，美企利润承压"
+        }
+      ],
+      "news_e46afa973a9e": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "positive",
+          "impact_strength": 0.73,
+          "reason_text": "行业动态：欧洲企业Q1盈利预期上调，但增长依旧乏力"
+        }
+      ],
+      "news_3112c5268f0f": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "neutral",
+          "impact_strength": 0.81,
+          "reason_text": "行业动态：瑞士政府微调资本新规，瑞银仍需增资200"
+        }
+      ],
+      "news_bdf4425ff1f1": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "neutral",
+          "impact_strength": 0.93,
+          "reason_text": "行业动态：应用数字斩获75亿美元AI数据中心大单"
+        }
+      ],
+      "news_8ddffb6f65dd": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.91,
+          "reason_text": "行业动态：燃油成本飙升，美国航空腰斩2026年盈利"
+        }
+      ],
+      "news_2e4d19eba38f": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "neutral",
+          "impact_strength": 0.25,
+          "reason_text": "行业动态：黑石CEO：基金设计已考量信贷周期"
+        }
+      ],
+      "news_a8decde6042c": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.72,
+          "reason_text": "行业动态：日本财务大臣就日元疲弱走势发出警告 称美"
+        }
+      ],
+      "news_2e0dd2d58908": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.9,
+          "reason_text": "行业动态：减肥药意外带火豌豆扁豆，美国农民弃麦种豆"
+        }
+      ],
+      "news_3051cb8d6bed": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.71,
+          "reason_text": "行业动态：美军登上从伊朗运载原油的油轮 德黑兰继续"
+        }
+      ],
+      "news_afa9458eb2b7": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "negative",
+          "impact_strength": 0.91,
+          "reason_text": "行业动态：CNBC调查：油价高企令美国人削减开支，"
+        }
+      ],
+      "news_90e4f97cba26": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.44,
+          "reason_text": "行业动态：普京：俄罗斯将坚定捍卫北极地缘政治利益"
+        }
+      ],
+      "news_8bfdc120446c": [
+        {
+          "industry_code": "IND_医药",
+          "impact_direction": "negative",
+          "impact_strength": 0.38,
+          "reason_text": "行业动态：美参议员要求调查FAA局长股票交易"
+        }
+      ],
+      "news_5cc06e546f3c": [
+        {
+          "industry_code": "IND_白酒",
+          "impact_direction": "neutral",
+          "impact_strength": 0.58,
+          "reason_text": "行业动态：受益于AI数据中心强劲需求，道弗发布乐观"
+        }
+      ],
+      "news_16ee43038f13": [
+        {
+          "industry_code": "IND_银行",
+          "impact_direction": "neutral",
+          "impact_strength": 0.71,
+          "reason_text": "行业动态：特朗普下令海军“击沉任何在霍尔木兹海峡布"
+        }
+      ],
+      "news_6bdbb6e73c59": [
+        {
+          "industry_code": "IND_地产",
+          "impact_direction": "neutral",
+          "impact_strength": 0.77,
+          "reason_text": "行业动态：中东局势不确定性笼罩，华尔街周四低开"
+        }
+      ],
+      "news_a59aebb7f728": [
+        {
+          "industry_code": "IND_证券",
+          "impact_direction": "neutral",
+          "impact_strength": 0.7,
+          "reason_text": "行业动态：美国将大麻重新归类为“危险性较低”药物，"
+        }
+      ],
+      "news_649cd00d8635": [
+        {
+          "industry_code": "IND_汽车",
+          "impact_direction": "neutral",
+          "impact_strength": 0.57,
+          "reason_text": "行业动态：美伊战争压力暂未显现，美国就业市场趋稳"
+        }
+      ],
+      "news_3193af1d0514": [
+        {
+          "industry_code": "IND_化工",
+          "impact_direction": "neutral",
+          "impact_strength": 0.39,
+          "reason_text": "行业动态：美国西南航空CEO预警：高油价将持续全年"
+        }
+      ],
+      "news_b92cb26860d5": [
+        {
+          "industry_code": "IND_家电",
+          "impact_direction": "neutral",
+          "impact_strength": 0.66,
+          "reason_text": "行业动态：美国航空因燃油成本飙升大幅下调全年盈利预"
+        }
+      ],
+      "news_8fceedee56af": [
+        {
+          "industry_code": "IND_食品",
+          "impact_direction": "neutral",
+          "impact_strength": 0.67,
+          "reason_text": "行业动态：奈飞批准250亿美元股票回购计划"
+        }
+      ],
+      "news_620610a085fb": [
+        {
+          "industry_code": "IND_电子",
+          "impact_direction": "neutral",
+          "impact_strength": 0.27,
+          "reason_text": "行业动态：诺和诺德计划在美国推出儿童版口服版“减肥"
+        }
+      ]
+    },
+    "industry_impact_events": [
+      {
+        "news_uid": "news_26a3abd19bb9",
+        "industry_code": "IND_医药",
+        "impact_direction": "neutral",
+        "impact_strength": 0.83,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_0b6771f78f3c",
+        "industry_code": "IND_白酒",
+        "impact_direction": "positive",
+        "impact_strength": 0.57,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_d99c3571a144",
+        "industry_code": "IND_银行",
+        "impact_direction": "neutral",
+        "impact_strength": 0.97,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_a7bbb262061e",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.65,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_7aa51a615fbc",
+        "industry_code": "IND_证券",
+        "impact_direction": "neutral",
+        "impact_strength": 0.38,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_7da50a7c297a",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.48,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_760490d20ee5",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.61,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_f1c8e778aee7",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.44,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_172ebd9e155e",
+        "industry_code": "IND_食品",
+        "impact_direction": "neutral",
+        "impact_strength": 0.76,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_3708e89328e1",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.41,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_5d2501c12ac6",
+        "industry_code": "IND_医药",
+        "impact_direction": "neutral",
+        "impact_strength": 0.8,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_f1f08c21243b",
+        "industry_code": "IND_白酒",
+        "impact_direction": "neutral",
+        "impact_strength": 0.97,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_7ece91c913f1",
+        "industry_code": "IND_银行",
+        "impact_direction": "positive",
+        "impact_strength": 0.54,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_3c0d65427794",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.78,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_cf2150f6cd3b",
+        "industry_code": "IND_证券",
+        "impact_direction": "neutral",
+        "impact_strength": 0.85,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_a2f0ca08d8e1",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.27,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_9e655bff967b",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.29,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_8ba375532dc4",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.2,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_14dfee091924",
+        "industry_code": "IND_食品",
+        "impact_direction": "neutral",
+        "impact_strength": 0.49,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_cdd000e748a9",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.44,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_e3fa03b5ee71",
+        "industry_code": "IND_医药",
+        "impact_direction": "neutral",
+        "impact_strength": 0.27,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_4b2c621f05e9",
+        "industry_code": "IND_白酒",
+        "impact_direction": "neutral",
+        "impact_strength": 0.59,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_a9538cb42ba7",
+        "industry_code": "IND_银行",
+        "impact_direction": "neutral",
+        "impact_strength": 0.56,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_b2c6d1a30ef1",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.79,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_ba2c21f20bcf",
+        "industry_code": "IND_证券",
+        "impact_direction": "negative",
+        "impact_strength": 0.53,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_6d9a163d1b6b",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.82,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_a93c30572386",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.49,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_19c9125ef676",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.46,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_59396508658a",
+        "industry_code": "IND_食品",
+        "impact_direction": "neutral",
+        "impact_strength": 0.36,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_9281366315b3",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.55,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_2d5cbbd78b3e",
+        "industry_code": "IND_医药",
+        "impact_direction": "positive",
+        "impact_strength": 0.92,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_4caef0172673",
+        "industry_code": "IND_白酒",
+        "impact_direction": "neutral",
+        "impact_strength": 0.63,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_d80fb9f03e07",
+        "industry_code": "IND_银行",
+        "impact_direction": "neutral",
+        "impact_strength": 0.99,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_c3ead010278c",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.41,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_10e8aceea9a9",
+        "industry_code": "IND_证券",
+        "impact_direction": "neutral",
+        "impact_strength": 0.95,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_e487b2e9e12e",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.43,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_cf78ee88592f",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.79,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_f9604258eff6",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.46,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_62be08d2f0a1",
+        "industry_code": "IND_食品",
+        "impact_direction": "neutral",
+        "impact_strength": 0.93,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_f80b1bf580c0",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.48,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_7936b54ac205",
+        "industry_code": "IND_医药",
+        "impact_direction": "neutral",
+        "impact_strength": 0.9,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_52b728118c4f",
+        "industry_code": "IND_白酒",
+        "impact_direction": "neutral",
+        "impact_strength": 0.34,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_28c128d7449a",
+        "industry_code": "IND_银行",
+        "impact_direction": "neutral",
+        "impact_strength": 0.59,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_bb7cb8cfb108",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.43,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_2e1279f11003",
+        "industry_code": "IND_证券",
+        "impact_direction": "neutral",
+        "impact_strength": 0.99,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_73346320b007",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.68,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_27fd463b50b7",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.91,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_98af7e5f1288",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.91,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_e5476246c35d",
+        "industry_code": "IND_食品",
+        "impact_direction": "neutral",
+        "impact_strength": 0.43,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_11f66e9490bb",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.79,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_762d52dfa599",
+        "industry_code": "IND_医药",
+        "impact_direction": "neutral",
+        "impact_strength": 0.65,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_b413fb5808b8",
+        "industry_code": "IND_白酒",
+        "impact_direction": "neutral",
+        "impact_strength": 0.58,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_cc0a1ea727aa",
+        "industry_code": "IND_银行",
+        "impact_direction": "neutral",
+        "impact_strength": 0.68,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_295194cd0aa0",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.86,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_438702ff1286",
+        "industry_code": "IND_证券",
+        "impact_direction": "neutral",
+        "impact_strength": 0.42,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_d04d02d12ac5",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.8,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_f4a8452505e2",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.28,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_feaa6dd1f2c5",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.94,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_3a1b831794c4",
+        "industry_code": "IND_食品",
+        "impact_direction": "neutral",
+        "impact_strength": 0.77,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_74248fd11e70",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.31,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_4ae3e54cfd42",
+        "industry_code": "IND_医药",
+        "impact_direction": "neutral",
+        "impact_strength": 0.94,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_3088dfc0103e",
+        "industry_code": "IND_白酒",
+        "impact_direction": "neutral",
+        "impact_strength": 0.85,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_a16fca69912e",
+        "industry_code": "IND_银行",
+        "impact_direction": "neutral",
+        "impact_strength": 0.22,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_2f658ddc41bd",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.88,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_072023bbbdf1",
+        "industry_code": "IND_证券",
+        "impact_direction": "neutral",
+        "impact_strength": 0.66,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_98d7d1b0cc4f",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.93,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_ffbd9fbb8fe9",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.33,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_78a59adc5d5c",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.99,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_cf0d7fbd350d",
+        "industry_code": "IND_食品",
+        "impact_direction": "negative",
+        "impact_strength": 0.29,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_5a65b25b1336",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.47,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_1755a8a491a1",
+        "industry_code": "IND_医药",
+        "impact_direction": "neutral",
+        "impact_strength": 0.33,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_20b4133c191d",
+        "industry_code": "IND_白酒",
+        "impact_direction": "positive",
+        "impact_strength": 0.41,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_657eddc2a937",
+        "industry_code": "IND_银行",
+        "impact_direction": "neutral",
+        "impact_strength": 0.24,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_a672865dc984",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.6,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_0698b96adf48",
+        "industry_code": "IND_证券",
+        "impact_direction": "neutral",
+        "impact_strength": 0.61,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_f8c1445be585",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.98,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_289314d17d8a",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.87,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_6b7e429db8a9",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.87,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_9d558a572a12",
+        "industry_code": "IND_食品",
+        "impact_direction": "neutral",
+        "impact_strength": 0.43,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_50501fc7e45b",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.83,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_e46afa973a9e",
+        "industry_code": "IND_医药",
+        "impact_direction": "positive",
+        "impact_strength": 0.28,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_3112c5268f0f",
+        "industry_code": "IND_白酒",
+        "impact_direction": "neutral",
+        "impact_strength": 0.55,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_bdf4425ff1f1",
+        "industry_code": "IND_银行",
+        "impact_direction": "neutral",
+        "impact_strength": 0.94,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_8ddffb6f65dd",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.45,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_2e4d19eba38f",
+        "industry_code": "IND_证券",
+        "impact_direction": "neutral",
+        "impact_strength": 0.76,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_a8decde6042c",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.8,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_2e0dd2d58908",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.38,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_3051cb8d6bed",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.53,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_afa9458eb2b7",
+        "industry_code": "IND_食品",
+        "impact_direction": "negative",
+        "impact_strength": 0.58,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_90e4f97cba26",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.88,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_8bfdc120446c",
+        "industry_code": "IND_医药",
+        "impact_direction": "negative",
+        "impact_strength": 0.53,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_5cc06e546f3c",
+        "industry_code": "IND_白酒",
+        "impact_direction": "neutral",
+        "impact_strength": 0.89,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_16ee43038f13",
+        "industry_code": "IND_银行",
+        "impact_direction": "neutral",
+        "impact_strength": 0.96,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_6bdbb6e73c59",
+        "industry_code": "IND_地产",
+        "impact_direction": "neutral",
+        "impact_strength": 0.68,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_a59aebb7f728",
+        "industry_code": "IND_证券",
+        "impact_direction": "neutral",
+        "impact_strength": 0.67,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_649cd00d8635",
+        "industry_code": "IND_汽车",
+        "impact_direction": "neutral",
+        "impact_strength": 0.68,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_3193af1d0514",
+        "industry_code": "IND_化工",
+        "impact_direction": "neutral",
+        "impact_strength": 0.95,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_b92cb26860d5",
+        "industry_code": "IND_家电",
+        "impact_direction": "neutral",
+        "impact_strength": 0.71,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_8fceedee56af",
+        "industry_code": "IND_食品",
+        "impact_direction": "neutral",
+        "impact_strength": 0.92,
+        "reason_text": "行业整体受关注"
+      },
+      {
+        "news_uid": "news_620610a085fb",
+        "industry_code": "IND_电子",
+        "impact_direction": "neutral",
+        "impact_strength": 0.48,
+        "reason_text": "行业整体受关注"
+      }
+    ],
+    "sync_vector_index": true
+  }
+}

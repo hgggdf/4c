@@ -33,6 +33,7 @@ CATEGORY_ENDPOINT_MAP: Dict[str, str] = {
     "announcement_raw": "/api/ingest/announcement-package",
     "research_report": "/api/ingest/news-package",
     "macro": "/api/macro-write/macro-indicators",
+    "financial_package": "/api/ingest/financial-package",
 }
 
 # data_category -> service action 名称映射（真实调用目标）
@@ -42,6 +43,7 @@ CATEGORY_SERVICE_ACTION_MAP: Dict[str, str] = {
     "announcement_raw": "ingest_announcement_package",
     "research_report": "ingest_news_package",
     "macro": "batch_upsert_macro_indicators",
+    "financial_package": "ingest_financial_package",
 }
 
 # 模块加载时断言：endpoint 值不能包含首尾空白或引号

@@ -26,11 +26,11 @@
   },
   "record_stats": {
     "raw_count": 20,
-    "staging_count": 20,
-    "expected_write_count": 20
+    "staging_count": 3,
+    "expected_write_count": 3
   },
   "checksum": {
-    "staging_sha256": "44bdaf91418f343ffc1dbb4f155686d6d833d6afdffe17082f903eb1e5aa1dfe"
+    "staging_sha256": "750ca2540fc3bef80a4d604ac81cbe9fa966baae541ce9591db4d1920e31a0b7"
   },
   "status": "ready"
 }

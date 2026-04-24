@@ -44,6 +44,7 @@ ALLOWED_CATEGORIES = {
     "announcement_raw",
     "research_report",
     "macro",
+    "financial_package",
 }
 
 # 仅做 staging 校验但强制 skip 入库的类别

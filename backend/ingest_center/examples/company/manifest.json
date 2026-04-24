@@ -1,25 +1,25 @@
 {
   "spec_version": "1.0",
   "job_id": "example_company_001",
-  "created_at": "2026-04-23T12:00:00+00:00",
+  "created_at": "2026-04-23T14:00:00+08:00",
   "producer": {
-    "system": "openclaw",
-    "module": "example_company",
-    "run_id": "run_example_company_001"
+    "system": "OpenClaw",
+    "module": "company_extractor",
+    "run_id": "run_20260423_001"
   },
   "data_category": "company",
   "time_window": {
-    "begin_date": "2026-04-23",
-    "end_date": "2026-04-23"
+    "begin_date": "2025-12-31",
+    "end_date": "2025-12-31"
   },
   "target": {
     "endpoint": "/api/ingest/company-package",
-    "ingest_package": "company-package",
+    "ingest_package": "company_package",
     "ingest_field": "company_master",
     "target_table": "company_master"
   },
   "files": {
-    "raw_path": "backend/crawler/raw/company/raw.json",
+    "raw_path": "backend/ingest_center/examples/company/raw.json",
     "staging_path": "backend/ingest_center/examples/company/staging.json",
     "quality_report_path": "backend/ingest_center/examples/company/quality_report.json"
   },
@@ -29,7 +29,7 @@
     "expected_write_count": 1
   },
   "checksum": {
-    "staging_sha256": "0a10806aff2d71fce80d22447cbdb88d9d01f94524132054e20f972d7380eefd"
+    "staging_sha256": "441f7760660f80f060e66b98999c194bb68a35b5c1b04581d88c44679f87e3eb"
   },
   "status": "ready"
 }

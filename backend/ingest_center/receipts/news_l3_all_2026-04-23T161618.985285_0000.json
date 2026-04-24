@@ -1,0 +1,71 @@
+{
+  "job_type": "news_l3",
+  "category": "all",
+  "staging_dir": "C:\\Users\\17614\\Desktop\\4c\\backend\\crawler\\staging\\e2e",
+  "dry_run": true,
+  "processed_files": 4,
+  "per_category_counts": {
+    "news_structured": {
+      "read": 80,
+      "skipped_invalid": 0,
+      "resolve_attempted": 80,
+      "resolve_success": 80,
+      "resolve_failed": 0,
+      "filtered": 80
+    },
+    "news_industry_maps": {
+      "read": 8,
+      "skipped_invalid": 0,
+      "resolve_attempted": 8,
+      "resolve_success": 8,
+      "resolve_failed": 0,
+      "group_count": 8,
+      "total": 8
+    },
+    "news_company_maps": {
+      "read": 8,
+      "skipped_invalid": 0,
+      "resolve_attempted": 8,
+      "resolve_success": 8,
+      "resolve_failed": 0,
+      "group_count": 8,
+      "total": 8
+    },
+    "industry_impact_events": {
+      "read": 12,
+      "skipped_invalid": 0,
+      "resolve_attempted": 12,
+      "resolve_success": 12,
+      "resolve_failed": 0,
+      "filtered": 12
+    }
+  },
+  "executed_categories": [
+    "news_structured",
+    "news_industry_maps",
+    "news_company_maps",
+    "industry_impact_events"
+  ],
+  "failed_categories": [],
+  "results": {
+    "news_structured": {
+      "dry_run": true,
+      "count": 80
+    },
+    "news_industry_maps": {
+      "dry_run": true,
+      "count": 8
+    },
+    "news_company_maps": {
+      "dry_run": true,
+      "count": 8
+    },
+    "industry_impact_events": {
+      "dry_run": true,
+      "count": 12
+    }
+  },
+  "status": "validated",
+  "success": true,
+  "created_at": "2026-04-23T16:16:18.985328+00:00"
+}

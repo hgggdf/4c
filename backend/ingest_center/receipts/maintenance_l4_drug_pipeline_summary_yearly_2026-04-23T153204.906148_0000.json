@@ -1,0 +1,19 @@
+{
+  "job_type": "maintenance_l4",
+  "task": "drug_pipeline_summary_yearly",
+  "stock_code": "688363",
+  "year": 2026,
+  "year_month": null,
+  "industry_code": null,
+  "dry_run": true,
+  "status": "validated",
+  "success": true,
+  "executed_tasks": [
+    "drug_pipeline_summary_yearly"
+  ],
+  "failed_tasks": [],
+  "results": {
+    "drug_pipeline_summary_yearly": null
+  },
+  "created_at": "2026-04-23T15:32:04.906174+00:00"
+}

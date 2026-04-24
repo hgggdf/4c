@@ -224,10 +224,336 @@
         "language": "zh"
       }
     ],
-    "news_structured": [],
-    "news_industry_maps": {},
-    "news_company_maps": {},
-    "industry_impact_events": [],
+    "news_structured": [
+      {
+        "topic_category": "创新药",
+        "summary_text": "公司创新药管线取得重要进展。",
+        "keywords_json": {
+          "innovation": true
+        },
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "medium",
+        "sentiment_label": "positive",
+        "confidence_score": 0.85,
+        "news_uid": "e2e_news_0021"
+      },
+      {
+        "topic_category": "集采政策",
+        "summary_text": "国家医保谈判结果公布，公司产品成功中选。",
+        "keywords_json": {
+          "policy": true
+        },
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.78,
+        "news_uid": "e2e_news_0022"
+      },
+      {
+        "topic_category": "研发进展",
+        "summary_text": "核心产品III期临床数据积极。",
+        "keywords_json": {
+          "clinical": true
+        },
+        "signal_type": "positive",
+        "impact_level": "high",
+        "impact_horizon": "long",
+        "sentiment_label": "positive",
+        "confidence_score": 0.92,
+        "news_uid": "e2e_news_0023"
+      },
+      {
+        "topic_category": "创新药",
+        "summary_text": "公司创新药管线取得重要进展。",
+        "keywords_json": {
+          "innovation": true
+        },
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "medium",
+        "sentiment_label": "positive",
+        "confidence_score": 0.85,
+        "news_uid": "e2e_news_0024"
+      },
+      {
+        "topic_category": "集采政策",
+        "summary_text": "国家医保谈判结果公布，公司产品成功中选。",
+        "keywords_json": {
+          "policy": true
+        },
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.78,
+        "news_uid": "e2e_news_0025"
+      },
+      {
+        "topic_category": "研发进展",
+        "summary_text": "核心产品III期临床数据积极。",
+        "keywords_json": {
+          "clinical": true
+        },
+        "signal_type": "positive",
+        "impact_level": "high",
+        "impact_horizon": "long",
+        "sentiment_label": "positive",
+        "confidence_score": 0.92,
+        "news_uid": "e2e_news_0026"
+      },
+      {
+        "topic_category": "创新药",
+        "summary_text": "公司创新药管线取得重要进展。",
+        "keywords_json": {
+          "innovation": true
+        },
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "medium",
+        "sentiment_label": "positive",
+        "confidence_score": 0.85,
+        "news_uid": "e2e_news_0027"
+      },
+      {
+        "topic_category": "集采政策",
+        "summary_text": "国家医保谈判结果公布，公司产品成功中选。",
+        "keywords_json": {
+          "policy": true
+        },
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.78,
+        "news_uid": "e2e_news_0028"
+      },
+      {
+        "topic_category": "研发进展",
+        "summary_text": "核心产品III期临床数据积极。",
+        "keywords_json": {
+          "clinical": true
+        },
+        "signal_type": "positive",
+        "impact_level": "high",
+        "impact_horizon": "long",
+        "sentiment_label": "positive",
+        "confidence_score": 0.92,
+        "news_uid": "e2e_news_0029"
+      },
+      {
+        "topic_category": "创新药",
+        "summary_text": "公司创新药管线取得重要进展。",
+        "keywords_json": {
+          "innovation": true
+        },
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "medium",
+        "sentiment_label": "positive",
+        "confidence_score": 0.85,
+        "news_uid": "e2e_news_0030"
+      },
+      {
+        "topic_category": "集采政策",
+        "summary_text": "国家医保谈判结果公布，公司产品成功中选。",
+        "keywords_json": {
+          "policy": true
+        },
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.78,
+        "news_uid": "e2e_news_0031"
+      },
+      {
+        "topic_category": "研发进展",
+        "summary_text": "核心产品III期临床数据积极。",
+        "keywords_json": {
+          "clinical": true
+        },
+        "signal_type": "positive",
+        "impact_level": "high",
+        "impact_horizon": "long",
+        "sentiment_label": "positive",
+        "confidence_score": 0.92,
+        "news_uid": "e2e_news_0032"
+      },
+      {
+        "topic_category": "创新药",
+        "summary_text": "公司创新药管线取得重要进展。",
+        "keywords_json": {
+          "innovation": true
+        },
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "medium",
+        "sentiment_label": "positive",
+        "confidence_score": 0.85,
+        "news_uid": "e2e_news_0033"
+      },
+      {
+        "topic_category": "集采政策",
+        "summary_text": "国家医保谈判结果公布，公司产品成功中选。",
+        "keywords_json": {
+          "policy": true
+        },
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.78,
+        "news_uid": "e2e_news_0034"
+      },
+      {
+        "topic_category": "研发进展",
+        "summary_text": "核心产品III期临床数据积极。",
+        "keywords_json": {
+          "clinical": true
+        },
+        "signal_type": "positive",
+        "impact_level": "high",
+        "impact_horizon": "long",
+        "sentiment_label": "positive",
+        "confidence_score": 0.92,
+        "news_uid": "e2e_news_0035"
+      },
+      {
+        "topic_category": "创新药",
+        "summary_text": "公司创新药管线取得重要进展。",
+        "keywords_json": {
+          "innovation": true
+        },
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "medium",
+        "sentiment_label": "positive",
+        "confidence_score": 0.85,
+        "news_uid": "e2e_news_0036"
+      },
+      {
+        "topic_category": "集采政策",
+        "summary_text": "国家医保谈判结果公布，公司产品成功中选。",
+        "keywords_json": {
+          "policy": true
+        },
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.78,
+        "news_uid": "e2e_news_0037"
+      },
+      {
+        "topic_category": "研发进展",
+        "summary_text": "核心产品III期临床数据积极。",
+        "keywords_json": {
+          "clinical": true
+        },
+        "signal_type": "positive",
+        "impact_level": "high",
+        "impact_horizon": "long",
+        "sentiment_label": "positive",
+        "confidence_score": 0.92,
+        "news_uid": "e2e_news_0038"
+      },
+      {
+        "topic_category": "创新药",
+        "summary_text": "公司创新药管线取得重要进展。",
+        "keywords_json": {
+          "innovation": true
+        },
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "medium",
+        "sentiment_label": "positive",
+        "confidence_score": 0.85,
+        "news_uid": "e2e_news_0039"
+      },
+      {
+        "topic_category": "集采政策",
+        "summary_text": "国家医保谈判结果公布，公司产品成功中选。",
+        "keywords_json": {
+          "policy": true
+        },
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.78,
+        "news_uid": "e2e_news_0040"
+      }
+    ],
+    "news_industry_maps": {
+      "e2e_news_0021": [
+        {
+          "industry_code": "C27",
+          "impact_direction": "positive",
+          "impact_strength": 0.75,
+          "reason_text": "创新药行业政策利好"
+        }
+      ],
+      "e2e_news_0022": [
+        {
+          "industry_code": "C35",
+          "impact_direction": "negative",
+          "impact_strength": -0.6,
+          "reason_text": "集采降价压力"
+        }
+      ]
+    },
+    "news_company_maps": {
+      "e2e_news_0021": [
+        {
+          "stock_code": "600276",
+          "impact_direction": "positive",
+          "impact_strength": 0.8,
+          "reason_text": "核心产品获批"
+        }
+      ],
+      "e2e_news_0022": [
+        {
+          "stock_code": "300760",
+          "impact_direction": "neutral",
+          "impact_strength": 0.1,
+          "reason_text": "业绩符合预期"
+        }
+      ]
+    },
+    "industry_impact_events": [
+      {
+        "industry_code": "C27",
+        "event_name": "医保目录调整",
+        "impact_direction": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "medium",
+        "summary_text": "国家医保局发布新版医保目录调整方案。",
+        "event_date": "2026-03-15",
+        "news_uid": "e2e_news_0021"
+      },
+      {
+        "industry_code": "C35",
+        "event_name": "集采政策变化",
+        "impact_direction": "negative",
+        "impact_level": "high",
+        "impact_horizon": "short",
+        "summary_text": "医疗器械集采范围进一步扩大。",
+        "event_date": "2026-02-20",
+        "news_uid": "e2e_news_0022"
+      },
+      {
+        "industry_code": "C27",
+        "event_name": "创新药审评加速",
+        "impact_direction": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "long",
+        "summary_text": "CDE发布创新药审评审批改革意见。",
+        "event_date": "2026-01-10",
+        "news_uid": "e2e_news_0023"
+      }
+    ],
     "sync_vector_index": true
   }
 }

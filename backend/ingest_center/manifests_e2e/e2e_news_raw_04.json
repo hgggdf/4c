@@ -30,7 +30,7 @@
     "expected_write_count": 20
   },
   "checksum": {
-    "staging_sha256": "1afb05ee3cdf10bf4d7841dc5c4b45737b164c5802cb055684e29b231d91d84a"
+    "staging_sha256": "f510eac8564ebcdb0dfc3e8f51bb8a920a0b93c6c8c399d64132edfe4a414c3f"
   },
   "status": "ready"
 }

@@ -1,0 +1,1068 @@
+{
+  "generated_at": "2026-04-23T17:11:29.921197+00:00",
+  "payload": {
+    "raw_announcements": [
+      {
+        "title": "600055公司256号公告: 普通公告",
+        "announcement_type": "普通公告",
+        "stock_code": "600055",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/255",
+        "publish_date": "2026-03-17",
+        "exchange": "SSE",
+        "content": "600055公司256号公告: 普通公告详细内容..."
+      },
+      {
+        "title": "600056公司257号公告: 年度报告",
+        "announcement_type": "年度报告",
+        "stock_code": "600056",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/256",
+        "publish_date": "2026-03-18",
+        "exchange": "SZSE",
+        "content": "600056公司257号公告: 年度报告详细内容..."
+      },
+      {
+        "title": "600057公司258号公告: 业绩快报",
+        "announcement_type": "业绩快报",
+        "stock_code": "600057",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/257",
+        "publish_date": "2026-03-19",
+        "exchange": "SSE",
+        "content": "600057公司258号公告: 业绩快报详细内容..."
+      },
+      {
+        "title": "600058公司259号公告: 临时公告",
+        "announcement_type": "临时公告",
+        "stock_code": "600058",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/258",
+        "publish_date": "2026-03-20",
+        "exchange": "SZSE",
+        "content": "600058公司259号公告: 临时公告详细内容..."
+      },
+      {
+        "title": "600059公司260号公告: 普通公告",
+        "announcement_type": "普通公告",
+        "stock_code": "600059",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/259",
+        "publish_date": "2026-03-21",
+        "exchange": "SSE",
+        "content": "600059公司260号公告: 普通公告详细内容..."
+      },
+      {
+        "title": "600060公司261号公告: 年度报告",
+        "announcement_type": "年度报告",
+        "stock_code": "600060",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/260",
+        "publish_date": "2026-03-22",
+        "exchange": "SZSE",
+        "content": "600060公司261号公告: 年度报告详细内容..."
+      },
+      {
+        "title": "600061公司262号公告: 业绩快报",
+        "announcement_type": "业绩快报",
+        "stock_code": "600061",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/261",
+        "publish_date": "2026-03-23",
+        "exchange": "SSE",
+        "content": "600061公司262号公告: 业绩快报详细内容..."
+      },
+      {
+        "title": "600062公司263号公告: 临时公告",
+        "announcement_type": "临时公告",
+        "stock_code": "600062",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/262",
+        "publish_date": "2026-03-24",
+        "exchange": "SZSE",
+        "content": "600062公司263号公告: 临时公告详细内容..."
+      },
+      {
+        "title": "600063公司264号公告: 普通公告",
+        "announcement_type": "普通公告",
+        "stock_code": "600063",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/263",
+        "publish_date": "2026-03-25",
+        "exchange": "SSE",
+        "content": "600063公司264号公告: 普通公告详细内容..."
+      },
+      {
+        "title": "600064公司265号公告: 年度报告",
+        "announcement_type": "年度报告",
+        "stock_code": "600064",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/264",
+        "publish_date": "2026-03-26",
+        "exchange": "SZSE",
+        "content": "600064公司265号公告: 年度报告详细内容..."
+      },
+      {
+        "title": "600065公司266号公告: 业绩快报",
+        "announcement_type": "业绩快报",
+        "stock_code": "600065",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/265",
+        "publish_date": "2026-03-27",
+        "exchange": "SSE",
+        "content": "600065公司266号公告: 业绩快报详细内容..."
+      },
+      {
+        "title": "600066公司267号公告: 临时公告",
+        "announcement_type": "临时公告",
+        "stock_code": "600066",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/266",
+        "publish_date": "2026-03-28",
+        "exchange": "SZSE",
+        "content": "600066公司267号公告: 临时公告详细内容..."
+      },
+      {
+        "title": "600067公司268号公告: 普通公告",
+        "announcement_type": "普通公告",
+        "stock_code": "600067",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/267",
+        "publish_date": "2026-03-29",
+        "exchange": "SSE",
+        "content": "600067公司268号公告: 普通公告详细内容..."
+      },
+      {
+        "title": "600068公司269号公告: 年度报告",
+        "announcement_type": "年度报告",
+        "stock_code": "600068",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/268",
+        "publish_date": "2026-03-30",
+        "exchange": "SZSE",
+        "content": "600068公司269号公告: 年度报告详细内容..."
+      },
+      {
+        "title": "600069公司270号公告: 业绩快报",
+        "announcement_type": "业绩快报",
+        "stock_code": "600069",
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/raw_announcements/269",
+        "publish_date": "2026-03-31",
+        "exchange": "SSE",
+        "content": "600069公司270号公告: 业绩快报详细内容..."
+      }
+    ],
+    "structured_announcements": [
+      {
+        "category": "普通公告",
+        "summary_text": "600055发布普通公告。",
+        "signal_type": "positive",
+        "risk_level": "low",
+        "stock_code": "600055",
+        "title": "600055公司256号公告: 普通公告",
+        "publish_date": "2026-03-17",
+        "key_fields_json": {
+          "key": "value_255"
+        }
+      },
+      {
+        "category": "年度报告",
+        "summary_text": "600056发布年度报告。",
+        "signal_type": "negative",
+        "risk_level": "medium",
+        "stock_code": "600056",
+        "title": "600056公司257号公告: 年度报告",
+        "publish_date": "2026-03-18",
+        "key_fields_json": {
+          "key": "value_256"
+        }
+      },
+      {
+        "category": "业绩快报",
+        "summary_text": "600057发布业绩快报。",
+        "signal_type": "neutral",
+        "risk_level": "high",
+        "stock_code": "600057",
+        "title": "600057公司258号公告: 业绩快报",
+        "publish_date": "2026-03-19",
+        "key_fields_json": {
+          "key": "value_257"
+        }
+      },
+      {
+        "category": "普通公告",
+        "summary_text": "600058发布临时公告。",
+        "signal_type": "positive",
+        "risk_level": "low",
+        "stock_code": "600058",
+        "title": "600058公司259号公告: 临时公告",
+        "publish_date": "2026-03-20",
+        "key_fields_json": {
+          "key": "value_258"
+        }
+      },
+      {
+        "category": "普通公告",
+        "summary_text": "600059发布普通公告。",
+        "signal_type": "negative",
+        "risk_level": "medium",
+        "stock_code": "600059",
+        "title": "600059公司260号公告: 普通公告",
+        "publish_date": "2026-03-21",
+        "key_fields_json": {
+          "key": "value_259"
+        }
+      },
+      {
+        "category": "年度报告",
+        "summary_text": "600060发布年度报告。",
+        "signal_type": "neutral",
+        "risk_level": "high",
+        "stock_code": "600060",
+        "title": "600060公司261号公告: 年度报告",
+        "publish_date": "2026-03-22",
+        "key_fields_json": {
+          "key": "value_260"
+        }
+      },
+      {
+        "category": "业绩快报",
+        "summary_text": "600061发布业绩快报。",
+        "signal_type": "positive",
+        "risk_level": "low",
+        "stock_code": "600061",
+        "title": "600061公司262号公告: 业绩快报",
+        "publish_date": "2026-03-23",
+        "key_fields_json": {
+          "key": "value_261"
+        }
+      },
+      {
+        "category": "普通公告",
+        "summary_text": "600062发布临时公告。",
+        "signal_type": "negative",
+        "risk_level": "medium",
+        "stock_code": "600062",
+        "title": "600062公司263号公告: 临时公告",
+        "publish_date": "2026-03-24",
+        "key_fields_json": {
+          "key": "value_262"
+        }
+      },
+      {
+        "category": "普通公告",
+        "summary_text": "600063发布普通公告。",
+        "signal_type": "neutral",
+        "risk_level": "high",
+        "stock_code": "600063",
+        "title": "600063公司264号公告: 普通公告",
+        "publish_date": "2026-03-25",
+        "key_fields_json": {
+          "key": "value_263"
+        }
+      },
+      {
+        "category": "年度报告",
+        "summary_text": "600064发布年度报告。",
+        "signal_type": "positive",
+        "risk_level": "low",
+        "stock_code": "600064",
+        "title": "600064公司265号公告: 年度报告",
+        "publish_date": "2026-03-26",
+        "key_fields_json": {
+          "key": "value_264"
+        }
+      },
+      {
+        "category": "业绩快报",
+        "summary_text": "600065发布业绩快报。",
+        "signal_type": "negative",
+        "risk_level": "medium",
+        "stock_code": "600065",
+        "title": "600065公司266号公告: 业绩快报",
+        "publish_date": "2026-03-27",
+        "key_fields_json": {
+          "key": "value_265"
+        }
+      },
+      {
+        "category": "普通公告",
+        "summary_text": "600066发布临时公告。",
+        "signal_type": "neutral",
+        "risk_level": "high",
+        "stock_code": "600066",
+        "title": "600066公司267号公告: 临时公告",
+        "publish_date": "2026-03-28",
+        "key_fields_json": {
+          "key": "value_266"
+        }
+      },
+      {
+        "category": "普通公告",
+        "summary_text": "600067发布普通公告。",
+        "signal_type": "positive",
+        "risk_level": "low",
+        "stock_code": "600067",
+        "title": "600067公司268号公告: 普通公告",
+        "publish_date": "2026-03-29",
+        "key_fields_json": {
+          "key": "value_267"
+        }
+      },
+      {
+        "category": "年度报告",
+        "summary_text": "600068发布年度报告。",
+        "signal_type": "negative",
+        "risk_level": "medium",
+        "stock_code": "600068",
+        "title": "600068公司269号公告: 年度报告",
+        "publish_date": "2026-03-30",
+        "key_fields_json": {
+          "key": "value_268"
+        }
+      },
+      {
+        "category": "业绩快报",
+        "summary_text": "600069发布业绩快报。",
+        "signal_type": "neutral",
+        "risk_level": "high",
+        "stock_code": "600069",
+        "title": "600069公司270号公告: 业绩快报",
+        "publish_date": "2026-03-31",
+        "key_fields_json": {
+          "key": "value_269"
+        }
+      }
+    ],
+    "drug_approvals": [
+      {
+        "stock_code": "600055",
+        "drug_name": "阿莫西林胶囊",
+        "approval_type": "新药上市",
+        "approval_date": "2026-03-17",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 0,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/255"
+      },
+      {
+        "stock_code": "600056",
+        "drug_name": "注射用头孢",
+        "approval_type": "仿制药一致性评价",
+        "approval_date": "2026-03-18",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 1,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/256"
+      },
+      {
+        "stock_code": "600057",
+        "drug_name": "盐酸二甲双胍片",
+        "approval_type": "新增适应症",
+        "approval_date": "2026-03-19",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 0,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/257"
+      },
+      {
+        "stock_code": "600058",
+        "drug_name": "布洛芬缓释胶囊",
+        "approval_type": "新药上市",
+        "approval_date": "2026-03-20",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 1,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/258"
+      },
+      {
+        "stock_code": "600059",
+        "drug_name": "连花清瘟胶囊",
+        "approval_type": "仿制药一致性评价",
+        "approval_date": "2026-03-21",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 0,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/259"
+      },
+      {
+        "stock_code": "600060",
+        "drug_name": "阿莫西林胶囊",
+        "approval_type": "新增适应症",
+        "approval_date": "2026-03-22",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 1,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/260"
+      },
+      {
+        "stock_code": "600061",
+        "drug_name": "注射用头孢",
+        "approval_type": "新药上市",
+        "approval_date": "2026-03-23",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 0,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/261"
+      },
+      {
+        "stock_code": "600062",
+        "drug_name": "盐酸二甲双胍片",
+        "approval_type": "仿制药一致性评价",
+        "approval_date": "2026-03-24",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 1,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/262"
+      },
+      {
+        "stock_code": "600063",
+        "drug_name": "布洛芬缓释胶囊",
+        "approval_type": "新增适应症",
+        "approval_date": "2026-03-25",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 0,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/263"
+      },
+      {
+        "stock_code": "600064",
+        "drug_name": "连花清瘟胶囊",
+        "approval_type": "新药上市",
+        "approval_date": "2026-03-26",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 1,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/264"
+      },
+      {
+        "stock_code": "600065",
+        "drug_name": "阿莫西林胶囊",
+        "approval_type": "仿制药一致性评价",
+        "approval_date": "2026-03-27",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 0,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/265"
+      },
+      {
+        "stock_code": "600066",
+        "drug_name": "注射用头孢",
+        "approval_type": "新增适应症",
+        "approval_date": "2026-03-28",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 1,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/266"
+      },
+      {
+        "stock_code": "600067",
+        "drug_name": "盐酸二甲双胍片",
+        "approval_type": "新药上市",
+        "approval_date": "2026-03-29",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 0,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/267"
+      },
+      {
+        "stock_code": "600068",
+        "drug_name": "布洛芬缓释胶囊",
+        "approval_type": "仿制药一致性评价",
+        "approval_date": "2026-03-30",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 1,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/268"
+      },
+      {
+        "stock_code": "600069",
+        "drug_name": "连花清瘟胶囊",
+        "approval_type": "新增适应症",
+        "approval_date": "2026-03-31",
+        "indication": "适应症描述",
+        "drug_stage": "已上市",
+        "is_innovative_drug": 0,
+        "review_status": "已通过",
+        "market_scope": "国内",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/drug_approvals/269"
+      }
+    ],
+    "clinical_trials": [
+      {
+        "stock_code": "600055",
+        "drug_name": "注射用头孢",
+        "trial_phase": "IV期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-17",
+        "indication": "适应症描述",
+        "summary_text": "600055临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/255"
+      },
+      {
+        "stock_code": "600056",
+        "drug_name": "盐酸二甲双胍片",
+        "trial_phase": "I期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-18",
+        "indication": "适应症描述",
+        "summary_text": "600056临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/256"
+      },
+      {
+        "stock_code": "600057",
+        "drug_name": "布洛芬缓释胶囊",
+        "trial_phase": "II期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-19",
+        "indication": "适应症描述",
+        "summary_text": "600057临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/257"
+      },
+      {
+        "stock_code": "600058",
+        "drug_name": "连花清瘟胶囊",
+        "trial_phase": "III期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-20",
+        "indication": "适应症描述",
+        "summary_text": "600058临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/258"
+      },
+      {
+        "stock_code": "600059",
+        "drug_name": "阿莫西林胶囊",
+        "trial_phase": "IV期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-21",
+        "indication": "适应症描述",
+        "summary_text": "600059临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/259"
+      },
+      {
+        "stock_code": "600060",
+        "drug_name": "注射用头孢",
+        "trial_phase": "I期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-22",
+        "indication": "适应症描述",
+        "summary_text": "600060临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/260"
+      },
+      {
+        "stock_code": "600061",
+        "drug_name": "盐酸二甲双胍片",
+        "trial_phase": "II期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-23",
+        "indication": "适应症描述",
+        "summary_text": "600061临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/261"
+      },
+      {
+        "stock_code": "600062",
+        "drug_name": "布洛芬缓释胶囊",
+        "trial_phase": "III期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-24",
+        "indication": "适应症描述",
+        "summary_text": "600062临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/262"
+      },
+      {
+        "stock_code": "600063",
+        "drug_name": "连花清瘟胶囊",
+        "trial_phase": "IV期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-25",
+        "indication": "适应症描述",
+        "summary_text": "600063临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/263"
+      },
+      {
+        "stock_code": "600064",
+        "drug_name": "阿莫西林胶囊",
+        "trial_phase": "I期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-26",
+        "indication": "适应症描述",
+        "summary_text": "600064临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/264"
+      },
+      {
+        "stock_code": "600065",
+        "drug_name": "注射用头孢",
+        "trial_phase": "II期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-27",
+        "indication": "适应症描述",
+        "summary_text": "600065临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/265"
+      },
+      {
+        "stock_code": "600066",
+        "drug_name": "盐酸二甲双胍片",
+        "trial_phase": "III期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-28",
+        "indication": "适应症描述",
+        "summary_text": "600066临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/266"
+      },
+      {
+        "stock_code": "600067",
+        "drug_name": "布洛芬缓释胶囊",
+        "trial_phase": "IV期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-29",
+        "indication": "适应症描述",
+        "summary_text": "600067临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/267"
+      },
+      {
+        "stock_code": "600068",
+        "drug_name": "连花清瘟胶囊",
+        "trial_phase": "I期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-30",
+        "indication": "适应症描述",
+        "summary_text": "600068临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/268"
+      },
+      {
+        "stock_code": "600069",
+        "drug_name": "阿莫西林胶囊",
+        "trial_phase": "II期",
+        "event_type": "临床进展",
+        "event_date": "2026-03-31",
+        "indication": "适应症描述",
+        "summary_text": "600069临床试验进展摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/clinical_trials/269"
+      }
+    ],
+    "procurement_events": [
+      {
+        "stock_code": "600055",
+        "drug_name": "盐酸二甲双胍片",
+        "procurement_round": "国采第一批",
+        "bid_result": "中标",
+        "price_change_ratio": -0.2804,
+        "event_date": "2026-03-17",
+        "impact_summary": "600055集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/255"
+      },
+      {
+        "stock_code": "600056",
+        "drug_name": "布洛芬缓释胶囊",
+        "procurement_round": "国采第二批",
+        "bid_result": "未中标",
+        "price_change_ratio": -0.3724,
+        "event_date": "2026-03-18",
+        "impact_summary": "600056集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/256"
+      },
+      {
+        "stock_code": "600057",
+        "drug_name": "连花清瘟胶囊",
+        "procurement_round": "国采第三批",
+        "bid_result": "备选",
+        "price_change_ratio": 0.403,
+        "event_date": "2026-03-19",
+        "impact_summary": "600057集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/257"
+      },
+      {
+        "stock_code": "600058",
+        "drug_name": "阿莫西林胶囊",
+        "procurement_round": "国采第一批",
+        "bid_result": "中标",
+        "price_change_ratio": 0.0834,
+        "event_date": "2026-03-20",
+        "impact_summary": "600058集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/258"
+      },
+      {
+        "stock_code": "600059",
+        "drug_name": "注射用头孢",
+        "procurement_round": "国采第二批",
+        "bid_result": "未中标",
+        "price_change_ratio": -0.455,
+        "event_date": "2026-03-21",
+        "impact_summary": "600059集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/259"
+      },
+      {
+        "stock_code": "600060",
+        "drug_name": "盐酸二甲双胍片",
+        "procurement_round": "国采第三批",
+        "bid_result": "备选",
+        "price_change_ratio": 0.4198,
+        "event_date": "2026-03-22",
+        "impact_summary": "600060集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/260"
+      },
+      {
+        "stock_code": "600061",
+        "drug_name": "布洛芬缓释胶囊",
+        "procurement_round": "国采第一批",
+        "bid_result": "中标",
+        "price_change_ratio": -0.2856,
+        "event_date": "2026-03-23",
+        "impact_summary": "600061集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/261"
+      },
+      {
+        "stock_code": "600062",
+        "drug_name": "连花清瘟胶囊",
+        "procurement_round": "国采第二批",
+        "bid_result": "未中标",
+        "price_change_ratio": -0.3398,
+        "event_date": "2026-03-24",
+        "impact_summary": "600062集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/262"
+      },
+      {
+        "stock_code": "600063",
+        "drug_name": "阿莫西林胶囊",
+        "procurement_round": "国采第三批",
+        "bid_result": "备选",
+        "price_change_ratio": -0.3138,
+        "event_date": "2026-03-25",
+        "impact_summary": "600063集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/263"
+      },
+      {
+        "stock_code": "600064",
+        "drug_name": "注射用头孢",
+        "procurement_round": "国采第一批",
+        "bid_result": "中标",
+        "price_change_ratio": 0.3709,
+        "event_date": "2026-03-26",
+        "impact_summary": "600064集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/264"
+      },
+      {
+        "stock_code": "600065",
+        "drug_name": "盐酸二甲双胍片",
+        "procurement_round": "国采第二批",
+        "bid_result": "未中标",
+        "price_change_ratio": -0.1785,
+        "event_date": "2026-03-27",
+        "impact_summary": "600065集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/265"
+      },
+      {
+        "stock_code": "600066",
+        "drug_name": "布洛芬缓释胶囊",
+        "procurement_round": "国采第三批",
+        "bid_result": "备选",
+        "price_change_ratio": 0.0567,
+        "event_date": "2026-03-28",
+        "impact_summary": "600066集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/266"
+      },
+      {
+        "stock_code": "600067",
+        "drug_name": "连花清瘟胶囊",
+        "procurement_round": "国采第一批",
+        "bid_result": "中标",
+        "price_change_ratio": 0.4294,
+        "event_date": "2026-03-29",
+        "impact_summary": "600067集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/267"
+      },
+      {
+        "stock_code": "600068",
+        "drug_name": "阿莫西林胶囊",
+        "procurement_round": "国采第二批",
+        "bid_result": "未中标",
+        "price_change_ratio": -0.061,
+        "event_date": "2026-03-30",
+        "impact_summary": "600068集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/268"
+      },
+      {
+        "stock_code": "600069",
+        "drug_name": "注射用头孢",
+        "procurement_round": "国采第三批",
+        "bid_result": "备选",
+        "price_change_ratio": -0.2102,
+        "event_date": "2026-03-31",
+        "impact_summary": "600069集采影响摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/procurement/269"
+      }
+    ],
+    "regulatory_risks": [
+      {
+        "stock_code": "600055",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-17",
+        "risk_level": "low",
+        "summary_text": "600055监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/255"
+      },
+      {
+        "stock_code": "600056",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-18",
+        "risk_level": "medium",
+        "summary_text": "600056监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/256"
+      },
+      {
+        "stock_code": "600057",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-19",
+        "risk_level": "high",
+        "summary_text": "600057监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/257"
+      },
+      {
+        "stock_code": "600058",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-20",
+        "risk_level": "low",
+        "summary_text": "600058监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/258"
+      },
+      {
+        "stock_code": "600059",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-21",
+        "risk_level": "medium",
+        "summary_text": "600059监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/259"
+      },
+      {
+        "stock_code": "600060",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-22",
+        "risk_level": "high",
+        "summary_text": "600060监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/260"
+      },
+      {
+        "stock_code": "600061",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-23",
+        "risk_level": "low",
+        "summary_text": "600061监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/261"
+      },
+      {
+        "stock_code": "600062",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-24",
+        "risk_level": "medium",
+        "summary_text": "600062监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/262"
+      },
+      {
+        "stock_code": "600063",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-25",
+        "risk_level": "high",
+        "summary_text": "600063监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/263"
+      },
+      {
+        "stock_code": "600064",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-26",
+        "risk_level": "low",
+        "summary_text": "600064监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/264"
+      },
+      {
+        "stock_code": "600065",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-27",
+        "risk_level": "medium",
+        "summary_text": "600065监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/265"
+      },
+      {
+        "stock_code": "600066",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-28",
+        "risk_level": "high",
+        "summary_text": "600066监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/266"
+      },
+      {
+        "stock_code": "600067",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-29",
+        "risk_level": "low",
+        "summary_text": "600067监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/267"
+      },
+      {
+        "stock_code": "600068",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-30",
+        "risk_level": "medium",
+        "summary_text": "600068监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/268"
+      },
+      {
+        "stock_code": "600069",
+        "risk_type": "监管问询",
+        "event_date": "2026-03-31",
+        "risk_level": "high",
+        "summary_text": "600069监管风险摘要。",
+        "source_announcement_id": null,
+        "source_type": "stress_mock",
+        "source_url": "http://stress.example.com/regulatory/269"
+      }
+    ],
+    "sync_vector_index": true
+  }
+}

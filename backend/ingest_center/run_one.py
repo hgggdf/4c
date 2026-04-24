@@ -124,6 +124,9 @@ def _build_receipt(
     trace_id: Optional[str],
     warnings: Optional[list],
     response_data: Optional[Any],
+    http_status: Optional[int] = None,
+    dry_run: bool = False,
+    written_count: Optional[int] = None,
 ) -> Dict[str, Any]:
     """构造 receipt 字典。"""
     return {
@@ -134,11 +137,13 @@ def _build_receipt(
         "endpoint": endpoint,
         "status": status,
         "success": success,
-        "written_count": _extract_written_count(response_data),
+        "written_count": written_count if written_count is not None else _extract_written_count(response_data),
         "error_code": error_code,
         "error_message": error_message,
         "trace_id": trace_id,
         "warnings": warnings,
+        "http_status": http_status,
+        "dry_run": dry_run,
         "created_at": _now_iso(),
     }
 
@@ -246,6 +251,8 @@ def run(manifest_path: str, dry_run: bool = False) -> None:
             trace_id=None,
             warnings=None,
             response_data=None,
+            written_count=0,
+            dry_run=dry_run,
         )
         receipt_path = _write_receipt(receipt, manifest_obj.job_id)
         print(f"[SKIP] {data_category} skipped. receipt written to {receipt_path}")
@@ -402,6 +409,8 @@ def run(manifest_path: str, dry_run: bool = False) -> None:
             trace_id=None,
             warnings=None,
             response_data=None,
+            http_status=None,
+            dry_run=True,
         )
         receipt_path = _write_receipt(receipt, manifest_obj.job_id)
         print(f"[VALIDATED] {data_category} dry-run passed. receipt written to {receipt_path}")

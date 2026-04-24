@@ -1,0 +1,36 @@
+{
+  "spec_version": "1.0",
+  "staging_format_version": "1.0",
+  "job_id": "stress_200_stock_daily_600001",
+  "created_at": "2026-04-23T17:11:28.831679+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "Stress200Generator",
+    "run_id": "run_stress_200_stress_200_stock_daily_600001"
+  },
+  "data_category": "stock_daily",
+  "time_window": {
+    "begin_date": "2026-01-01",
+    "end_date": "2026-03-31"
+  },
+  "target": {
+    "endpoint": "/api/ingest/financial-package",
+    "ingest_package": "financial-package",
+    "ingest_field": "stock_daily",
+    "target_table": "stock_daily"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/stress_200/stress_200_stock_daily_600001.json",
+    "staging_path": "backend/crawler/staging/stress_200/stress_200_stock_daily_600001.json",
+    "quality_report_path": "backend/crawler/staging/quality_reports/stress_200/stress_200_stock_daily_600001_quality_report.json"
+  },
+  "record_stats": {
+    "raw_count": 30,
+    "staging_count": 30,
+    "expected_write_count": 30
+  },
+  "checksum": {
+    "staging_sha256": "fe4a410e60c00e4bf4440948abf28fd8d282d6cb61b3f774aff9fb86c6e4ad0f"
+  },
+  "status": "ready"
+}

@@ -1,25 +1,25 @@
 {
   "spec_version": "1.0",
   "job_id": "example_stock_daily_001",
-  "created_at": "2026-04-23T12:00:00+00:00",
+  "created_at": "2026-04-23T14:00:00+08:00",
   "producer": {
-    "system": "openclaw",
-    "module": "example_stock_daily",
-    "run_id": "run_example_stock_daily_001"
+    "system": "OpenClaw",
+    "module": "stock_daily_extractor",
+    "run_id": "run_20260423_001"
   },
   "data_category": "stock_daily",
   "time_window": {
-    "begin_date": "2026-04-23",
-    "end_date": "2026-04-23"
+    "begin_date": "2025-12-31",
+    "end_date": "2025-12-31"
   },
   "target": {
     "endpoint": "/api/ingest/financial-package",
-    "ingest_package": "financial-package",
+    "ingest_package": "financial_package",
     "ingest_field": "stock_daily",
-    "target_table": "stock_daily"
+    "target_table": "stock_daily_hot"
   },
   "files": {
-    "raw_path": "backend/crawler/raw/stock_daily/raw.json",
+    "raw_path": "backend/ingest_center/examples/stock_daily/raw.json",
     "staging_path": "backend/ingest_center/examples/stock_daily/staging.json",
     "quality_report_path": "backend/ingest_center/examples/stock_daily/quality_report.json"
   },
@@ -29,7 +29,7 @@
     "expected_write_count": 1
   },
   "checksum": {
-    "staging_sha256": "301cf2fbc5ea1d7d75805c59b455ff11f0f6cb3a3e817f699d77d7b26118101f"
+    "staging_sha256": "5e4c370d7c93485bb4e59df53a801d3d0229b5db2ee0271c763b74fa28db3782"
   },
   "status": "ready"
 }

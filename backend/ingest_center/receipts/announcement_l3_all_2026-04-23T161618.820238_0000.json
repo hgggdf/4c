@@ -1,0 +1,70 @@
+{
+  "job_type": "announcement_l3",
+  "category": "all",
+  "staging_dir": "C:\\Users\\17614\\Desktop\\4c\\backend\\crawler\\staging\\e2e",
+  "dry_run": true,
+  "processed_files": 6,
+  "per_category_counts": {
+    "structured_announcements": {
+      "read": 20,
+      "filtered": 20,
+      "skipped_invalid": 0,
+      "resolve_attempted": 20,
+      "resolve_success": 20,
+      "resolve_failed": 0
+    },
+    "drug_approvals": {
+      "read": 18,
+      "filtered": 18,
+      "skipped_invalid": 0
+    },
+    "clinical_trials": {
+      "read": 18,
+      "filtered": 18,
+      "skipped_invalid": 0
+    },
+    "procurement_events": {
+      "read": 18,
+      "filtered": 18,
+      "skipped_invalid": 0
+    },
+    "regulatory_risks": {
+      "read": 18,
+      "filtered": 18,
+      "skipped_invalid": 0
+    }
+  },
+  "executed_categories": [
+    "structured_announcements",
+    "drug_approvals",
+    "clinical_trials",
+    "procurement_events",
+    "regulatory_risks"
+  ],
+  "failed_categories": [],
+  "results": {
+    "structured_announcements": {
+      "dry_run": true,
+      "count": 20
+    },
+    "drug_approvals": {
+      "dry_run": true,
+      "count": 18
+    },
+    "clinical_trials": {
+      "dry_run": true,
+      "count": 18
+    },
+    "procurement_events": {
+      "dry_run": true,
+      "count": 18
+    },
+    "regulatory_risks": {
+      "dry_run": true,
+      "count": 18
+    }
+  },
+  "status": "validated",
+  "success": true,
+  "created_at": "2026-04-23T16:16:18.820261+00:00"
+}
