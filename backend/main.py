@@ -14,6 +14,7 @@ from app.router.announcement import router as announcement_router
 from app.router.announcement_write import router as announcement_write_router
 from app.router.cache import router as cache_router
 from app.router.chat import router as chat_router
+from app.router.query import router as query_router
 from app.router.company import router as company_router
 from app.router.company_write import router as company_write_router
 from app.router.financial import router as financial_router
@@ -41,6 +42,7 @@ app.add_middleware(
 )
 
 app.include_router(chat_router)
+app.include_router(query_router)
 app.include_router(stock_router)
 app.include_router(analysis_router)
 app.include_router(announcement_router)

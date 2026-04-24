@@ -95,22 +95,25 @@ def case_tool_registration():
 
 
 def case_agent_init():
-    """验证 Agent 能正常初始化，LLM 和工具都挂载成功。"""
+    """验证 Agent 能正常初始化，双模型架构和工具都挂载成功。"""
     from agent.integration.langgraph_agent import LangGraphAgent
 
     agent = LangGraphAgent()
     assert agent.is_configured(), "Kimi API 未配置，请检查 .env"
     assert agent.framework == "langgraph"
-    assert agent.agent_mode == "kimi-react"
+    assert agent.agent_mode == "kimi-dual-model"
     assert agent._graph is not None, "LangGraph 图未构建"
+    assert agent.tool_llm is not None, "工具调用模型未初始化"
+    assert agent.answer_llm is not None, "答案生成模型未初始化"
     step(f"framework={agent.framework}  mode={agent.agent_mode}")
-    step(f"LLM model={agent.llm.model_name}")
+    step(f"工具调用模型={agent.tool_llm.model_name}")
+    step(f"答案生成模型={agent.answer_llm.model_name}")
     from agent.integration.langgraph_agent import AGENT_TOOLS
     step(f"工具数量={len(AGENT_TOOLS)}")
 
 
 def case_sync_run_with_code():
-    """同步 run()：直接给股票代码，观察 LLM 选择哪些工具。"""
+    """同步 run()：直接给股票代码，验证双模型架构正常工作。"""
     from agent.integration.langgraph_agent import LangGraphAgent
 
     agent = LangGraphAgent()
@@ -124,8 +127,10 @@ def case_sync_run_with_code():
     assert isinstance(result, dict), "应返回 dict"
     assert "answer" in result, "缺少 answer 字段"
     assert "tool_calls" in result, "缺少 tool_calls 字段"
+    assert "dual_model_used" in result, "缺少 dual_model_used 字段"
     assert len(result["answer"]) > 0, "answer 不能为空"
 
+    step(f"双模型已启用: {result['dual_model_used']}")
     step(f"调用了 {len(result['tool_calls'])} 个工具:")
     for i, tc in enumerate(result["tool_calls"], 1):
         args_preview = str(tc.get("args", ))[:60]
@@ -136,13 +141,13 @@ def case_sync_run_with_code():
 
     print()
     step(f"最终答案 ({len(result['answer'])} 字):")
-    # 每行缩进打印
     for line in result["answer"].split("\n")[:15]:
         print(f"     {line}")
     if result["answer"].count("\n") > 15:
         print("     ...")
 
     assert len(result["tool_calls"]) >= 1, "LLM 应至少调用 1 个工具"
+    assert result["dual_model_used"] is True, "有工具调用时 dual_model_used 应为 True"
 
 
 def case_sync_run_name_only():
@@ -171,7 +176,7 @@ def case_sync_run_name_only():
 
 
 def case_stream():
-    """流式 stream()：逐步打印工具调用过程，验证事件类型完整。"""
+    """流式 stream()：验证双模型流程中工具调用和增强答案事件完整。"""
     from agent.integration.langgraph_agent import LangGraphAgent
 
     agent = LangGraphAgent()
@@ -194,10 +199,13 @@ def case_stream():
         elif etype == "tool_result":
             preview = event["content"][:60].replace("\n", " ")
             print(f"  [工具结果] {event['tool']} → {preview}...")
+        elif etype == "status":
+            print(f"  [状态] {event['content']}")
         elif etype == "answer":
             content = event["content"]
             answer_chunks.append(content)
-            print(f"  [最终答案] {content[:80]}...")
+            dual = event.get("dual_model_used", False)
+            print(f"  [最终答案({'kimi-k2.5' if dual else 'moonshot-v1-8k'})] {content[:80]}...")
 
     print()
     event_types = [e["type"] for e in events]
@@ -206,6 +214,10 @@ def case_stream():
     assert "tool_call" in event_types, "应有 tool_call 事件"
     assert "answer" in event_types, "应有 answer 事件"
     assert len(answer_chunks) > 0, "answer 不能为空"
+
+    # 验证答案事件携带 dual_model_used 标志
+    answer_events = [e for e in events if e["type"] == "answer"]
+    assert "dual_model_used" in answer_events[-1], "answer 事件应包含 dual_model_used 字段"
 
 
 def case_multi_turn():
@@ -255,18 +267,50 @@ def case_no_relevant_data():
     # 不强断言内容，只验证 Agent 没有崩溃且给出了回答
 
 
+def case_dual_model_architecture():
+    """专项验证双模型架构：工具调用用 moonshot-v1-8k，答案生成用 kimi-k2.5。"""
+    from agent.integration.langgraph_agent import LangGraphAgent
+
+    agent = LangGraphAgent()
+
+    # 验证两个模型配置不同
+    assert agent.tool_llm.model_name == "moonshot-v1-8k", \
+        f"工具调用模型应为 moonshot-v1-8k，实际: {agent.tool_llm.model_name}"
+    assert agent.answer_llm.model_name == "kimi-k2.5", \
+        f"答案生成模型应为 kimi-k2.5，实际: {agent.answer_llm.model_name}"
+    step(f"工具调用模型: {agent.tool_llm.model_name}")
+    step(f"答案生成模型: {agent.answer_llm.model_name}")
+
+    # 验证 agent_mode 已更新
+    assert agent.agent_mode == "kimi-dual-model", \
+        f"agent_mode 应为 kimi-dual-model，实际: {agent.agent_mode}"
+    step(f"agent_mode: {agent.agent_mode}")
+
+    # 运行一个有工具调用的问题，验证 dual_model_used=True
+    question = "恒瑞医药600276的毛利率是多少？"
+    step(f"测试问题: {question}")
+    result = agent.run(question)
+
+    assert result.get("dual_model_used") is True, \
+        "有工具调用时 dual_model_used 应为 True"
+    assert len(result["answer"]) > 0, "答案不能为空"
+    step(f"dual_model_used={result['dual_model_used']}  答案长度={len(result['answer'])}字")
+    step(f"答案前100字: {result['answer'][:100]}...")
+
+
 # ─────────────────────────────────────────────
 # 入口
 # ─────────────────────────────────────────────
 
 CASES = {
-    "tools":      ("工具注册验证",          case_tool_registration),
-    "init":       ("Agent 初始化",          case_agent_init),
-    "run_code":   ("同步run - 有股票代码",   case_sync_run_with_code),
-    "run_name":   ("同步run - 只有公司名",   case_sync_run_name_only),
-    "stream":     ("流式stream输出",         case_stream),
-    "multi_turn": ("多轮对话",              case_multi_turn),
-    "no_data":    ("边界-无关数据",          case_no_relevant_data),
+    "tools":        ("工具注册验证",              case_tool_registration),
+    "init":         ("Agent 初始化",              case_agent_init),
+    "dual_model":   ("双模型架构验证",             case_dual_model_architecture),
+    "run_code":     ("同步run - 有股票代码",       case_sync_run_with_code),
+    "run_name":     ("同步run - 只有公司名",       case_sync_run_name_only),
+    "stream":       ("流式stream输出",             case_stream),
+    "multi_turn":   ("多轮对话",                  case_multi_turn),
+    "no_data":      ("边界-无关数据",              case_no_relevant_data),
 }
 
 def main():
@@ -276,7 +320,7 @@ def main():
 
     print()
     sep("═")
-    print("  LangGraph ReAct Agent 测试")
+    print("  LangGraph ReAct Agent 测试（双模型架构）")
     sep("═")
 
     if args.case == "all":

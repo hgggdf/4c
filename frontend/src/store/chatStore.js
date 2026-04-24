@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { sendChatMessageStream } from '../api/chat'
+import { sendChatMessageStream, sendQueryStream } from '../api/chat'
 
 const MOCK_SESSIONS = [
   {
@@ -64,6 +64,8 @@ export const useChatStore = defineStore('chat', {
     sessions: MOCK_SESSIONS,
     activeSessionId: 1,
     loading: false,
+    mode: 'chat', // 'chat' 或 'query'
+    pendingClarification: false,
   }),
   getters: {
     activeSession(state) {
@@ -76,6 +78,9 @@ export const useChatStore = defineStore('chat', {
   actions: {
     switchSession(id) {
       this.activeSessionId = id
+    },
+    switchMode(mode) {
+      this.mode = mode
     },
     newSession() {
       const id = Date.now()
@@ -95,6 +100,10 @@ export const useChatStore = defineStore('chat', {
       this.activeSessionId = id
     },
     async ask({ message, targets = [] }) {
+      if (this.mode === 'query') {
+        return this.askQuery({ message })
+      }
+
       let content = message
       if (targets.length && !message) {
         content = `请对以下标的进行联合分析：${targets.map(t => t.name).join('、')}`
@@ -105,12 +114,11 @@ export const useChatStore = defineStore('chat', {
       const session = this.sessions.find(s => s.id === this.activeSessionId)
       if (!session) return
 
-      const assistantMsg = {
-        role: 'assistant',
-        content: '',
-        createdAt: Date.now(),
-      }
+      const userMsg = { role: 'user', content, createdAt: Date.now() }
+      const assistantMsg = { role: 'assistant', content: '', createdAt: Date.now() }
+      this.messages.push(userMsg)
       this.messages.push(assistantMsg)
+      this.loading = true
 
       try {
         await sendChatMessageStream(
@@ -118,7 +126,7 @@ export const useChatStore = defineStore('chat', {
             message: content,
             targets,
             history: this.messages
-              .slice(0, -1)
+              .slice(0, -2)
               .map(m => ({ role: m.role, content: m.content })),
           },
           (chunk) => {
@@ -131,6 +139,60 @@ export const useChatStore = defineStore('chat', {
         const msg = err?.message || String(err) || '未知错误'
         assistantMsg.content += `\n\n[请求失败：${msg}]`
         console.error('[chatStream error]', err)
+      } finally {
+        this.loading = false
+      }
+    },
+    async askQuery({ message }) {
+      const session = this.sessions.find(s => s.id === this.activeSessionId)
+      if (!session) return
+
+      const userMsg = { role: 'user', content: message, createdAt: Date.now() }
+      const assistantMsg = {
+        role: 'assistant',
+        content: '',
+        createdAt: Date.now(),
+        toolCalls: [],
+        isClarification: false,
+      }
+      this.messages.push(userMsg)
+      this.messages.push(assistantMsg)
+      this.loading = true
+      this.pendingClarification = false
+
+      try {
+        await sendQueryStream(
+          {
+            message,
+            history: this.messages
+              .slice(0, -2)
+              .map(m => ({ role: m.role, content: m.content })),
+          },
+          (event) => {
+            if (event.type === 'tool_call') {
+              assistantMsg.toolCalls.push({
+                tool: event.tool,
+                args: event.args,
+              })
+            } else if (event.type === 'tool_result') {
+              // 工具结果可选展示
+            } else if (event.type === 'status') {
+              // 状态更新
+            } else if (event.type === 'clarification') {
+              assistantMsg.content = event.question
+              assistantMsg.isClarification = true
+              this.pendingClarification = true
+            } else if (event.type === 'answer') {
+              assistantMsg.content = event.content
+              assistantMsg.isClarification = false
+              this.pendingClarification = false
+            }
+          }
+        )
+      } catch (err) {
+        const msg = err?.message || String(err) || '未知错误'
+        assistantMsg.content += `\n\n[请求失败：${msg}]`
+        console.error('[queryStream error]', err)
       } finally {
         this.loading = false
       }
