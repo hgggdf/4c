@@ -1,0 +1,36 @@
+{
+  "spec_version": "1.0",
+  "staging_format_version": "1.0",
+  "job_id": "stress_200_announcement_raw_02",
+  "created_at": "2026-04-23T17:11:29.816517+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "Stress200Generator",
+    "run_id": "run_stress_200_stress_200_announcement_raw_02"
+  },
+  "data_category": "announcement_raw",
+  "time_window": {
+    "begin_date": "2026-01-01",
+    "end_date": "2026-03-31"
+  },
+  "target": {
+    "endpoint": "/api/ingest/announcement-package",
+    "ingest_package": "announcement-package",
+    "ingest_field": "raw_announcements",
+    "target_table": "announcement_raw_hot"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/stress_200/e2e_announcement_raw_02.json",
+    "staging_path": "backend/crawler/staging/stress_200/e2e_announcement_raw_02.json",
+    "quality_report_path": "backend/crawler/staging/quality_reports/stress_200/e2e_announcement_raw_02_quality_report.json"
+  },
+  "record_stats": {
+    "raw_count": 15,
+    "staging_count": 15,
+    "expected_write_count": 15
+  },
+  "checksum": {
+    "staging_sha256": "15fcac6abf391a599a9a4fd914c377d2e4e338f3b53f1996a2adcd3f325410ca"
+  },
+  "status": "ready"
+}

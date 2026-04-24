@@ -1,0 +1,35 @@
+{
+  "spec_version": "1.0",
+  "job_id": "example_macro_001",
+  "created_at": "2026-04-23T12:00:00+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "example_macro",
+    "run_id": "run_example_macro_001"
+  },
+  "data_category": "macro",
+  "time_window": {
+    "begin_date": "2026-04-23",
+    "end_date": "2026-04-23"
+  },
+  "target": {
+    "endpoint": "/api/macro-write/macro-indicators",
+    "ingest_package": "macro-indicators",
+    "ingest_field": "macro_indicator",
+    "target_table": "macro_indicators"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/macro/raw.json",
+    "staging_path": "backend/ingest_center/examples/macro/staging.json",
+    "quality_report_path": "backend/ingest_center/examples/macro/quality_report.json"
+  },
+  "record_stats": {
+    "raw_count": 1,
+    "staging_count": 1,
+    "expected_write_count": 1
+  },
+  "checksum": {
+    "staging_sha256": "106bccb79cd485dfefc2d30da9ec21e1468ab472cc9a091d9ea876280904f747"
+  },
+  "status": "ready"
+}

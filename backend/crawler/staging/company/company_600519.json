@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "600519",
+      "stock_name": "贵州茅台",
+      "full_name": "贵州茅台股份有限公司",
+      "exchange": "SSE",
+      "listing_date": "1996-10-02",
+      "status": "active",
+      "alias_json": [
+        "贵州茅台"
+      ]
+    },
+    "company_profile": {
+      "stock_code": "600519",
+      "business_summary": "贵州茅台为主营业务，公司当前股价 1419.0 元。",
+      "market_position": "SSE上市公司，行业领先企业。",
+      "management_summary": "公司管理层稳定，治理结构完善。",
+      "source_type": "sina_hq_api",
+      "source_url": "https://hq.sinajs.cn/list=600519"
+    },
+    "industries": [
+      {
+        "industry_code": "IND_食品饮料",
+        "industry_name": "食品饮料",
+        "parent_industry_code": "IND_食品",
+        "industry_level": 1,
+        "description": "食品饮料行业"
+      },
+      {
+        "industry_code": "IND_白酒",
+        "industry_name": "白酒",
+        "parent_industry_code": "IND_食品饮料",
+        "industry_level": 2,
+        "description": "白酒行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "600519",
+        "industry_code": "IND_食品饮料",
+        "is_primary": false
+      },
+      {
+        "stock_code": "600519",
+        "industry_code": "IND_白酒",
+        "is_primary": true
+      }
+    ]
+  }
+}

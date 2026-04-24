@@ -1,0 +1,305 @@
+{
+  "generated_at": "2026-04-23T11:11:16.873372+00:00",
+  "records": [
+    {
+      "patent_id": "CN2026E2E0001",
+      "title": "E2E测试专利1: 一种医药化合物及其制备方法",
+      "applicant": "药明康德",
+      "application_date": "2026-01-23"
+    },
+    {
+      "patent_id": "CN2026E2E0002",
+      "title": "E2E测试专利2: 一种医药化合物及其制备方法",
+      "applicant": "华熙生物",
+      "application_date": "2026-01-06"
+    },
+    {
+      "patent_id": "CN2026E2E0003",
+      "title": "E2E测试专利3: 一种医药化合物及其制备方法",
+      "applicant": "联影医疗",
+      "application_date": "2026-03-26"
+    },
+    {
+      "patent_id": "CN2026E2E0004",
+      "title": "E2E测试专利4: 一种医药化合物及其制备方法",
+      "applicant": "药明康德",
+      "application_date": "2026-02-08"
+    },
+    {
+      "patent_id": "CN2026E2E0005",
+      "title": "E2E测试专利5: 一种医药化合物及其制备方法",
+      "applicant": "联影医疗",
+      "application_date": "2026-01-14"
+    },
+    {
+      "patent_id": "CN2026E2E0006",
+      "title": "E2E测试专利6: 一种医药化合物及其制备方法",
+      "applicant": "复星医药",
+      "application_date": "2026-03-04"
+    },
+    {
+      "patent_id": "CN2026E2E0007",
+      "title": "E2E测试专利7: 一种医药化合物及其制备方法",
+      "applicant": "智飞生物",
+      "application_date": "2026-03-22"
+    },
+    {
+      "patent_id": "CN2026E2E0008",
+      "title": "E2E测试专利8: 一种医药化合物及其制备方法",
+      "applicant": "爱尔眼科",
+      "application_date": "2026-01-25"
+    },
+    {
+      "patent_id": "CN2026E2E0009",
+      "title": "E2E测试专利9: 一种医药化合物及其制备方法",
+      "applicant": "迈瑞医疗",
+      "application_date": "2026-01-05"
+    },
+    {
+      "patent_id": "CN2026E2E0010",
+      "title": "E2E测试专利10: 一种医药化合物及其制备方法",
+      "applicant": "药明康德",
+      "application_date": "2026-01-04"
+    },
+    {
+      "patent_id": "CN2026E2E0011",
+      "title": "E2E测试专利11: 一种医药化合物及其制备方法",
+      "applicant": "天坛生物",
+      "application_date": "2026-01-31"
+    },
+    {
+      "patent_id": "CN2026E2E0012",
+      "title": "E2E测试专利12: 一种医药化合物及其制备方法",
+      "applicant": "爱尔眼科",
+      "application_date": "2026-02-19"
+    },
+    {
+      "patent_id": "CN2026E2E0013",
+      "title": "E2E测试专利13: 一种医药化合物及其制备方法",
+      "applicant": "智飞生物",
+      "application_date": "2026-03-11"
+    },
+    {
+      "patent_id": "CN2026E2E0014",
+      "title": "E2E测试专利14: 一种医药化合物及其制备方法",
+      "applicant": "华兰生物",
+      "application_date": "2026-03-05"
+    },
+    {
+      "patent_id": "CN2026E2E0015",
+      "title": "E2E测试专利15: 一种医药化合物及其制备方法",
+      "applicant": "华熙生物",
+      "application_date": "2026-02-27"
+    },
+    {
+      "patent_id": "CN2026E2E0016",
+      "title": "E2E测试专利16: 一种医药化合物及其制备方法",
+      "applicant": "恒瑞医药",
+      "application_date": "2026-01-05"
+    },
+    {
+      "patent_id": "CN2026E2E0017",
+      "title": "E2E测试专利17: 一种医药化合物及其制备方法",
+      "applicant": "复星医药",
+      "application_date": "2026-01-08"
+    },
+    {
+      "patent_id": "CN2026E2E0018",
+      "title": "E2E测试专利18: 一种医药化合物及其制备方法",
+      "applicant": "复星医药",
+      "application_date": "2026-01-06"
+    },
+    {
+      "patent_id": "CN2026E2E0019",
+      "title": "E2E测试专利19: 一种医药化合物及其制备方法",
+      "applicant": "联影医疗",
+      "application_date": "2026-01-16"
+    },
+    {
+      "patent_id": "CN2026E2E0020",
+      "title": "E2E测试专利20: 一种医药化合物及其制备方法",
+      "applicant": "药明康德",
+      "application_date": "2026-03-25"
+    },
+    {
+      "patent_id": "CN2026E2E0021",
+      "title": "E2E测试专利21: 一种医药化合物及其制备方法",
+      "applicant": "华熙生物",
+      "application_date": "2026-02-28"
+    },
+    {
+      "patent_id": "CN2026E2E0022",
+      "title": "E2E测试专利22: 一种医药化合物及其制备方法",
+      "applicant": "华熙生物",
+      "application_date": "2026-01-20"
+    },
+    {
+      "patent_id": "CN2026E2E0023",
+      "title": "E2E测试专利23: 一种医药化合物及其制备方法",
+      "applicant": "天坛生物",
+      "application_date": "2026-01-30"
+    },
+    {
+      "patent_id": "CN2026E2E0024",
+      "title": "E2E测试专利24: 一种医药化合物及其制备方法",
+      "applicant": "智飞生物",
+      "application_date": "2026-01-05"
+    },
+    {
+      "patent_id": "CN2026E2E0025",
+      "title": "E2E测试专利25: 一种医药化合物及其制备方法",
+      "applicant": "迈瑞医疗",
+      "application_date": "2026-03-04"
+    },
+    {
+      "patent_id": "CN2026E2E0026",
+      "title": "E2E测试专利26: 一种医药化合物及其制备方法",
+      "applicant": "恒瑞医药",
+      "application_date": "2026-03-02"
+    },
+    {
+      "patent_id": "CN2026E2E0027",
+      "title": "E2E测试专利27: 一种医药化合物及其制备方法",
+      "applicant": "天坛生物",
+      "application_date": "2026-01-06"
+    },
+    {
+      "patent_id": "CN2026E2E0028",
+      "title": "E2E测试专利28: 一种医药化合物及其制备方法",
+      "applicant": "药明康德",
+      "application_date": "2026-03-31"
+    },
+    {
+      "patent_id": "CN2026E2E0029",
+      "title": "E2E测试专利29: 一种医药化合物及其制备方法",
+      "applicant": "迈瑞医疗",
+      "application_date": "2026-01-02"
+    },
+    {
+      "patent_id": "CN2026E2E0030",
+      "title": "E2E测试专利30: 一种医药化合物及其制备方法",
+      "applicant": "迈瑞医疗",
+      "application_date": "2026-03-22"
+    },
+    {
+      "patent_id": "CN2026E2E0031",
+      "title": "E2E测试专利31: 一种医药化合物及其制备方法",
+      "applicant": "恒瑞医药",
+      "application_date": "2026-02-09"
+    },
+    {
+      "patent_id": "CN2026E2E0032",
+      "title": "E2E测试专利32: 一种医药化合物及其制备方法",
+      "applicant": "智飞生物",
+      "application_date": "2026-02-28"
+    },
+    {
+      "patent_id": "CN2026E2E0033",
+      "title": "E2E测试专利33: 一种医药化合物及其制备方法",
+      "applicant": "天坛生物",
+      "application_date": "2026-01-22"
+    },
+    {
+      "patent_id": "CN2026E2E0034",
+      "title": "E2E测试专利34: 一种医药化合物及其制备方法",
+      "applicant": "天坛生物",
+      "application_date": "2026-01-09"
+    },
+    {
+      "patent_id": "CN2026E2E0035",
+      "title": "E2E测试专利35: 一种医药化合物及其制备方法",
+      "applicant": "智飞生物",
+      "application_date": "2026-01-15"
+    },
+    {
+      "patent_id": "CN2026E2E0036",
+      "title": "E2E测试专利36: 一种医药化合物及其制备方法",
+      "applicant": "爱尔眼科",
+      "application_date": "2026-03-18"
+    },
+    {
+      "patent_id": "CN2026E2E0037",
+      "title": "E2E测试专利37: 一种医药化合物及其制备方法",
+      "applicant": "天坛生物",
+      "application_date": "2026-01-29"
+    },
+    {
+      "patent_id": "CN2026E2E0038",
+      "title": "E2E测试专利38: 一种医药化合物及其制备方法",
+      "applicant": "智飞生物",
+      "application_date": "2026-01-26"
+    },
+    {
+      "patent_id": "CN2026E2E0039",
+      "title": "E2E测试专利39: 一种医药化合物及其制备方法",
+      "applicant": "联影医疗",
+      "application_date": "2026-02-13"
+    },
+    {
+      "patent_id": "CN2026E2E0040",
+      "title": "E2E测试专利40: 一种医药化合物及其制备方法",
+      "applicant": "联影医疗",
+      "application_date": "2026-02-11"
+    },
+    {
+      "patent_id": "CN2026E2E0041",
+      "title": "E2E测试专利41: 一种医药化合物及其制备方法",
+      "applicant": "智飞生物",
+      "application_date": "2026-03-29"
+    },
+    {
+      "patent_id": "CN2026E2E0042",
+      "title": "E2E测试专利42: 一种医药化合物及其制备方法",
+      "applicant": "天坛生物",
+      "application_date": "2026-03-11"
+    },
+    {
+      "patent_id": "CN2026E2E0043",
+      "title": "E2E测试专利43: 一种医药化合物及其制备方法",
+      "applicant": "迈瑞医疗",
+      "application_date": "2026-02-11"
+    },
+    {
+      "patent_id": "CN2026E2E0044",
+      "title": "E2E测试专利44: 一种医药化合物及其制备方法",
+      "applicant": "药明康德",
+      "application_date": "2026-01-06"
+    },
+    {
+      "patent_id": "CN2026E2E0045",
+      "title": "E2E测试专利45: 一种医药化合物及其制备方法",
+      "applicant": "天坛生物",
+      "application_date": "2026-01-23"
+    },
+    {
+      "patent_id": "CN2026E2E0046",
+      "title": "E2E测试专利46: 一种医药化合物及其制备方法",
+      "applicant": "复星医药",
+      "application_date": "2026-01-09"
+    },
+    {
+      "patent_id": "CN2026E2E0047",
+      "title": "E2E测试专利47: 一种医药化合物及其制备方法",
+      "applicant": "智飞生物",
+      "application_date": "2026-02-05"
+    },
+    {
+      "patent_id": "CN2026E2E0048",
+      "title": "E2E测试专利48: 一种医药化合物及其制备方法",
+      "applicant": "迈瑞医疗",
+      "application_date": "2026-02-23"
+    },
+    {
+      "patent_id": "CN2026E2E0049",
+      "title": "E2E测试专利49: 一种医药化合物及其制备方法",
+      "applicant": "迈瑞医疗",
+      "application_date": "2026-03-31"
+    },
+    {
+      "patent_id": "CN2026E2E0050",
+      "title": "E2E测试专利50: 一种医药化合物及其制备方法",
+      "applicant": "复星医药",
+      "application_date": "2026-03-12"
+    }
+  ]
+}

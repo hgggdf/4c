@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-04-23T11:11:16.743377+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "300760",
+      "stock_name": "迈瑞医疗",
+      "full_name": "深圳迈瑞生物医疗电子股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "C",
+      "industry_level2": "C35",
+      "listing_date": "2010-01-01",
+      "status": "active",
+      "source_type": "e2e_mock"
+    },
+    "company_profile": {
+      "stock_code": "300760",
+      "business_summary": "迈瑞医疗主营业务涵盖医药研发、生产与销售，是国内领先的医药企业。",
+      "main_segments_json": [
+        "医药制造",
+        "医疗器械",
+        "研发服务"
+      ],
+      "market_position": "迈瑞医疗在细分行业中处于领先地位。"
+    },
+    "industries": [
+      {
+        "industry_code": "C35",
+        "industry_name": "医药制造业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "300760",
+        "industry_code": "C35",
+        "is_primary": true
+      }
+    ]
+  }
+}

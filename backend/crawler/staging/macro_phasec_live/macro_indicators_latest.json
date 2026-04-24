@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-04-23T07:24:42.592008+00:00",
+  "records": [
+    {
+      "indicator_name": "居民消费价格指数(上年同月=100)",
+      "period": "2026-03",
+      "value": 1.0,
+      "unit": "%",
+      "source_type": "stats_gov_release",
+      "source_url": "https://www.stats.gov.cn/...",
+      "fetched_at": "2026-04-23T07:24:42.592008+00:00"
+    },
+    {
+      "indicator_name": "工业生产者出厂价格指数(上年同月=100)",
+      "period": "2026-03",
+      "value": 0.5,
+      "unit": "%",
+      "source_type": "stats_gov_release",
+      "source_url": "https://www.stats.gov.cn/...",
+      "fetched_at": "2026-04-23T07:24:42.592008+00:00"
+    }
+  ]
+}

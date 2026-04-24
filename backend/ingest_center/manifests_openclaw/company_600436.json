@@ -1,0 +1,36 @@
+{
+  "spec_version": "1.0",
+  "staging_format_version": "1.0",
+  "job_id": "company_600436",
+  "created_at": "2026-04-23T19:21:18.237369+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "CompanyTransformer",
+    "run_id": "run_company_600436"
+  },
+  "data_category": "company",
+  "time_window": {
+    "begin_date": "2022-08-28",
+    "end_date": "2026-04-24"
+  },
+  "target": {
+    "endpoint": "/api/ingest/company-package",
+    "ingest_package": "company-package",
+    "ingest_field": "company_master",
+    "target_table": "company_master"
+  },
+  "files": {
+    "raw_path": "backend/crawler/raw/company/company_600436.json",
+    "staging_path": "backend/crawler/staging/company/company_600436.json",
+    "quality_report_path": "backend/crawler/staging/quality_reports/company/company_600436_quality_report.json"
+  },
+  "record_stats": {
+    "raw_count": 1,
+    "staging_count": 1,
+    "expected_write_count": 1
+  },
+  "checksum": {
+    "staging_sha256": "08d50f0ce16504636527b49267c04e767ca26054b855f0c0ed620fefe032b0e0"
+  },
+  "status": "ready"
+}

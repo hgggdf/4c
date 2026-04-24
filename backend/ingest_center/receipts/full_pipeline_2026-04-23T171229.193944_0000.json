@@ -1,0 +1,2467 @@
+{
+  "job_type": "full_pipeline",
+  "manifest_dir": "ingest_center/manifests_stress_200",
+  "dry_run": true,
+  "fail_fast": false,
+  "skip": [
+    "l4"
+  ],
+  "layer_results": {
+    "l12": {
+      "success": true,
+      "details": [
+        {
+          "job_id": "stress_200_company_600000",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600001",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600002",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600003",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600004",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600005",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600006",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600007",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600008",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600009",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600010",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600011",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600012",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600013",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600014",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600015",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600016",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600017",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600018",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600019",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600020",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600021",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600022",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600023",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600024",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600025",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600026",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600027",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600028",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600029",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600030",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600031",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600032",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600033",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600034",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600035",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600036",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600037",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600038",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600039",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600040",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600041",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600042",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600043",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600044",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600045",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600046",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600047",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600048",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600049",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600050",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600051",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600052",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600053",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600054",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600055",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600056",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600057",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600058",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600059",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600060",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600061",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600062",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600063",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600064",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600065",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600066",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600067",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600068",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600069",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600070",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600071",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600072",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600073",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600074",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600075",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600076",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600077",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600078",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600079",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600080",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600081",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600082",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600083",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600084",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600085",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600086",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600087",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600088",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600089",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600090",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600091",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600092",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600093",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600094",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600095",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600096",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600097",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600098",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600099",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600100",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600101",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600102",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600103",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600104",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600105",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600106",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600107",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600108",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600109",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600110",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600111",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600112",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600113",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600114",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600115",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600116",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600117",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600118",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600119",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600120",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600121",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600122",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600123",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600124",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600125",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600126",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600127",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600128",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600129",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600130",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600131",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600132",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600133",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600134",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600135",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600136",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600137",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600138",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600139",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600140",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600141",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600142",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600143",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600144",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600145",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600146",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600147",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600148",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600149",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600150",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600151",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600152",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600153",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600154",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600155",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600156",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600157",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600158",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600159",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600160",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600161",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600162",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600163",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600164",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600165",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600166",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600167",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600168",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600169",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600170",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600171",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600172",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600173",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600174",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600175",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600176",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600177",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600178",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600179",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600180",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600181",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600182",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600183",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600184",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600185",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600186",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600187",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600188",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600189",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600190",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600191",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600192",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600193",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600194",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600195",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600196",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600197",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600198",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_company_600199",
+          "data_category": "company",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600000",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600001",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600002",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600003",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600004",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600005",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600006",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600007",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600008",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600009",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600010",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600011",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600012",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600013",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600014",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600015",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600016",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600017",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600018",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600019",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600020",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600021",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600022",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600023",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600024",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600025",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600026",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600027",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600028",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600029",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600030",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600031",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600032",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600033",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600034",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600035",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600036",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600037",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600038",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600039",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600040",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600041",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600042",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600043",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600044",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600045",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600046",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600047",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600048",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600049",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600050",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600051",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600052",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600053",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600054",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600055",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600056",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600057",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600058",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600059",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600060",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600061",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600062",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600063",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600064",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600065",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600066",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600067",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600068",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600069",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600070",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600071",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600072",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600073",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600074",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600075",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600076",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600077",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600078",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600079",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600080",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600081",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600082",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600083",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600084",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600085",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600086",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600087",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600088",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600089",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600090",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600091",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600092",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600093",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600094",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600095",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600096",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600097",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600098",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600099",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600100",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600101",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600102",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600103",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600104",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600105",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600106",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600107",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600108",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600109",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600110",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600111",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600112",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600113",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600114",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600115",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600116",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600117",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600118",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600119",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600120",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600121",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600122",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600123",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600124",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600125",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600126",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600127",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600128",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600129",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600130",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600131",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600132",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600133",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600134",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600135",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600136",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600137",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600138",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600139",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600140",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600141",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600142",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600143",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600144",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600145",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600146",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600147",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600148",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600149",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600150",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600151",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600152",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600153",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600154",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600155",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600156",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600157",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600158",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600159",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600160",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600161",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600162",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600163",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600164",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600165",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600166",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600167",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600168",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600169",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600170",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600171",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600172",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600173",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600174",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600175",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600176",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600177",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600178",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600179",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600180",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600181",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600182",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600183",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600184",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600185",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600186",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600187",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600188",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600189",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600190",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600191",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600192",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600193",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600194",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600195",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600196",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600197",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600198",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_stock_daily_600199",
+          "data_category": "stock_daily",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_01",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_02",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_03",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_04",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_05",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_06",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_07",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_08",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_09",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_10",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_11",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_12",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_13",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_14",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_15",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_16",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_17",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_18",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_19",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_20",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_21",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_22",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_23",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_24",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_25",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_26",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_27",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_28",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_29",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_30",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_31",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_32",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_33",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_34",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_35",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_36",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_37",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_38",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_39",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_announcement_raw_40",
+          "data_category": "announcement_raw",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_01",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_02",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_03",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_04",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_05",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_06",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_07",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_08",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_09",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_10",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_11",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_12",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_13",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_14",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_15",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_16",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_17",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_18",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_19",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_20",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_21",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_22",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_23",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_24",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_25",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_26",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_27",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_28",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_29",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_30",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_31",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_32",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_33",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_34",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_35",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_36",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_37",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_38",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_39",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_research_report_40",
+          "data_category": "research_report",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_macro_01",
+          "data_category": "macro",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_macro_02",
+          "data_category": "macro",
+          "result": "validated"
+        },
+        {
+          "job_id": "stress_200_patent_001",
+          "data_category": "patent",
+          "result": "skipped"
+        }
+      ]
+    },
+    "l3_announcement": {
+      "success": true,
+      "receipt_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\receipts\\announcement_l3_all_2026-04-23T171227.403504_0000.json",
+      "executed_categories": [
+        "structured_announcements",
+        "drug_approvals",
+        "clinical_trials",
+        "procurement_events",
+        "regulatory_risks"
+      ],
+      "failed_categories": []
+    },
+    "l3_news": {
+      "success": true,
+      "receipt_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\receipts\\news_l3_all_2026-04-23T171229.191644_0000.json",
+      "executed_categories": [
+        "news_structured",
+        "news_industry_maps",
+        "news_company_maps",
+        "industry_impact_events"
+      ],
+      "failed_categories": []
+    },
+    "l4": {
+      "success": true,
+      "skipped": true
+    }
+  },
+  "executed_layers": [
+    "l12",
+    "l3_announcement",
+    "l3_news"
+  ],
+  "failed_layers": [],
+  "status": "validated",
+  "success": true,
+  "created_at": "2026-04-23T17:12:29.193970+00:00"
+}

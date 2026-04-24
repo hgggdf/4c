@@ -1,0 +1,76 @@
+{
+  "job_type": "news_l3",
+  "category": "news_company_maps",
+  "staging_dir": "C:\\Users\\17614\\Desktop\\4c\\backend\\crawler\\staging\\e2e",
+  "dry_run": false,
+  "processed_files": 4,
+  "per_category_counts": {
+    "news_company_maps": {
+      "read": 8,
+      "skipped_invalid": 0,
+      "resolve_attempted": 8,
+      "resolve_success": 8,
+      "resolve_failed": 0,
+      "group_count": 8,
+      "total": 8
+    }
+  },
+  "executed_categories": [],
+  "failed_categories": [
+    {
+      "category": "news_company_maps",
+      "error": "some groups failed"
+    }
+  ],
+  "results": {
+    "news_company_maps": {
+      "group_count": 8,
+      "total": 8,
+      "details": [
+        {
+          "news_id": 2,
+          "ok": false,
+          "error": "app.core.database.models.news_hot.NewsCompanyMapHot() got multiple values for keyword argument 'news_id' (VALIDATION_ERROR)"
+        },
+        {
+          "news_id": 3,
+          "ok": false,
+          "error": "app.core.database.models.news_hot.NewsCompanyMapHot() got multiple values for keyword argument 'news_id' (VALIDATION_ERROR)"
+        },
+        {
+          "news_id": 22,
+          "ok": false,
+          "error": "app.core.database.models.news_hot.NewsCompanyMapHot() got multiple values for keyword argument 'news_id' (VALIDATION_ERROR)"
+        },
+        {
+          "news_id": 23,
+          "ok": false,
+          "error": "app.core.database.models.news_hot.NewsCompanyMapHot() got multiple values for keyword argument 'news_id' (VALIDATION_ERROR)"
+        },
+        {
+          "news_id": 42,
+          "ok": false,
+          "error": "app.core.database.models.news_hot.NewsCompanyMapHot() got multiple values for keyword argument 'news_id' (VALIDATION_ERROR)"
+        },
+        {
+          "news_id": 43,
+          "ok": false,
+          "error": "app.core.database.models.news_hot.NewsCompanyMapHot() got multiple values for keyword argument 'news_id' (VALIDATION_ERROR)"
+        },
+        {
+          "news_id": 62,
+          "ok": false,
+          "error": "app.core.database.models.news_hot.NewsCompanyMapHot() got multiple values for keyword argument 'news_id' (VALIDATION_ERROR)"
+        },
+        {
+          "news_id": 63,
+          "ok": false,
+          "error": "app.core.database.models.news_hot.NewsCompanyMapHot() got multiple values for keyword argument 'news_id' (VALIDATION_ERROR)"
+        }
+      ]
+    }
+  },
+  "status": "failed",
+  "success": false,
+  "created_at": "2026-04-23T16:31:09.635760+00:00"
+}

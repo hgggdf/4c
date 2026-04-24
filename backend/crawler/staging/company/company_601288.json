@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "601288",
+      "stock_name": "农业银行",
+      "full_name": "农业银行股份有限公司",
+      "exchange": "SSE",
+      "listing_date": "2000-02-06",
+      "status": "active",
+      "alias_json": [
+        "农业银行"
+      ]
+    },
+    "company_profile": {
+      "stock_code": "601288",
+      "business_summary": "农业银行为主营业务，公司当前股价 7.03 元。",
+      "market_position": "SSE上市公司，行业领先企业。",
+      "management_summary": "公司管理层稳定，治理结构完善。",
+      "source_type": "sina_hq_api",
+      "source_url": "https://hq.sinajs.cn/list=601288"
+    },
+    "industries": [
+      {
+        "industry_code": "IND_医药生物",
+        "industry_name": "医药生物",
+        "parent_industry_code": "IND_医药",
+        "industry_level": 1,
+        "description": "医药生物行业"
+      },
+      {
+        "industry_code": "IND_化学制药",
+        "industry_name": "化学制药",
+        "parent_industry_code": "IND_医药生物",
+        "industry_level": 2,
+        "description": "化学制药行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "601288",
+        "industry_code": "IND_医药生物",
+        "is_primary": false
+      },
+      {
+        "stock_code": "601288",
+        "industry_code": "IND_化学制药",
+        "is_primary": true
+      }
+    ]
+  }
+}

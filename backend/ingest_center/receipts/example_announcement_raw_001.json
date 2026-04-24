@@ -1,0 +1,15 @@
+{
+  "job_id": "example_announcement_raw_001",
+  "data_category": "announcement_raw",
+  "manifest_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\manifests\\announcement_raw_manifest.json",
+  "staging_path": "C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\examples\\announcement_raw\\staging.json",
+  "endpoint": "/api/ingest/announcement-package",
+  "status": "done",
+  "success": true,
+  "written_count": 1,
+  "error_code": null,
+  "error_message": null,
+  "trace_id": null,
+  "warnings": [],
+  "created_at": "2026-04-23T09:52:41.155441+00:00"
+}

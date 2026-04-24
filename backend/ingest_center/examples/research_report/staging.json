@@ -1,0 +1,13 @@
+{
+  "payload": {
+    "news_raw": [
+      {
+        "title": "Test Research Report",
+        "publish_time": "2025-12-31T10:00:00",
+        "content": "This is a test research report content.",
+        "news_type": "research",
+        "source_url": "https://example.com/report"
+      }
+    ]
+  }
+}

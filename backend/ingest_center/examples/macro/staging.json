@@ -1,0 +1,12 @@
+{
+  "records": [
+    {
+      "indicator_name": "GDP",
+      "period": "2025-Q4",
+      "value": 100.0,
+      "unit": "trillion",
+      "source_type": "test",
+      "source_url": "https://example.com/macro"
+    }
+  ]
+}

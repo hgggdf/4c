@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990589",
+      "stock_name": "华汽车89股份有限公司",
+      "full_name": "中地产89股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "机械设备",
+      "industry_level2": "整车",
+      "listing_date": "2011-09-09",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990589",
+      "business_summary": "这是星金融公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A589",
+        "产品B589"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块589A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块589B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

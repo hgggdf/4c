@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-04-23T19:26:40.504588+00:00",
+  "job_id": "financial_600036_2024-12-31_年报",
+  "data_category": "financial_package",
+  "staging_path": "backend/crawler/staging/financial/financial_600036_2024-12-31_年报.json",
+  "checksum_sha256": "86ab2c376d0e071a6087c2ab8a83a3dbfccc875e61f736da64e7ea0ef83328a8",
+  "record_count": 11,
+  "time_window": {
+    "begin_date": "2024-12-31",
+    "end_date": "2024-12-31"
+  },
+  "fields": {
+    "income_statements": "array",
+    "balance_sheets": "array",
+    "cashflow_statements": "array",
+    "financial_metrics": "array",
+    "financial_notes": "array",
+    "business_segments": "array"
+  },
+  "null_checks": {
+    "income_statements": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "balance_sheets": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "cashflow_statements": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {
+    "revenue": {
+      "min": 337000000000.0,
+      "max": 337000000000.0
+    },
+    "net_profit": {
+      "min": 148000000000.0,
+      "max": 148000000000.0
+    }
+  },
+  "quality_score": 1.0,
+  "status": "ready"
+}

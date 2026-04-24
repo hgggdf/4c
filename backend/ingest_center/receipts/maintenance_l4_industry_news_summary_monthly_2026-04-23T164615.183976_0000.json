@@ -1,0 +1,25 @@
+{
+  "job_type": "maintenance_l4",
+  "task": "industry_news_summary_monthly",
+  "stock_code": null,
+  "year": null,
+  "year_month": "2026-04",
+  "industry_code": "C35",
+  "dry_run": false,
+  "status": "done",
+  "success": true,
+  "executed_tasks": [
+    "industry_news_summary_monthly"
+  ],
+  "failed_tasks": [],
+  "results": {
+    "industry_news_summary_monthly": {
+      "created": 0,
+      "updated": 0,
+      "total": 0,
+      "industry_code": "C35",
+      "year_month": "2026-04"
+    }
+  },
+  "created_at": "2026-04-23T16:46:15.184032+00:00"
+}

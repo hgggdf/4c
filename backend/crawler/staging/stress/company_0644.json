@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990644",
+      "stock_name": "西能源44股份有限公司",
+      "full_name": "西食品44股份有限公司",
+      "exchange": "BSE",
+      "industry_level1": "医药生物",
+      "industry_level2": "证券",
+      "listing_date": "2016-10-04",
+      "status": "suspended",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990644",
+      "business_summary": "这是东材料公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A644",
+        "产品B644"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块644A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块644B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

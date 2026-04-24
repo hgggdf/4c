@@ -1,0 +1,122 @@
+{
+  "payload": {
+    "income_statements": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "report_type": "年报",
+        "revenue": 5000000000.0,
+        "operating_cost": 3000000000.0,
+        "gross_profit": 2000000000.0,
+        "selling_expense": 500000000.0,
+        "admin_expense": 300000000.0,
+        "rd_expense": 200000000.0,
+        "operating_profit": 1000000000.0,
+        "net_profit": 850000000.0,
+        "net_profit_deducted": 820000000.0,
+        "eps": 2.5,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "balance_sheets": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "report_type": "年报",
+        "total_assets": 50000000000.0,
+        "total_liabilities": 30000000000.0,
+        "accounts_receivable": 5000000000.0,
+        "inventory": 3000000000.0,
+        "cash": 8000000000.0,
+        "equity": 20000000000.0,
+        "goodwill": 1000000000.0,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "cashflow_statements": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "report_type": "年报",
+        "operating_cashflow": 1200000000.0,
+        "investing_cashflow": -500000000.0,
+        "financing_cashflow": -300000000.0,
+        "free_cashflow": 900000000.0,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "financial_metrics": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "metric_name": "净资产收益率ROE",
+        "metric_value": 0.1523,
+        "metric_unit": "%",
+        "calc_method": "net_profit / equity",
+        "source_ref_json": {
+          "page": 45,
+          "table": "财务指标"
+        }
+      },
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "metric_name": "资产负债率",
+        "metric_value": 0.6,
+        "metric_unit": "%",
+        "calc_method": "total_liabilities / total_assets",
+        "source_ref_json": {
+          "page": 32,
+          "table": "资产负债表"
+        }
+      }
+    ],
+    "financial_notes": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "note_type": "会计政策变更",
+        "note_json": {
+          "change_item": "收入确认准则",
+          "effective_date": "2025-01-01"
+        },
+        "note_text": "本年度根据新收入确认准则进行调整。",
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "business_segments": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "segment_name": "零售银行业务",
+        "segment_type": "业务分部",
+        "revenue": 3000000000.0,
+        "revenue_ratio": 0.6,
+        "gross_margin": 0.45,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      },
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "segment_name": "公司银行业务",
+        "segment_type": "业务分部",
+        "revenue": 2000000000.0,
+        "revenue_ratio": 0.4,
+        "gross_margin": 0.5,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "sync_vector_index": false
+  }
+}
