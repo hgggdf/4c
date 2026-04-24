@@ -1,4 +1,4 @@
-"""医药分析引擎 - M2阶段：从数据库拉取数据并驱动真实评分。"""
+"""医药分析引擎 - M3阶段：接入图表、证据、完整预警规则。"""
 
 from __future__ import annotations
 
@@ -85,6 +85,9 @@ class MedicalAnalyzer:
             pipeline_data=pipeline_data,
         )
 
+        financial_trends = self._load_financial_trends(db, stock_code)
+        pipeline_stages = self._load_pipeline_stages(db, stock_code)
+
         decision: PharmaDecisionResult = self._decision_tool.analyze(
             stock_code=stock_code,
             stock_name=stock_name,
@@ -93,6 +96,8 @@ class MedicalAnalyzer:
             financial_data=financial_data,
             pipeline_data=pipeline_data,
             raw_evidence=raw_evidence,
+            financial_trends=financial_trends,
+            pipeline_stages=pipeline_stages,
         )
 
         dimensions = [
@@ -112,6 +117,8 @@ class MedicalAnalyzer:
                     "date": e.date,
                     "source": e.source,
                     "summary": e.summary,
+                    "relevance": e.relevance,
+                    "tags": e.tags,
                 }
                 for e in decision.evidence.items
             ]
@@ -124,11 +131,12 @@ class MedicalAnalyzer:
                 "title": c.title,
                 "x_axis": c.x_axis,
                 "series": c.series,
+                "extra": c.extra,
             }
             for c in decision.charts
         ]
         missing = list({*score_result.data_missing, *decision.data_missing})
-        warnings = list({*decision.warnings})
+        warnings = list(dict.fromkeys(decision.warnings))  # 去重保序
 
         return MedicalAnalysisResult(
             stock_code=stock_code,
@@ -306,6 +314,100 @@ class MedicalAnalyzer:
                 fd["segment_count"] = len({s.segment_name for s in segments if s.report_date == recent_date})
 
         return {k: v for k, v in fd.items() if v is not None}
+
+    # ── 图表数据加载 ─────────────────────────────────────────────────────────
+
+    def _load_financial_trends(self, db: Session, stock_code: str) -> list[dict[str, Any]]:
+        """加载财务趋势数据，供图表构建器使用。"""
+        from sqlalchemy import select
+        from app.core.database.models.financial_hot import IncomeStatementHot
+
+        try:
+            incomes = db.execute(
+                select(IncomeStatementHot)
+                .where(IncomeStatementHot.stock_code == stock_code)
+                .order_by(IncomeStatementHot.report_date.asc())
+                .limit(8)
+            ).scalars().all()
+        except Exception:
+            return []
+
+        if not incomes:
+            return []
+
+        revenue_points = []
+        profit_points = []
+        for row in incomes:
+            year = int(row.fiscal_year or row.report_date.year)
+            rev = _to_float(row.revenue)
+            np_ = _to_float(row.net_profit)
+            if rev is not None:
+                revenue_points.append({"year": year, "value": round(rev / 1e8, 2), "unit": "亿元"})
+            if np_ is not None:
+                profit_points.append({"year": year, "value": round(np_ / 1e8, 2), "unit": "亿元"})
+
+        trends = []
+        if revenue_points:
+            trends.append({"metric": "营业总收入", "points": revenue_points})
+        if profit_points:
+            trends.append({"metric": "净利润", "points": profit_points})
+        return trends
+
+    def _load_pipeline_stages(self, db: Session, stock_code: str) -> list[dict[str, Any]]:
+        """加载管线阶段分布数据，供图表构建器使用。"""
+        from sqlalchemy import select
+        from app.core.database.models.announcement_hot import DrugApprovalHot, ClinicalTrialEventHot
+
+        try:
+            approvals = db.execute(
+                select(DrugApprovalHot)
+                .where(DrugApprovalHot.stock_code == stock_code)
+                .limit(100)
+            ).scalars().all()
+
+            trials = db.execute(
+                select(ClinicalTrialEventHot)
+                .where(ClinicalTrialEventHot.stock_code == stock_code)
+                .limit(100)
+            ).scalars().all()
+        except Exception:
+            return []
+
+        stage_map: dict[str, dict[str, int]] = {}
+
+        for a in approvals:
+            stage = str(a.drug_stage or "其他").strip() or "其他"
+            bucket = stage_map.setdefault(stage, {"count": 0, "innovative": 0})
+            bucket["count"] += 1
+            if a.is_innovative_drug:
+                bucket["innovative"] += 1
+
+        # 临床阶段补充（按 trial_phase 归类）
+        phase_order = ["I期", "II期", "III期", "NDA", "上市"]
+        for t in trials:
+            phase = str(t.trial_phase or "").strip()
+            if not phase:
+                continue
+            # 标准化阶段名
+            for p in phase_order:
+                if p in phase:
+                    phase = p
+                    break
+            bucket = stage_map.setdefault(phase, {"count": 0, "innovative": 0})
+            # 避免与 approval 重复计数：只在 stage_map 中没有该药名时才加
+            bucket["count"] = max(bucket["count"], 1)
+
+        if not stage_map:
+            return []
+
+        # 按预设顺序排列
+        ordered = []
+        for stage in phase_order:
+            if stage in stage_map:
+                ordered.append({"stage": stage, **stage_map.pop(stage)})
+        for stage, data in stage_map.items():
+            ordered.append({"stage": stage, **data})
+        return ordered
 
     # ── 管线/公告/舆情数据加载 ───────────────────────────────────────────────
 

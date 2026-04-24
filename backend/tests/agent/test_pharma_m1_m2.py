@@ -403,5 +403,370 @@ class TestM2MedicalAnalyzer:
         assert isinstance(result.data_missing, list)
 
 
+# ── M3 图表构建 ───────────────────────────────────────────────────────────────
+
+class TestM3ChartBuilder:
+    """M3：PharmaChartBuilder 生成结构正确的 ECharts 配置。"""
+
+    @pytest.fixture
+    def builder(self):
+        from agent.tools.chart_tools import PharmaChartBuilder
+        return PharmaChartBuilder()
+
+    @pytest.fixture
+    def dims(self):
+        return [
+            {"name": "财务质量", "score": 75.0, "weight": 0.15},
+            {"name": "研发实力", "score": 88.0, "weight": 0.15},
+            {"name": "管线价值", "score": 62.0, "weight": 0.15},
+        ]
+
+    def test_radar_chart_type(self, builder, dims):
+        cfg = builder.build_score_radar(dims, "恒瑞医药")
+        assert cfg.chart_type == "radar"
+
+    def test_radar_has_indicator(self, builder, dims):
+        cfg = builder.build_score_radar(dims, "恒瑞医药")
+        assert "radar" in cfg.extra
+        indicators = cfg.extra["radar"]["indicator"]
+        assert len(indicators) == 3
+        assert indicators[0]["name"] == "财务质量"
+        assert indicators[0]["max"] == 100
+
+    def test_radar_series_values_match_scores(self, builder, dims):
+        cfg = builder.build_score_radar(dims, "恒瑞医药")
+        values = cfg.series[0]["data"][0]["value"]
+        assert values == [75.0, 88.0, 62.0]
+
+    def test_radar_empty_dims_no_crash(self, builder):
+        cfg = builder.build_score_radar([], "恒瑞医药")
+        assert cfg.chart_type == "radar"
+        assert "恒瑞医药" in cfg.title
+
+    def test_trend_chart_type(self, builder):
+        points = [{"year": 2022, "value": 200.0, "unit": "亿元"},
+                  {"year": 2023, "value": 228.0, "unit": "亿元"}]
+        cfg = builder.build_financial_trend("营业总收入", points, "恒瑞医药")
+        assert cfg.chart_type == "line"
+
+    def test_trend_x_axis_matches_years(self, builder):
+        points = [{"year": 2022, "value": 200.0}, {"year": 2023, "value": 228.0}]
+        cfg = builder.build_financial_trend("营业总收入", points, "恒瑞医药")
+        assert cfg.x_axis == ["2022", "2023"]
+
+    def test_trend_series_data_matches_values(self, builder):
+        points = [{"year": 2022, "value": 200.0}, {"year": 2023, "value": 228.0}]
+        cfg = builder.build_financial_trend("营业总收入", points, "恒瑞医药")
+        assert cfg.series[0]["data"] == [200.0, 228.0]
+
+    def test_trend_empty_points_no_crash(self, builder):
+        cfg = builder.build_financial_trend("营业总收入", [], "恒瑞医药")
+        assert cfg.chart_type == "line"
+        assert cfg.x_axis == []
+
+    def test_pipeline_bar_chart_type(self, builder):
+        stages = [{"stage": "III期", "count": 5, "innovative": 3}]
+        cfg = builder.build_pipeline_bar(stages, "恒瑞医药")
+        assert cfg.chart_type == "bar"
+
+    def test_pipeline_bar_x_axis(self, builder):
+        stages = [{"stage": "III期", "count": 5, "innovative": 3},
+                  {"stage": "NDA", "count": 2, "innovative": 2}]
+        cfg = builder.build_pipeline_bar(stages, "恒瑞医药")
+        assert cfg.x_axis == ["III期", "NDA"]
+
+    def test_pipeline_bar_two_series(self, builder):
+        stages = [{"stage": "III期", "count": 5, "innovative": 3}]
+        cfg = builder.build_pipeline_bar(stages, "恒瑞医药")
+        assert len(cfg.series) == 2
+        names = {s["name"] for s in cfg.series}
+        assert names == {"总数", "创新药"}
+
+    def test_pipeline_bar_empty_no_crash(self, builder):
+        cfg = builder.build_pipeline_bar([], "恒瑞医药")
+        assert cfg.chart_type == "bar"
+
+    def test_score_bar_colors_by_score(self, builder):
+        dims = [{"name": "财务质量", "score": 35.0, "weight": 0.15},   # 红
+                {"name": "研发实力", "score": 60.0, "weight": 0.15},   # 黄
+                {"name": "管线价值", "score": 80.0, "weight": 0.15}]   # 绿
+        cfg = builder.build_score_bar(dims, "恒瑞医药")
+        colors = [item["itemStyle"]["color"] for item in cfg.series[0]["data"]]
+        assert "#ee6666" in colors   # 红色存在
+        assert "#91cc75" in colors   # 绿色存在
+
+    def test_build_from_score_result_generates_charts(self, builder, dims):
+        trends = [{"metric": "营业总收入",
+                   "points": [{"year": 2023, "value": 228.0, "unit": "亿元"}]}]
+        stages = [{"stage": "III期", "count": 3, "innovative": 2}]
+        charts = builder.build_from_score_result(dims, trends, stages, "恒瑞医药")
+        assert len(charts) >= 3   # 雷达图 + 趋势图 + 管线图
+        types = {c.chart_type for c in charts}
+        assert "radar" in types
+        assert "line" in types
+        assert "bar" in types
+
+    def test_build_from_score_result_empty_no_crash(self, builder):
+        charts = builder.build_from_score_result([], [], [], "恒瑞医药")
+        assert isinstance(charts, list)
+
+
+# ── M3 证据收集 ───────────────────────────────────────────────────────────────
+
+class TestM3EvidenceCollector:
+    """M3：PharmaEvidenceCollector 相关度、去重、标签、缺失检测。"""
+
+    @pytest.fixture
+    def collector(self):
+        from agent.tools.evidence_tools import PharmaEvidenceCollector
+        return PharmaEvidenceCollector()
+
+    @pytest.fixture
+    def raw_items(self):
+        return [
+            {"kind": "announcement", "title": "创新药III期临床入组完成",
+             "date": "2024-03-01", "source": "SSE",
+             "summary": "公司创新药A完成III期临床入组，预计年底揭盲"},
+            {"kind": "news", "title": "医保谈判结果公布",
+             "date": "2024-02-15", "source": "财联社",
+             "summary": "创新药纳入医保目录，价格降幅约30%"},
+            {"kind": "financial_note", "title": "研发费用附注",
+             "date": "2024-04-01", "source": "年报",
+             "summary": "研发费用同比增长25%，管线持续扩充"},
+            {"kind": "announcement", "title": "创新药III期临床入组完成",
+             "date": "2024-03-01", "source": "SSE",
+             "summary": "重复条目"},
+        ]
+
+    def test_deduplication(self, collector, raw_items):
+        bundle = collector.collect("创新药", "600276", "恒瑞医药", raw_items=raw_items)
+        assert len(bundle.items) == 3
+
+    def test_no_missing_when_all_kinds_present(self, collector, raw_items):
+        bundle = collector.collect("创新药", "600276", "恒瑞医药", raw_items=raw_items)
+        assert bundle.missing_types == []
+
+    def test_missing_detected_when_empty(self, collector):
+        bundle = collector.collect("研发", "600276", "恒瑞医药", raw_items=[])
+        assert "announcement" in bundle.missing_types
+        assert "financial_note" in bundle.missing_types
+        assert "news" in bundle.missing_types
+
+    def test_missing_detected_partial(self, collector):
+        items = [{"kind": "announcement", "title": "公告", "date": "",
+                  "source": "", "summary": "内容"}]
+        bundle = collector.collect("研发", "600276", "恒瑞医药", raw_items=items)
+        assert "announcement" not in bundle.missing_types
+        assert "news" in bundle.missing_types
+
+    def test_relevance_positive(self, collector, raw_items):
+        bundle = collector.collect("创新药临床", "600276", "恒瑞医药", raw_items=raw_items)
+        for item in bundle.items:
+            assert item.relevance > 0
+
+    def test_sorted_by_relevance_desc(self, collector, raw_items):
+        bundle = collector.collect("创新药临床", "600276", "恒瑞医药", raw_items=raw_items)
+        scores = [item.relevance for item in bundle.items]
+        assert scores == sorted(scores, reverse=True)
+
+    def test_announcement_higher_base_relevance_than_news(self, collector):
+        items = [
+            {"kind": "announcement", "title": "公告", "date": "", "source": "", "summary": "内容"},
+            {"kind": "news", "title": "新闻", "date": "", "source": "", "summary": "内容"},
+        ]
+        bundle = collector.collect("", "600276", "恒瑞医药", raw_items=items)
+        ann = next(i for i in bundle.items if i.kind == "announcement")
+        news = next(i for i in bundle.items if i.kind == "news")
+        assert ann.relevance > news.relevance
+
+    def test_tags_extracted(self, collector, raw_items):
+        bundle = collector.collect("创新药", "600276", "恒瑞医药", raw_items=raw_items)
+        all_tags = [tag for item in bundle.items for tag in item.tags]
+        assert "临床试验" in all_tags
+        assert "医保" in all_tags
+
+    def test_items_capped_at_max(self, collector):
+        many = [
+            {"kind": "news", "title": f"新闻{i}", "date": "", "source": "", "summary": f"内容{i}"}
+            for i in range(20)
+        ]
+        bundle = collector.collect("", "600276", "恒瑞医药", raw_items=many)
+        assert len(bundle.items) <= 10
+
+    def test_empty_title_and_summary_skipped(self, collector):
+        items = [
+            {"kind": "news", "title": "", "date": "", "source": "", "summary": ""},
+            {"kind": "announcement", "title": "有效公告", "date": "", "source": "", "summary": "内容"},
+        ]
+        bundle = collector.collect("", "600276", "恒瑞医药", raw_items=items)
+        assert len(bundle.items) == 1
+
+
+# ── M3 预警规则 ───────────────────────────────────────────────────────────────
+
+class TestM3WarningRules:
+    """M3：PharmaDecisionTool 预警规则覆盖各类风险场景。"""
+
+    @pytest.fixture
+    def tool(self):
+        from agent.tools.pharma_decision_tools import PharmaDecisionTool
+        return PharmaDecisionTool()
+
+    def test_no_warnings_for_clean_data(self, tool):
+        fd = {"gross_margin": 72.0, "net_margin": 20.0, "roe": 18.0,
+              "debt_ratio": 25.0, "rd_ratio": 16.0, "revenue": 2.5e10,
+              "revenue_growth": 15.0, "ar_ratio": 0.12, "cashflow_quality": 1.1,
+              "operating_cashflow": 3e9}
+        pd_ = {"pipeline_total": 15, "pipeline_phase3": 4, "recent_approvals": 2,
+               "trial_failures": 0, "phase3_failures": 0,
+               "regulatory_total": 0, "regulatory_high_risk": 0,
+               "sentiment_score": 0.4, "negative_news_ratio": 0.15}
+        result = tool.analyze("600276", "恒瑞医药", 2024, financial_data=fd, pipeline_data=pd_)
+        risk_warnings = [w for w in result.warnings if "风险" in w or "关注" in w]
+        assert len(risk_warnings) == 0
+
+    def test_high_debt_ratio_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024, financial_data={"debt_ratio": 72.0})
+        assert any("资产负债率" in w for w in result.warnings)
+
+    def test_high_ar_ratio_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024, financial_data={"ar_ratio": 0.45})
+        assert any("应收账款" in w for w in result.warnings)
+
+    def test_negative_cashflow_with_positive_profit_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024,
+                              financial_data={"operating_cashflow": -1e8, "net_profit": 1e8})
+        assert any("现金流" in w for w in result.warnings)
+
+    def test_revenue_decline_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024, financial_data={"revenue_growth": -15.0})
+        assert any("营收" in w for w in result.warnings)
+
+    def test_phase3_failure_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024, pipeline_data={"phase3_failures": 2})
+        assert any("III 期" in w for w in result.warnings)
+
+    def test_severe_price_cut_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024, pipeline_data={"avg_price_cut_ratio": 0.65})
+        assert any("集采" in w for w in result.warnings)
+
+    def test_small_pipeline_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024, pipeline_data={"pipeline_total": 2})
+        assert any("管线" in w for w in result.warnings)
+
+    def test_high_regulatory_risk_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024, pipeline_data={"regulatory_high_risk": 2})
+        assert any("合规" in w for w in result.warnings)
+
+    def test_high_negative_news_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024,
+                              pipeline_data={"negative_news_ratio": 0.6})
+        assert any("舆情" in w for w in result.warnings)
+
+    def test_high_impact_negative_triggers_warning(self, tool):
+        result = tool.analyze("X", "X", 2024,
+                              pipeline_data={"high_impact_negative": 3})
+        assert any("舆情" in w for w in result.warnings)
+
+    def test_data_missing_warning_included(self, tool):
+        result = tool.analyze("X", "X", 2024)
+        assert any("数据缺失" in w for w in result.warnings)
+
+    def test_warnings_are_strings(self, tool):
+        result = tool.analyze("X", "X", 2024,
+                              financial_data={"debt_ratio": 75.0},
+                              pipeline_data={"phase3_failures": 2})
+        for w in result.warnings:
+            assert isinstance(w, str) and len(w) > 0
+
+
+# ── M3 MedicalAnalyzer 端到端（图表+证据+预警）────────────────────────────────
+
+class TestM3MedicalAnalyzerFull:
+    """M3：MedicalAnalyzer 端到端验证图表、证据、预警字段完整性。"""
+
+    def test_charts_generated_from_db(self, session_factory):
+        """conftest 有财务数据，应生成至少1张图表。"""
+        from agent.integration.medical_analyzer import MedicalAnalyzer
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        assert isinstance(result.charts, list)
+        assert len(result.charts) >= 1
+
+    def test_charts_have_required_fields(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        for c in result.charts:
+            assert "chart_type" in c
+            assert "title" in c
+            assert "series" in c
+            assert "extra" in c
+
+    def test_radar_chart_present(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        types = {c["chart_type"] for c in result.charts}
+        assert "radar" in types
+
+    def test_evidence_has_relevance_and_tags(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer
+        raw = [
+            {"kind": "announcement", "title": "创新药获批", "date": "2024-01-01",
+             "source": "SSE", "summary": "创新药A获得NDA批准上市"},
+            {"kind": "news", "title": "集采结果", "date": "2024-02-01",
+             "source": "财联社", "summary": "仿制药集采中标，价格降幅20%"},
+        ]
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(
+                db, "600276", "恒瑞医药", 2024,
+                query="创新药审批进展", raw_evidence=raw
+            )
+        assert len(result.evidence) == 2
+        for e in result.evidence:
+            assert "relevance" in e
+            assert "tags" in e
+            assert e["relevance"] > 0
+
+    def test_evidence_sorted_by_relevance(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer
+        raw = [
+            {"kind": "news", "title": "无关新闻", "date": "", "source": "", "summary": "天气预报"},
+            {"kind": "announcement", "title": "创新药临床进展", "date": "", "source": "",
+             "summary": "创新药III期临床取得积极进展"},
+        ]
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(
+                db, "600276", "恒瑞医药", 2024,
+                query="创新药临床", raw_evidence=raw
+            )
+        if len(result.evidence) >= 2:
+            scores = [e["relevance"] for e in result.evidence]
+            assert scores == sorted(scores, reverse=True)
+
+    def test_warnings_deduplicated(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        assert len(result.warnings) == len(set(result.warnings))
+
+    def test_financial_trend_chart_from_db(self, session_factory):
+        """conftest 有 IncomeStatementHot，应生成趋势折线图。"""
+        from agent.integration.medical_analyzer import MedicalAnalyzer
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        line_charts = [c for c in result.charts if c["chart_type"] == "line"]
+        assert len(line_charts) >= 1
+
+    def test_pipeline_chart_from_db(self, session_factory):
+        """conftest 有 DrugApprovalHot，应生成管线分布图。"""
+        from agent.integration.medical_analyzer import MedicalAnalyzer
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        bar_charts = [c for c in result.charts if c["chart_type"] == "bar"]
+        assert len(bar_charts) >= 1
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-s"])
