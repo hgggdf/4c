@@ -31,6 +31,10 @@ class ChatRequest(BaseModel):
 	user_id: int = Field(default=1, description="当前用户 ID")
 	session_id: int | None = Field(default=None, description="会话 ID")
 	targets: list[ChatTarget] = Field(default_factory=list, description="拖入的分析目标")
+	selected_mode: str | None = Field(default=None, description="前端功能按钮传入的功能模式")
+	frontend_context: dict[str, Any] | None = Field(default=None, description="前端传来的上下文")
+	followup_from: str | None = Field(default=None, description="自动追问来源")
+	preference_hint: dict[str, Any] | None = Field(default=None, description="前端传来的偏好提示")
 
 
 class QuoteInfo(BaseModel):
@@ -58,6 +62,16 @@ class ChatResponse(BaseModel):
 	quote: QuoteInfo | None = None
 	session_id: int | None = None
 	agent_mode: str | None = None
+	summary: str | None = None
+	selected_mode: str | None = None
+	key_points: list[str] = Field(default_factory=list)
+	key_metrics: list[dict[str, Any]] = Field(default_factory=list)
+	score_result: dict[str, Any] | None = None
+	chart_payload: list[dict[str, Any]] = Field(default_factory=list)
+	evidence_list: list[dict[str, Any]] = Field(default_factory=list)
+	follow_up_questions: list[str] = Field(default_factory=list)
+	preference_profile: dict[str, Any] | None = None
+	warnings: list[dict[str, Any] | str] = Field(default_factory=list)
 
 
 class ChatHistoryRecord(BaseModel):

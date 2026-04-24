@@ -120,7 +120,8 @@ def search_news_evidence(
     result = container.retrieval.search_news_evidence(req)
     if not result.success:
         raise ValueError(f"新闻证据检索失败: {result.message}")
-    return result.data
+    data = result.data or {}
+    return data.get("items", []) if isinstance(data, dict) else data
 
 
 __all__ = [

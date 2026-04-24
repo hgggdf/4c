@@ -238,7 +238,7 @@ class TestNewsTools:
 
         result = get_industry_news_impact("医药生物", days=90)
         assert result is not None
-        assert "industry_name" in result
+        assert "industry_code" in result
         assert "items" in result
         print(f"[OK] get_industry_news_impact: {len(result['items'])} items")
 

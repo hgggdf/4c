@@ -49,6 +49,10 @@ class ChatService:
             current_stock_code=session.current_stock_code,
             user_id=user.id,
             session_id=session.id,
+            selected_mode=request.selected_mode,
+            frontend_context=request.frontend_context,
+            followup_from=request.followup_from,
+            preference_hint=request.preference_hint,
         )
 
         db.add(
@@ -80,6 +84,16 @@ class ChatService:
             quote=quote,
             session_id=session.id,
             agent_mode=agent_result.get("agent_mode"),
+            summary=agent_result.get("summary"),
+            selected_mode=agent_result.get("selected_mode") or request.selected_mode,
+            key_points=agent_result.get("key_points") or [],
+            key_metrics=agent_result.get("key_metrics") or [],
+            score_result=agent_result.get("score_result"),
+            chart_payload=agent_result.get("chart_payload") or [],
+            evidence_list=agent_result.get("evidence_list") or [],
+            follow_up_questions=agent_result.get("follow_up_questions") or [],
+            preference_profile=agent_result.get("preference_profile"),
+            warnings=agent_result.get("warnings") or [],
         )
 
     def get_chat_history(self, db: Session, user_id: int, limit: int = 20) -> dict:

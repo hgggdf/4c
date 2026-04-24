@@ -25,6 +25,10 @@ class LangChainAgentStub:
         current_stock_code: str | None = None,
         user_id: int | None = None,
         session_id: int | None = None,
+        selected_mode: str | None = None,
+        frontend_context: dict[str, Any] | None = None,
+        followup_from: str | None = None,
+        preference_hint: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         payload = self._agent.run(
             message,
@@ -33,6 +37,10 @@ class LangChainAgentStub:
             current_stock_code=current_stock_code,
             user_id=user_id,
             session_id=session_id,
+            selected_mode=selected_mode,
+            frontend_context=frontend_context,
+            followup_from=followup_from,
+            preference_hint=preference_hint,
         )
         payload.setdefault("framework", self.framework)
         payload.setdefault("agent_mode", self.agent_mode)

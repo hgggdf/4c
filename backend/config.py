@@ -7,7 +7,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import make_url
 
 
-ENV_FILE = Path(__file__).resolve().with_name(".env")
+_CONFIG_DIR = Path(__file__).resolve().parent
+ENV_FILE = _CONFIG_DIR / ".env"
+ROOT_ENV_FILE = _CONFIG_DIR.parent / ".env"
+
+if not ENV_FILE.exists() and ROOT_ENV_FILE.exists():
+    ENV_FILE = ROOT_ENV_FILE
 
 
 class Settings(BaseSettings):

@@ -14,7 +14,7 @@ PROJECT_ROOT = BACKEND_ROOT
 CHROMA_PATH = CHROMA_DB_DIR
 STORE_PATH = KNOWLEDGE_STORE_FILE
 
-_embedding_model = None
+_embedding_model: Any | bool | None = None
 _chroma_client = None
 _collection_cache: dict[str, Any] = {}
 
@@ -60,10 +60,17 @@ class ChunkMetadata:
 
 def _get_embedding_model():
     global _embedding_model
-    if _embedding_model is None:
-        from sentence_transformers import SentenceTransformer
+    if _embedding_model is False:
+        return None
 
-        _embedding_model = SentenceTransformer("BAAI/bge-small-zh-v1.5")
+    if _embedding_model is None:
+        try:
+            from sentence_transformers import SentenceTransformer
+
+            _embedding_model = SentenceTransformer("BAAI/bge-small-zh-v1.5", local_files_only=True)
+        except Exception:
+            _embedding_model = False
+            return None
     return _embedding_model
 
 
