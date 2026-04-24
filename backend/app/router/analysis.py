@@ -36,7 +36,7 @@ def diagnose_company(
 				name=d.name,
 				score=d.score,
 				comment=d.comment,
-				metrics={k: {"value": v[0], "unit": v[1], "score": v[2]} for k, v in d.metrics.items()},
+				metrics=d.metrics,
 			)
 			for d in result.dimensions
 		],

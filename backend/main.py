@@ -1,5 +1,10 @@
 """后端应用入口。"""
 
+import os
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+os.environ.setdefault("HF_DATASETS_OFFLINE", "1")
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 

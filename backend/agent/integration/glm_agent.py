@@ -6,7 +6,7 @@ import re
 from hashlib import md5
 from typing import Any
 
-from agent.llm_clients import ClaudeClient
+from agent.llm_clients import KimiClient
 from agent.prompts import build_chat_messages
 from app.knowledge.store import get_store
 from app.service.container import ServiceContainer
@@ -14,7 +14,7 @@ from app.service.requests import CacheQueryRequest, CacheSetQueryRequest, Search
 
 
 logger = logging.getLogger(__name__)
-DEFAULT_GLM_MAX_TOKENS = 500
+DEFAULT_GLM_MAX_TOKENS = 2000
 
 
 def _extract_year(text: str) -> int:
@@ -51,15 +51,15 @@ def _extract_json_object(text: str) -> dict[str, Any] | None:
 
 
 class GLMMinimalAgent:
-    framework = "claude"
-    agent_mode = "claude-sonnet"
+    framework = "kimi"
+    agent_mode = "kimi-k2.5"
 
     def __init__(self) -> None:
         self.container = ServiceContainer.build_default()
         from app.router.analysis_service import AnalysisService
 
         self.analysis_service = AnalysisService()
-        self.llm_client = ClaudeClient()
+        self.llm_client = KimiClient()
 
     def run(
         self,
@@ -88,7 +88,7 @@ class GLMMinimalAgent:
             payload = {
                 **local_fallback,
                 "framework": self.framework,
-                "agent_mode": "claude-config-missing",
+                "agent_mode": "kimi-config-missing",
             }
             return payload
 
@@ -102,7 +102,7 @@ class GLMMinimalAgent:
         )
 
         try:
-            response_text = self.llm_client.chat(messages, temperature=0.2, max_tokens=DEFAULT_GLM_MAX_TOKENS)
+            response_text = self.llm_client.chat(messages, temperature=1.0, max_tokens=DEFAULT_GLM_MAX_TOKENS)
             parsed = _extract_json_object(response_text) or {}
         except Exception as exc:
             llm_error_summary = _compact_text(str(exc), limit=220) or exc.__class__.__name__

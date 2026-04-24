@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { sendChatMessage } from '../api/chat'
+import { sendChatMessageStream } from '../api/chat'
 
 const MOCK_SESSIONS = [
   {
@@ -105,35 +105,32 @@ export const useChatStore = defineStore('chat', {
       const session = this.sessions.find(s => s.id === this.activeSessionId)
       if (!session) return
 
-      const userMsg = { role: 'user', content, targets, createdAt: Date.now() }
-      session.messages.push(userMsg)
-
-      // 更新会话标题和预览
-      if (session.title === '新对话' && content) {
-        session.title = content.slice(0, 20) + (content.length > 20 ? '…' : '')
+      const assistantMsg = {
+        role: 'assistant',
+        content: '',
+        createdAt: Date.now(),
       }
-      session.preview = content.slice(0, 30)
-      session.updatedAt = new Date().toISOString().slice(0, 10)
+      this.messages.push(assistantMsg)
 
-      this.loading = true
       try {
-        const response = await sendChatMessage({
-          message: content,
-          targets,
-          history: session.messages.map(m => ({ role: m.role, content: m.content })),
-        })
-        session.messages.push({
-          role: 'assistant',
-          content: response.answer ?? response.message ?? '已收到，正在处理…',
-          extra: response.quote || null,
-          createdAt: Date.now(),
-        })
+        await sendChatMessageStream(
+          {
+            message: content,
+            targets,
+            history: this.messages
+              .slice(0, -1)
+              .map(m => ({ role: m.role, content: m.content })),
+          },
+          (chunk) => {
+            if (chunk.text) {
+              assistantMsg.content += chunk.text
+            }
+          }
+        )
       } catch (err) {
-        session.messages.push({
-          role: 'assistant',
-          content: `抱歉，请求失败：${err.message}`,
-          createdAt: Date.now(),
-        })
+        const msg = err?.message || String(err) || '未知错误'
+        assistantMsg.content += `\n\n[请求失败：${msg}]`
+        console.error('[chatStream error]', err)
       } finally {
         this.loading = false
       }

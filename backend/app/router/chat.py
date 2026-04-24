@@ -1,8 +1,12 @@
 """正式聊天路由定义。"""
 
+import json
+
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
+from agent.dialogue_agent import DialogueAgent
 from app.core.database.session import get_db
 from app.router.chat_service import ChatService as RuntimeChatService
 from app.router.dependencies import get_container
@@ -34,6 +38,31 @@ chat_service = RuntimeChatService()
 def chat(request: ChatRequest, db: Session = Depends(get_db)) -> ChatResponse:
 	"""处理一轮聊天请求，并返回 LangChain 预留占位回复。"""
 	return chat_service.handle_chat(db, request)
+
+
+@router.post("/chat/stream")
+def chat_stream(request: ChatRequest):
+	"""Kimi 流式对话（SSE）。"""
+	def event_generator():
+		agent = DialogueAgent()
+		for text in agent.chat_stream(
+			request.message,
+			history=[item.model_dump() for item in request.history],
+			targets=[item.model_dump() for item in request.targets],
+			current_stock_code=None,
+		):
+			yield f"data: {json.dumps({'text': text}, ensure_ascii=False)}\n\n"
+		yield f"data: {json.dumps({'done': True}, ensure_ascii=False)}\n\n"
+
+	return StreamingResponse(
+		event_generator(),
+		media_type="text/event-stream",
+		headers={
+			"Cache-Control": "no-cache",
+			"Connection": "keep-alive",
+			"X-Accel-Buffering": "no",
+		},
+	)
 
 
 @router.post("/upload_pdf")

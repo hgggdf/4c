@@ -10,8 +10,8 @@ from .glm_agent import GLMMinimalAgent
 class LangChainAgentStub:
     """保留原导入路径，内部委托给最小 GLM 编排器。"""
 
-    framework = "claude"
-    agent_mode = "claude-sonnet"
+    framework = "kimi"
+    agent_mode = "kimi-k2.5"
 
     def __init__(self) -> None:
         self._agent = GLMMinimalAgent()

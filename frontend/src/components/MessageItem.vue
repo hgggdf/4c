@@ -14,7 +14,10 @@
       </span>
     </div>
 
-    <div class="msg-content">{{ message.content }}</div>
+    <div class="msg-content">
+      <template v-if="message.content">{{ message.content }}</template>
+      <span v-else class="empty-hint">（等待回复…）</span>
+    </div>
 
     <!-- 行情附带信息 -->
     <div v-if="message.extra" class="msg-quote-grid">
@@ -61,6 +64,11 @@ function getChangePercent(extra = {}) {
   padding: 2px 8px; color: var(--accent);
 }
 .msg-content { white-space: pre-wrap; }
+
+.empty-hint {
+  color: var(--text-muted);
+  font-style: italic;
+}
 
 .msg-quote-grid {
   display: flex; gap: 10px; flex-wrap: wrap;
