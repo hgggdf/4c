@@ -32,6 +32,19 @@
       <!-- 顶部标题栏 -->
       <div class="cp-topbar">
         <span class="cp-topbar-title">⚕ 医药投研智能体</span>
+        <!-- 模式切换 Tab -->
+        <div class="cp-mode-tabs">
+          <button
+            class="cp-mode-tab"
+            :class="{ active: chatStore.mode === 'chat' }"
+            @click="chatStore.switchMode('chat')"
+          >对话模式</button>
+          <button
+            class="cp-mode-tab"
+            :class="{ active: chatStore.mode === 'query' }"
+            @click="chatStore.switchMode('query')"
+          >问数模式</button>
+        </div>
         <button class="cp-logout-btn" @click="logout" title="退出登录">退出</button>
       </div>
 
@@ -56,7 +69,10 @@
               </span>
             </div>
             <!-- 气泡 -->
-            <div class="cp-bubble">{{ msg.content }}</div>
+            <div
+              class="cp-bubble"
+              :class="{ 'cp-bubble--clarification': msg.isClarification }"
+            >{{ msg.content }}</div>
             <!-- 时间 -->
             <div class="cp-time">{{ formatTime(msg.createdAt) }}</div>
           </div>
@@ -387,5 +403,40 @@ function formatTime(ts) {
   padding: 12px 16px 16px;
   border-top: 1px solid var(--border);
   background: var(--bg-panel);
+}
+
+/* 模式切换 Tab */
+.cp-mode-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-card2);
+  border-radius: 8px;
+  padding: 3px;
+}
+.cp-mode-tab {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.cp-mode-tab:hover {
+  color: var(--text-primary);
+  background: rgba(75,169,154,0.08);
+}
+.cp-mode-tab.active {
+  color: var(--accent2);
+  background: var(--bg-card);
+  font-weight: 600;
+}
+
+/* 澄清气泡 */
+.cp-bubble--clarification {
+  border-color: #f59e0b;
+  background: rgba(245,158,11,0.08);
 }
 </style>
