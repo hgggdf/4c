@@ -592,4 +592,52 @@ class MedicalAnalyzer:
         return "。".join(parts) + "。"
 
 
-__all__ = ["MedicalAnalyzer", "MedicalAnalysisResult"]
+def to_analysis_summary(result: MedicalAnalysisResult) -> dict[str, Any]:
+    """将 MedicalAnalysisResult 转换为 glm_agent._build_analysis_summary() 兼容的格式。
+
+    A 侧接入示例：
+        medical = MedicalAnalyzer()
+        with container.ctx.session() as db:
+            med_result = medical.analyze(db, stock_code, stock_name, year, query)
+        analysis_summary = to_analysis_summary(med_result)
+        # 直接传入 build_chat_messages(analysis_summary=analysis_summary, ...)
+    """
+    return {
+        "stock_code": result.stock_code,
+        "stock_name": result.stock_name,
+        "year": result.year,
+        "total_score": result.total_score,
+        "level": result.level,
+        "strengths": result.strengths[:3],
+        "weaknesses": result.weaknesses[:3],
+        "suggestion": result.suggestion,
+        "dimensions": result.dimensions[:4],
+        "warnings": result.warnings[:5],
+        "data_missing": result.data_missing,
+    }
+
+
+def to_chart_context(result: MedicalAnalysisResult) -> list[dict[str, Any]]:
+    """将 MedicalAnalysisResult 转换为 glm_agent._build_chart_context() 兼容的格式。
+
+    A 侧接入示例：
+        chart_context = to_chart_context(med_result)
+        # 直接传入 build_chat_messages(chart_context=chart_context, ...)
+    """
+    items = []
+    for c in result.charts:
+        item: dict[str, Any] = {
+            "chart_type": c["chart_type"],
+            "title": c["title"],
+        }
+        if c.get("x_axis"):
+            item["x_axis"] = c["x_axis"]
+        if c.get("series"):
+            item["series"] = c["series"]
+        if c.get("extra"):
+            item["extra"] = c["extra"]
+        items.append(item)
+    return items
+
+
+__all__ = ["MedicalAnalyzer", "MedicalAnalysisResult", "to_analysis_summary", "to_chart_context"]

@@ -768,5 +768,133 @@ class TestM3MedicalAnalyzerFull:
         assert len(bar_charts) >= 1
 
 
+# ── B-10 联调：适配函数与 glm_agent 接口兼容性 ───────────────────────────────
+
+class TestB10Integration:
+    """B-10：to_analysis_summary / to_chart_context 与 A 侧接口的兼容性验证。"""
+
+    def test_to_analysis_summary_importable(self):
+        from agent.integration.medical_analyzer import to_analysis_summary, to_chart_context
+        assert callable(to_analysis_summary)
+        assert callable(to_chart_context)
+
+    def test_to_analysis_summary_required_keys(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_analysis_summary
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        summary = to_analysis_summary(result)
+        # glm_agent._build_analysis_summary() 返回的字段集合
+        required = {"stock_code", "stock_name", "year", "total_score",
+                    "level", "strengths", "weaknesses", "suggestion", "dimensions"}
+        assert required.issubset(summary.keys())
+
+    def test_to_analysis_summary_dimensions_capped_at_4(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_analysis_summary
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        summary = to_analysis_summary(result)
+        assert len(summary["dimensions"]) <= 4
+
+    def test_to_analysis_summary_dimension_fields(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_analysis_summary
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        summary = to_analysis_summary(result)
+        for dim in summary["dimensions"]:
+            assert "name" in dim
+            assert "score" in dim
+            assert "comment" in dim
+
+    def test_to_analysis_summary_score_matches_result(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_analysis_summary
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        summary = to_analysis_summary(result)
+        assert summary["total_score"] == result.total_score
+        assert summary["level"] == result.level
+
+    def test_to_analysis_summary_includes_warnings(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_analysis_summary
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        summary = to_analysis_summary(result)
+        assert "warnings" in summary
+        assert isinstance(summary["warnings"], list)
+
+    def test_to_chart_context_is_list(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_chart_context
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        ctx = to_chart_context(result)
+        assert isinstance(ctx, list)
+
+    def test_to_chart_context_items_have_type_and_title(self, session_factory):
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_chart_context
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        ctx = to_chart_context(result)
+        for item in ctx:
+            assert "chart_type" in item
+            assert "title" in item
+
+    def test_build_chat_messages_accepts_adapted_output(self, session_factory):
+        """to_analysis_summary / to_chart_context 的输出能直接传入 build_chat_messages。"""
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_analysis_summary, to_chart_context
+        from agent.prompts.chat_prompt import build_chat_messages
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "600276", "恒瑞医药", 2024)
+        summary = to_analysis_summary(result)
+        chart_ctx = to_chart_context(result)
+        messages = build_chat_messages(
+            user_question="恒瑞医药的研发实力如何？",
+            stock_context={"stock_code": "600276", "stock_name": "恒瑞医药"},
+            analysis_summary=summary,
+            chart_context=chart_ctx,
+            evidence_items=result.evidence[:6],
+        )
+        assert isinstance(messages, list)
+        assert len(messages) == 2
+        assert messages[0]["role"] == "system"
+        assert messages[1]["role"] == "user"
+        # user content 应包含 analysis_summary 字段
+        import json
+        payload = json.loads(messages[1]["content"])
+        assert "analysis_summary" in payload
+        assert payload["analysis_summary"]["total_score"] == result.total_score
+
+    def test_full_pipeline_no_crash(self, session_factory):
+        """完整链路：analyze → to_analysis_summary → to_chart_context → build_chat_messages。"""
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_analysis_summary, to_chart_context
+        from agent.prompts.chat_prompt import build_chat_messages
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(
+                db, "600276", "恒瑞医药", 2024,
+                query="恒瑞医药投资价值分析",
+            )
+        messages = build_chat_messages(
+            user_question="恒瑞医药投资价值分析",
+            stock_context={"stock_code": "600276", "stock_name": "恒瑞医药"},
+            analysis_summary=to_analysis_summary(result),
+            chart_context=to_chart_context(result),
+            evidence_items=result.evidence[:6],
+        )
+        assert len(messages) == 2
+
+    def test_unknown_company_full_pipeline_no_crash(self, session_factory):
+        """未知公司走完整链路不崩溃。"""
+        from agent.integration.medical_analyzer import MedicalAnalyzer, to_analysis_summary, to_chart_context
+        from agent.prompts.chat_prompt import build_chat_messages
+        with session_factory() as db:
+            result = MedicalAnalyzer().analyze(db, "999999", "未知公司", 2024)
+        messages = build_chat_messages(
+            user_question="未知公司分析",
+            stock_context={"stock_code": "999999", "stock_name": "未知公司"},
+            analysis_summary=to_analysis_summary(result),
+            chart_context=to_chart_context(result),
+            evidence_items=[],
+        )
+        assert len(messages) == 2
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-s"])
