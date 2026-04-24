@@ -111,11 +111,17 @@ def tool_get_macro_summary(indicator_names: list[str], recent_n: int = 6) -> dic
 @tool
 def tool_compare_companies(stock_codes: list[str], metric_names: list[str], limit: int = 4) -> dict:
     """对比多家公司的财务指标。
-    stock_codes 为股票代码列表，如 ['600276', '600196']。
-    metric_names 为指标名称列表，如 ['gross_margin', 'net_margin', 'roe']。
+    重要：stock_codes 必须是真实的6位数字股票代码列表，如 ['600276', '600196']。
+    调用本工具前，必须先用 tool_resolve_company 把公司名转成股票代码，再把真实代码传入。
+    metric_names 为指标名称列表，可选：gross_margin、net_margin、roe、rd_ratio、debt_ratio。
     limit 为每个指标返回最近N期数据，默认4期。"""
+    import re
+    # 过滤掉占位符，只保留真实6位数字股票代码
+    valid_codes = [c for c in stock_codes if re.fullmatch(r"\d{6}", str(c))]
+    if len(valid_codes) < 2:
+        return {"error": f"需要至少2个有效的6位数字股票代码，收到: {stock_codes}。请先调用 tool_resolve_company 获取股票代码。"}
     from agent.tools.comparison_tools import compare_financial_metrics
-    return compare_financial_metrics(stock_codes, metric_names, limit=limit)
+    return compare_financial_metrics(valid_codes, metric_names, limit=limit)
 
 
 # 注册到 Agent 的工具列表
