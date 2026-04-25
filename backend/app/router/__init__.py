@@ -15,6 +15,7 @@ from .macro_write import router as macro_write_router
 from .maintenance import router as maintenance_router
 from .news import router as news_router
 from .news_write import router as news_write_router
+from .openclaw_ingest import router as openclaw_ingest_router
 from .retrieval import router as retrieval_router
 from .stock import router as stock_router
 
@@ -34,6 +35,7 @@ __all__ = [
 	"maintenance_router",
 	"news_router",
 	"news_write_router",
+	"openclaw_ingest_router",
 	"retrieval_router",
 	"stock_router",
 ]

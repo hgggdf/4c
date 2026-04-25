@@ -25,6 +25,7 @@ from app.router.macro_write import router as macro_write_router
 from app.router.maintenance import router as maintenance_router
 from app.router.news import router as news_router
 from app.router.news_write import router as news_write_router
+from app.router.openclaw_ingest import router as openclaw_ingest_router
 from app.router.retrieval import router as retrieval_router
 from app.router.stock import router as stock_router
 from config import get_settings
@@ -58,6 +59,7 @@ app.include_router(macro_write_router)
 app.include_router(maintenance_router)
 app.include_router(news_router)
 app.include_router(news_write_router)
+app.include_router(openclaw_ingest_router)
 app.include_router(retrieval_router)
 
 

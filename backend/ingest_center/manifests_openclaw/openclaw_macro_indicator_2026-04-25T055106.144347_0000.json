@@ -1,0 +1,18 @@
+{
+  "spec_version": "1.0",
+  "job_id": "openclaw_macro_indicator_2026-04-25T055106.144347_0000",
+  "created_at": "2026-04-25T05:51:06.144373+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "openclaw_adapter",
+    "run_id": "2026-04-25T055106.144347_0000"
+  },
+  "data_category": "macro_indicator",
+  "record_count": 3,
+  "source_files": [
+    "macro_indicator_macro_2026-04-25.json",
+    "macro_indicator_macro_2026-04-25.json",
+    "macro_indicator_macro_2026-04-25.json"
+  ],
+  "status": "done"
+}

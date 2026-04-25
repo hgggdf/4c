@@ -1,0 +1,16 @@
+{
+  "spec_version": "1.0",
+  "job_id": "openclaw_company_profile_C__Users_17614_Desktop_4c_backend_ingest_center_openclaw_inbox_company_profile_300122_profile.json_2026-04-25T055101.542504_0000",
+  "created_at": "2026-04-25T05:51:01.542549+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "openclaw_adapter",
+    "run_id": "2026-04-25T055101.542504_0000"
+  },
+  "data_category": "company_profile",
+  "record_count": 1,
+  "source_files": [
+    "company_profile_300122_profile.json"
+  ],
+  "status": "done"
+}

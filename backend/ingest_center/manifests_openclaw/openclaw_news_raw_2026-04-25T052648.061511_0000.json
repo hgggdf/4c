@@ -1,0 +1,35 @@
+{
+  "spec_version": "1.0",
+  "job_id": "openclaw_news_raw_2026-04-25T052648.061511_0000",
+  "created_at": "2026-04-25T05:26:48.061542+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "openclaw_adapter",
+    "run_id": "2026-04-25T052648.061511_0000"
+  },
+  "data_category": "news_raw",
+  "record_count": 20,
+  "source_files": [
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_300760_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json",
+    "news_raw_600276_2026-04-25.json"
+  ],
+  "status": "done"
+}

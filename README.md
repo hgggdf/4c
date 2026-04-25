@@ -158,6 +158,25 @@ http://127.0.0.1:5173
 - GET /api/analysis/risks
 - GET /api/analysis/compare
 - GET /api/analysis/trend
+- POST /api/openclaw/ingest  # OpenClaw 统一入库接口
+
+## OpenClaw 数据入库对接
+
+已完成 OpenClaw 后端统一入库对接，支持通过统一 JSON 格式导入各类数据：
+
+- **接口地址**: `POST /api/openclaw/ingest`
+- **支持数据类型**: 公司概况、财务报表、公告、新闻、医药事件、宏观指标、股票行情等 13 种数据类型
+- **文档位置**:
+  - 完整文档: `backend/OPENCLAW_INTEGRATION.md`
+  - 快速开始: `backend/OPENCLAW_QUICK_START.md`
+  - 实现总结: `backend/OPENCLAW_IMPLEMENTATION_SUMMARY.md`
+- **测试脚本**: `backend/test_openclaw_integration.py`
+
+快速测试：
+```bash
+cd backend
+python test_openclaw_integration.py
+```
 
 ## 当前限制
 

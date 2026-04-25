@@ -1,0 +1,60 @@
+{
+  "batch_id": "20260425_2517",
+  "task_id": "crawl_finmetric_600276",
+  "source": {
+    "source_type": "eastmoney",
+    "source_name": "东方财富",
+    "source_url": "https://emweb.securities.eastmoney.com/PC_HSF10/pages/index.html",
+    "source_category": "financial"
+  },
+  "entity": {
+    "entity_type": "company",
+    "stock_code": "600276",
+    "stock_name": "恒瑞医药",
+    "industry_code": "IND_MED_01",
+    "industry_name": "医药制造"
+  },
+  "document": {
+    "doc_type": "json",
+    "title": "恒瑞医药 财务指标",
+    "publish_time": "2026-04-25T13:19:30+08:00",
+    "crawl_time": "2026-04-25T13:19:30+08:00",
+    "language": "zh"
+  },
+  "payload_type": "financial_metric",
+  "payload": {
+    "financial_metrics": [
+      {
+        "report_date": "2026-04-25",
+        "fiscal_year": 2026,
+        "metric_name": "PE_TTM",
+        "metric_value": 4075,
+        "metric_unit": "倍",
+        "calc_method": "standard"
+      },
+      {
+        "report_date": "2026-04-25",
+        "fiscal_year": 2026,
+        "metric_name": "PB",
+        "metric_value": 585,
+        "metric_unit": "倍",
+        "calc_method": "standard"
+      },
+      {
+        "report_date": "2026-04-25",
+        "fiscal_year": 2026,
+        "metric_name": "总市值",
+        "metric_value": 372015052937.69995,
+        "metric_unit": "元",
+        "calc_method": "standard"
+      }
+    ]
+  },
+  "processing": {
+    "parse_status": "parsed",
+    "parse_method": "rule",
+    "confidence_score": 0.9,
+    "version_no": "v1"
+  },
+  "extra": {}
+}
