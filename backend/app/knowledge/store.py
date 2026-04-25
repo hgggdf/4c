@@ -63,7 +63,7 @@ def _get_embedding_model():
     if _embedding_model is None:
         from sentence_transformers import SentenceTransformer
 
-        _embedding_model = SentenceTransformer("BAAI/bge-small-zh-v1.5")
+        _embedding_model = SentenceTransformer("BAAI/bge-small-zh-v1.5", local_files_only=True)
     return _embedding_model
 
 

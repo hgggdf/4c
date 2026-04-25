@@ -1,0 +1,14 @@
+{
+  "job_type": "openclaw_adapter",
+  "batch_key": "macro_indicator",
+  "success": true,
+  "record_count": 3,
+  "error": null,
+  "dry_run": false,
+  "source_files": [
+    "macro_indicator_macro_2026-04-25.json",
+    "macro_indicator_macro_2026-04-25.json",
+    "macro_indicator_macro_2026-04-25.json"
+  ],
+  "created_at": "2026-04-25T05:51:06.147549+00:00"
+}

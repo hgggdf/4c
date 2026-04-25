@@ -1,9 +1,0 @@
-{
-  "payload": {
-    "company_master": {
-      "stock_code": "600001",
-      "stock_name": "Test Company",
-      "exchange": "SH"
-    }
-  }
-}

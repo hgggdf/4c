@@ -1,0 +1,25 @@
+{
+  "spec_version": "1.0",
+  "job_id": "openclaw_stock_daily_2026-04-25T055106.594605_0000",
+  "created_at": "2026-04-25T05:51:06.594629+00:00",
+  "producer": {
+    "system": "openclaw",
+    "module": "openclaw_adapter",
+    "run_id": "2026-04-25T055106.594605_0000"
+  },
+  "data_category": "stock_daily",
+  "record_count": 10,
+  "source_files": [
+    "stock_daily_000538_2026-04-25.json",
+    "stock_daily_000661_2026-04-25.json",
+    "stock_daily_002252_2026-04-25.json",
+    "stock_daily_300015_2026-04-25.json",
+    "stock_daily_300122_2026-04-25.json",
+    "stock_daily_300760_2026-04-25.json",
+    "stock_daily_600196_2026-04-25.json",
+    "stock_daily_600276_2026-04-25.json",
+    "stock_daily_600436_2026-04-25.json",
+    "stock_daily_603259_2026-04-25.json"
+  ],
+  "status": "done"
+}

@@ -1,0 +1,12 @@
+{
+  "job_type": "openclaw_adapter",
+  "batch_key": "company_profile::C:\\Users\\17614\\Desktop\\4c\\backend\\ingest_center\\openclaw_inbox\\company_profile_300015_profile.json",
+  "success": true,
+  "record_count": 1,
+  "error": null,
+  "dry_run": false,
+  "source_files": [
+    "company_profile_300015_profile.json"
+  ],
+  "created_at": "2026-04-25T05:38:50.132993+00:00"
+}
