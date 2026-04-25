@@ -295,15 +295,7 @@ export async function getReports(symbol) {
 }
 
 // ── 概念题材 ──────────────────────────────────────────
-const CONCEPT_MOCK = {
-  '300015': {
-    aliases: ['爱尔眼科', '眼科龙头', '连锁医疗'],
-    industries: ['医疗服务', '眼科医疗', '消费医疗', '院外连锁'],
-  },
-}
-
 export async function getConcepts(symbol) {
-  if (CONCEPT_MOCK[symbol]) return CONCEPT_MOCK[symbol]
   const dataset = await getCompanyDataset(symbol)
   return mapConcepts(dataset)
 }

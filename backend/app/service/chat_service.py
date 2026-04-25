@@ -38,6 +38,9 @@ class ChatService(BaseService):
     def update_current_stock(self, req: ChatUpdateCurrentStockRequest):
         return self._run(lambda: self._with_db(lambda db: self._update_current_stock(db, req)), trace_id=req.trace_id)
 
+    def delete_session(self, req: ChatSessionRequest):
+        return self._run(lambda: self._with_db(lambda db: self._delete_session(db, req)), trace_id=req.trace_id)
+
     def _ensure_company(self, stock_code: str) -> None:
         if self.company_service:
             ok = self.company_service.ensure_company_exists(stock_code).data
@@ -109,3 +112,10 @@ class ChatService(BaseService):
         if entity is None:
             raise ValueError(f"session not found: {session_id}")
         return model_to_dict(entity, ["id", "user_id", "session_title", "current_stock_code", "created_at", "updated_at"])
+
+    def _delete_session(self, db, req: ChatSessionRequest) -> dict:
+        session_id = require_positive_int(req.session_id, "session_id")
+        ok = ChatRepository(db).delete_session(session_id)
+        if not ok:
+            raise ValueError(f"session not found: {session_id}")
+        return {"deleted": True, "session_id": session_id}

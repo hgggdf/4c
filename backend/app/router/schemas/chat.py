@@ -114,6 +114,10 @@ class ChatUpdateCurrentStockModel(BaseRequestModel):
 	stock_code: str
 
 
+class ChatDeleteSessionModel(BaseRequestModel):
+	session_id: int
+
+
 __all__ = [
 	"ChatHistoryItem",
 	"ChatTarget",

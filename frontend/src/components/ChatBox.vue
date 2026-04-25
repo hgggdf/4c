@@ -15,6 +15,19 @@
       </span>
     </div>
 
+    <div class="feature-buttons">
+      <button
+        v-for="item in featureButtons"
+        :key="item.key"
+        class="feature-btn"
+        :class="{ active: activeFeature === item.key }"
+        @click="selectFeature(item.key)"
+      >
+        <span class="feature-icon">{{ item.icon }}</span>
+        <span class="feature-text">{{ item.label }}</span>
+      </button>
+    </div>
+
     <!-- PDF 上传进度 -->
     <div v-if="uploadState.active" class="upload-progress">
       <span class="upload-icon">📄</span>
@@ -39,6 +52,9 @@
         <span class="chat-hint">
           <template v-if="droppedItems.length">
             已添加 {{ droppedItems.length }} 个标的 ·
+          </template>
+          <template v-if="activeFeature">
+            已选择 {{ featureButtons.find(item => item.key === activeFeature)?.label }} ·
           </template>
           Enter 发送 · Shift+Enter 换行
         </span>
@@ -75,10 +91,20 @@ const props = defineProps({
 })
 const emit = defineEmits(['submit'])
 
+const featureButtons = [
+  { key: 'company_analysis', label: '公司分析', icon: '🧠' },
+  { key: 'financial_analysis', label: '财务分析', icon: '💹' },
+  { key: 'pipeline_analysis', label: '管线分析', icon: '🧪' },
+  { key: 'risk_warning', label: '风险预警', icon: '⚠️' },
+  { key: 'industry_compare', label: '行业对比', icon: '🏭' },
+  { key: 'report_generation', label: '生成报告', icon: '📄' },
+]
+
 const text = ref('')
 const isDragOver = ref(false)
 const droppedItems = ref([])
 const fileInputRef = ref(null)
+const activeFeature = ref('')
 
 const uploadState = ref({ active: false, fileName: '', percent: 0, done: false })
 
@@ -102,18 +128,24 @@ function removeItem(symbol) {
   droppedItems.value = droppedItems.value.filter(x => x.symbol !== symbol)
 }
 
+function selectFeature(key) {
+  activeFeature.value = activeFeature.value === key ? '' : key
+}
+
 function handleSubmit() {
   const msg = text.value.trim()
   const targets = droppedItems.value
-  if (!msg && !targets.length) return
+  if (!msg && !targets.length && !activeFeature.value) return
 
   const payload = {
     message: msg,
     targets: targets.map(t => ({ symbol: t.symbol, name: t.name, type: t.type || 'stock' })),
+    selected_mode: activeFeature.value || null,
   }
   emit('submit', payload)
   text.value = ''
   droppedItems.value = []
+  activeFeature.value = ''
 }
 
 async function handleFileChange(evt) {
@@ -139,33 +171,118 @@ async function handleFileChange(evt) {
 </script>
 
 <style scoped>
+.feature-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 0 12px;
+}
+.feature-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fff, var(--bg-card));
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s ease;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset;
+}
+.feature-btn:hover {
+  border-color: var(--border-hl);
+  color: var(--accent2);
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(75,169,154,0.08);
+  transform: translateY(-1px);
+}
+.feature-btn.active {
+  border-color: var(--accent2);
+  background: rgba(75,169,154,0.12);
+  color: var(--accent2);
+  box-shadow: 0 4px 14px rgba(75,169,154,0.12);
+}
+.feature-icon { font-size: 15px; }
+.feature-text { font-size: 13px; font-weight: 700; white-space: nowrap; }
 .toolbar-left {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 12px;
 }
 
 .upload-btn {
-  font-size: 12px; color: var(--text-secondary);
-  cursor: pointer; padding: 3px 8px;
-  border: 1px solid var(--border); border-radius: 6px;
-  transition: all .2s; user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  transition: all .2s;
+  user-select: none;
   white-space: nowrap;
 }
-.upload-btn:hover { color: var(--accent); border-color: var(--border-hl); }
+.upload-btn:hover {
+  color: var(--accent2);
+  border-color: var(--border-hl);
+  background: #fff;
+}
+
+.chat-textarea {
+  width: 100%; min-height: 72px; max-height: 160px;
+  resize: none;
+  background: transparent;
+  border: none; outline: none;
+  padding: 12px 14px 0;
+  color: var(--text-primary);
+  font-size: 14px; line-height: 1.6;
+}
+
+.chat-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 10px 8px;
+}
+
+.chat-hint {
+  font-size: 12px; color: var(--text-muted);
+}
+
+.send-btn {
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 10px;
+  padding: 6px 20px;
+  cursor: pointer;
+  font-size: 14px; font-weight: 600;
+  transition: background .2s, box-shadow .2s;
+}
+.send-btn:hover:not(:disabled) {
+  background: #3d9688;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+.send-btn:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; }
 
 .upload-progress {
   display: flex; align-items: center; gap: 8px;
-  padding: 6px 14px 0;
+  padding: 8px 14px 2px;
   font-size: 12px; color: var(--text-secondary);
 }
 .upload-icon { font-size: 14px; }
 .upload-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
 .upload-bar-wrap {
-  width: 80px; height: 4px; background: var(--bg-card2);
-  border-radius: 2px; overflow: hidden; flex-shrink: 0;
+  width: 96px; height: 5px; background: var(--bg-card2);
+  border-radius: 999px; overflow: hidden; flex-shrink: 0;
 }
 .upload-bar-fill {
   height: 100%; background: var(--accent);
-  border-radius: 2px; transition: width .3s ease;
+  border-radius: 999px; transition: width .3s ease;
 }
 .upload-pct { flex-shrink: 0; }
 .upload-done { color: var(--green); font-weight: 600; flex-shrink: 0; }

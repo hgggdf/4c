@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from app.core.database.models.summary_cache import SessionContextCache
 from app.core.database.models.user import ChatMessage, ChatSession
@@ -38,6 +38,15 @@ class ChatRepository(BaseRepository):
         entity.current_stock_code = stock_code
         self.db.flush()
         return entity
+
+    def delete_session(self, session_id: int) -> bool:
+        entity = self.get_session(session_id)
+        if entity is None:
+            return False
+        self.db.execute(delete(ChatMessage).where(ChatMessage.session_id == session_id))
+        self.db.delete(entity)
+        self.db.flush()
+        return True
 
     def get_context_cache(self, session_id: int) -> SessionContextCache | None:
         stmt = select(SessionContextCache).where(SessionContextCache.session_id == session_id)

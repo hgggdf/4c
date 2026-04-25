@@ -82,7 +82,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { getMacroSummary } from '../api/macro'
+import { getNewsByIndustry } from '../api/news'
 
 const props = defineProps({
   industry: { type: Object, required: true },
@@ -102,45 +104,57 @@ const companies = computed(() =>
   props.stocks.filter(s => s.industry === props.industry.name)
 )
 
-// Mock 宏观数据
-const macroData = computed(() => {
-  const name = props.industry.name
-  const base = [
-    { label: 'CPI 同比',    value: '+0.4%',  sub: '2026年3月', trend: 'up' },
-    { label: 'PPI 同比',    value: '-2.1%',  sub: '2026年3月', trend: 'down' },
-    { label: '社融增速',    value: '+8.3%',  sub: '2026年3月', trend: 'up' },
-    { label: 'GDP 增速',    value: '+5.2%',  sub: '2025年全年', trend: 'up' },
-  ]
-  if (name.includes('眼科') || name.includes('医疗')) {
-    return [
-      ...base,
-      { label: '医疗支出占GDP', value: '6.8%',  sub: '2025年', trend: '' },
-      { label: '老龄化率',      value: '21.1%', sub: '2025年', trend: 'up' },
-    ]
-  }
-  if (name.includes('创新药') || name.includes('生物')) {
-    return [
-      ...base,
-      { label: '医药研发投入增速', value: '+12.4%', sub: '2025年', trend: 'up' },
-      { label: 'NDA 获批数量',    value: '38 个',   sub: '2025年', trend: 'up' },
-    ]
-  }
-  return base
-})
+// 宏观数据（从后端加载）
+const macroData = ref([])
 
-// Mock 行业研报
-const REPORT_MOCK = {
-  default: [
-    { id: 1, title: '医药行业2026年中期策略：集采压力缓解，创新药迎来估值修复', broker: '中信证券', date: '2026-04-10', rating: '增持' },
-    { id: 2, title: '医疗服务板块深度报告：消费复苏驱动院外连锁加速扩张', broker: '华泰证券', date: '2026-04-08', rating: '买入' },
-    { id: 3, title: '生物制药行业周报：GLP-1赛道国内竞争格局分析', broker: '国泰君安', date: '2026-04-05', rating: '推荐' },
-    { id: 4, title: '医药行业政策跟踪：医保谈判规则优化对创新药影响评估', broker: '招商证券', date: '2026-03-28', rating: '中性' },
-    { id: 5, title: '眼科医疗行业专题：近视防控政策落地，市场空间测算', broker: '兴业证券', date: '2026-03-20', rating: '买入' },
-    { id: 6, title: '原料药板块季报点评：出口景气度持续，成本端压力边际改善', broker: '申万宏源', date: '2026-03-15', rating: '增持' },
-  ],
+async function loadMacroData() {
+  try {
+    const items = await getMacroSummary(['CPI', 'PPI', '社融', 'GDP'], 1)
+    const list = Array.isArray(items) ? items : []
+    macroData.value = list.map(item => ({
+      label: (item.indicator_name || item.name || '') + ' 同比',
+      value: item.latest_value ?? item.value ?? '--',
+      sub: item.latest_period ?? item.period ?? '',
+      trend: (() => {
+        if (item.trend) return item.trend
+        const v = parseFloat(item.latest_value ?? item.value)
+        if (isNaN(v)) return ''
+        return v > 0 ? 'up' : v < 0 ? 'down' : ''
+      })(),
+    }))
+  } catch (err) {
+    console.error('[loadMacroData]', err)
+  }
 }
 
-const reports = computed(() => REPORT_MOCK.default)
+// 行业研报（从后端加载）
+const reports = ref([])
+
+async function loadReports() {
+  try {
+    const items = await getNewsByIndustry(props.industry.code || props.industry.name, 30)
+    const list = Array.isArray(items) ? items : []
+    reports.value = list.slice(0, 10).map((item, i) => ({
+      id: item.id || i,
+      title: item.title || item.headline || item['新闻标题'] || '',
+      broker: item.source || item.publisher || item['新闻来源'] || '--',
+      date: (item.publish_date || item.date || item['发布时间'] || '').slice(0, 10),
+      rating: item.rating || item.sentiment || '中性',
+    }))
+  } catch (err) {
+    console.error('[loadReports]', err)
+  }
+}
+
+onMounted(() => {
+  loadMacroData()
+  loadReports()
+})
+
+watch(() => props.industry, () => {
+  loadMacroData()
+  loadReports()
+})
 </script>
 
 <style scoped>

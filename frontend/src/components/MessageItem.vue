@@ -15,7 +15,7 @@
     </div>
 
     <div class="msg-content">
-      <template v-if="message.content">{{ message.content }}</template>
+      <template v-if="displayContent">{{ displayContent }}</template>
       <span v-else class="empty-hint">（等待回复…）</span>
     </div>
 
@@ -42,9 +42,17 @@
 </template>
 
 <script setup>
-import { formatDateTime } from '../utils/format'
+import { computed } from 'vue'
+import { formatDateTime, formatAssistantContent } from '../utils/format'
 
-defineProps({ message: { type: Object, required: true } })
+const props = defineProps({ message: { type: Object, required: true } })
+
+const displayContent = computed(() => {
+  if (props.message.role === 'assistant') {
+    return formatAssistantContent(props.message.content)
+  }
+  return props.message.content
+})
 
 function getChangePercent(extra = {}) {
   return Number(extra.change_pct ?? extra.change_percent ?? 0)

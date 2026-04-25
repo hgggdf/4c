@@ -148,6 +148,34 @@ export function sendQueryStream(payload, onChunk) {
   })
 }
 
+export function createSession(user_id, session_title) {
+  return request.post('/api/chat/create-session', { user_id, session_title })
+}
+
+export function listSessions(user_id, limit = 20) {
+  return request.post('/api/chat/sessions', { user_id, limit })
+}
+
+export function listMessages(session_id) {
+  return request.post('/api/chat/messages', { session_id })
+}
+
+export function appendUserMessage(session_id, content, stock_code = null) {
+  return request.post('/api/chat/append-user-message', { session_id, content, stock_code })
+}
+
+export function appendAssistantMessage(session_id, content, stock_code = null) {
+  return request.post('/api/chat/append-assistant-message', { session_id, content, stock_code })
+}
+
+export function updateCurrentStock(session_id, stock_code) {
+  return request.post('/api/chat/update-current-stock', { session_id, stock_code })
+}
+
+export function deleteSession(session_id) {
+  return request.post('/api/chat/delete-session', { session_id })
+}
+
 export function uploadPDF(file, onProgress) {
   const formData = new FormData()
   formData.append('file', file)

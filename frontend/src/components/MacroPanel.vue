@@ -50,7 +50,8 @@
 <script setup>
 import { ref, watch, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import * as echarts from 'echarts'
-import { getMacroIndicator } from '../api/macro'
+import { getMacroIndicator, getMacroSummary } from '../api/macro'
+import { getNewsByIndustry } from '../api/news'
 
 // ── 指标 ──────────────────────────────────────────
 const indicators = [
@@ -70,29 +71,53 @@ let chartInst = null
 
 const currentIndicator = computed(() => indicators.find(i => i.key === current.value))
 
-// ── 关键数据 Mock ──────────────────────────────────
-const keyMetrics = [
-  { label: 'CPI 同比',       value: '+0.4%',  sub: '2026年3月', trend: 'up' },
-  { label: 'PPI 同比',       value: '-2.1%',  sub: '2026年3月', trend: 'down' },
-  { label: 'PMI',            value: '50.5',   sub: '2026年3月', trend: 'up' },
-  { label: 'GDP 增速',       value: '+5.2%',  sub: '2025年全年', trend: 'up' },
-  { label: '社融增速',       value: '+8.3%',  sub: '2026年3月', trend: 'up' },
-  { label: '医疗支出占GDP',  value: '6.8%',   sub: '2025年',    trend: '' },
-  { label: '医药研发投入增速', value: '+12.4%', sub: '2025年',  trend: 'up' },
-  { label: '居民可支配收入增速', value: '+5.6%', sub: '2025年', trend: 'up' },
-]
+// ── 关键数据（从后端加载）──────────────────────────
+const keyMetrics = ref([])
 
-// ── 政策 Mock ──────────────────────────────────────
-const policies = [
-  { id: 1,  title: '国家医保局：2026年国家医保药品目录调整工作启动，创新药准入门槛进一步优化', source: '国家医保局', date: '2026-04-15', tag: '医保', tagClass: 'rating-buy' },
-  { id: 2,  title: '国务院：《关于深化医药卫生体制改革的若干意见》发布，推动公立医院高质量发展', source: '国务院办公厅', date: '2026-04-10', tag: '改革', tagClass: 'rating-hold' },
-  { id: 3,  title: '国家药监局：加快推进创新药审评审批，优先审评品种扩大至罕见病领域', source: '国家药监局', date: '2026-04-08', tag: '审批', tagClass: 'rating-buy' },
-  { id: 4,  title: '国家卫健委：2026年第四批国家集采结果公布，涉及化学药品43个品种', source: '国家卫健委', date: '2026-04-01', tag: '集采', tagClass: 'rating-sell' },
-  { id: 5,  title: '工信部：医疗装备产业高质量发展行动计划（2026-2030年）印发', source: '工业和信息化部', date: '2026-03-25', tag: '产业', tagClass: 'rating-hold' },
-  { id: 6,  title: '财政部：医疗卫生支出预算同比增长8.1%，重点支持基层医疗能力建设', source: '财政部', date: '2026-03-15', tag: '财政', tagClass: 'rating-buy' },
-  { id: 7,  title: '国家医保局：DRG/DIP支付方式改革全面推开，覆盖全国所有统筹地区', source: '国家医保局', date: '2026-03-10', tag: '支付', tagClass: 'rating-hold' },
-  { id: 8,  title: '商务部：《药品进出口管理办法》修订，原料药出口监管进一步规范', source: '商务部', date: '2026-03-05', tag: '监管', tagClass: 'rating-hold' },
-]
+async function loadKeyMetrics() {
+  try {
+    const items = await getMacroSummary(['CPI', 'PPI', 'PMI', 'GDP', '社融', '医药研发投入'], 1)
+    const list = Array.isArray(items) ? items : []
+    keyMetrics.value = list.map(item => ({
+      label: item.indicator_name || item.name || '',
+      value: item.latest_value ?? item.value ?? '--',
+      sub: item.latest_period ?? item.period ?? '',
+      trend: (() => {
+        if (item.trend) return item.trend
+        const v = parseFloat(item.latest_value ?? item.value)
+        if (isNaN(v)) return ''
+        return v > 0 ? 'up' : v < 0 ? 'down' : ''
+      })(),
+    }))
+  } catch (err) {
+    console.error('[loadKeyMetrics]', err)
+  }
+}
+
+// ── 政策动态（从后端加载）──────────────────────────
+const policies = ref([])
+
+async function loadPolicies() {
+  try {
+    const items = await getNewsByIndustry('医药生物', 30)
+    const list = Array.isArray(items) ? items : []
+    policies.value = list.slice(0, 10).map((item, i) => ({
+      id: item.id || i,
+      title: item.title || item.headline || item['新闻标题'] || '',
+      source: item.source || item.publisher || item['新闻来源'] || '',
+      date: (item.publish_date || item.date || item['发布时间'] || '').slice(0, 10),
+      tag: item.category || item.tag || '政策',
+      tagClass: (() => {
+        const cat = item.category || item.sentiment || ''
+        if (['利好', '买入', '增持', '医保', '审批', '财政'].some(k => cat.includes(k))) return 'rating-buy'
+        if (['利空', '集采', '降价', '风险'].some(k => cat.includes(k))) return 'rating-sell'
+        return 'rating-hold'
+      })(),
+    }))
+  } catch (err) {
+    console.error('[loadPolicies]', err)
+  }
+}
 
 // ── 图表 ──────────────────────────────────────────
 async function loadAndRender() {
@@ -161,7 +186,7 @@ async function loadAndRender() {
 watch(current, loadAndRender)
 function onResize() { chartInst?.resize() }
 
-onMounted(() => { loadAndRender(); window.addEventListener('resize', onResize) })
+onMounted(() => { loadAndRender(); loadKeyMetrics(); loadPolicies(); window.addEventListener('resize', onResize) })
 onBeforeUnmount(() => { window.removeEventListener('resize', onResize); chartInst?.dispose() })
 </script>
 

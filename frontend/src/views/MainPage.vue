@@ -286,10 +286,11 @@ onBeforeUnmount(() => {
 .explore-tabs {
   display: flex;
   flex-shrink: 0;
+  gap: 8px;
   border-bottom: 1px solid var(--border);
-  background: rgba(248, 250, 252, 0.9);
-  padding: 0 8px;
-  height: 44px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.92));
+  padding: 10px 10px 8px;
+  height: 60px;
 }
 
 .explore-tab-btn {
@@ -297,28 +298,36 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   padding: 12px 0;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 500;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition: all 0.2s ease;
   white-space: nowrap;
-  margin-bottom: -1px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset;
 }
 
-.explore-tab-btn:hover { color: var(--text-primary); }
+.explore-tab-btn:hover {
+  color: var(--accent2);
+  border-color: rgba(75,169,154,0.28);
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(75,169,154,0.08);
+  transform: translateY(-1px);
+}
 
 .explore-tab-btn.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
+  color: #fff;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+  border-color: var(--accent2);
+  box-shadow: 0 6px 16px rgba(75,169,154,0.22);
 }
 
-.tab-icon { font-size: 15px; line-height: 1; }
+.tab-icon { font-size: 16px; line-height: 1; }
 
 /* ═══════════════════════════════════════════════
    把手 — 实体圆角矩形，向右侧伸出
@@ -326,7 +335,7 @@ onBeforeUnmount(() => {
 .edge-handle {
   position: absolute;
   top: 0; bottom: 0;
-  width: 12px;
+  width: 14px;
   cursor: col-resize;
   z-index: 50;
   display: flex;
@@ -339,46 +348,47 @@ onBeforeUnmount(() => {
 
 /* 实体把手矩形 */
 .handle-pill {
-  width: 10px;
-  height: 40px;
-  background: var(--bg-card2);
+  width: 12px;
+  height: 44px;
+  background: linear-gradient(180deg, var(--bg-card), #fff);
   border: 1px solid var(--border);
   border-left: none;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 10px 10px 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background .2s, box-shadow .2s, width .15s;
-  box-shadow: 2px 0 6px rgba(0,0,0,0.06);
+  transition: background .2s, box-shadow .2s, width .15s, border-color .2s;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.08);
   flex-shrink: 0;
   margin-left: -1px;
 }
 
 .handle-hover .handle-pill {
-  background: var(--bg-card);
+  background: #fff;
   border-color: var(--border-hl);
-  box-shadow: 2px 0 10px rgba(75,169,154,0.15);
-  width: 12px;
+  box-shadow: 2px 0 12px rgba(75,169,154,0.16);
+  width: 14px;
 }
 
 .handle-drag .handle-pill {
   background: rgba(75,169,154,0.12);
   border-color: var(--accent);
-  box-shadow: 2px 0 12px rgba(75,169,154,0.2);
-  width: 12px;
+  box-shadow: 2px 0 14px rgba(75,169,154,0.22);
+  width: 14px;
 }
 
 /* 箭头 */
 .handle-arrow {
-  font-size: 11px;
-  color: var(--text-muted);
+  font-size: 12px;
+  color: var(--text-secondary);
   user-select: none;
   pointer-events: none;
   transition: color .2s;
   line-height: 1;
+  font-weight: 800;
 }
 
-.handle-hover .handle-arrow { color: var(--accent); }
+.handle-hover .handle-arrow { color: var(--accent2); }
 .handle-drag  .handle-arrow { color: var(--accent2); }
 
 /* ═══════════════════════════════════════════════

@@ -13,6 +13,7 @@ from app.router.dependencies import get_container
 from app.router.schemas.chat import (
 	ChatAppendMessageModel,
 	ChatCreateSessionModel,
+	ChatDeleteSessionModel,
 	ChatListSessionsModel,
 	ChatRequest,
 	ChatResponse,
@@ -122,6 +123,11 @@ def append_assistant_message(payload: ChatAppendMessageModel, container: Service
 @router.post("/chat/update-current-stock")
 def update_current_stock(payload: ChatUpdateCurrentStockModel, container: ServiceContainer = Depends(get_container)):
 	return service_result_response(container.chat.update_current_stock(build_request(ChatUpdateCurrentStockRequest, payload)))
+
+
+@router.post("/chat/delete-session")
+def delete_session(payload: ChatSessionModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.delete_session(build_request(ChatSessionRequest, payload)))
 
 
 __all__ = ["router"]

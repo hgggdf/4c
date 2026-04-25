@@ -22,6 +22,7 @@
             <div class="cp-session-title">{{ s.title }}</div>
             <div class="cp-session-meta">{{ s.updatedAt }}</div>
           </div>
+          <button class="cp-delete-btn" title="删除对话" @click.stop="removeSession(s.id)">删除</button>
         </div>
       </div>
     </div>
@@ -32,19 +33,6 @@
       <!-- 顶部标题栏 -->
       <div class="cp-topbar">
         <span class="cp-topbar-title">⚕ 医药投研智能体</span>
-        <!-- 模式切换 Tab -->
-        <div class="cp-mode-tabs">
-          <button
-            class="cp-mode-tab"
-            :class="{ active: chatStore.mode === 'chat' }"
-            @click="chatStore.switchMode('chat')"
-          >对话模式</button>
-          <button
-            class="cp-mode-tab"
-            :class="{ active: chatStore.mode === 'query' }"
-            @click="chatStore.switchMode('query')"
-          >问数模式</button>
-        </div>
         <button class="cp-logout-btn" @click="logout" title="退出登录">退出</button>
       </div>
 
@@ -70,11 +58,28 @@
             </div>
             <!-- 气泡 -->
             <div
+              v-if="shouldShowBubble(msg, i)"
               class="cp-bubble"
               :class="{ 'cp-bubble--clarification': msg.isClarification }"
-            >{{ msg.content }}</div>
+            >{{ formatContent(msg) }}</div>
+            <div
+              v-else-if="isStreamingAssistant(msg, i)"
+              class="cp-bubble cp-bubble--thinking"
+            >
+              <span class="cp-dot"></span><span class="cp-dot"></span><span class="cp-dot"></span>
+            </div>
             <!-- 时间 -->
             <div class="cp-time">{{ formatTime(msg.createdAt) }}</div>
+          </div>
+        </div>
+
+        <!-- 流式生成中（无内容时兜底） -->
+        <div v-if="isGenerating && !hasRenderableAssistantMessage" class="cp-msg-row cp-msg-row--assistant">
+          <div class="cp-avatar">⚕</div>
+          <div class="cp-bubble-wrap">
+            <div class="cp-bubble cp-bubble--thinking">
+              <span class="cp-dot"></span><span class="cp-dot"></span><span class="cp-dot"></span>
+            </div>
           </div>
         </div>
 
@@ -99,7 +104,8 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, onMounted, computed } from 'vue'
+import { formatAssistantContent } from '../utils/format'
 import { useRouter } from 'vue-router'
 import { useChatStore } from '../store/chatStore'
 import ChatBox from './ChatBox.vue'
@@ -108,6 +114,10 @@ const chatStore = useChatStore()
 const router = useRouter()
 const msgListRef = ref(null)
 const currentUser = sessionStorage.getItem('user') || '我'
+const isGenerating = computed(() => chatStore.loading)
+const hasRenderableAssistantMessage = computed(() =>
+  chatStore.messages.some((msg, idx) => msg.role === 'assistant' && shouldShowBubble(msg, idx))
+)
 
 function scrollBottom() {
   nextTick(() => {
@@ -125,13 +135,38 @@ async function handleSubmit(payload) {
   scrollBottom()
 }
 
-watch(() => chatStore.messages.length, scrollBottom)
+async function removeSession(sessionId) {
+  await chatStore.deleteSession(sessionId)
+}
+
+watch(() => chatStore.messages.map(m => `${m.role}:${m.content}`).join('|'), scrollBottom)
 watch(() => chatStore.activeSessionId, scrollBottom)
+watch(() => chatStore.loading, scrollBottom)
+
+onMounted(() => {
+  chatStore.loadSessions()
+})
 
 function formatTime(ts) {
   if (!ts) return ''
   const d = new Date(ts)
   return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`
+}
+
+function isStreamingAssistant(msg) {
+  return msg.role === 'assistant' && chatStore.loading && !msg.content
+}
+
+function shouldShowBubble(msg, index) {
+  if (msg.role !== 'assistant') return true
+  if (msg.isClarification) return true
+  if (!msg.content) return false
+  return true
+}
+
+function formatContent(msg) {
+  if (msg.role === 'assistant') return formatAssistantContent(msg.content)
+  return msg.content
 }
 </script>
 
@@ -169,27 +204,29 @@ function formatTime(ts) {
 }
 .cp-sidebar-title {
   font-size: 12px;
-  font-weight: 700;
-  color: var(--text-secondary);
+  font-weight: 800;
+  color: var(--text-primary);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 .cp-new-btn {
-  width: 26px; height: 26px;
+  width: 30px; height: 30px;
   display: flex; align-items: center; justify-content: center;
-  background: none;
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-muted);
+  border-radius: 8px;
+  color: var(--text-primary);
   font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all .2s;
+  transition: all .2s ease;
   line-height: 1;
 }
 .cp-new-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(75,169,154,0.08);
+  border-color: var(--border-hl);
+  color: var(--accent2);
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(75,169,154,0.08);
 }
 
 .cp-session-list {
@@ -202,7 +239,7 @@ function formatTime(ts) {
 }
 .cp-session-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
   padding: 9px 8px;
   border-radius: 8px;
@@ -223,7 +260,7 @@ function formatTime(ts) {
 .cp-session-info { min-width: 0; }
 .cp-session-title {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text-primary);
   overflow: hidden;
   white-space: nowrap;
@@ -238,6 +275,23 @@ function formatTime(ts) {
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 2px;
+}
+
+.cp-delete-btn {
+  margin-left: auto;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.cp-delete-btn:hover {
+  color: var(--red);
+  border-color: rgba(224,82,82,0.28);
+  background: rgba(224,82,82,0.06);
 }
 
 /* ══════════════════════════════════════
@@ -265,21 +319,22 @@ function formatTime(ts) {
 }
 .cp-topbar-title {
   font-size: 14px;
-  font-weight: 700;
-  color: var(--accent2);
+  font-weight: 800;
+  color: var(--text-primary);
 }
 .cp-logout-btn {
-  background: none;
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
+  border-radius: 8px;
+  color: var(--text-primary);
   font-size: 12px;
-  padding: 4px 10px;
+  font-weight: 700;
+  padding: 6px 12px;
   cursor: pointer;
-  transition: all .2s;
+  transition: all .2s ease;
 }
 .cp-logout-btn:hover {
-  border-color: var(--red);
+  border-color: rgba(224,82,82,0.28);
   color: var(--red);
   background: rgba(224,82,82,0.06);
 }

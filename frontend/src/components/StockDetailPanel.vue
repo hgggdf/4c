@@ -95,6 +95,56 @@
         </div>
       </div>
 
+      <!-- 公司 Tab -->
+      <div v-else-if="activeTab === 'company'" key="company">
+        <div class="section-title">公司概况</div>
+        <div v-if="!companyProfile" class="empty-state">加载中…</div>
+        <template v-else>
+          <div class="metric-grid">
+            <div class="metric-card" v-if="companyProfile.business_summary">
+              <div class="metric-label">主营业务</div>
+              <div class="metric-value" style="font-size:12px;line-height:1.6;">{{ companyProfile.business_summary }}</div>
+            </div>
+            <div class="metric-card" v-if="companyProfile.market_position">
+              <div class="metric-label">市场地位</div>
+              <div class="metric-value" style="font-size:12px;line-height:1.6;">{{ companyProfile.market_position }}</div>
+            </div>
+            <div class="metric-card" v-if="companyProfile.core_products_json?.length">
+              <div class="metric-label">核心产品</div>
+              <div class="metric-value" style="font-size:12px;">{{ companyProfile.core_products_json.join('、') }}</div>
+            </div>
+            <div class="metric-card" v-if="companyProfile.main_segments_json?.length">
+              <div class="metric-label">业务板块</div>
+              <div class="metric-value" style="font-size:12px;">{{ companyProfile.main_segments_json.join('、') }}</div>
+            </div>
+            <div class="metric-card" v-if="companyProfile.management_summary">
+              <div class="metric-label">经营概要</div>
+              <div class="metric-value" style="font-size:12px;line-height:1.6;">{{ companyProfile.management_summary }}</div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- 财务 Tab -->
+      <div v-else-if="activeTab === 'financial'" key="financial">
+        <div class="section-title">财务摘要</div>
+        <div v-if="!financialSummary" class="empty-state">加载中…</div>
+        <template v-else>
+          <div class="metric-grid" v-if="Array.isArray(financialSummary)">
+            <div v-for="(item, i) in financialSummary" :key="i" class="metric-card">
+              <div class="metric-label">{{ item.metric_name || item.name || item.period || '' }}</div>
+              <div class="metric-value">{{ item.value ?? item.amount ?? '--' }}</div>
+            </div>
+          </div>
+          <div class="metric-grid" v-else>
+            <div v-for="(val, key) in financialSummary" :key="key" class="metric-card">
+              <div class="metric-label">{{ key }}</div>
+              <div class="metric-value" style="font-size:12px;">{{ Array.isArray(val) ? val.join('、') : (typeof val === 'object' && val !== null ? JSON.stringify(val) : val ?? '--') }}</div>
+            </div>
+          </div>
+        </template>
+      </div>
+
     </div>
   </div>
 </template>
@@ -103,6 +153,8 @@
 import { ref, watch, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { getKline, getStockMetrics, getReports, getConcepts, getEvents } from '../api/stock'
+import { getCompanyProfile } from '../api/company'
+import { getFinancialSummary } from '../api/financial'
 
 const props = defineProps({
   stock: { type: Object, required: true },
@@ -115,6 +167,8 @@ const tabs = [
   { key: 'data',   label: '数据', icon: '📊' },
   { key: 'event',  label: '事件', icon: '📰' },
   { key: 'report', label: '研报', icon: '📄' },
+  { key: 'company', label: '公司', icon: '🏢' },
+  { key: 'financial', label: '财务', icon: '💰' },
 ]
 
 // ── 覆盖式过场动画 ────────────────────────────────
@@ -133,6 +187,8 @@ const reports  = ref([])
 const concepts = ref({ aliases: [], industries: [] })
 const events   = ref([])
 const loading  = ref(false)
+const companyProfile = ref(null)
+const financialSummary = ref(null)
 
 // ── 数据加载 ──────────────────────────────────────
 async function loadMarketData() {
@@ -151,6 +207,8 @@ async function loadMarketData() {
     events.value   = ev
     await nextTick()
     renderChart(kline)
+    loadCompanyProfile()
+    loadFinancialSummary()
   } finally {
     loading.value = false
   }
@@ -198,6 +256,24 @@ function renderChart(kline) {
 // ── 工具函数 ──────────────────────────────────────
 function getChangePercent(stock) {
   return Number(stock?.change_pct ?? stock?.change_percent ?? 0)
+}
+
+async function loadCompanyProfile() {
+  try {
+    const res = await getCompanyProfile(props.stock.symbol)
+    companyProfile.value = res && typeof res === 'object' ? res : null
+  } catch (err) {
+    console.error('[loadCompanyProfile]', err)
+  }
+}
+
+async function loadFinancialSummary() {
+  try {
+    const res = await getFinancialSummary(props.stock.symbol, 4)
+    financialSummary.value = res && typeof res === 'object' ? res : null
+  } catch (err) {
+    console.error('[loadFinancialSummary]', err)
+  }
 }
 
 function formatReportMeta(report) {

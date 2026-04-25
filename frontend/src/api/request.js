@@ -6,7 +6,16 @@ const request = axios.create({
 })
 
 request.interceptors.response.use(
-  response => response.data,
+  response => {
+    const data = response.data
+    if (data && typeof data === 'object' && 'success' in data && 'data' in data) {
+      if (!data.success) {
+        return Promise.reject(new Error(data.message || '请求失败'))
+      }
+      return data.data
+    }
+    return data
+  },
   error => {
     if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
       return Promise.reject(new Error('请求超时，请检查网络连接'))
