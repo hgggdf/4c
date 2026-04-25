@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.database.models.announcement_hot import AnnouncementStructuredHot, DrugApprovalHot, RegulatoryRiskEventHot
+from app.core.database.models.announcement_hot import AnnouncementHot
 from app.core.database.models.company import CompanyMaster
-from app.core.database.models.financial_hot import BalanceSheetHot, CashflowStatementHot, FinancialMetricHot, IncomeStatementHot
-from app.core.database.models.news_hot import NewsCompanyMapHot, NewsRawHot
+from app.core.database.models.financial_hot import FinancialHot
+from app.core.database.models.news_hot import NewsHot
 
 from .shared import normalize_percent, resolve_company, to_float
 
@@ -324,82 +325,32 @@ class AnalysisService:
         return [item.stock_code for item in fallback]
 
     def _load_snapshots(self, db: Session, stock_code: str) -> dict[int, YearSnapshot]:
-        incomes = list(
+        all_rows = list(
             db.execute(
-                select(IncomeStatementHot)
-                .where(IncomeStatementHot.stock_code == stock_code)
-                .order_by(IncomeStatementHot.report_date.desc(), IncomeStatementHot.created_at.desc())
-            ).scalars().all()
-        )
-        balances = list(
-            db.execute(
-                select(BalanceSheetHot)
-                .where(BalanceSheetHot.stock_code == stock_code)
-                .order_by(BalanceSheetHot.report_date.desc(), BalanceSheetHot.created_at.desc())
-            ).scalars().all()
-        )
-        cashflows = list(
-            db.execute(
-                select(CashflowStatementHot)
-                .where(CashflowStatementHot.stock_code == stock_code)
-                .order_by(CashflowStatementHot.report_date.desc(), CashflowStatementHot.created_at.desc())
-            ).scalars().all()
-        )
-        metrics = list(
-            db.execute(
-                select(FinancialMetricHot)
-                .where(FinancialMetricHot.stock_code == stock_code)
-                .order_by(FinancialMetricHot.report_date.desc(), FinancialMetricHot.created_at.desc())
+                select(FinancialHot)
+                .where(FinancialHot.stock_code == stock_code)
+                .order_by(FinancialHot.report_date.desc(), FinancialHot.created_at.desc())
             ).scalars().all()
         )
 
-        income_by_year = self._latest_by_year(incomes, "fiscal_year")
-        balance_by_year = self._latest_by_year(balances, "fiscal_year")
-        cashflow_by_year = self._latest_by_year(cashflows, "fiscal_year")
-        metric_by_year = self._metric_by_year(metrics)
+        by_year = self._latest_by_year(all_rows, "fiscal_year")
 
         snapshots: dict[int, YearSnapshot] = {}
-        all_years = sorted(
-            {
-                *income_by_year.keys(),
-                *balance_by_year.keys(),
-                *cashflow_by_year.keys(),
-                *metric_by_year.keys(),
-            },
-            reverse=True,
-        )
-        for year in all_years:
-            income = income_by_year.get(year)
-            balance = balance_by_year.get(year)
-            cashflow = cashflow_by_year.get(year)
-            metric_rows = metric_by_year.get(year, {})
+        for year, row in by_year.items():
             snapshots[year] = YearSnapshot(
                 year=year,
-                revenue=to_float(getattr(income, "revenue", None), None),
-                net_profit=to_float(getattr(income, "net_profit", None), None),
-                eps=to_float(getattr(income, "eps", None), None),
-                gross_margin=self._metric_or_ratio(
-                    metric_rows.get("gross_margin"),
-                    getattr(income, "gross_profit", None),
-                    getattr(income, "revenue", None),
-                ),
-                net_margin=self._ratio(getattr(income, "net_profit", None), getattr(income, "revenue", None)),
-                roe=self._metric_or_ratio(
-                    metric_rows.get("roe"),
-                    getattr(income, "net_profit", None),
-                    getattr(balance, "equity", None),
-                ),
-                debt_ratio=self._metric_or_ratio(
-                    metric_rows.get("debt_ratio"),
-                    getattr(balance, "total_liabilities", None),
-                    getattr(balance, "total_assets", None),
-                ),
-                rd_ratio=self._metric_or_ratio(
-                    metric_rows.get("rd_ratio"),
-                    getattr(income, "rd_expense", None),
-                    getattr(income, "revenue", None),
-                ),
-                operating_cashflow=to_float(getattr(cashflow, "operating_cashflow", None), None),
+                revenue=to_float(getattr(row, "revenue", None), None),
+                net_profit=to_float(getattr(row, "net_profit", None), None),
+                eps=to_float(getattr(row, "eps", None), None),
+                gross_margin=normalize_percent(to_float(getattr(row, "gross_margin", None), None))
+                    or self._ratio(getattr(row, "gross_profit", None), getattr(row, "revenue", None)),
+                net_margin=self._ratio(getattr(row, "net_profit", None), getattr(row, "revenue", None)),
+                roe=self._ratio(getattr(row, "net_profit", None), getattr(row, "total_assets", None)),
+                debt_ratio=normalize_percent(to_float(getattr(row, "debt_ratio", None), None))
+                    or self._ratio(getattr(row, "total_liabilities", None), getattr(row, "total_assets", None)),
+                rd_ratio=normalize_percent(to_float(getattr(row, "rd_ratio", None), None))
+                    or self._ratio(getattr(row, "rd_expense", None), getattr(row, "revenue", None)),
+                operating_cashflow=to_float(getattr(row, "operating_cashflow", None), None),
             )
 
         ordered_years = sorted(snapshots, reverse=True)
@@ -421,21 +372,6 @@ class AnalysisService:
                 continue
             grouped[int(year)] = row
         return grouped
-
-    def _metric_by_year(self, rows: list[FinancialMetricHot]) -> dict[int, dict[str, FinancialMetricHot]]:
-        grouped: dict[int, dict[str, FinancialMetricHot]] = {}
-        for row in rows:
-            year = int(row.fiscal_year or row.report_date.year)
-            bucket = grouped.setdefault(year, {})
-            bucket.setdefault(row.metric_name, row)
-        return grouped
-
-    def _metric_or_ratio(self, metric_row, numerator, denominator) -> float | None:
-        if metric_row is not None:
-            value = to_float(metric_row.metric_value, None)
-            if value is not None:
-                return normalize_percent(value)
-        return self._ratio(numerator, denominator)
 
     def _ratio(self, numerator, denominator) -> float | None:
         num = to_float(numerator, None)
@@ -527,69 +463,67 @@ class AnalysisService:
             })
 
     def _append_announcement_signals(self, db: Session, stock_code: str, risks: list[dict], opportunities: list[dict]) -> None:
-        structured = list(
+        announcements = list(
             db.execute(
-                select(AnnouncementStructuredHot)
-                .where(AnnouncementStructuredHot.stock_code == stock_code)
-                .order_by(AnnouncementStructuredHot.created_at.desc())
+                select(AnnouncementHot)
+                .where(AnnouncementHot.stock_code == stock_code)
+                .order_by(AnnouncementHot.publish_date.desc(), AnnouncementHot.created_at.desc())
                 .limit(5)
             ).scalars().all()
         )
-        for row in structured:
-            if row.signal_type == "risk":
+        for row in announcements:
+            ann_type = (row.announcement_type or "").lower()
+            key_fields = row.key_fields_json or {}
+            if isinstance(key_fields, str):
+                try:
+                    key_fields = json.loads(key_fields)
+                except Exception:
+                    key_fields = {}
+            signal_type = key_fields.get("signal_type", "")
+            if signal_type == "risk" or "风险" in ann_type or "处罚" in ann_type:
                 risks.append({
-                    "signal": f"公告风险信号：{row.category}",
-                    "detail": row.summary_text or "结构化公告提示潜在风险",
-                    "level": "red" if row.risk_level == "high" else "yellow",
+                    "signal": f"公告风险信号：{row.announcement_type or '公告'}",
+                    "detail": row.summary_text or row.title or "公告提示潜在风险",
+                    "level": "yellow",
                 })
-            elif row.signal_type == "opportunity":
+            elif signal_type == "opportunity" or "审批" in ann_type or "获批" in ann_type or "中标" in ann_type:
                 opportunities.append({
-                    "signal": f"公告机会信号：{row.category}",
-                    "detail": row.summary_text or "结构化公告提示积极进展",
+                    "signal": f"公告积极信号：{row.announcement_type or '公告'}",
+                    "detail": row.summary_text or row.title or "公告提示积极进展",
                 })
-
-        drug_rows = list(
-            db.execute(
-                select(DrugApprovalHot)
-                .where(DrugApprovalHot.stock_code == stock_code)
-                .order_by(DrugApprovalHot.approval_date.desc(), DrugApprovalHot.created_at.desc())
-                .limit(3)
-            ).scalars().all()
-        )
-        for row in drug_rows:
-            opportunities.append({
-                "signal": "药品审批进展",
-                "detail": f"{row.drug_name} {row.approval_type or '审批进展'}（{row.approval_date}）",
-            })
-
-        risk_rows = list(
-            db.execute(
-                select(RegulatoryRiskEventHot)
-                .where(RegulatoryRiskEventHot.stock_code == stock_code)
-                .order_by(RegulatoryRiskEventHot.event_date.desc(), RegulatoryRiskEventHot.created_at.desc())
-                .limit(3)
-            ).scalars().all()
-        )
-        for row in risk_rows:
-            risks.append({
-                "signal": row.risk_type or "监管风险",
-                "detail": row.summary_text or f"监管事件发生于 {row.event_date}",
-                "level": "red" if row.risk_level == "high" else "yellow",
-            })
 
     def _append_news_signals(self, db: Session, stock_code: str, risks: list[dict], opportunities: list[dict]) -> None:
-        rows = list(
+        all_news = list(
             db.execute(
-                select(NewsCompanyMapHot, NewsRawHot)
-                .join(NewsRawHot, NewsRawHot.id == NewsCompanyMapHot.news_id)
-                .where(NewsCompanyMapHot.stock_code == stock_code)
-                .order_by(NewsRawHot.publish_time.desc(), NewsRawHot.created_at.desc())
-                .limit(5)
-            ).all()
+                select(NewsHot)
+                .where(NewsHot.related_stock_codes_json.isnot(None))
+                .order_by(NewsHot.publish_time.desc(), NewsHot.created_at.desc())
+                .limit(30)
+            ).scalars().all()
         )
-        for mapping, news in rows:
-            direction = (mapping.impact_direction or "").lower()
-            detail = mapping.reason_text or news.title
+        matched = []
+        for row in all_news:
+            codes = row.related_stock_codes_json
+            if isinstance(codes, str):
+                try:
+                    codes = json.loads(codes)
+                except Exception:
+                    codes = [codes]
+            if isinstance(codes, list) and stock_code in codes:
+                matched.append(row)
+            elif isinstance(codes, dict) and stock_code in codes:
+                matched.append(row)
+            if len(matched) >= 5:
+                break
+        for news in matched:
+            key_fields = news.key_fields_json or {}
+            if isinstance(key_fields, str):
+                try:
+                    key_fields = json.loads(key_fields)
+                except Exception:
+                    key_fields = {}
+            direction = str(key_fields.get("impact_direction", "")).lower()
+            detail = news.summary_text or news.title
             if direction in {"negative", "risk", "down"}:
                 risks.append({
                     "signal": "新闻舆情偏负面",

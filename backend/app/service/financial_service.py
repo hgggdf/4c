@@ -68,8 +68,53 @@ class FinancialService(BaseService):
             raise ValueError("metric_names is required")
         self._ensure_company(stock_code)
         rows = FinancialRepository(db).get_metrics(stock_code, req.metric_names, limit=limit)
-        fields = ["stock_code", "report_date", "fiscal_year", "metric_name", "metric_value", "metric_unit", "calc_method", "source_ref_json", "created_at"]
-        return [model_to_dict(r, fields) for r in rows]
+
+        METRIC_COLUMN_MAP = {
+            "gross_margin": ("gross_margin", "ratio"),
+            "net_margin": (None, "ratio"),  # 需计算
+            "roe": (None, "ratio"),
+            "rd_ratio": ("rd_ratio", "ratio"),
+            "debt_ratio": ("debt_ratio", "ratio"),
+            "revenue": ("revenue", "yuan"),
+            "net_profit": ("net_profit", "yuan"),
+            "eps": ("eps", "yuan"),
+            "operating_cashflow": ("operating_cashflow", "yuan"),
+        }
+
+        results = []
+        for row in rows:
+            for metric_name in req.metric_names:
+                col_info = METRIC_COLUMN_MAP.get(metric_name)
+                if col_info:
+                    col, unit = col_info
+                    if col:
+                        value = getattr(row, col, None)
+                    elif metric_name == "net_margin":
+                        np = getattr(row, "net_profit", None)
+                        rev = getattr(row, "revenue", None)
+                        value = float(np) / float(rev) if np and rev and float(rev) != 0 else None
+                    elif metric_name == "roe":
+                        np = getattr(row, "net_profit", None)
+                        ta = getattr(row, "total_assets", None)
+                        value = float(np) / float(ta) if np and ta and float(ta) != 0 else None
+                    else:
+                        value = None
+                else:
+                    value = getattr(row, metric_name, None)
+                    unit = None
+
+                if value is not None:
+                    from .serializers import normalize_value
+                    results.append({
+                        "stock_code": stock_code,
+                        "report_date": normalize_value(row.report_date),
+                        "fiscal_year": row.fiscal_year,
+                        "metric_name": metric_name,
+                        "metric_value": normalize_value(value),
+                        "metric_unit": unit,
+                        "created_at": normalize_value(row.created_at),
+                    })
+        return results
 
     def _get_business_segments(self, db, req: StockCodeLimitRequest) -> list[dict]:
         stock_code = require_stock_code(req.stock_code)

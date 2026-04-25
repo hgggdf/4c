@@ -17,6 +17,7 @@ from .macro_write_service import MacroWriteService
 from .maintenance_service import MaintenanceService
 from .news_service import NewsService
 from .news_write_service import NewsWriteService
+from .research_report_write_service import ResearchReportWriteService
 from .retrieval_service import RetrievalService
 
 
@@ -36,6 +37,7 @@ class ServiceContainer:
     announcement_write: AnnouncementWriteService
     macro_write: MacroWriteService
     news_write: NewsWriteService
+    research_report_write: ResearchReportWriteService
     maintenance: MaintenanceService
     ingest: IngestGatewayService
 
@@ -50,6 +52,7 @@ class ServiceContainer:
         announcement_write = AnnouncementWriteService(ctx=ctx)
         macro_write = MacroWriteService(ctx=ctx)
         news_write = NewsWriteService(ctx=ctx)
+        research_report_write = ResearchReportWriteService(ctx=ctx)
         maintenance = MaintenanceService(ctx=ctx)
         return ServiceContainer(
             ctx=ctx,
@@ -66,6 +69,7 @@ class ServiceContainer:
             announcement_write=announcement_write,
             macro_write=macro_write,
             news_write=news_write,
+            research_report_write=research_report_write,
             maintenance=maintenance,
             ingest=IngestGatewayService(
                 ctx=ctx,

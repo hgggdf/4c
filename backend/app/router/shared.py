@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 import app.core.database.models as database_models
 from app.core.database.models.company import CompanyMaster
-from app.core.database.models.financial_hot import StockDailyHot
+from app.core.database.models.financial_hot import FinancialHot
 from config import get_settings
 
 
@@ -146,76 +146,86 @@ def resolve_company(db: Session, query: str | None) -> CompanyMaster | None:
     return best[1] if best is not None else None
 
 
-def get_latest_trade_rows(db: Session, stock_codes: list[str]) -> dict[str, StockDailyHot]:
+def get_latest_trade_rows(db: Session, stock_codes: list[str]) -> dict[str, FinancialHot]:
+    """返回每只股票最新的一条记录，优先取有 trade_date 的日行情数据。"""
     codes = [code for code in stock_codes if code]
     if not codes:
         return {}
-
     latest_subquery = (
         select(
-            StockDailyHot.stock_code.label("stock_code"),
-            func.max(StockDailyHot.trade_date).label("trade_date"),
+            FinancialHot.stock_code.label("stock_code"),
+            func.max(func.coalesce(FinancialHot.trade_date, FinancialHot.report_date)).label("latest_date"),
         )
-        .where(StockDailyHot.stock_code.in_(codes))
-        .group_by(StockDailyHot.stock_code)
+        .where(FinancialHot.stock_code.in_(codes))
+        .group_by(FinancialHot.stock_code)
         .subquery()
     )
-
     rows = db.execute(
-        select(StockDailyHot)
-        .join(
+        select(FinancialHot).join(
             latest_subquery,
-            (StockDailyHot.stock_code == latest_subquery.c.stock_code)
-            & (StockDailyHot.trade_date == latest_subquery.c.trade_date),
+            (FinancialHot.stock_code == latest_subquery.c.stock_code)
+            & (func.coalesce(FinancialHot.trade_date, FinancialHot.report_date) == latest_subquery.c.latest_date),
         )
     ).scalars().all()
-    return {row.stock_code: row for row in rows}
+    result = {}
+    for row in rows:
+        if row.stock_code not in result:
+            result[row.stock_code] = row
+    return result
 
 
-def build_quote_payload(company: CompanyMaster, trade_row: StockDailyHot | None) -> dict[str, Any]:
+def build_quote_payload(company: CompanyMaster, trade_row: FinancialHot | None) -> dict[str, Any]:
     if trade_row is None:
         return {
             "symbol": company.stock_code,
             "name": company.stock_name,
-            "price": 0.0,
-            "change": 0.0,
-            "change_percent": 0.0,
-            "change_pct": 0.0,
-            "open": 0.0,
-            "high": 0.0,
-            "low": 0.0,
-            "volume": "0",
-            "time": "--",
+            "price": 0.0, "change": 0.0, "change_percent": 0.0, "change_pct": 0.0,
+            "open": 0.0, "high": 0.0, "low": 0.0, "volume": "0", "time": "--",
         }
-
-    open_price = to_float(trade_row.open_price, 0.0) or 0.0
-    close_price = to_float(trade_row.close_price, 0.0) or 0.0
-    change = close_price - open_price
-    change_percent = (change / open_price * 100) if open_price else 0.0
-    volume = trade_row.volume or 0
-    time_label = trade_row.trade_date.isoformat() if trade_row.trade_date else "--"
-
+    close = to_float(trade_row.close_price, None)
+    if close is None:
+        # 没有真实行情数据，返回空值
+        return {
+            "symbol": company.stock_code,
+            "name": company.stock_name,
+            "price": 0.0, "change": 0.0, "change_percent": 0.0, "change_pct": 0.0,
+            "open": 0.0, "high": 0.0, "low": 0.0, "volume": "0", "time": "--",
+        }
+    price = close
+    open_p = to_float(trade_row.open_price, None) or price
+    high_p = to_float(trade_row.high_price, None) or price
+    low_p = to_float(trade_row.low_price, None) or price
+    vol = to_float(trade_row.volume, None)
+    change_pct = to_float(trade_row.change_pct, 0.0) or 0.0
+    change = round(price * change_pct / 100, 4) if change_pct and price else 0.0
+    time_label = trade_row.trade_date or trade_row.report_date
+    time_str = time_label.isoformat() if time_label else "--"
     return {
         "symbol": company.stock_code,
         "name": company.stock_name,
-        "price": round(close_price, 4),
+        "price": round(price, 4),
         "change": round(change, 4),
-        "change_percent": round(change_percent, 4),
-        "change_pct": round(change_percent, 4),
-        "open": round(open_price, 4),
-        "high": round(to_float(trade_row.high_price, 0.0) or 0.0, 4),
-        "low": round(to_float(trade_row.low_price, 0.0) or 0.0, 4),
-        "volume": str(int(volume)),
-        "time": time_label,
+        "change_percent": round(change_pct, 4),
+        "change_pct": round(change_pct, 4),
+        "open": round(open_p, 4),
+        "high": round(high_p, 4),
+        "low": round(low_p, 4),
+        "volume": str(int(vol)) if vol is not None else "0",
+        "time": time_str,
     }
 
 
-def serialize_kline_row(row: StockDailyHot) -> dict[str, Any]:
+def serialize_kline_row(row: FinancialHot) -> dict[str, Any] | None:
+    """序列化一条 K 线数据，没有真实日行情数据时返回 None。"""
+    close = to_float(row.close_price, None)
+    if close is None:
+        return None
     return {
-        "date": row.trade_date.isoformat() if row.trade_date else "",
-        "open": round(to_float(row.open_price, 0.0) or 0.0, 4),
-        "high": round(to_float(row.high_price, 0.0) or 0.0, 4),
-        "low": round(to_float(row.low_price, 0.0) or 0.0, 4),
-        "close": round(to_float(row.close_price, 0.0) or 0.0, 4),
-        "volume": float(row.volume or 0),
+        "date": (row.trade_date or row.report_date).isoformat() if (row.trade_date or row.report_date) else "",
+        "open": round(to_float(row.open_price, close), 4),
+        "high": round(to_float(row.high_price, close), 4),
+        "low": round(to_float(row.low_price, close), 4),
+        "close": round(close, 4),
+        "volume": int(to_float(row.volume, 0)),
+        "vol": int(to_float(row.volume, 0)),
     }

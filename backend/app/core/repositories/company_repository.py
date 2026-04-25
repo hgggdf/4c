@@ -5,11 +5,13 @@ from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from app.core.database.models.company import (
+    Company,
     CompanyMaster,
     CompanyProfile,
-    CompanyIndustryMap,
     IndustryMaster,
 )
+
+CompanyIndustryMap = None  # v3 已废弃，保留变量名防止下方代码报错
 
 
 class CompanyRepository:
@@ -25,14 +27,10 @@ class CompanyRepository:
         return self.db.execute(stmt).scalars().first()
 
     def list_industries(self, stock_code: str) -> list[IndustryMaster]:
-        stmt = (
-            select(IndustryMaster)
-            .join(
-                CompanyIndustryMap,
-                CompanyIndustryMap.industry_code == IndustryMaster.industry_code,
-            )
-            .where(CompanyIndustryMap.stock_code == stock_code)
-        )
+        company = self.get_by_stock_code(stock_code)
+        if company is None or not company.industry_code:
+            return []
+        stmt = select(IndustryMaster).where(IndustryMaster.industry_code == company.industry_code)
         return list(self.db.execute(stmt).scalars().all())
 
     def search_by_name_or_alias(self, keyword: str, limit: int = 10) -> list[CompanyMaster]:

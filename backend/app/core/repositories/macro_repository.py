@@ -1,27 +1,26 @@
 from __future__ import annotations
 
-from sqlalchemy import select
-
-from app.core.database.models.macro_hot import MacroIndicatorHot
+from app.core.database.models.macro_hot import MacroIndicator
 from app.core.repositories.base import BaseRepository
+from sqlalchemy import select
 
 
 class MacroRepository(BaseRepository):
-    def get_indicator(self, indicator_name: str, *, period: str | None = None) -> MacroIndicatorHot | None:
-        stmt = select(MacroIndicatorHot).where(MacroIndicatorHot.indicator_name == indicator_name)
+    def get_indicator(self, indicator_name: str, *, period: str | None = None) -> MacroIndicator | None:
+        stmt = select(MacroIndicator).where(MacroIndicator.indicator_name == indicator_name)
         if period is not None:
-            stmt = stmt.where(MacroIndicatorHot.period == period)
-        stmt = stmt.order_by(MacroIndicatorHot.period.desc(), MacroIndicatorHot.created_at.desc())
-        return self.scalar_first(stmt)
+            stmt = stmt.where(MacroIndicator.period == period)
+        return self.scalar_first(stmt.order_by(MacroIndicator.period.desc()))
 
-    def list_indicators(self, indicator_names: list[str], *, periods: list[str] | None = None) -> list[MacroIndicatorHot]:
-        stmt = select(MacroIndicatorHot).where(MacroIndicatorHot.indicator_name.in_(indicator_names))
+    def list_indicators(self, indicator_names: list[str], *, periods: list[str] | None = None) -> list[MacroIndicator]:
+        stmt = select(MacroIndicator).where(MacroIndicator.indicator_name.in_(indicator_names))
         if periods:
-            stmt = stmt.where(MacroIndicatorHot.period.in_(periods))
-        stmt = stmt.order_by(MacroIndicatorHot.indicator_name.asc(), MacroIndicatorHot.period.desc())
-        return self.scalars_all(stmt)
+            stmt = stmt.where(MacroIndicator.period.in_(periods))
+        return self.scalars_all(stmt.order_by(MacroIndicator.indicator_name.asc(), MacroIndicator.period.desc()))
 
-    def list_recent(self, indicator_names: list[str], *, recent_n: int = 6) -> list[MacroIndicatorHot]:
-        stmt = select(MacroIndicatorHot).where(MacroIndicatorHot.indicator_name.in_(indicator_names))
-        stmt = stmt.order_by(MacroIndicatorHot.indicator_name.asc(), MacroIndicatorHot.period.desc())
-        return self.scalars_all(stmt)
+    def list_recent(self, indicator_names: list[str], *, recent_n: int = 6) -> list[MacroIndicator]:
+        return self.scalars_all(
+            select(MacroIndicator)
+            .where(MacroIndicator.indicator_name.in_(indicator_names))
+            .order_by(MacroIndicator.indicator_name.asc(), MacroIndicator.period.desc())
+        )
