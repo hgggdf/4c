@@ -72,7 +72,7 @@
       </div>
       <button
         class="send-btn"
-        :disabled="loading || (!text.trim() && !droppedItems.length)"
+        :disabled="loading || (!text.trim() && !droppedItems.length && !activeFeature)"
         @click="handleSubmit"
       >
         <span v-if="loading">思考中…</span>
@@ -92,7 +92,7 @@ const props = defineProps({
 const emit = defineEmits(['submit'])
 
 const featureButtons = [
-  { key: 'company_analysis', label: '公司分析', icon: '🧠' },
+  { key: 'company_analysis', label: '企业运营评估', icon: '🧠' },
   { key: 'financial_analysis', label: '财务分析', icon: '💹' },
   { key: 'pipeline_analysis', label: '管线分析', icon: '🧪' },
   { key: 'risk_warning', label: '风险预警', icon: '⚠️' },

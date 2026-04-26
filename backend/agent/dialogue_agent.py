@@ -4,6 +4,7 @@ import logging
 import re
 from typing import Any
 
+from agent.integration.langgraph_agent import LangGraphAgent
 from agent.llm_clients import KimiClient
 from app.service.container import ServiceContainer
 from app.service.requests import SearchRequest
@@ -24,9 +25,28 @@ class DialogueAgent:
     framework = "kimi"
     agent_mode = "kimi-dialogue"
 
+    MODE_TITLES = {
+        "company_analysis": "企业运营评估",
+        "financial_analysis": "财务分析",
+        "pipeline_analysis": "管线分析",
+        "risk_warning": "风险预警",
+        "industry_compare": "行业对比",
+        "report_generation": "生成报告",
+    }
+
+    MODE_DOC_TYPES = {
+        "company_analysis": ["announcement", "financial_note", "news", "report"],
+        "financial_analysis": ["financial_note", "announcement", "report"],
+        "pipeline_analysis": ["announcement", "news", "report"],
+        "risk_warning": ["announcement", "news"],
+        "industry_compare": ["news", "report", "financial_note"],
+        "report_generation": ["announcement", "financial_note", "news", "report"],
+    }
+
     def __init__(self) -> None:
         self.container = ServiceContainer.build_default()
         self.llm_client = KimiClient()
+        self.tool_agent = LangGraphAgent()
 
     def is_configured(self) -> bool:
         return self.llm_client.is_configured()
@@ -89,10 +109,13 @@ class DialogueAgent:
         self,
         question: str,
         stock_context: dict[str, Any] | None,
+        *,
+        selected_mode: str | None = None,
     ) -> list[dict[str, Any]]:
         stock_code = stock_context.get("stock_code") if stock_context else None
         items: list[dict[str, Any]] = []
 
+        allowed_doc_types = self.MODE_DOC_TYPES.get(selected_mode or "", ["announcement", "financial_note", "news", "report"])
         search_plan = [
             ("announcement", self.container.retrieval.search_announcements, 2),
             ("financial_note", self.container.retrieval.search_financial_notes, 2),
@@ -101,6 +124,8 @@ class DialogueAgent:
         ]
 
         for doc_type, handler, limit in search_plan:
+            if doc_type not in allowed_doc_types:
+                continue
             try:
                 result = handler(
                     SearchRequest(query=question, stock_code=stock_code, top_k=limit)
@@ -173,26 +198,74 @@ class DialogueAgent:
             "summary": summary,
         }
 
-    # ── 对话构建与流式输出 ────────────────────────────────────────────────
-
-    def build_messages(
+    def _chat_stream_with_tool_autonomy(
         self,
         question: str,
+        *,
         history: list[dict[str, Any]] | None,
         targets: list[dict[str, Any]] | None,
         current_stock_code: str | None,
-    ) -> list[dict[str, str]]:
-        stock_context = self._resolve_stock_context(
-            question,
-            targets=targets,
-            current_stock_code=current_stock_code,
-        )
-        evidence_items = (
-            self._collect_evidence(question, stock_context)
-            if stock_context
-            else []
-        )
+        selected_mode: str | None = None,
+        system_context: str | None = None,
+    ):
+        if not self.tool_agent.is_configured():
+            yield {
+                "type": "status",
+                "content": "Kimi 工具调用模型未配置，请检查 backend/.env 中的 KIMI_API_KEY、KIMI_BASE_URL 和 KIMI_MODEL。",
+            }
+            return
 
+        try:
+            for event in self.tool_agent.stream(
+                question,
+                history=history,
+                system_context=system_context,
+            ):
+                event_type = event.get("type")
+                if event_type == "tool_call":
+                    yield {
+                        "type": "tool_call",
+                        "tool": event.get("tool"),
+                        "args": event.get("args"),
+                    }
+                elif event_type == "tool_result":
+                    yield {
+                        "type": "tool_result",
+                        "tool": event.get("tool"),
+                        "content": event.get("content"),
+                    }
+                elif event_type == "status":
+                    yield {
+                        "type": "status",
+                        "content": event.get("content"),
+                    }
+                elif event_type == "clarification":
+                    yield {
+                        "type": "clarification",
+                        "question": event.get("question"),
+                    }
+                elif event_type == "answer":
+                    yield {
+                        "type": "answer",
+                        "content": event.get("content") or "",
+                    }
+        except Exception as exc:
+            logger.exception("DialogueAgent tool autonomy stream error")
+            yield {
+                "type": "status",
+                "content": f"工具自主调用异常: {exc}",
+            }
+
+    # ── 对话构建与流式输出 ────────────────────────────────────────────────
+
+    def _build_system_context(
+        self,
+        question: str,
+        *,
+        selected_mode: str | None,
+        stock_context: dict[str, Any] | None,
+        evidence_items: list[dict[str, Any]],
+    ) -> str:
         system_lines = [
             "你是「医药投研智能助手」，由 Moonshot Kimi 大模型驱动，专注于医药行业的投资研究分析。",
             "",
@@ -208,6 +281,13 @@ class DialogueAgent:
             "- 使用中文回答，保持专业、简洁、有逻辑",
             "- 可适当使用 Markdown 格式增强可读性",
         ]
+        if selected_mode:
+            system_lines.extend([
+                "",
+                f"当前功能模式：{selected_mode}",
+                "请严格围绕该模式作答，不要把问题泛化成普通闲聊。",
+                "如果模式是公司分析、财务分析、管线分析、风险预警、行业对比或生成报告，请输出对应维度的结论、依据与下一步建议。",
+            ])
 
         if stock_context:
             system_lines.append("")
@@ -224,7 +304,32 @@ class DialogueAgent:
                 )
                 system_lines.append(f"   {ev['summary']}")
 
-        system_content = "\n".join(system_lines)
+        return "\n".join(system_lines)
+
+    def build_messages(
+        self,
+        question: str,
+        history: list[dict[str, Any]] | None,
+        targets: list[dict[str, Any]] | None,
+        current_stock_code: str | None,
+        selected_mode: str | None = None,
+    ) -> list[dict[str, str]]:
+        stock_context = self._resolve_stock_context(
+            question,
+            targets=targets,
+            current_stock_code=current_stock_code,
+        )
+        evidence_items = (
+            self._collect_evidence(question, stock_context, selected_mode=selected_mode)
+            if stock_context
+            else []
+        )
+        system_content = self._build_system_context(
+            question,
+            selected_mode=selected_mode,
+            stock_context=stock_context,
+            evidence_items=evidence_items,
+        )
 
         messages: list[dict[str, str]] = [
             {"role": "system", "content": system_content}
@@ -246,13 +351,43 @@ class DialogueAgent:
         history: list[dict[str, Any]] | None = None,
         targets: list[dict[str, Any]] | None = None,
         current_stock_code: str | None = None,
+        selected_mode: str | None = None,
+        tool_autonomy: bool = False,
     ):
+        stock_context = self._resolve_stock_context(
+            question,
+            targets=targets,
+            current_stock_code=current_stock_code,
+        )
+        evidence_items = (
+            self._collect_evidence(question, stock_context, selected_mode=selected_mode)
+            if stock_context
+            else []
+        )
+        system_context = self._build_system_context(
+            question,
+            selected_mode=selected_mode,
+            stock_context=stock_context,
+            evidence_items=evidence_items,
+        )
+
+        if tool_autonomy:
+            yield from self._chat_stream_with_tool_autonomy(
+                question,
+                history=history,
+                targets=targets,
+                current_stock_code=current_stock_code,
+                selected_mode=selected_mode,
+                system_context=system_context,
+            )
+            return
+
         if not self.is_configured():
             yield "Kimi API 未配置，请在 backend/.env 中设置 KIMI_API_KEY、KIMI_BASE_URL 和 KIMI_MODEL。"
             return
 
         messages = self.build_messages(
-            question, history, targets, current_stock_code
+            question, history, targets, current_stock_code, selected_mode=selected_mode
         )
 
         try:

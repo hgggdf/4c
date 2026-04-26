@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import {
   sendChatMessageStream,
-  sendQueryStream,
   createSession,
   listSessions,
   listMessages,
@@ -138,9 +137,9 @@ export const useChatStore = defineStore('chat', {
       }
     },
 
-    async ask({ message, targets = [] }) {
+    async ask({ message, targets = [], selected_mode = null, tool_autonomy = false }) {
       let content = message
-      const selectedMode = this.featureMode
+      const selectedMode = selected_mode || this.featureMode
       if (!content && selectedMode) {
         content = `请执行【${selectedMode}】功能`
       }
@@ -154,8 +153,17 @@ export const useChatStore = defineStore('chat', {
       const session = this.sessions.find(s => s.id === sessionId)
       if (!session || !sessionId) return
 
-      const userMsg = { role: 'user', content, createdAt: Date.now(), sessionId }
-      const assistantMsg = { role: 'assistant', content: '', createdAt: Date.now(), retrievalTrace: [], sessionId }
+      const userMsg = { role: 'user', content, createdAt: Date.now(), sessionId, selectedMode }
+      const assistantMsg = {
+        role: 'assistant',
+        content: '',
+        createdAt: Date.now(),
+        retrievalTrace: [],
+        toolEvents: [],
+        modeTitle: selectedMode,
+        sessionId,
+        selectedMode,
+      }
       session.messages.push(userMsg)
       session.messages.push(assistantMsg)
       this.sessionLoading[sessionId] = true
@@ -187,14 +195,25 @@ export const useChatStore = defineStore('chat', {
             session_id: sessionId,
             user_id: 1,
             selected_mode: selectedMode,
+            tool_autonomy,
             retrieval_context: retrievalItems.slice(0, 5),
             history: session.messages
               .slice(0, -2)
               .map(m => ({ role: m.role, content: m.content })),
           },
-          (chunk) => {
-            if (chunk.text) {
-              assistantMsg.content += chunk.text
+          (event) => {
+            if (event.type === 'tool_call') {
+              assistantMsg.toolEvents.push({ type: 'tool_call', tool: event.tool, args: event.args })
+            } else if (event.type === 'tool_result') {
+              assistantMsg.toolEvents.push({ type: 'tool_result', tool: event.tool, preview: event.content || event.preview || '' })
+            } else if (event.type === 'status') {
+              assistantMsg.toolEvents.push({ type: 'status', content: event.content })
+            } else if (event.type === 'clarification') {
+              assistantMsg.toolEvents.push({ type: 'clarification', question: event.question })
+            } else if (event.type === 'answer') {
+              assistantMsg.content += event.content || ''
+            } else if (event.type === 'done') {
+              // end marker
             }
           }
         )
@@ -205,76 +224,12 @@ export const useChatStore = defineStore('chat', {
       } finally {
         this.sessionLoading[sessionId] = false
         this.loading = Object.values(this.sessionLoading).some(Boolean)
-        if (assistantMsg.content) {
-          appendAssistantMessage(sessionId, assistantMsg.content).catch(() => {})
+        if (assistantMsg.content || assistantMsg.toolEvents.length) {
+          appendAssistantMessage(sessionId, assistantMsg.content || ' ').catch(() => {})
         }
         this.featureMode = null
       }
     },
 
-    async askQuery({ message }) {
-      const sessionId = this.activeSessionId
-      const session = this.sessions.find(s => s.id === sessionId)
-      if (!session || !sessionId) return
-
-      const userMsg = { role: 'user', content: message, createdAt: Date.now(), sessionId }
-      const assistantMsg = {
-        role: 'assistant',
-        content: '',
-        createdAt: Date.now(),
-        toolCalls: [],
-        isClarification: false,
-        sessionId,
-      }
-      session.messages.push(userMsg)
-      session.messages.push(assistantMsg)
-      this.sessionLoading[sessionId] = true
-      this.loading = Object.values(this.sessionLoading).some(Boolean)
-      this.pendingClarification = false
-
-      appendUserMessage(sessionId, message).catch(() => {})
-
-      try {
-        await sendQueryStream(
-          {
-            message,
-            session_id: sessionId,
-            history: session.messages
-              .slice(0, -2)
-              .map(m => ({ role: m.role, content: m.content })),
-          },
-          (event) => {
-            if (event.type === 'tool_call') {
-              assistantMsg.toolCalls.push({
-                tool: event.tool,
-                args: event.args,
-              })
-            } else if (event.type === 'tool_result') {
-              // 工具结果可选展示
-            } else if (event.type === 'status') {
-              // 状态更新
-            } else if (event.type === 'clarification') {
-              assistantMsg.content = event.question
-              assistantMsg.isClarification = true
-              this.pendingClarification = true
-            } else if (event.type === 'answer') {
-              assistantMsg.content = event.content
-              assistantMsg.isClarification = false
-              this.pendingClarification = false
-            }
-          }
-        )
-      } catch (err) {
-        const msg = err?.message || String(err) || '未知错误'
-        assistantMsg.content += `\n\n[请求失败：${msg}]`
-        console.error('[queryStream error]', err)
-      } finally {
-        this.sessionLoading[sessionId] = false
-        this.loading = Object.values(this.sessionLoading).some(Boolean)
-        if (assistantMsg.content) {
-          appendAssistantMessage(sessionId, assistantMsg.content).catch(() => {})
-        }
-      }
-    },
   },
 })

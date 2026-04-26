@@ -56,6 +56,18 @@
                 {{ t.type === 'industry' ? '🏭' : '📈' }} {{ t.name }}
               </span>
             </div>
+            <!-- 模式与上下文 -->
+            <div v-if="msg.role === 'assistant' && (getModeTitle(msg) || getEvidenceSummary(msg))" class="cp-context-card">
+              <div v-if="getModeTitle(msg)" class="cp-context-row">
+                <span class="cp-context-label">模式</span>
+                <span class="cp-context-value">{{ getModeTitle(msg) }}</span>
+              </div>
+              <div v-if="getEvidenceSummary(msg)" class="cp-context-row">
+                <span class="cp-context-label">本地证据</span>
+                <span class="cp-context-value">{{ getEvidenceSummary(msg) }}</span>
+              </div>
+            </div>
+
             <!-- 气泡 -->
             <div
               v-if="shouldShowBubble(msg, i)"
@@ -67,6 +79,37 @@
               class="cp-bubble cp-bubble--thinking"
             >
               <span class="cp-dot"></span><span class="cp-dot"></span><span class="cp-dot"></span>
+            </div>
+
+            <div v-if="hasToolEvents(msg)" class="cp-tool-events">
+              <div v-for="(event, idx) in getToolEvents(msg)" :key="`${i}-tool-${idx}`" class="cp-tool-event">
+                <template v-if="event.type === 'tool_call'">
+                  <div class="cp-tool-event-head">
+                    <span class="cp-tool-event-type">工具调用</span>
+                    <span class="cp-tool-event-name">{{ event.tool }}</span>
+                  </div>
+                  <div class="cp-tool-event-body">{{ formatToolArgs(event.args) }}</div>
+                </template>
+                <template v-else-if="event.type === 'tool_result'">
+                  <div class="cp-tool-event-head">
+                    <span class="cp-tool-event-type">工具结果</span>
+                    <span class="cp-tool-event-name">{{ event.tool }}</span>
+                  </div>
+                  <div class="cp-tool-event-body">{{ event.preview }}</div>
+                </template>
+                <template v-else-if="event.type === 'status'">
+                  <div class="cp-tool-event-head">
+                    <span class="cp-tool-event-type">状态</span>
+                  </div>
+                  <div class="cp-tool-event-body">{{ event.content }}</div>
+                </template>
+                <template v-else-if="event.type === 'clarification'">
+                  <div class="cp-tool-event-head">
+                    <span class="cp-tool-event-type">澄清追问</span>
+                  </div>
+                  <div class="cp-tool-event-body">{{ event.question }}</div>
+                </template>
+              </div>
             </div>
 
             <div v-if="msg.role === 'assistant' && (getRetrievalTrace(msg).length || getDataSources(msg).length)" class="cp-retrieval-card">
@@ -110,15 +153,6 @@
           </div>
         </div>
 
-        <!-- 思考中 -->
-        <div v-if="chatStore.loading" class="cp-msg-row cp-msg-row--assistant">
-          <div class="cp-avatar">⚕</div>
-          <div class="cp-bubble-wrap">
-            <div class="cp-bubble cp-bubble--thinking">
-              <span class="cp-dot"/><span class="cp-dot"/><span class="cp-dot"/>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- 输入区 -->
@@ -200,6 +234,45 @@ function formatContent(msg) {
 function getRetrievalTrace(msg) {
   if (!msg || msg.role !== 'assistant') return []
   return msg.retrievalTrace || msg.toolCalls?.retrieval_trace || (Array.isArray(msg.toolCalls) ? msg.toolCalls : []) || []
+}
+
+function getModeTitle(msg) {
+  if (!msg || msg.role !== 'assistant') return ''
+  const mode = msg.selectedMode || msg.selected_mode || ''
+  const map = {
+    company_analysis: '企业运营评估',
+    financial_analysis: '财务分析',
+    pipeline_analysis: '管线分析',
+    risk_warning: '风险预警',
+    industry_compare: '行业对比',
+    report_generation: '生成报告',
+  }
+  return map[mode] || mode
+}
+
+function getEvidenceSummary(msg) {
+  if (!msg || msg.role !== 'assistant') return ''
+  const items = getRetrievalTrace(msg)
+  if (!items.length) return ''
+  return items.slice(0, 3).map((item) => item.title || item.metadata?.title || '未命名结果').join('、')
+}
+
+function getToolEvents(msg) {
+  if (!msg || msg.role !== 'assistant') return []
+  return msg.toolEvents || []
+}
+
+function hasToolEvents(msg) {
+  return getToolEvents(msg).length > 0
+}
+
+function formatToolArgs(args) {
+  if (!args) return ''
+  try {
+    return typeof args === 'string' ? args : JSON.stringify(args, null, 2)
+  } catch {
+    return String(args)
+  }
 }
 
 function getDataSources(msg) {
@@ -545,6 +618,70 @@ function toggleRetrieval(index) {
   background: rgba(245,158,11,0.08);
 }
 
+.cp-context-card {
+  margin-top: 4px;
+  padding: 8px 12px;
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 12px;
+  background: rgba(248,250,252,0.95);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cp-context-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.cp-context-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  min-width: 52px;
+  flex-shrink: 0;
+}
+.cp-context-value {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.cp-tool-events {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cp-tool-event {
+  border: 1px solid rgba(99,102,241,0.16);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+  overflow: hidden;
+}
+.cp-tool-event-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(99,102,241,0.08);
+}
+.cp-tool-event-type {
+  font-size: 11px;
+  font-weight: 700;
+  color: #4f46e5;
+}
+.cp-tool-event-name {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.cp-tool-event-body {
+  padding: 8px 12px 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
 .cp-retrieval-card {
   margin-top: 6px;
   border: 1px solid rgba(75,169,154,0.16);

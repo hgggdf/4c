@@ -46,14 +46,19 @@ def chat_stream(request: ChatRequest):
 	"""Kimi 流式对话（SSE）。"""
 	def event_generator():
 		agent = DialogueAgent()
-		for text in agent.chat_stream(
+		for event in agent.chat_stream(
 			request.message,
 			history=[item.model_dump() for item in request.history],
 			targets=[item.model_dump() for item in request.targets],
 			current_stock_code=None,
+			selected_mode=request.selected_mode,
+			tool_autonomy=request.tool_autonomy,
 		):
-			yield f"data: {json.dumps({'text': text}, ensure_ascii=False)}\n\n"
-		yield f"data: {json.dumps({'done': True}, ensure_ascii=False)}\n\n"
+			if isinstance(event, dict):
+				yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
+			else:
+				yield f"data: {json.dumps({'type': 'answer', 'content': str(event)}, ensure_ascii=False)}\n\n"
+		yield f"data: {json.dumps({'type': 'done'}, ensure_ascii=False)}\n\n"
 
 	return StreamingResponse(
 		event_generator(),

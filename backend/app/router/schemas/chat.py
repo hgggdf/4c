@@ -32,6 +32,7 @@ class ChatRequest(BaseModel):
 	session_id: int | None = Field(default=None, description="会话 ID")
 	targets: list[ChatTarget] = Field(default_factory=list, description="拖入的分析目标")
 	selected_mode: str | None = Field(default=None, description="前端功能按钮传入的功能模式")
+	tool_autonomy: bool = Field(default=False, description="是否允许外部模型自主调用工具")
 	frontend_context: dict[str, Any] | None = Field(default=None, description="前端传来的上下文")
 	followup_from: str | None = Field(default=None, description="自动追问来源")
 	preference_hint: dict[str, Any] | None = Field(default=None, description="前端传来的偏好提示")

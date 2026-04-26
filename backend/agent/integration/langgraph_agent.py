@@ -219,6 +219,7 @@ class LangGraphAgent:
         message: str,
         *,
         history: list[dict[str, Any]] | None = None,
+        system_context: str | None = None,
         max_iterations: int = 10,
     ) -> dict[str, Any]:
         """同步运行 Agent，返回最终答案和工具调用记录。
@@ -227,7 +228,7 @@ class LangGraphAgent:
         1. tool_llm (moonshot-v1-8k) 执行工具调用
         2. answer_llm (kimi-k2.5) 基于工具结果生成最终答案
         """
-        messages = self._build_messages(message, history)
+        messages = self._build_messages(message, history, system_context=system_context)
         config = {"recursion_limit": max_iterations * 2 + 4}
 
         try:
@@ -240,7 +241,10 @@ class LangGraphAgent:
             # 如果有工具调用，用更强的模型重新生成答案
             if parsed["tool_calls"]:
                 enhanced_answer = self._generate_enhanced_answer(
-                    message, parsed["tool_calls"], result.get("messages", [])
+                    message,
+                    parsed["tool_calls"],
+                    result.get("messages", []),
+                    system_context=system_context,
                 )
                 parsed["answer"] = enhanced_answer
                 parsed["dual_model_used"] = True
@@ -264,6 +268,7 @@ class LangGraphAgent:
         message: str,
         *,
         history: list[dict[str, Any]] | None = None,
+        system_context: str | None = None,
         max_iterations: int = 10,
     ):
         """流式运行 Agent，逐步 yield 工具调用过程和最终答案。
@@ -272,7 +277,7 @@ class LangGraphAgent:
         1. 流式输出工具调用过程（moonshot-v1-8k）
         2. 工具调用完成后，用 kimi-k2.5 生成增强答案
         """
-        messages = self._build_messages(message, history)
+        messages = self._build_messages(message, history, system_context=system_context)
         config = {"recursion_limit": max_iterations * 2 + 4}
 
         collected_tool_calls = []
@@ -309,7 +314,10 @@ class LangGraphAgent:
         if collected_tool_calls:
             yield {"type": "status", "content": "正在生成最终答案..."}
             enhanced_answer = self._generate_enhanced_answer(
-                message, collected_tool_calls, all_messages
+                message,
+                collected_tool_calls,
+                all_messages,
+                system_context=system_context,
             )
             yield {
                 "type": "answer",
@@ -327,9 +335,15 @@ class LangGraphAgent:
                     }
 
     def _build_messages(
-        self, message: str, history: list[dict[str, Any]] | None
+        self,
+        message: str,
+        history: list[dict[str, Any]] | None,
+        *,
+        system_context: str | None = None,
     ) -> list:
         msgs = []
+        if system_context:
+            msgs.append(SystemMessage(content=system_context))
         for item in (history or [])[-6:]:
             role = item.get("role", "user")
             content = str(item.get("content", ""))
@@ -377,6 +391,8 @@ class LangGraphAgent:
         question: str,
         tool_calls: list[dict],
         messages: list,
+        *,
+        system_context: str | None = None,
     ) -> str:
         """用 kimi-k2.5 基于工具调用结果生成增强答案。"""
         # 收集工具调用结果
@@ -403,7 +419,7 @@ class LangGraphAgent:
         context = "\n\n".join(tool_results_text)
         synthesis_prompt = f"""你是一个专业的医药行业投研分析助手。
 
-以下是通过工具调用获取的真实数据：
+{system_context + '\n\n' if system_context else ''}以下是通过工具调用获取的真实数据：
 
 {context}
 

@@ -104,10 +104,10 @@ def build_tool_plan(
         )
 
     if mode == "company_analysis":
-        add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
-        add("financial_metrics", purpose="获取公司核心财务指标", required=True, data_source_type="财报", can_score=True, freshness_value="local")
-        add("announcement_search", purpose="检索公司公告", required=False, data_source_type="公告", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
-        add("news_search", purpose="检索公司相关新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
+        add("company_basic_info", purpose="获取企业基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
+        add("financial_metrics", purpose="获取企业核心财务指标", required=True, data_source_type="财报", can_score=True, freshness_value="local")
+        add("announcement_search", purpose="检索企业公告", required=False, data_source_type="公告", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
+        add("news_search", purpose="检索企业相关新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
         add("research_report_search", purpose="检索相关研报", required=False, data_source_type="研报", can_score=False, freshness_value="local")
         return plan
 
