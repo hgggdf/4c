@@ -175,7 +175,7 @@ async function handleFileChange(evt) {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  padding: 0 0 12px;
+  padding: 12px 12px 12px;
 }
 .feature-btn {
   display: flex;

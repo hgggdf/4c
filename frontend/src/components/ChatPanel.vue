@@ -143,8 +143,8 @@
           </div>
         </div>
 
-        <!-- 流式生成中（无内容时兜底） -->
-        <div v-if="isGenerating && !hasRenderableAssistantMessage" class="cp-msg-row cp-msg-row--assistant">
+        <!-- 思考中兜底（消息列表里最后一条 assistant 消息无内容时显示） -->
+        <div v-if="(isGenerating || chatStore.loading) && !hasRenderableAssistantMessage" class="cp-msg-row cp-msg-row--assistant">
           <div class="cp-avatar">⚕</div>
           <div class="cp-bubble-wrap">
             <div class="cp-bubble cp-bubble--thinking">
@@ -152,7 +152,6 @@
             </div>
           </div>
         </div>
-
       </div>
 
       <!-- 输入区 -->
