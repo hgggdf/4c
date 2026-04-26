@@ -244,6 +244,10 @@ class GLMMinimalAgent:
                 if compressed:
                     items.append(compressed)
 
+        # 无具体公司时，额外触发向量库全库语义检索，覆盖行业/政策类问题
+        if not stock_code:
+            items.extend(self._collect_industry_vector_evidence(question, top_k=4))
+
         items.extend(self._collect_temporary_report_evidence(question, stock_code=stock_code, limit=1))
 
         deduped: list[dict[str, Any]] = []
@@ -282,6 +286,29 @@ class GLMMinimalAgent:
             "source": str(source),
             "summary": summary,
         }
+
+    def _collect_industry_vector_evidence(self, question: str, *, top_k: int = 4) -> list[dict[str, Any]]:
+        from app.knowledge.retriever import search_unstructured
+        try:
+            hits = search_unstructured(question, top_k=top_k, stock_code=None)
+        except Exception:
+            return []
+        items: list[dict[str, Any]] = []
+        for hit in hits:
+            meta = hit.get("meta") or hit.get("metadata") or {}
+            text = hit.get("text") or hit.get("content") or ""
+            title = meta.get("title") or meta.get("doc_type") or "知识库"
+            summary = _compact_text(text, limit=180)
+            if not summary:
+                continue
+            items.append({
+                "kind": meta.get("doc_type") or "knowledge",
+                "title": str(title),
+                "date": str(meta.get("publish_date") or meta.get("date") or ""),
+                "source": str(meta.get("source_type") or "vector_store"),
+                "summary": summary,
+            })
+        return items
 
     def _collect_temporary_report_evidence(self, question: str, *, stock_code: str | None, limit: int) -> list[dict[str, Any]]:
         filters: dict[str, Any] = {"type": "research_report"}
@@ -365,7 +392,8 @@ class GLMMinimalAgent:
         evidence_items: list[dict[str, Any]],
         chart_context: list[dict[str, Any]],
     ) -> dict[str, str]:
-        stock_name = (stock_context or {}).get("stock_name") or (stock_context or {}).get("stock_code") or "当前标的"
+        stock_name = (stock_context or {}).get("stock_name") or (stock_context or {}).get("stock_code") or None
+
         if analysis_summary:
             answer = (
                 f"{stock_name} 当前可用本地分析结果显示：综合评分 {analysis_summary.get('total_score', 'N/A')} 分，"
@@ -373,9 +401,20 @@ class GLMMinimalAgent:
                 f"重点建议：{analysis_summary.get('suggestion') or '建议结合公告、财报附注与新闻继续跟踪。'}"
             )
             suggestion = str(analysis_summary.get("suggestion") or "继续跟踪核心财务指标与公告催化。")
+        elif evidence_items:
+            # 行业/政策类问题：用所有 evidence 拼出有意义的回答
+            evidence_summaries = [
+                f"【{item.get('title', item.get('kind', '证据'))}】{item['summary']}"
+                for item in evidence_items[:4]
+                if item.get("summary")
+            ]
+            if evidence_summaries:
+                answer = f"关于「{question}」，根据本地知识库检索到以下相关信息：\n\n" + "\n\n".join(evidence_summaries)
+            else:
+                answer = f"关于「{question}」，当前本地知识库暂无直接匹配的证据，建议补充更多数据后再做判断。"
+            suggestion = "建议结合最新公告、行业研报与政策动态进一步跟踪。"
         else:
-            evidence_text = evidence_items[0]["summary"] if evidence_items else "当前本地证据有限。"
-            answer = f"关于“{question}”，当前已检索到的本地证据表明：{evidence_text}"
+            answer = f"关于「{question}」，当前本地证据有限，无法给出充分分析。"
             suggestion = "建议补充更多结构化证据后再做结论判断。"
 
         if chart_context:
@@ -384,11 +423,12 @@ class GLMMinimalAgent:
         else:
             chart_desc = "建议优先展示综合评分、主要维度得分与关键证据时间线。"
 
+        report_title = stock_name or "行业分析"
         report_markdown = "\n".join(
             [
-                f"# {stock_name} 最小分析草稿",
-                f"## 一、财务健康度\n{answer}",
-                f"## 二、成长潜力\n{chart_desc}",
+                f"# {report_title} 分析草稿",
+                f"## 一、核心发现\n{answer}",
+                f"## 二、数据支撑\n{chart_desc}",
                 f"## 三、风险提示\n{_compact_text('；'.join(item['summary'] for item in evidence_items[:2]) or '当前证据不足，需继续跟踪公告与新闻。', limit=220)}",
                 f"## 四、建议\n{suggestion}",
             ]

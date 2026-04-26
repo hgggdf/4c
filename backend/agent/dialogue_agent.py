@@ -24,6 +24,88 @@ class DialogueAgent:
     framework = "kimi"
     agent_mode = "kimi-dialogue"
 
+<<<<<<< Updated upstream
+=======
+    MODE_TITLES = {
+        "company_analysis": "企业运营评估",
+        "financial_analysis": "财务分析",
+        "pipeline_analysis": "管线分析",
+        "risk_warning": "风险预警",
+        "industry_compare": "行业对比",
+        "report_generation": "生成报告",
+    }
+
+    MODE_SYSTEM_TEMPLATES = {
+        "company_analysis": """\
+当前任务：企业运营评估
+请按以下框架输出分析报告：
+1. 公司概况（主营业务、市场定位）
+2. 核心竞争优势（产品、渠道、技术壁垒）
+3. 近期经营动态（重要公告、战略调整）
+4. 管理层与治理
+5. 综合评价与关注点""",
+
+        "financial_analysis": """\
+当前任务：财务分析
+请按以下框架输出分析报告：
+1. 营收与利润趋势（近4期）
+2. 毛利率 / 净利率变化及原因
+3. 现金流健康度（经营/投资/筹资）
+4. 资产负债结构与偿债能力
+5. 关键财务风险提示""",
+
+        "pipeline_analysis": """\
+当前任务：研发管线分析
+请按以下框架输出分析报告：
+1. 在研品种总览（按适应症/阶段分类）
+2. 核心品种进展（临床阶段、预计获批时间）
+3. 近期获批/申报情况
+4. 商业化潜力评估
+5. 研发风险与催化剂""",
+
+        "risk_warning": """\
+当前任务：风险预警
+请按以下框架输出分析报告：
+1. 集采风险（已中标/待纳入品种、降价幅度）
+2. 监管与合规风险
+3. 研发管线失败风险
+4. 财务与流动性风险
+5. 综合风险评级（高/中/低）及应对建议""",
+
+        "industry_compare": """\
+当前任务：行业对比分析
+请按以下框架输出分析报告：
+1. 行业格局与主要竞争对手
+2. 关键财务指标横向对比（营收、利润率、研发投入）
+3. 产品管线对比
+4. 市场份额与竞争优势对比
+5. 相对投资价值判断""",
+
+        "report_generation": """\
+当前任务：生成完整投研报告
+请按以下框架输出完整报告，内容尽量详尽：
+
+# [公司名] 投研报告
+
+## 一、公司概况
+## 二、财务分析
+## 三、研发管线
+## 四、风险提示
+## 五、投资建议
+- 评级：买入 / 增持 / 中性 / 减持
+- 核心逻辑与目标价区间（如有数据支撑）""",
+    }
+
+    MODE_DOC_TYPES = {
+        "company_analysis": ["announcement", "financial_note", "news", "report"],
+        "financial_analysis": ["financial_note", "announcement", "report"],
+        "pipeline_analysis": ["announcement", "news", "report"],
+        "risk_warning": ["announcement", "news"],
+        "industry_compare": ["news", "report", "financial_note"],
+        "report_generation": ["announcement", "financial_note", "news", "report"],
+    }
+
+>>>>>>> Stashed changes
     def __init__(self) -> None:
         self.container = ServiceContainer.build_default()
         self.llm_client = KimiClient()
@@ -208,6 +290,19 @@ class DialogueAgent:
             "- 使用中文回答，保持专业、简洁、有逻辑",
             "- 可适当使用 Markdown 格式增强可读性",
         ]
+<<<<<<< Updated upstream
+=======
+        if selected_mode:
+            template = self.MODE_SYSTEM_TEMPLATES.get(selected_mode)
+            if template:
+                system_lines.extend(["", template])
+            else:
+                system_lines.extend([
+                    "",
+                    f"当前功能模式：{self.MODE_TITLES.get(selected_mode, selected_mode)}",
+                    "请严格围绕该模式作答，输出对应维度的结论、依据与建议。",
+                ])
+>>>>>>> Stashed changes
 
         if stock_context:
             system_lines.append("")
@@ -256,8 +351,9 @@ class DialogueAgent:
         )
 
         try:
+            max_tokens = 4096 if selected_mode == "report_generation" else 2048
             yield from self.llm_client.chat_stream(
-                messages, temperature=1.0, max_tokens=2048
+                messages, temperature=1.0, max_tokens=max_tokens
             )
         except Exception as exc:
             logger.exception("DialogueAgent chat_stream error")

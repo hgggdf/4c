@@ -35,17 +35,38 @@
                 v-else
                 mode="stock"
                 :stocks="stocks"
+                :panel-width="panelWidth"
                 @open-detail="selectedStock = $event"
               />
             </Transition>
           </template>
 
           <template v-else-if="activeSection === 'industry'">
+<<<<<<< Updated upstream
             <StockGrid
               mode="industry"
               :industries="industries"
               @open-industry="onIndustryClick"
             />
+=======
+            <Transition name="detail-slide" mode="out-in">
+              <IndustryDetailPanel
+                v-if="selectedIndustry"
+                :key="selectedIndustry.code"
+                :industry="selectedIndustry"
+                :stocks="stocks"
+                :panel-width="panelWidth"
+                @back="selectedIndustry = null"
+              />
+              <StockGrid
+                v-else
+                mode="industry"
+                :industries="industries"
+                :panel-width="panelWidth"
+                @open-industry="selectedIndustry = $event"
+              />
+            </Transition>
+>>>>>>> Stashed changes
           </template>
 
           <template v-else-if="activeSection === 'macro'">

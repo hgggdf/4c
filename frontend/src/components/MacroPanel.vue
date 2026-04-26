@@ -31,7 +31,12 @@
 <script setup>
 import { ref, watch, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import * as echarts from 'echarts'
+<<<<<<< Updated upstream
 import { getMacroIndicator } from '../api/macro'
+=======
+import { getMacroIndicator, getMacroSummary, listMacroIndicators } from '../api/macro'
+import { getNewsByIndustry } from '../api/news'
+>>>>>>> Stashed changes
 
 const indicators = [
   { key: 'CPI',    label: 'CPI',    desc: 'CPI（居民消费价格指数）同比变化，反映通货膨胀水平，影响医药消费品定价空间。' },
@@ -50,12 +55,70 @@ let chartInst = null
 
 const currentIndicator = computed(() => indicators.find(i => i.key === current.value))
 
+<<<<<<< Updated upstream
+=======
+// ── 关键数据（从后端加载）──────────────────────────
+const keyMetrics = ref([])
+
+async function loadKeyMetrics() {
+  try {
+    const res = await getMacroSummary(['CPI', 'PPI', 'PMI', 'GDP', '社融', '医药研发投入'], 1)
+    const series = res?.series || res || {}
+    const list = []
+    for (const [name, records] of Object.entries(series)) {
+      if (!Array.isArray(records) || !records.length) continue
+      const latest = records[0]
+      list.push({
+        label: latest.indicator_name || name,
+        value: latest.value ?? '--',
+        sub: latest.period ?? '',
+        trend: (() => {
+          const v = parseFloat(latest.value)
+          if (isNaN(v)) return ''
+          return v > 0 ? 'up' : v < 0 ? 'down' : ''
+        })(),
+      })
+    }
+    keyMetrics.value = list
+  } catch (err) {
+    console.error('[loadKeyMetrics]', err)
+  }
+}
+
+// ── 政策动态（从后端加载）──────────────────────────
+const policies = ref([])
+
+async function loadPolicies() {
+  try {
+    const items = await getNewsByIndustry('医药生物', 30)
+    const list = Array.isArray(items) ? items : []
+    policies.value = list.slice(0, 10).map((item, i) => ({
+      id: item.id || i,
+      title: item.title || item.headline || item['新闻标题'] || '',
+      source: item.source || item.publisher || item['新闻来源'] || '',
+      date: (item.publish_date || item.date || item['发布时间'] || '').slice(0, 10),
+      tag: item.category || item.tag || '政策',
+      tagClass: (() => {
+        const cat = item.category || item.sentiment || ''
+        if (['利好', '买入', '增持', '医保', '审批', '财政'].some(k => cat.includes(k))) return 'rating-buy'
+        if (['利空', '集采', '降价', '风险'].some(k => cat.includes(k))) return 'rating-sell'
+        return 'rating-hold'
+      })(),
+    }))
+  } catch (err) {
+    console.error('[loadPolicies]', err)
+  }
+}
+
+// ── 图表 ──────────────────────────────────────────
+>>>>>>> Stashed changes
 async function loadAndRender() {
   loading.value = true
   hasData.value = false
   chartInst?.clear()
 
   try {
+<<<<<<< Updated upstream
     const res = await getMacroIndicator(current.value)
     // 后端返回 { data: [...] } 或直接数组，data 项含 period/value 字段
     const items = Array.isArray(res) ? res : (res?.data ?? [])
@@ -67,6 +130,18 @@ async function loadAndRender() {
     const dates = items.map(d => d.period ?? d.date ?? '')
     const values = items.map(d => {
       const v = d.value ?? d.val
+=======
+    const items = await listMacroIndicators([current.value])
+    const list = Array.isArray(items) ? items : []
+    if (!list.length) { loading.value = false; return }
+
+    // 按 period 正序排列用于图表
+    list.sort((a, b) => (a.period || '').localeCompare(b.period || ''))
+
+    const dates  = list.map(d => d.period ?? '')
+    const values = list.map(d => {
+      const v = d.value
+>>>>>>> Stashed changes
       return v !== null && v !== undefined ? Number(v) : null
     })
 
@@ -74,12 +149,13 @@ async function loadAndRender() {
     loading.value = false
     await nextTick()
     if (!chartRef.value) return
-    if (!chartInst) chartInst = echarts.init(chartRef.value)
+    chartInst = echarts.init(chartRef.value)
 
     const isBar = current.value === 'GDP' || current.value === '医药研发投入'
 
     chartInst.setOption({
       backgroundColor: 'transparent',
+<<<<<<< Updated upstream
       tooltip: {
         trigger: 'axis',
         formatter: (params) => {
@@ -88,6 +164,10 @@ async function loadAndRender() {
         },
       },
       grid: { left: 60, right: 24, top: 32, bottom: 40 },
+=======
+      tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/><b>${p[0].value ?? '--'}</b>` },
+      grid: { left: 70, right: 16, top: 24, bottom: 36 },
+>>>>>>> Stashed changes
       xAxis: {
         type: 'category',
         data: dates,
@@ -137,6 +217,7 @@ async function loadAndRender() {
 watch(current, loadAndRender)
 function onResize() { chartInst?.resize() }
 
+<<<<<<< Updated upstream
 onMounted(() => {
   loadAndRender()
   window.addEventListener('resize', onResize)
@@ -145,6 +226,10 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', onResize)
   chartInst?.dispose()
 })
+=======
+onMounted(() => { loadAndRender(); loadKeyMetrics(); loadPolicies(); window.addEventListener('resize', onResize) })
+onBeforeUnmount(() => { window.removeEventListener('resize', onResize); chartInst?.dispose(); chartInst = null })
+>>>>>>> Stashed changes
 </script>
 
 <style scoped>

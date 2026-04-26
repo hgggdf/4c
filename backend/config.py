@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     mysql_host: str = "127.0.0.1"
     mysql_port: int = 3306
     mysql_user: str = "root"
-    mysql_password: str = "123456"
+    mysql_password: str = "2468cyc4"
     mysql_database: str = "stock_agent"
 
     demo_user_id: int = 1
@@ -45,6 +45,14 @@ class Settings(BaseSettings):
     crawler_max_delay: float = 1.5
     crawler_use_random_ua: bool = True
     crawler_source_mode: str = "auto"
+
+    sync_enabled: bool = True
+    sync_hour: int = 3
+    sync_minute: int = 28
+    sync_ssh_host: str = "8.219.129.250"
+    sync_ssh_user: str = "admin"
+    sync_ssh_local_port: int = 8900
+    sync_ssh_remote_port: int = 8900
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,

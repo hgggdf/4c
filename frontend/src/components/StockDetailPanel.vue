@@ -221,6 +221,7 @@ function switchTab(key) {
   setTimeout(() => { coverClass.value = '' }, 1040)
 }
 
+<<<<<<< Updated upstream
 // ── 行情数据 ──────────────────────────────────────
 const chartRef = ref(null)
 let chartInst = null
@@ -257,6 +258,26 @@ function scoreClass(score) {
   if (score >= 45) return 'score-fair'
   return 'score-poor'
 }
+=======
+watch(activeTab, async (val) => {
+  if (val === 'data' && lastKline) {
+    await nextTick()
+    renderChart(lastKline)
+  }
+})
+
+// ── 数据 ──────────────────────────────────────────
+const chartRef = ref(null)
+let chartInst = null
+let lastKline = null
+const metrics  = ref({})
+const reports  = ref([])
+const concepts = ref({ aliases: [], industries: [] })
+const events   = ref([])
+const loading  = ref(false)
+const companyProfile = ref(null)
+const financialSummary = ref(null)
+>>>>>>> Stashed changes
 
 // ── 数据加载 ──────────────────────────────────────
 async function loadMarketData() {
@@ -271,6 +292,12 @@ async function loadMarketData() {
     reports.value = r
     await nextTick()
     renderChart(kline)
+<<<<<<< Updated upstream
+=======
+    lastKline = kline
+    loadCompanyProfile()
+    loadFinancialSummary()
+>>>>>>> Stashed changes
   } finally {
     loading.value = false
   }
@@ -313,7 +340,7 @@ async function loadDiagnoseData() {
 // ── 图表渲染 ──────────────────────────────────────
 function renderChart(kline) {
   if (!chartRef.value) return
-  if (!chartInst) chartInst = echarts.init(chartRef.value)
+  chartInst = echarts.init(chartRef.value)
   const dates  = kline.map(d => d.date)
   const values = kline.map(d => [d.open, d.close, d.low, d.high])
   const vols   = kline.map(d => d.volume ?? d.vol ?? 0)

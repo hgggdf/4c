@@ -4,6 +4,7 @@ from dataclasses import asdict, is_dataclass
 from typing import Any
 
 from agent.tools import announcement_tools, company_tools, financial_tools, macro_tools, news_tools, retrieval_tools
+from app.knowledge.retriever import search_unstructured
 
 
 def safe_to_dict(value: Any) -> Any:
@@ -128,6 +129,13 @@ def _run_tool(tool_name: str, input_data: dict[str, Any]) -> tuple[bool, Any, st
             return False, None, "缺少必需参数 user_question 或 industry_name"
         query = str(user_question or industry_name or "")
         return True, macro_tools.get_macro_summary([query]), None
+
+    if tool_name == "industry_knowledge_search":
+        if not user_question and not industry_name:
+            return False, None, "缺少必需参数 user_question 或 industry_name"
+        query = str(user_question or industry_name or "")
+        hits = search_unstructured(query, top_k=6, stock_code=None)
+        return True, {"query": query, "hits": hits, "hit_count": len(hits)}, None
 
     return False, None, "未配置真实工具映射"
 

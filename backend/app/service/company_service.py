@@ -93,7 +93,6 @@ class CompanyService(BaseService):
                 "industry_code": r.industry_code,
                 "industry_name": r.industry_name,
                 "parent_industry_code": r.parent_industry_code,
-                "industry_level": r.industry_level,
                 "description": r.description,
             }
             for r in rows
@@ -132,7 +131,6 @@ class CompanyService(BaseService):
                     "industry_code": r.industry_code,
                     "industry_name": r.industry_name,
                     "parent_industry_code": r.parent_industry_code,
-                    "industry_level": r.industry_level,
                     "description": r.description,
                 }
                 for r in industries

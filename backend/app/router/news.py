@@ -46,4 +46,9 @@ def get_news_impact_summary(payload: ImpactSummaryModel, container: ServiceConta
 	return service_result_response(container.news.get_news_impact_summary(build_request(ImpactSummaryRequest, payload)))
 
 
+@router.post("/reports-by-industry")
+def get_reports_by_industry(payload: IndustryDaysModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.news.get_reports_by_industry(build_request(IndustryDaysRequest, payload)))
+
+
 __all__ = ["router"]

@@ -95,6 +95,23 @@ def _compute_ratio(numerator, denominator):
 
 # ── 各类型入库逻辑（直接操作数据库）──────────────────────
 
+def _ensure_industry(db, industry_code: str, industry_name: str = ""):
+    """确保 industry_master 中存在该行业，不存在则自动创建。"""
+    if not industry_code:
+        return None
+    exists = db.execute(
+        select(IndustryMaster).where(IndustryMaster.industry_code == industry_code)
+    ).scalars().first()
+    if exists:
+        return industry_code
+    db.add(IndustryMaster(
+        industry_code=industry_code,
+        industry_name=industry_name or industry_code,
+    ))
+    db.flush()
+    return industry_code
+
+
 def ingest_company(batch_id: str, batch_dir: Path, records: list[dict]) -> tuple[int, int, list]:
     ok, fail, errors = 0, 0, []
     db = SessionLocal()
@@ -106,6 +123,10 @@ def ingest_company(batch_id: str, batch_dir: Path, records: list[dict]) -> tuple
                 fail += 1
                 continue
             try:
+                if rec.get("industry_code"):
+                    _ensure_industry(db, rec["industry_code"],
+                                     industry_name=rec.get("industry_level1") or "")
+
                 existing = db.execute(
                     select(Company).where(Company.stock_code == stock_code)
                 ).scalars().first()

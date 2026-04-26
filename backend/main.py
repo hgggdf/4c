@@ -4,6 +4,8 @@ from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.bootstrap import check_database_health, init_application_database
+from app.scheduler import start_scheduler
+from app.router.agent import router as agent_router
 from app.router.analysis import router as analysis_router
 from app.router.announcement import router as announcement_router
 from app.router.announcement_write import router as announcement_write_router
@@ -36,6 +38,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(agent_router)
 app.include_router(chat_router)
 app.include_router(stock_router)
 app.include_router(analysis_router)
@@ -58,32 +61,27 @@ app.include_router(retrieval_router)
 
 @app.on_event("startup")
 def on_startup() -> None:
-    """应用启动时初始化数据库基础结构。"""
+    """应用启动时初始化数据库基础结构，并启动定时同步。"""
     init_application_database()
+    start_scheduler()
 
 
 @app.get("/health")
 def health_check(response: Response):
-    """返回服务与数据库的基础健康状态。"""
     db_status = check_database_health()
     database_available = db_status.get("available", False)
     overall_status = "ok" if database_available else "degraded"
     if not database_available:
         response.status_code = 503
-
     return {
         "status": overall_status,
-        "service": {
-            "name": settings.app_name,
-            "status": "alive",
-        },
+        "service": {"name": settings.app_name, "status": "alive"},
         "database": db_status,
     }
 
 
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(
         "main:app",
         host=settings.app_host,

@@ -14,14 +14,12 @@ from app.core.database.session import SessionLocal
 from app.knowledge.store import get_vector_store
 from app.knowledge.sync import (
     sync_announcements,
-    sync_company_profiles,
     sync_financial_notes,
     sync_news,
 )
 from app.paths import CHROMA_DB_DIR
 
 BACKFILL_ORDER = (
-    ("company_profile", sync_company_profiles),
     ("announcement", sync_announcements),
     ("financial_note", sync_financial_notes),
     ("news", sync_news),
@@ -34,7 +32,7 @@ def run_backfill() -> dict:
     with SessionLocal() as db:
         try:
             for doc_type, sync_fn in BACKFILL_ORDER:
-                step_counts[doc_type] = int(sync_fn(db, is_hot=True) if doc_type != "company_profile" else sync_fn(db))
+                step_counts[doc_type] = int(sync_fn(db, is_hot=True))
             db.commit()
         except Exception:
             db.rollback()

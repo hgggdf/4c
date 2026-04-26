@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import Counter
 
 from app.core.repositories import NewsRepository
+from app.core.repositories.research_report_repository import ResearchReportRepository
 
 from .base import BaseService
 from .guards import require_non_empty, require_positive_int, require_stock_code
@@ -36,6 +37,9 @@ class NewsService(BaseService):
 
     def get_news_impact_summary(self, req: ImpactSummaryRequest):
         return self._run(lambda: self._with_db(lambda db: self._get_news_impact_summary(db, req)), trace_id=req.trace_id)
+
+    def get_reports_by_industry(self, req: IndustryDaysRequest):
+        return self._run(lambda: self._with_db(lambda db: self._get_reports_by_industry(db, req)), trace_id=req.trace_id)
 
     def _ensure_company(self, stock_code: str) -> None:
         if self.company_service:
@@ -128,3 +132,11 @@ class NewsService(BaseService):
         structured = self._get_news_structured(db, NewsStructuredRequest(days=days, trace_id=req.trace_id))
         sentiments = Counter(item.get("sentiment_label") or "unknown" for item in structured)
         return {"days": days, "raw_items": raw, "structured_items": structured, "sentiment_counts": dict(sentiments)}
+
+    def _report_dict(self, row) -> dict:
+        return model_to_dict(row, ["id", "report_uid", "scope_type", "stock_code", "industry_code", "title", "publish_date", "report_org", "summary_text", "source_type", "source_url"])
+
+    def _get_reports_by_industry(self, db, req: IndustryDaysRequest) -> list[dict]:
+        industry_code = require_non_empty(req.industry_code, "industry_code")
+        rows = ResearchReportRepository(db).list_by_industry(industry_code, limit=30)
+        return [self._report_dict(r) for r in rows]

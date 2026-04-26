@@ -75,6 +75,27 @@ const props = defineProps({
 })
 const emit = defineEmits(['submit'])
 
+<<<<<<< Updated upstream
+=======
+const featureButtons = [
+  { key: 'company_analysis', label: '企业运营评估', icon: '🧠' },
+  { key: 'financial_analysis', label: '财务分析', icon: '💹' },
+  { key: 'pipeline_analysis', label: '管线分析', icon: '🧪' },
+  { key: 'risk_warning', label: '风险预警', icon: '⚠️' },
+  { key: 'industry_compare', label: '行业对比', icon: '🏭' },
+  { key: 'report_generation', label: '生成报告', icon: '📄' },
+]
+
+const FEATURE_PROMPTS = {
+  company_analysis:  '请对[公司名]进行企业运营评估，包括主营业务、竞争优势、管理层、近期经营动态。',
+  financial_analysis:'请分析[公司名]的财务状况，包括营收趋势、利润率、现金流、负债结构。',
+  pipeline_analysis: '请分析[公司名]的研发管线，包括在研品种、临床阶段、获批情况、商业化前景。',
+  risk_warning:      '请对[公司名]进行风险预警分析，包括集采风险、监管风险、研发失败风险、财务风险。',
+  industry_compare:  '请对[公司名]与同行业主要竞争对手进行对比分析，包括市场份额、财务指标、研发投入。',
+  report_generation: '请为[公司名]生成一份完整的投研报告，包括公司概况、财务分析、管线分析、风险提示、投资建议。',
+}
+
+>>>>>>> Stashed changes
 const text = ref('')
 const isDragOver = ref(false)
 const droppedItems = ref([])
@@ -102,6 +123,25 @@ function removeItem(symbol) {
   droppedItems.value = droppedItems.value.filter(x => x.symbol !== symbol)
 }
 
+<<<<<<< Updated upstream
+=======
+function selectFeature(key) {
+  const wasActive = activeFeature.value === key
+  const oldPrompt = FEATURE_PROMPTS[activeFeature.value] || ''
+  activeFeature.value = wasActive ? '' : key
+
+  if (wasActive) {
+    if (!text.value.trim() || text.value === oldPrompt) {
+      text.value = ''
+    }
+  } else {
+    if (!text.value.trim() || text.value === oldPrompt) {
+      text.value = FEATURE_PROMPTS[key] || ''
+    }
+  }
+}
+
+>>>>>>> Stashed changes
 function handleSubmit() {
   const msg = text.value.trim()
   const targets = droppedItems.value
@@ -139,6 +179,46 @@ async function handleFileChange(evt) {
 </script>
 
 <style scoped>
+<<<<<<< Updated upstream
+=======
+.feature-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px 12px 12px;
+}
+.feature-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fff, var(--bg-card));
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s ease;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset;
+}
+.feature-btn:hover {
+  border-color: var(--border-hl);
+  color: var(--accent2);
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(75,169,154,0.08);
+  transform: translateY(-1px);
+}
+.feature-btn.active {
+  border-color: var(--accent2);
+  background: rgba(75,169,154,0.12);
+  color: var(--accent2);
+  box-shadow: 0 4px 14px rgba(75,169,154,0.12);
+}
+.feature-icon { font-size: 15px; }
+.feature-text { font-size: 13px; font-weight: 700; white-space: nowrap; }
+>>>>>>> Stashed changes
 .toolbar-left {
   display: flex; align-items: center; gap: 10px;
 }

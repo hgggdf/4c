@@ -1,5 +1,11 @@
 """正式聊天路由定义。"""
 
+<<<<<<< Updated upstream
+=======
+import json
+import logging
+
+>>>>>>> Stashed changes
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
@@ -26,6 +32,8 @@ from app.service.requests import (
 	ChatUpdateCurrentStockRequest,
 )
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/api", tags=["chat"])
 chat_service = RuntimeChatService()
 
@@ -36,6 +44,43 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)) -> ChatResponse:
 	return chat_service.handle_chat(db, request)
 
 
+<<<<<<< Updated upstream
+=======
+@router.post("/chat/stream")
+def chat_stream(request: ChatRequest):
+	"""Kimi 流式对话（SSE）。"""
+	def event_generator():
+		try:
+			agent = DialogueAgent()
+			for event in agent.chat_stream(
+				request.message,
+				history=[item.model_dump() for item in request.history],
+				targets=[item.model_dump() for item in request.targets],
+				current_stock_code=None,
+				selected_mode=request.selected_mode,
+				tool_autonomy=request.tool_autonomy,
+			):
+				if isinstance(event, dict):
+					yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
+				else:
+					yield f"data: {json.dumps({'type': 'answer', 'content': str(event)}, ensure_ascii=False)}\n\n"
+		except Exception as exc:
+			logger.exception("chat_stream error")
+			yield f"data: {json.dumps({'type': 'error', 'message': f'对话异常: {exc}'}, ensure_ascii=False)}\n\n"
+		yield f"data: {json.dumps({'type': 'done'}, ensure_ascii=False)}\n\n"
+
+	return StreamingResponse(
+		event_generator(),
+		media_type="text/event-stream",
+		headers={
+			"Cache-Control": "no-cache",
+			"Connection": "keep-alive",
+			"X-Accel-Buffering": "no",
+		},
+	)
+
+
+>>>>>>> Stashed changes
 @router.post("/upload_pdf")
 async def upload_pdf(file: UploadFile = File(...)):
 	"""PDF 入库功能暂未接入，将在后续 LangChain 工作流中统一设计。"""
