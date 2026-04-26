@@ -152,6 +152,11 @@ class AnalysisService:
             "metric_value": value,
             "metric_unit": unit,
             "source": "database_hot_tables",
+            "company_profile": {
+                "industry_level1": company.industry_level1,
+                "industry_level2": company.industry_level2,
+                "exchange": company.exchange,
+            },
         }
 
     def compare_metric(
@@ -178,6 +183,8 @@ class AnalysisService:
                     "stock_name": company.stock_name,
                     "value": round(value, 4),
                     "unit": unit,
+                    "industry_level1": company.industry_level1,
+                    "industry_level2": company.industry_level2,
                 }
             )
 

@@ -71,6 +71,35 @@
           <p>{{ data.suggestion }}</p>
         </div>
       </div>
+
+      <div class="retrieval-box">
+        <div class="retrieval-header">
+          <div>
+            <h3>混合检索结果</h3>
+            <p>关键词 + 向量联合召回</p>
+          </div>
+          <button class="refresh-btn" @click="loadRetrieval" :disabled="retrievalLoading">
+            {{ retrievalLoading ? '加载中...' : '刷新检索' }}
+          </button>
+        </div>
+        <div v-if="retrievalError" class="error retrieval-error">{{ retrievalError }}</div>
+        <div v-else-if="retrievalItems.length" class="retrieval-list">
+          <div v-for="item in retrievalItems" :key="`${item.metadata?.doc_type}-${item.metadata?.source_pk}-${item.chunk_id}`" class="retrieval-item">
+            <div class="retrieval-item-top">
+              <span class="retrieval-type">{{ item.metadata?.doc_type || 'unknown' }}</span>
+              <span class="retrieval-score">{{ Number(item.final_score || item.score || 0).toFixed(2) }}</span>
+            </div>
+            <div class="retrieval-title">{{ item.metadata?.title || item.source_record?.title || '未命名结果' }}</div>
+            <div class="retrieval-meta">
+              <span>来源：{{ item.match_source || 'vector' }}</span>
+              <span v-if="item.keyword_score != null">关键词分：{{ Number(item.keyword_score).toFixed(2) }}</span>
+              <span v-if="item.vector_score != null">向量分：{{ Number(item.vector_score).toFixed(2) }}</span>
+            </div>
+            <p class="retrieval-snippet">{{ item.text || item.source_record?.summary_text || item.source_record?.content || '暂无摘要' }}</p>
+          </div>
+        </div>
+        <div v-else class="retrieval-empty">暂无检索结果</div>
+      </div>
     </template>
   </div>
 </template>
@@ -80,6 +109,7 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { getDiagnose } from '../api/analysis'
 import { getStockList } from '../api/stock'
+import { searchHybrid } from '../api/retrieval'
 
 const selectedSymbol = ref('')
 const selectedYear = ref('2024')
@@ -88,6 +118,9 @@ const data = ref(null)
 const loading = ref(false)
 const error = ref('')
 const radarRef = ref(null)
+const retrievalItems = ref([])
+const retrievalLoading = ref(false)
+const retrievalError = ref('')
 let chart = null
 
 const levelClass = computed(() => {
@@ -108,13 +141,30 @@ async function loadData() {
   error.value = ''
   try {
     const res = await getDiagnose(selectedSymbol.value, selectedYear.value)
-    data.value = res
+    data.value = res.data ?? res
     await nextTick()
     renderRadar()
+    await loadRetrieval()
   } catch (e) {
     error.value = '加载失败：' + (e.response?.data?.detail || e.message)
   } finally {
     loading.value = false
+  }
+}
+
+async function loadRetrieval() {
+  if (!selectedSymbol.value) return
+  retrievalLoading.value = true
+  retrievalError.value = ''
+  try {
+    const keyword = `${selectedSymbol.value} ${data.value?.stock_name || ''} 诊断 风险 公告 新闻`
+    const res = await searchHybrid({ query: keyword, stock_code: selectedSymbol.value, top_k: 5 })
+    retrievalItems.value = res.data?.items ?? res.items ?? []
+  } catch (e) {
+    retrievalError.value = '检索失败：' + (e.response?.data?.detail || e.message)
+    retrievalItems.value = []
+  } finally {
+    retrievalLoading.value = false
   }
 }
 

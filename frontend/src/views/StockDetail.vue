@@ -207,9 +207,10 @@ async function loadData() {
 async function loadRiskData() {
   riskLoading.value = true
   try {
-    const res = await getRisks()
-    const stockData = res.data.find(item => item.stock_code === route.params.symbol)
-    riskData.value = stockData || null
+    const res = await getRisks([route.params.symbol])
+    const list = Array.isArray(res) ? res : res?.data || []
+    const stockData = list.find(item => item.stock_code === route.params.symbol)
+    riskData.value = stockData || list[0] || null
   } catch (e) {
     console.error('风险数据加载失败:', e)
   } finally {

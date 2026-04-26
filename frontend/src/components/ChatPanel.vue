@@ -68,6 +68,33 @@
             >
               <span class="cp-dot"></span><span class="cp-dot"></span><span class="cp-dot"></span>
             </div>
+
+            <div v-if="msg.role === 'assistant' && (getRetrievalTrace(msg).length || getDataSources(msg).length)" class="cp-retrieval-card">
+              <button class="cp-retrieval-toggle" @click="toggleRetrieval(i)">
+                <span>检索与数据来源</span>
+                <span>{{ expandedRetrievals.has(i) ? '收起' : '展开' }}</span>
+              </button>
+              <div v-if="expandedRetrievals.has(i)" class="cp-retrieval-list">
+                <div v-if="getSourceNotice(msg)" class="cp-source-notice">{{ getSourceNotice(msg) }}</div>
+                <div v-for="(item, idx) in getDataSources(msg)" :key="`${i}-source-${idx}`" class="cp-source-item">
+                  <div class="cp-retrieval-head">
+                    <span class="cp-retrieval-type">{{ item.data_type || 'data' }}</span>
+                    <span class="cp-retrieval-score">{{ item.source }}</span>
+                  </div>
+                  <div class="cp-retrieval-title">{{ item.title || '未命名来源' }}</div>
+                  <div class="cp-retrieval-snippet">置信度：{{ Number(item.confidence || 0).toFixed(2) }}</div>
+                </div>
+                <div v-for="(item, idx) in getRetrievalTrace(msg)" :key="`${i}-${idx}`" class="cp-retrieval-item">
+                  <div class="cp-retrieval-head">
+                    <span class="cp-retrieval-type">{{ item.doc_type || item.metadata?.doc_type || 'result' }}</span>
+                    <span class="cp-retrieval-score">{{ Number(item.final_score ?? item.vector_score ?? item.keyword_score ?? 0).toFixed(2) }}</span>
+                  </div>
+                  <div class="cp-retrieval-title">{{ item.title || item.metadata?.title || '未命名结果' }}</div>
+                  <div class="cp-retrieval-snippet">{{ item.snippet || item.text || item.source_record?.summary_text || item.source_record?.content || '' }}</div>
+                </div>
+              </div>
+            </div>
+
             <!-- 时间 -->
             <div class="cp-time">{{ formatTime(msg.createdAt) }}</div>
           </div>
@@ -114,7 +141,8 @@ const chatStore = useChatStore()
 const router = useRouter()
 const msgListRef = ref(null)
 const currentUser = sessionStorage.getItem('user') || '我'
-const isGenerating = computed(() => chatStore.loading)
+const isGenerating = computed(() => chatStore.isSessionLoading(chatStore.activeSessionId))
+const expandedRetrievals = ref(new Set())
 const hasRenderableAssistantMessage = computed(() =>
   chatStore.messages.some((msg, idx) => msg.role === 'assistant' && shouldShowBubble(msg, idx))
 )
@@ -141,7 +169,7 @@ async function removeSession(sessionId) {
 
 watch(() => chatStore.messages.map(m => `${m.role}:${m.content}`).join('|'), scrollBottom)
 watch(() => chatStore.activeSessionId, scrollBottom)
-watch(() => chatStore.loading, scrollBottom)
+watch(() => chatStore.isSessionLoading(chatStore.activeSessionId), scrollBottom)
 
 onMounted(() => {
   chatStore.loadSessions()
@@ -167,6 +195,28 @@ function shouldShowBubble(msg, index) {
 function formatContent(msg) {
   if (msg.role === 'assistant') return formatAssistantContent(msg.content)
   return msg.content
+}
+
+function getRetrievalTrace(msg) {
+  if (!msg || msg.role !== 'assistant') return []
+  return msg.retrievalTrace || msg.toolCalls?.retrieval_trace || (Array.isArray(msg.toolCalls) ? msg.toolCalls : []) || []
+}
+
+function getDataSources(msg) {
+  if (!msg || msg.role !== 'assistant') return []
+  return msg.dataSources || msg.toolCalls?.data_sources || []
+}
+
+function getSourceNotice(msg) {
+  if (!msg || msg.role !== 'assistant') return ''
+  return msg.sourceNotice || msg.toolCalls?.source_notice || ''
+}
+
+function toggleRetrieval(index) {
+  const next = new Set(expandedRetrievals.value)
+  if (next.has(index)) next.delete(index)
+  else next.add(index)
+  expandedRetrievals.value = next
 }
 </script>
 
@@ -493,5 +543,74 @@ function formatContent(msg) {
 .cp-bubble--clarification {
   border-color: #f59e0b;
   background: rgba(245,158,11,0.08);
+}
+
+.cp-retrieval-card {
+  margin-top: 6px;
+  border: 1px solid rgba(75,169,154,0.16);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+  overflow: hidden;
+}
+.cp-retrieval-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: none;
+  background: rgba(75,169,154,0.08);
+  color: var(--accent2);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cp-retrieval-list {
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cp-retrieval-item, .cp-source-item {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+.cp-retrieval-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.cp-retrieval-type {
+  font-size: 11px;
+  color: var(--accent2);
+  font-weight: 700;
+}
+.cp-retrieval-score {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.cp-retrieval-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.cp-retrieval-snippet {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.cp-source-notice {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(59,130,246,0.08);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  border: 1px solid rgba(59,130,246,0.12);
 }
 </style>

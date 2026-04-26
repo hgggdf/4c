@@ -9,6 +9,7 @@ import {
   appendAssistantMessage,
   deleteSession as deleteChatSession,
 } from '../api/chat'
+import { searchHybrid } from '../api/retrieval'
 
 const WELCOME_MSG = '你好，我是医药投研多智能体系统。\n\n你可以：\n• 直接提问，如「分析恒瑞医药的研发管线」\n• 将左侧个股或行业卡片拖入输入框，进行多标的联合分析\n• 切换右侧宏观/行业/个股面板，查看详细数据'
 
@@ -17,6 +18,7 @@ export const useChatStore = defineStore('chat', {
     sessions: [],
     activeSessionId: null,
     loading: false,
+    sessionLoading: {},
     sessionsLoaded: false,
     pendingClarification: false,
     featureMode: null,
@@ -28,6 +30,7 @@ export const useChatStore = defineStore('chat', {
     messages(state) {
       return state.sessions.find(s => s.id === state.activeSessionId)?.messages || []
     },
+    isSessionLoading: (state) => (sessionId) => !!state.sessionLoading[sessionId],
   },
   actions: {
     async loadSessions() {
@@ -66,6 +69,8 @@ export const useChatStore = defineStore('chat', {
             role: m.role,
             content: m.content,
             createdAt: m.created_at ? new Date(m.created_at).getTime() : Date.now(),
+            toolCalls: m.tool_calls_json?.retrieval_trace || m.tool_calls_json || [],
+            retrievalTrace: m.tool_calls_json?.retrieval_trace || [],
           }))
           if (!session.messages.length) {
             session.messages.push({ role: 'assistant', content: WELCOME_MSG, createdAt: Date.now() })
@@ -91,6 +96,7 @@ export const useChatStore = defineStore('chat', {
     async deleteSession(sessionId) {
       try {
         await deleteChatSession(sessionId)
+        delete this.sessionLoading[sessionId]
         this.sessions = this.sessions.filter(s => s.id !== sessionId)
         if (this.activeSessionId === sessionId) {
           this.activeSessionId = this.sessions[0]?.id || null
@@ -98,6 +104,7 @@ export const useChatStore = defineStore('chat', {
             await this.newSession()
           }
         }
+        this.loading = Object.values(this.sessionLoading).some(Boolean)
       } catch (err) {
         console.error('[deleteSession]', err)
       }
@@ -143,28 +150,45 @@ export const useChatStore = defineStore('chat', {
         content = `[联合分析：${targets.map(t => t.name).join('、')}] ${message}`
       }
 
-      const session = this.sessions.find(s => s.id === this.activeSessionId)
-      if (!session) return
+      const sessionId = this.activeSessionId
+      const session = this.sessions.find(s => s.id === sessionId)
+      if (!session || !sessionId) return
 
-      const userMsg = { role: 'user', content, createdAt: Date.now() }
-      const assistantMsg = { role: 'assistant', content: '', createdAt: Date.now() }
-      this.messages.push(userMsg)
-      this.messages.push(assistantMsg)
-      this.loading = true
+      const userMsg = { role: 'user', content, createdAt: Date.now(), sessionId }
+      const assistantMsg = { role: 'assistant', content: '', createdAt: Date.now(), retrievalTrace: [], sessionId }
+      session.messages.push(userMsg)
+      session.messages.push(assistantMsg)
+      this.sessionLoading[sessionId] = true
+      this.loading = Object.values(this.sessionLoading).some(Boolean)
 
-      if (this.activeSessionId) {
-        appendUserMessage(this.activeSessionId, content).catch(() => {})
-      }
+      appendUserMessage(sessionId, content).catch(() => {})
 
       try {
+        const retrievalRes = await searchHybrid({
+          query: content,
+          stock_code: targets.find(t => t.type !== 'industry')?.symbol || null,
+          industry_code: targets.find(t => t.type === 'industry')?.symbol || null,
+          top_k: 5,
+        }).catch(() => null)
+        const retrievalItems = retrievalRes?.data?.items ?? retrievalRes?.items ?? []
+        assistantMsg.retrievalTrace = retrievalItems.slice(0, 5)
+        const contextText = retrievalItems.slice(0, 3).map((item, index) => {
+          const title = item?.metadata?.title || item?.source_record?.title || '未命名结果'
+          const snippet = item?.text || item?.source_record?.summary_text || item?.source_record?.content || ''
+          const source = item?.match_source || 'vector'
+          return `【检索${index + 1}｜${source}｜${title}】${snippet}`
+        }).join('\n')
+        const finalMessage = contextText ? `${content}\n\n[参考检索结果]\n${contextText}` : content
+
         await sendChatMessageStream(
           {
-            message: content,
+            message: finalMessage,
             targets,
-            session_id: this.activeSessionId,
+            session_id: sessionId,
             user_id: 1,
             selected_mode: selectedMode,
-            history: this.messages
+            retrieval_context: retrievalItems.slice(0, 5),
+            history: session.messages
               .slice(0, -2)
               .map(m => ({ role: m.role, content: m.content })),
           },
@@ -179,41 +203,43 @@ export const useChatStore = defineStore('chat', {
         assistantMsg.content += `\n\n[请求失败：${msg}]`
         console.error('[chatStream error]', err)
       } finally {
-        this.loading = false
-        if (this.activeSessionId && assistantMsg.content) {
-          appendAssistantMessage(this.activeSessionId, assistantMsg.content).catch(() => {})
+        this.sessionLoading[sessionId] = false
+        this.loading = Object.values(this.sessionLoading).some(Boolean)
+        if (assistantMsg.content) {
+          appendAssistantMessage(sessionId, assistantMsg.content).catch(() => {})
         }
         this.featureMode = null
       }
     },
 
     async askQuery({ message }) {
-      const session = this.sessions.find(s => s.id === this.activeSessionId)
-      if (!session) return
+      const sessionId = this.activeSessionId
+      const session = this.sessions.find(s => s.id === sessionId)
+      if (!session || !sessionId) return
 
-      const userMsg = { role: 'user', content: message, createdAt: Date.now() }
+      const userMsg = { role: 'user', content: message, createdAt: Date.now(), sessionId }
       const assistantMsg = {
         role: 'assistant',
         content: '',
         createdAt: Date.now(),
         toolCalls: [],
         isClarification: false,
+        sessionId,
       }
-      this.messages.push(userMsg)
-      this.messages.push(assistantMsg)
-      this.loading = true
+      session.messages.push(userMsg)
+      session.messages.push(assistantMsg)
+      this.sessionLoading[sessionId] = true
+      this.loading = Object.values(this.sessionLoading).some(Boolean)
       this.pendingClarification = false
 
-      if (this.activeSessionId) {
-        appendUserMessage(this.activeSessionId, message).catch(() => {})
-      }
+      appendUserMessage(sessionId, message).catch(() => {})
 
       try {
         await sendQueryStream(
           {
             message,
-            session_id: this.activeSessionId,
-            history: this.messages
+            session_id: sessionId,
+            history: session.messages
               .slice(0, -2)
               .map(m => ({ role: m.role, content: m.content })),
           },
@@ -243,9 +269,10 @@ export const useChatStore = defineStore('chat', {
         assistantMsg.content += `\n\n[请求失败：${msg}]`
         console.error('[queryStream error]', err)
       } finally {
-        this.loading = false
-        if (this.activeSessionId && assistantMsg.content) {
-          appendAssistantMessage(this.activeSessionId, assistantMsg.content).catch(() => {})
+        this.sessionLoading[sessionId] = false
+        this.loading = Object.values(this.sessionLoading).some(Boolean)
+        if (assistantMsg.content) {
+          appendAssistantMessage(sessionId, assistantMsg.content).catch(() => {})
         }
       }
     },

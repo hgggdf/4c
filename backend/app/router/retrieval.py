@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends
 
 from app.router.dependencies import get_container
-from app.router.schemas.retrieval import RebuildEmbeddingsModel, SearchModel
+from app.router.schemas.retrieval import HybridSearchModel, RebuildEmbeddingsModel, SearchModel
 from app.router.utils import build_request, service_result_response
 from app.service import ServiceContainer
 from app.service.requests import RebuildEmbeddingsRequest, SearchRequest
@@ -39,6 +39,11 @@ def search_policies(payload: SearchModel, container: ServiceContainer = Depends(
 @router.post("/text-evidence")
 def search_text_evidence(payload: SearchModel, container: ServiceContainer = Depends(get_container)):
 	return service_result_response(container.retrieval.search_text_evidence(build_request(SearchRequest, payload)))
+
+
+@router.post("/hybrid")
+def search_hybrid(payload: HybridSearchModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.retrieval.search_hybrid(build_request(SearchRequest, payload)))
 
 
 @router.post("/announcement-evidence")

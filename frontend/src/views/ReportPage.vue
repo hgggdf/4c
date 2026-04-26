@@ -157,7 +157,7 @@ async function generateReport() {
   report.value = null
   try {
     const res = await getDiagnose(form.value.symbol, form.value.year)
-    report.value = res
+    report.value = res.data ?? res
     await nextTick()
     loadTrend(activeTrend.value)
   } catch (e) {
@@ -174,7 +174,7 @@ async function loadTrend(metric) {
 
   try {
     const res = await getTrend(form.value.symbol, metric)
-    const trend = res.trend
+    const trend = res.trend ?? res.data?.trend ?? []
     const years = trend.map(t => t.year + '年')
     const values = trend.map(t => t.value ?? 0)
     const unit = trend[0]?.unit || ''

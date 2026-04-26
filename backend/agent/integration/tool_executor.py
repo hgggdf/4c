@@ -46,6 +46,8 @@ def normalize_tool_result(
     error: str | None = None,
     can_score: bool = False,
     freshness: str | None = None,
+    tool_input: dict[str, Any] | None = None,
+    execution_status: str | None = None,
 ) -> dict[str, Any]:
     normalized_data = safe_to_dict(data)
     normalized_sources = safe_to_dict(evidence_sources or [])
@@ -62,6 +64,8 @@ def normalize_tool_result(
         "error": error,
         "can_score": can_score,
         "freshness": freshness,
+        "tool_input": safe_to_dict(tool_input or {}),
+        "execution_status": execution_status or ("success" if success else "failed"),
     }
 
 
@@ -162,6 +166,8 @@ def execute_tool_plan(
                     error=None,
                     can_score=can_score,
                     freshness=freshness,
+                    tool_input=input_data,
+                    execution_status="dry_run",
                 )
             )
             continue
@@ -180,6 +186,8 @@ def execute_tool_plan(
                     error=None if success else error,
                     can_score=can_score,
                     freshness=freshness,
+                    tool_input=input_data,
+                    execution_status="success" if success else "failed",
                 )
             )
         except Exception as exc:
@@ -195,6 +203,8 @@ def execute_tool_plan(
                     error=str(exc),
                     can_score=can_score,
                     freshness=freshness,
+                    tool_input=input_data,
+                    execution_status="error",
                 )
             )
     return results

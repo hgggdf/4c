@@ -44,10 +44,10 @@ class NewsService(BaseService):
                 raise ValueError(f"company not found: {stock_code}")
 
     def _news_raw_dict(self, row) -> dict:
-        return model_to_dict(row, ["id", "news_uid", "title", "publish_time", "source_name", "source_url", "author_name", "content", "news_type", "language", "file_hash", "created_at"])
+        return model_to_dict(row, ["id", "news_uid", "title", "publish_time", "source_name", "source_url", "author_name", "content", "summary_text", "news_type", "language", "related_stock_codes_json", "related_industry_codes_json", "key_fields_json", "file_hash", "query_count", "created_at"])
 
     def _structured_dict(self, row) -> dict:
-        return model_to_dict(row, ["id", "news_id", "topic_category", "summary_text", "keywords_json", "signal_type", "impact_level", "impact_horizon", "sentiment_label", "confidence_score", "created_at"])
+        return model_to_dict(row, ["id", "news_id", "topic_category", "summary_text", "keywords_json", "signal_type", "impact_level", "impact_horizon", "sentiment_label", "confidence_score", "related_stock_codes_json", "related_industry_codes_json", "created_at"])
 
     def _get_news_raw(self, db, req: NewsRawRequest) -> list[dict]:
         days = require_positive_int(req.days, "days")

@@ -42,7 +42,7 @@ class FinancialService(BaseService):
         limit = require_positive_int(req.limit, "limit")
         self._ensure_company(stock_code)
         rows = FinancialRepository(db).get_income_statements(stock_code, limit=limit)
-        fields = ["stock_code", "report_date", "fiscal_year", "report_type", "revenue", "operating_cost", "gross_profit", "selling_expense", "admin_expense", "rd_expense", "operating_profit", "net_profit", "net_profit_deducted", "eps", "source_type", "source_url", "created_at"]
+        fields = ["id", "stock_code", "report_date", "fiscal_year", "report_type", "revenue", "operating_cost", "gross_profit", "gross_margin", "selling_expense", "admin_expense", "rd_expense", "rd_ratio", "operating_profit", "net_profit", "net_profit_deducted", "net_margin", "eps", "source_type", "source_url", "file_hash", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_balance_sheets(self, db, req: StockCodeLimitRequest) -> list[dict]:
@@ -50,7 +50,7 @@ class FinancialService(BaseService):
         limit = require_positive_int(req.limit, "limit")
         self._ensure_company(stock_code)
         rows = FinancialRepository(db).get_balance_sheets(stock_code, limit=limit)
-        fields = ["stock_code", "report_date", "fiscal_year", "report_type", "total_assets", "total_liabilities", "accounts_receivable", "inventory", "cash", "equity", "goodwill", "source_type", "source_url", "created_at"]
+        fields = ["id", "stock_code", "report_date", "fiscal_year", "report_type", "total_assets", "total_liabilities", "debt_ratio", "accounts_receivable", "inventory", "cash", "equity", "goodwill", "source_type", "source_url", "file_hash", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_cashflow_statements(self, db, req: StockCodeLimitRequest) -> list[dict]:
@@ -58,7 +58,7 @@ class FinancialService(BaseService):
         limit = require_positive_int(req.limit, "limit")
         self._ensure_company(stock_code)
         rows = FinancialRepository(db).get_cashflow_statements(stock_code, limit=limit)
-        fields = ["stock_code", "report_date", "fiscal_year", "report_type", "operating_cashflow", "investing_cashflow", "financing_cashflow", "free_cashflow", "source_type", "source_url", "created_at"]
+        fields = ["id", "stock_code", "report_date", "fiscal_year", "report_type", "operating_cashflow", "investing_cashflow", "financing_cashflow", "free_cashflow", "source_type", "source_url", "file_hash", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_financial_metrics(self, db, req: FinancialMetricsRequest) -> list[dict]:

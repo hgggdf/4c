@@ -13,9 +13,14 @@ class SearchModel(BaseRequestModel):
 	top_k: int = 5
 
 
+class HybridSearchModel(SearchModel):
+	include_keyword: bool = True
+	include_vector: bool = True
+
+
 class RebuildEmbeddingsModel(BaseRequestModel):
 	doc_type: str
 	source_ids: list[int] = Field(default_factory=list)
 
 
-__all__ = ["SearchModel", "RebuildEmbeddingsModel"]
+__all__ = ["SearchModel", "HybridSearchModel", "RebuildEmbeddingsModel"]

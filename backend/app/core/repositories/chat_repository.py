@@ -43,7 +43,6 @@ class ChatRepository(BaseRepository):
         self.db.flush()
         return entity
 
-<<<<<<< HEAD
     def delete_session(self, session_id: int) -> bool:
         entity = self.get_session(session_id)
         if entity is None:
@@ -53,26 +52,9 @@ class ChatRepository(BaseRepository):
         self.db.flush()
         return True
 
-=======
-<<<<<<< Updated upstream
->>>>>>> origin/YANYUHAN
-    def get_context_cache(self, session_id: int) -> SessionContextCache | None:
-        stmt = select(SessionContextCache).where(SessionContextCache.session_id == session_id)
-        return self.scalar_one_or_none(stmt)
-=======
-    def delete_session(self, session_id: int) -> bool:
-        entity = self.get_session(session_id)
-        if entity is None:
-            return False
-        self.db.execute(delete(ChatMessage).where(ChatMessage.session_id == session_id))
-        self.db.delete(entity)
-        self.db.flush()
-        return True
-
-    # v3 无 SessionContextCache 表，context 直接存在 session 内存中
+    # v3 no longer has a SessionContextCache table; context is stored in session memory.
     def get_context_cache(self, session_id: int):
         return None
->>>>>>> Stashed changes
 
     def upsert_context_cache(self, session_id: int, user_id: int, context_json: dict, *, expire_at=None):
         return None

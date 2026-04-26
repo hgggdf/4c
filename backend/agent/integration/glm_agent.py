@@ -148,6 +148,19 @@ class GLMMinimalAgent:
             state.tool_plan,
             dry_run=True,
         )
+        state.tool_trace = [
+            {
+                "tool_name": item.get("tool_name"),
+                "tool_input": item.get("tool_input") or {},
+                "success": item.get("success"),
+                "execution_status": item.get("execution_status"),
+                "warning": item.get("warning"),
+                "error": item.get("error"),
+                "can_score": item.get("can_score"),
+                "freshness": item.get("freshness"),
+            }
+            for item in state.tool_results
+        ]
         for item in state.tool_results or []:
             if item.get("success") is False:
                 state.warnings.append({
@@ -198,7 +211,9 @@ class GLMMinimalAgent:
         stock_context = self._resolve_stock_context(question, targets=targets, current_stock_code=current_stock_code)
         analysis_summary = self._build_analysis_summary(stock_context, year=_extract_year(question))
         chart_context = self._build_chart_context(stock_context)
+        self._trace_state = []
         evidence_items = self._collect_evidence(question, stock_context)
+        state.retrieval_trace = list(getattr(self, "_trace_state", []))
 
         cache_key = self._build_cache_key(question, stock_context, session_id=session_id, selected_mode=state.resolved_mode)
         source_signature = self._build_source_signature(analysis_summary, chart_context, evidence_items)
@@ -223,44 +238,10 @@ class GLMMinimalAgent:
             return state.to_agent_result()
 
         local_fallback = self._build_local_fallback(question, stock_context, analysis_summary, evidence_items, chart_context)
-        if not self.llm_client.is_configured():
-            payload = {
-                **local_fallback,
-                "framework": self.framework,
-                "agent_mode": "kimi-config-missing",
-            }
-            state.answer = payload.get("answer")
-            state.suggestion = payload.get("suggestion")
-            state.chart_desc = payload.get("chart_desc")
-            state.report_markdown = payload.get("report_markdown")
-            state.agent_mode = payload.get("agent_mode")
-            state.framework = payload.get("framework") or self.framework
-            return state.to_agent_result()
-
-        messages = build_chat_messages(
-            user_question=question,
-            stock_context=stock_context,
-            analysis_summary=analysis_summary,
-            chart_context=chart_context,
-            evidence_items=evidence_items,
-            history=history,
-        )
-
-        try:
-            response_text = self.llm_client.chat(messages, temperature=1.0, max_tokens=DEFAULT_GLM_MAX_TOKENS)
-            parsed = _extract_json_object(response_text) or {}
-        except Exception as exc:
-            llm_error_summary = _compact_text(str(exc), limit=220) or exc.__class__.__name__
-            logger.warning("GLM minimal fallback: %s", llm_error_summary)
-            parsed = {}
-
         payload = {
-            "answer": str(parsed.get("answer") or local_fallback["answer"]).strip(),
-            "suggestion": str(parsed.get("suggestion") or local_fallback["suggestion"]).strip(),
-            "chart_desc": str(parsed.get("chart_desc") or local_fallback["chart_desc"]).strip(),
-            "report_markdown": str(parsed.get("report_markdown") or local_fallback["report_markdown"]).strip(),
+            **local_fallback,
             "framework": self.framework,
-            "agent_mode": self.agent_mode,
+            "agent_mode": "local-knowledge-only",
         }
         state.answer = payload.get("answer")
         state.suggestion = payload.get("suggestion")
@@ -268,6 +249,10 @@ class GLMMinimalAgent:
         state.report_markdown = payload.get("report_markdown")
         state.agent_mode = payload.get("agent_mode")
         state.framework = payload.get("framework") or self.framework
+        state.warnings.append({
+            "type": "knowledge_scope",
+            "message": "当前回答仅允许使用本地知识库与本地数据库证据，不调用外部知识源。",
+        })
         result = state.to_agent_result()
         self._set_cached_result(
             cache_key,
@@ -391,6 +376,16 @@ class GLMMinimalAgent:
             result = handler(SearchRequest(query=question, stock_code=stock_code, top_k=limit))
             if not result.success or not result.data:
                 continue
+            trace_entry = {
+                "doc_type": doc_type,
+                "query": question,
+                "top_k": limit,
+                "stock_code": stock_code,
+                "item_count": len(result.data.get("items") or []),
+            }
+            state = getattr(self, "_trace_state", None)
+            if isinstance(state, list):
+                state.append(trace_entry)
             for item in result.data.get("items") or []:
                 compressed = self._compress_retrieval_item(item, default_kind=doc_type)
                 if compressed:

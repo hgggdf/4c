@@ -72,6 +72,12 @@ class ChatResponse(BaseModel):
 	follow_up_questions: list[str] = Field(default_factory=list)
 	preference_profile: dict[str, Any] | None = None
 	warnings: list[dict[str, Any] | str] = Field(default_factory=list)
+	context_snapshot: dict[str, Any] | None = None
+	tool_trace: list[dict[str, Any]] = Field(default_factory=list)
+	retrieval_trace: list[dict[str, Any]] = Field(default_factory=list)
+	data_sources: list[dict[str, Any]] = Field(default_factory=list)
+	source_notice: str | None = None
+	current_stock_code: str | None = None
 
 
 class ChatHistoryRecord(BaseModel):
