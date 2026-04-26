@@ -53,7 +53,7 @@ class AnnouncementService(BaseService):
         days = require_positive_int(req.days, "days")
         self._ensure_company(stock_code)
         rows = AnnouncementRepository(db).list_structured_announcements(stock_code, category=req.category, days=days)
-        fields = ["id", "announcement_id", "stock_code", "category", "summary_text", "key_fields_json", "signal_type", "risk_level", "created_at"]
+        fields = ["id", "stock_code", "title", "publish_date", "announcement_type", "summary_text", "key_fields_json", "content", "source_url", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_drug_approvals(self, db, req: StockCodeDaysRequest) -> list[dict]:

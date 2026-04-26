@@ -27,6 +27,7 @@ class RetrievalService(BaseService):
         "financial_note": "financial_notes_hot",
         "news": "news_raw_hot",
         "company_profile": "company_profile",
+        "report": "research_report_hot",
     }
 
     ANNOUNCEMENT_SOURCE_FIELDS = (
@@ -79,6 +80,22 @@ class RetrievalService(BaseService):
         "market_position",
         "management_summary",
         "updated_at",
+    )
+
+    RESEARCH_REPORT_SOURCE_FIELDS = (
+        "id",
+        "report_uid",
+        "scope_type",
+        "stock_code",
+        "industry_code",
+        "title",
+        "publish_date",
+        "report_org",
+        "content",
+        "summary_text",
+        "source_type",
+        "source_url",
+        "created_at",
     )
 
     def search_announcements(self, req: SearchRequest):
@@ -263,6 +280,16 @@ class RetrievalService(BaseService):
             payload = model_to_dict(profile, self.COMPANY_PROFILE_SOURCE_FIELDS)
             payload["stock_name"] = normalize_value(stock_name)
             return payload
+
+        if doc_type == "report":
+            from app.core.database.models.research_report_hot import ResearchReportHot
+
+            entity = db.execute(
+                select(ResearchReportHot).where(ResearchReportHot.id == source_id)
+            ).scalars().first()
+            if not entity:
+                return None
+            return model_to_dict(entity, self.RESEARCH_REPORT_SOURCE_FIELDS)
 
         return None
 

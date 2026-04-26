@@ -97,6 +97,7 @@ class DialogueAgent:
             ("announcement", self.container.retrieval.search_announcements, 2),
             ("financial_note", self.container.retrieval.search_financial_notes, 2),
             ("news", self.container.retrieval.search_news, 1),
+            ("report", self.container.retrieval.search_reports, 2),
         ]
 
         for doc_type, handler, limit in search_plan:

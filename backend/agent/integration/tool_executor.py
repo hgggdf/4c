@@ -127,7 +127,7 @@ def _run_tool(tool_name: str, input_data: dict[str, Any]) -> tuple[bool, Any, st
         if not user_question and not industry_name:
             return False, None, "缺少必需参数 user_question 或 industry_name"
         query = str(user_question or industry_name or "")
-        return True, macro_tools.get_macro_summary(query), None
+        return True, macro_tools.get_macro_summary([query]), None
 
     return False, None, "未配置真实工具映射"
 

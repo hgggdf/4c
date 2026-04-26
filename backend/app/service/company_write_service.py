@@ -45,6 +45,7 @@ class CompanyWriteService(BaseService):
 
     def _upsert_company_master(self, db, req: UpsertCompanyMasterRequest) -> dict:
         stock_code = require_stock_code(req.stock_code)
+        # status, alias_json, source_type, source_url are compat properties, not real columns
         payload = {
             "stock_code": stock_code,
             "stock_name": (req.stock_name or "").strip(),
@@ -53,10 +54,6 @@ class CompanyWriteService(BaseService):
             "industry_level1": req.industry_level1,
             "industry_level2": req.industry_level2,
             "listing_date": req.listing_date,
-            "status": req.status or "active",
-            "alias_json": req.alias_json,
-            "source_type": req.source_type,
-            "source_url": req.source_url,
             "updated_at": datetime.now(),
         }
         entity, created = CompanyWriteRepository(db).upsert_company_master(payload)
@@ -72,7 +69,10 @@ class CompanyWriteService(BaseService):
             stock_code = require_stock_code(item.get("stock_code"))
             payload = dict(item)
             payload["stock_code"] = stock_code
-            payload.setdefault("status", "active")
+            payload.pop("status", None)
+            payload.pop("alias_json", None)
+            payload.pop("source_type", None)
+            payload.pop("source_url", None)
             payload["updated_at"] = datetime.now()
             items.append(payload)
         entities, created, updated = CompanyWriteRepository(db).batch_upsert_company_master(items)
@@ -90,8 +90,6 @@ class CompanyWriteService(BaseService):
             "business_summary": req.business_summary,
             "core_products_json": req.core_products_json,
             "main_segments_json": req.main_segments_json,
-            "market_position": req.market_position,
-            "management_summary": req.management_summary,
             "updated_at": datetime.now(),
         }
         repo = CompanyWriteRepository(db)

@@ -59,32 +59,13 @@ class NewsService(BaseService):
         days = require_positive_int(req.days, "days")
         self._ensure_company(stock_code)
         rows = NewsRepository(db).list_news_by_company(stock_code, days=days)
-        results = []
-        for mapping, news in rows:
-            item = self._news_raw_dict(news)
-            item.update({
-                "impact_direction": mapping.impact_direction,
-                "impact_strength": float(mapping.impact_strength) if mapping.impact_strength is not None else None,
-                "reason_text": mapping.reason_text,
-            })
-            results.append(item)
-        return results
+        return [self._news_raw_dict(r) for r in rows]
 
     def _get_news_by_industry(self, db, req: IndustryDaysRequest) -> list[dict]:
         industry_code = require_non_empty(req.industry_code, "industry_code")
         days = require_positive_int(req.days, "days")
         rows = NewsRepository(db).list_news_by_industry(industry_code, days=days)
-        results = []
-        for mapping, news in rows:
-            item = self._news_raw_dict(news)
-            item.update({
-                "industry_code": mapping.industry_code,
-                "impact_direction": mapping.impact_direction,
-                "impact_strength": float(mapping.impact_strength) if mapping.impact_strength is not None else None,
-                "reason_text": mapping.reason_text,
-            })
-            results.append(item)
-        return results
+        return [self._news_raw_dict(r) for r in rows]
 
     def _get_news_structured(self, db, req: NewsStructuredRequest) -> list[dict]:
         days = require_positive_int(req.days, "days")

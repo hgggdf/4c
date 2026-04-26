@@ -1,0 +1,2 @@
+{"stock_code":"888801","stock_name":"假数据药业","full_name":"假数据药业股份有限公司","exchange":"SZ","industry_level1":"医药生物","industry_level2":"创新药","business_summary":"主营创新药研发与销售","core_products_json":["药品Alpha","药品Beta"],"main_segments_json":[{"name":"创新药","ratio":0.7},{"name":"仿制药","ratio":0.3}]}
+{"stock_code":"888802","stock_name":"假数据医疗","full_name":"假数据医疗器械有限公司","exchange":"SH","industry_level1":"医药生物","industry_level2":"医疗器械","business_summary":"主营高端医疗器械研发","core_products_json":["CT设备","MRI设备"]}

@@ -46,6 +46,7 @@ def ingest_openclaw_data(envelope: OpenClawEnvelope, container: ServiceContainer
     - trial_event: 临床试验事件
     - regulatory_risk_event: 监管风险事件
     - stock_daily: 股票日行情
+    - research_report: 研报
     """
 
     payload_type = envelope.payload_type
@@ -77,6 +78,8 @@ def ingest_openclaw_data(envelope: OpenClawEnvelope, container: ServiceContainer
             return _ingest_regulatory_risk_event(envelope, container)
         elif payload_type == "stock_daily":
             return _ingest_stock_daily(envelope, container)
+        elif payload_type == "research_report":
+            return _ingest_research_report(envelope, container)
         else:
             raise HTTPException(status_code=400, detail=f"Unsupported payload_type: {payload_type}")
     except Exception as e:
@@ -139,10 +142,9 @@ def _ingest_announcement_raw(envelope: OpenClawEnvelope, container: ServiceConta
         "title": document.get("title", ""),
         "publish_date": document.get("publish_time", "").split("T")[0] if document.get("publish_time") else None,
         "announcement_type": payload.get("announcement_type"),
-        "exchange": payload.get("exchange"),
         "content": payload.get("content"),
+        "summary_text": payload.get("summary_text"),
         "source_url": source.get("source_url"),
-        "source_type": source.get("source_type"),
         "file_hash": document.get("file_hash"),
     }
 
@@ -249,8 +251,15 @@ def _ingest_financial_statement(envelope: OpenClawEnvelope, container: ServiceCo
         "report_date": payload.get("report_date"),
         "fiscal_year": extra.get("fiscal_year"),
         "report_type": extra.get("report_type"),
-        "source_type": source.get("source_type"),
         "source_url": source.get("source_url"),
+        "trade_date": payload.get("trade_date"),
+        "open_price": payload.get("open_price"),
+        "close_price": payload.get("close_price"),
+        "high_price": payload.get("high_price"),
+        "low_price": payload.get("low_price"),
+        "volume": payload.get("volume"),
+        "amount": payload.get("amount"),
+        "change_pct": payload.get("change_pct"),
     }
 
     req_kwargs = {}
@@ -491,6 +500,51 @@ def _ingest_stock_daily(envelope: OpenClawEnvelope, container: ServiceContainer)
     )
 
     return service_result_response(container.ingest.ingest_financial_package(req))
+
+
+def _ingest_research_report(envelope: OpenClawEnvelope, container: ServiceContainer):
+    """研报入库"""
+    from app.service.write_requests import BatchItemsRequest
+
+    entity = envelope.entity
+    payload = envelope.payload
+    document = envelope.document
+    source = envelope.source
+
+    report = {
+        "scope_type": payload.get("scope_type", "company"),
+        "stock_code": entity.get("stock_code") or None,
+        "industry_code": entity.get("industry_code") or None,
+        "title": document.get("title", ""),
+        "publish_date": (document.get("publish_time") or "").split("T")[0] if document.get("publish_time") else None,
+        "report_org": payload.get("report_org"),
+        "content": payload.get("content"),
+        "summary_text": payload.get("summary_text"),
+        "source_type": source.get("source_type"),
+        "source_url": source.get("source_url"),
+        "file_hash": document.get("file_hash"),
+    }
+
+    # industry_code 有外键约束，不存在时置空
+    if report["industry_code"]:
+        from sqlalchemy import select
+        from app.core.database.models.company import IndustryMaster
+        from app.core.database.session import SessionLocal
+        db = SessionLocal()
+        try:
+            exists = db.execute(
+                select(IndustryMaster).where(IndustryMaster.industry_code == report["industry_code"])
+            ).scalars().first()
+            if not exists:
+                report["industry_code"] = None
+        finally:
+            db.close()
+
+    req = BatchItemsRequest(items=[report])
+    result = container.research_report_write.batch_upsert_research_reports(req)
+
+    from app.service.dto import ServiceResult
+    return service_result_response(result)
 
 
 __all__ = ["router"]

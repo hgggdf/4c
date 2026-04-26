@@ -23,6 +23,7 @@ ACTIVE_COLLECTIONS = {
     "financial_note": "financial_note_chunks",
     "news": "news_chunks",
     "company_profile": "company_profile_chunks",
+    "report": "research_report_chunks",
 }
 
 
