@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990083",
+      "stock_name": "光医药83股份有限公司",
+      "full_name": "航地产83股份有限公司",
+      "exchange": "BSE",
+      "industry_level1": "计算机",
+      "industry_level2": "半导体",
+      "listing_date": "2017-04-01",
+      "status": "delisted",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990083",
+      "business_summary": "这是东地产公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A83",
+        "产品B83"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块83A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块83B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

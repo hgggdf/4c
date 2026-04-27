@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "600690",
+      "stock_name": "海尔智家",
+      "full_name": "海尔智家股份有限公司",
+      "exchange": "SSE",
+      "listing_date": "1996-10-02",
+      "status": "active",
+      "alias_json": [
+        "海尔智家"
+      ]
+    },
+    "company_profile": {
+      "stock_code": "600690",
+      "business_summary": "海尔智家为主营业务，公司当前股价 20.53 元。",
+      "market_position": "SSE上市公司，行业领先企业。",
+      "management_summary": "公司管理层稳定，治理结构完善。",
+      "source_type": "sina_hq_api",
+      "source_url": "https://hq.sinajs.cn/list=600690"
+    },
+    "industries": [
+      {
+        "industry_code": "IND_家用电器",
+        "industry_name": "家用电器",
+        "parent_industry_code": "IND_家用",
+        "industry_level": 1,
+        "description": "家用电器行业"
+      },
+      {
+        "industry_code": "IND_白色家电",
+        "industry_name": "白色家电",
+        "parent_industry_code": "IND_家用电器",
+        "industry_level": 2,
+        "description": "白色家电行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "600690",
+        "industry_code": "IND_家用电器",
+        "is_primary": false
+      },
+      {
+        "stock_code": "600690",
+        "industry_code": "IND_白色家电",
+        "is_primary": true
+      }
+    ]
+  }
+}

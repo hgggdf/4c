@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-04-23T07:24:42.592008+00:00",
+  "payload": {
+    "macro_indicators": [],
+    "news_raw": [
+      {
+        "news_uid": "rr_AP202604221821437435",
+        "title": "医药生物行业周报：国办发文健全药品价格形成机制",
+        "publish_time": "2026-04-22 00:00:00",
+        "source_name": "华源证券",
+        "source_url": "https://data.eastmoney.com/report/industry.jshtml#AP202604221821437435",
+        "author_name": "华源证券",
+        "content": "政策支持创新程度高...",
+        "news_type": "industry_research_report",
+        "language": "zh",
+        "file_hash": "rep001"
+      }
+    ],
+    "news_structured": [],
+    "news_industry_maps": {},
+    "news_company_maps": {},
+    "industry_impact_events": [],
+    "sync_vector_index": true
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "002415",
+      "stock_name": "海康威视",
+      "full_name": "海康威视股份有限公司",
+      "exchange": "SZSE",
+      "listing_date": "2015-01-21",
+      "status": "active",
+      "alias_json": [
+        "海康威视"
+      ]
+    },
+    "company_profile": {
+      "stock_code": "002415",
+      "business_summary": "海康威视为主营业务，公司当前股价 33.49 元。",
+      "market_position": "SZSE上市公司，行业领先企业。",
+      "management_summary": "公司管理层稳定，治理结构完善。",
+      "source_type": "sina_hq_api",
+      "source_url": "https://hq.sinajs.cn/list=002415"
+    },
+    "industries": [
+      {
+        "industry_code": "IND_电子",
+        "industry_name": "电子",
+        "parent_industry_code": "IND_电子",
+        "industry_level": 1,
+        "description": "电子行业"
+      },
+      {
+        "industry_code": "IND_计算机设备",
+        "industry_name": "计算机设备",
+        "parent_industry_code": "IND_电子",
+        "industry_level": 2,
+        "description": "计算机设备行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "002415",
+        "industry_code": "IND_电子",
+        "is_primary": false
+      },
+      {
+        "stock_code": "002415",
+        "industry_code": "IND_计算机设备",
+        "is_primary": true
+      }
+    ]
+  }
+}

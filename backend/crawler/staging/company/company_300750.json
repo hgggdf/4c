@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "300750",
+      "stock_name": "宁德时代",
+      "full_name": "宁德时代股份有限公司",
+      "exchange": "SZSE",
+      "listing_date": "2018-04-24",
+      "status": "active",
+      "alias_json": [
+        "宁德时代"
+      ]
+    },
+    "company_profile": {
+      "stock_code": "300750",
+      "business_summary": "宁德时代为主营业务，公司当前股价 438.9 元。",
+      "market_position": "SZSE上市公司，行业领先企业。",
+      "management_summary": "公司管理层稳定，治理结构完善。",
+      "source_type": "sina_hq_api",
+      "source_url": "https://hq.sinajs.cn/list=300750"
+    },
+    "industries": [
+      {
+        "industry_code": "IND_电力设备",
+        "industry_name": "电力设备",
+        "parent_industry_code": "IND_电力",
+        "industry_level": 1,
+        "description": "电力设备行业"
+      },
+      {
+        "industry_code": "IND_电池",
+        "industry_name": "电池",
+        "parent_industry_code": "IND_电力设备",
+        "industry_level": 2,
+        "description": "电池行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "300750",
+        "industry_code": "IND_电力设备",
+        "is_primary": false
+      },
+      {
+        "stock_code": "300750",
+        "industry_code": "IND_电池",
+        "is_primary": true
+      }
+    ]
+  }
+}

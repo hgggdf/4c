@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "job_id": "research_report_stress_1000",
+  "data_category": "research_report",
+  "staging_path": "backend/crawler/staging/stress/research_report_1000.json",
+  "checksum_sha256": "3e11871a29de67537edf057aaaeb8605f91894af2b17d19ee0e84c5b7ea803c7",
+  "record_count": 1000,
+  "time_window": {
+    "begin_date": "2026-03-01",
+    "end_date": "2026-04-23"
+  },
+  "fields": {
+    "news_uid": "string",
+    "title": "string",
+    "publish_time": "string",
+    "source_name": "string",
+    "source_url": "string",
+    "author_name": "string",
+    "content": "string",
+    "news_type": "string",
+    "language": "string",
+    "file_hash": "string"
+  },
+  "null_checks": {
+    "news_uid": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "title": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "publish_time": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {},
+  "quality_score": 1.0,
+  "status": "ready"
+}

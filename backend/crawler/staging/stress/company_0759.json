@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990759",
+      "stock_name": "电食品59股份有限公司",
+      "full_name": "光金融59股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "电子",
+      "industry_level2": "白酒",
+      "listing_date": "2010-01-23",
+      "status": "suspended",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990759",
+      "business_summary": "这是航能源公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A759",
+        "产品B759"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块759A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块759B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990266",
+      "stock_name": "天集团66股份有限公司",
+      "full_name": "中机械66股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "电子",
+      "industry_level2": "国有银行",
+      "listing_date": "2019-02-15",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990266",
+      "business_summary": "这是金材料公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A266",
+        "产品B266"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块266A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块266B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

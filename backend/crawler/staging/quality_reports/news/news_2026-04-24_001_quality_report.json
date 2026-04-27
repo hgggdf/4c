@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-04-23T19:23:10.922677+00:00",
+  "job_id": "research_report_2026-04-24_001",
+  "data_category": "research_report",
+  "staging_path": "backend/crawler/staging/news/news_2026-04-24_001.json",
+  "checksum_sha256": "f8c59f8f74513646918588904181f98f11e3fb9e42214cdf3c85115daca89622",
+  "record_count": 100,
+  "time_window": {
+    "begin_date": "1776953248",
+    "end_date": "2026-04-24"
+  },
+  "fields": {
+    "news_uid": "string",
+    "title": "string",
+    "publish_time": "string",
+    "source_name": "string",
+    "source_url": "string",
+    "author_name": "string",
+    "content": "string",
+    "news_type": "string",
+    "language": "string",
+    "file_hash": "string"
+  },
+  "null_checks": {
+    "news_uid": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "title": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "publish_time": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {},
+  "quality_score": 1.0,
+  "status": "ready"
+}

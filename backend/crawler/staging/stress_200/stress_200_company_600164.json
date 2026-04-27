@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-04-23T17:11:28.687647+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "600164",
+      "stock_name": "Stress公司164",
+      "full_name": "Stress公司164股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "C",
+      "industry_level2": "C36",
+      "listing_date": "2010-01-01",
+      "status": "active",
+      "source_type": "stress_mock"
+    },
+    "company_profile": {
+      "stock_code": "600164",
+      "business_summary": "Stress公司164主营业务涵盖医药研发、生产制造及销售。",
+      "main_segments_json": [
+        "医药制造",
+        "医疗器械",
+        "研发服务"
+      ],
+      "market_position": "Stress公司164在细分领域具有较强竞争力。"
+    },
+    "industries": [
+      {
+        "industry_code": "C36",
+        "industry_name": "C36行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "600164",
+        "industry_code": "C36",
+        "is_primary": true
+      }
+    ]
+  }
+}

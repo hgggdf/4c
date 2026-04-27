@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990115",
+      "stock_name": "银实业15股份有限公司",
+      "full_name": "星能源15股份有限公司",
+      "exchange": "BSE",
+      "industry_level1": "电子",
+      "industry_level2": "整车",
+      "listing_date": "2021-11-08",
+      "status": "delisted",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990115",
+      "business_summary": "这是海电子公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A115",
+        "产品B115"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块115A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块115B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

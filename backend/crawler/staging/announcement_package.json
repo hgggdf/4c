@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-04-23T07:24:42.592008+00:00",
+  "payload": {
+    "raw_announcements": [
+      {
+        "stock_code": "600276",
+        "title": "恒瑞医药2026年第一季度报告",
+        "publish_date": "2026-04-23",
+        "announcement_type": "季报",
+        "exchange": "SSE",
+        "content": "恒瑞医药2026年第一季度报告...",
+        "source_url": "http://static.cninfo.com.cn/...",
+        "source_type": "sse_announcement_api",
+        "file_hash": "abc123"
+      },
+      {
+        "stock_code": "600276",
+        "title": "关于药品纳入突破性治疗品种名单的公告",
+        "publish_date": "2026-04-21",
+        "announcement_type": "公告",
+        "exchange": "SSE",
+        "content": "公司近日收到...",
+        "source_url": "http://static.cninfo.com.cn/...",
+        "source_type": "sse_announcement_api",
+        "file_hash": "def456"
+      }
+    ],
+    "structured_announcements": [],
+    "drug_approvals": [],
+    "clinical_trials": [],
+    "procurement_events": [],
+    "regulatory_risks": [],
+    "sync_vector_index": true
+  }
+}
