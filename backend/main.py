@@ -30,6 +30,7 @@ from app.router.news_write import router as news_write_router
 from app.router.openclaw_ingest import router as openclaw_ingest_router
 from app.router.retrieval import router as retrieval_router
 from app.router.stock import router as stock_router
+from app.router.doc import router as doc_router
 from config import get_settings
 
 settings = get_settings()
@@ -64,6 +65,7 @@ app.include_router(news_router)
 app.include_router(news_write_router)
 app.include_router(openclaw_ingest_router)
 app.include_router(retrieval_router)
+app.include_router(doc_router)
 
 
 @app.on_event("startup")

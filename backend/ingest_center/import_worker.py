@@ -272,6 +272,25 @@ class ImportWorker:
             if dest.exists():
                 shutil.rmtree(dest)
             shutil.move(str(src), str(dest))
+        self._cleanup_incoming()
+
+    def _cleanup_incoming(self) -> None:
+        """清理 incoming 根目录里已处理完的空目录和散落文件，防止重复入库。"""
+        if not INCOMING_ROOT.exists():
+            return
+        for item in list(INCOMING_ROOT.iterdir()):
+            try:
+                if item.is_dir():
+                    # 只删除空目录（有内容的说明还未处理）
+                    if not any(item.iterdir()):
+                        item.rmdir()
+                        logger.info("cleaned empty incoming dir: %s", item.name)
+                else:
+                    # 散落文件直接删除
+                    item.unlink()
+                    logger.info("cleaned stray incoming file: %s", item.name)
+            except Exception as exc:
+                logger.warning("cleanup_incoming skip %s: %s", item.name, exc)
 
     def _write_error_report(self, batch_path: Path, batch_id: str, failed_count: int) -> None:
         report = {
