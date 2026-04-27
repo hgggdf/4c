@@ -15,8 +15,14 @@
     </div>
 
     <div class="msg-content">
-      <template v-if="displayContent">{{ displayContent }}</template>
-      <span v-else class="empty-hint">（等待回复…）</span>
+      <template v-if="message.role === 'assistant'">
+        <div v-if="renderedHtml" class="md-body" v-html="renderedHtml" />
+        <span v-else class="empty-hint">（等待回复…）</span>
+      </template>
+      <template v-else>
+        <span v-if="message.content">{{ message.content }}</span>
+        <span v-else class="empty-hint">（等待回复…）</span>
+      </template>
     </div>
 
     <!-- 行情附带信息 -->
@@ -43,15 +49,13 @@
 
 <script setup>
 import { computed } from 'vue'
-import { formatDateTime, formatAssistantContent } from '../utils/format'
+import { formatDateTime, renderMarkdown } from '../utils/format'
 
 const props = defineProps({ message: { type: Object, required: true } })
 
-const displayContent = computed(() => {
-  if (props.message.role === 'assistant') {
-    return formatAssistantContent(props.message.content)
-  }
-  return props.message.content
+const renderedHtml = computed(() => {
+  if (props.message.role !== 'assistant') return ''
+  return renderMarkdown(props.message.content)
 })
 
 function getChangePercent(extra = {}) {
@@ -76,6 +80,60 @@ function getChangePercent(extra = {}) {
 .empty-hint {
   color: var(--text-muted);
   font-style: italic;
+}
+
+/* Markdown 渲染样式 */
+.md-body {
+  white-space: normal;
+  line-height: 1.7;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.md-body :deep(h1),
+.md-body :deep(h2),
+.md-body :deep(h3) {
+  font-weight: 700;
+  margin: 1em 0 0.4em;
+  color: var(--text-primary);
+}
+.md-body :deep(h1) { font-size: 1.2em; }
+.md-body :deep(h2) { font-size: 1.1em; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+.md-body :deep(h3) { font-size: 1em; }
+.md-body :deep(p) { margin: 0.5em 0; }
+.md-body :deep(ul),
+.md-body :deep(ol) { padding-left: 1.4em; margin: 0.4em 0; }
+.md-body :deep(li) { margin: 0.2em 0; }
+.md-body :deep(strong) { font-weight: 700; color: var(--text-primary); }
+.md-body :deep(code) {
+  background: var(--bg-card2);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 12px;
+  font-family: monospace;
+}
+.md-body :deep(blockquote) {
+  border-left: 3px solid var(--accent2);
+  margin: 0.5em 0;
+  padding: 4px 12px;
+  color: var(--text-secondary);
+  background: rgba(75,169,154,0.05);
+  border-radius: 0 6px 6px 0;
+}
+.md-body :deep(table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.6em 0;
+  font-size: 13px;
+}
+.md-body :deep(th),
+.md-body :deep(td) {
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  text-align: left;
+}
+.md-body :deep(th) {
+  background: var(--bg-card2);
+  font-weight: 700;
 }
 
 .msg-quote-grid {

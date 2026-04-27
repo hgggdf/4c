@@ -8,10 +8,11 @@ import json
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
-from app.core.database.models.announcement_hot import AnnouncementRawHot
-from app.core.database.models.company import CompanyIndustryMap, CompanyMaster, CompanyProfile, IndustryMaster
-from app.core.database.models.financial_hot import BalanceSheetHot, BusinessSegmentHot, CashflowStatementHot, FinancialMetricHot, IncomeStatementHot, StockDailyHot
-from app.core.database.models.news_hot import NewsCompanyMapHot, NewsRawHot
+from app.core.database.models.announcement_hot import AnnouncementHot, AnnouncementRawHot
+from app.core.database.models.company import Company, CompanyMaster, IndustryMaster
+from app.core.database.models.financial_hot import FinancialHot
+from app.core.database.models.news_hot import NewsHot, NewsRawHot
+from app.core.database.models.research_report_hot import ResearchReportHot
 from app.core.database.models.user import Watchlist
 
 from .shared import build_quote_payload, ensure_demo_user, get_latest_trade_rows, normalize_percent, resolve_company, serialize_kline_row, to_float
@@ -29,14 +30,14 @@ class StockService:
         company = self._require_company(db, symbol)
         rows = list(
             db.execute(
-                select(StockDailyHot)
-                .where(StockDailyHot.stock_code == company.stock_code)
-                .order_by(StockDailyHot.trade_date.desc(), StockDailyHot.created_at.desc())
+                select(FinancialHot)
+                .where(FinancialHot.stock_code == company.stock_code)
+                .order_by(FinancialHot.report_date.desc(), FinancialHot.created_at.desc())
                 .limit(days)
             ).scalars().all()
         )
         rows.reverse()
-        return [serialize_kline_row(row) for row in rows]
+        return [item for item in (serialize_kline_row(row) for row in rows) if item is not None]
 
     def get_watchlist(self, db: Session, user_id: int) -> list[dict]:
         user = ensure_demo_user(db, user_id)
@@ -98,8 +99,13 @@ class StockService:
                     "symbol": company.stock_code,
                     "name": company.stock_name,
                     "exchange": company.exchange,
+                    "industry_code": company.industry_code,
                     "industry_level1": company.industry_level1,
                     "industry_level2": company.industry_level2,
+                    "status": getattr(company, "status", "active"),
+                    "business_summary": company.business_summary,
+                    "core_products_json": company.core_products_json,
+                    "main_segments_json": company.main_segments_json,
                     "quote": quote,
                     "collected_at": quote["time"],
                 }
@@ -114,6 +120,13 @@ class StockService:
             "symbol": company.stock_code,
             "name": company.stock_name,
             "exchange": company.exchange,
+            "industry_code": company.industry_code,
+            "industry_level1": company.industry_level1,
+            "industry_level2": company.industry_level2,
+            "company_status": getattr(company, "status", "active"),
+            "business_summary": company.business_summary,
+            "core_products_json": company.core_products_json,
+            "main_segments_json": company.main_segments_json,
             "collected_at": quote["time"],
             "quote": quote,
             "kline": self.get_kline(db, company.stock_code, days=120),
@@ -122,7 +135,7 @@ class StockService:
             "industries": self._build_industries_payload(db, company.stock_code),
             "financial_abstract": self._build_financial_abstract(db, company.stock_code),
             "main_business": self._build_main_business(db, company.stock_code),
-            "research_reports": [],
+            "research_reports": self._build_research_reports(db, company.stock_code, compact=compact),
             "announcements": self._build_announcements(db, company.stock_code, compact=compact),
             "news": self._build_news(db, company.stock_code, compact=compact),
         }
@@ -132,6 +145,7 @@ class StockService:
             dataset["announcements"] = dataset["announcements"][:8]
             dataset["news"] = dataset["news"][:8]
             dataset["main_business"] = dataset["main_business"][:8]
+            dataset["research_reports"] = dataset["research_reports"][:12]
 
         return dataset
 
@@ -178,7 +192,7 @@ class StockService:
         return {
             "companies": db.execute(select(func.count()).select_from(CompanyMaster)).scalar_one(),
             "watchlists": db.execute(select(func.count()).select_from(Watchlist)).scalar_one(),
-            "stock_daily": db.execute(select(func.count()).select_from(StockDailyHot)).scalar_one(),
+            "stock_daily": db.execute(select(func.count()).select_from(FinancialHot)).scalar_one(),
             "announcements": db.execute(select(func.count()).select_from(AnnouncementRawHot)).scalar_one(),
             "news": db.execute(select(func.count()).select_from(NewsRawHot)).scalar_one(),
         }
@@ -193,7 +207,6 @@ class StockService:
         return list(
             db.execute(
                 select(CompanyMaster)
-                .where((CompanyMaster.status.is_(None)) | (CompanyMaster.status != "inactive"))
                 .order_by(CompanyMaster.stock_code.asc())
             ).scalars().all()
         )
@@ -235,106 +248,69 @@ class StockService:
             "股票代码": company.stock_code,
             "公司全称": company.full_name or company.stock_name,
             "交易所": company.exchange or "",
+            "行业代码": company.industry_code or "",
             "一级行业": company.industry_level1 or "",
             "二级行业": company.industry_level2 or "",
             "上市时间": company.listing_date.isoformat() if company.listing_date else "",
+            "公司状态": getattr(company, "status", "active"),
         }
 
     def _build_profile_payload(self, db: Session, stock_code: str) -> dict | None:
-        profile = db.execute(
-            select(CompanyProfile).where(CompanyProfile.stock_code == stock_code)
+        company = db.execute(
+            select(CompanyMaster).where(CompanyMaster.stock_code == stock_code)
         ).scalars().first()
-        if profile is None:
+        if company is None:
             return None
         return {
-            "business_summary": profile.business_summary,
-            "core_products_json": profile.core_products_json,
-            "main_segments_json": profile.main_segments_json,
-            "market_position": profile.market_position,
-            "management_summary": profile.management_summary,
+            "business_summary": company.business_summary,
+            "core_products_json": company.core_products_json,
+            "main_segments_json": company.main_segments_json,
+            "market_position": company.market_position,
+            "management_summary": company.management_summary,
         }
 
     def _build_industries_payload(self, db: Session, stock_code: str) -> list[dict]:
-        rows = list(
-            db.execute(
-                select(CompanyIndustryMap, IndustryMaster)
-                .join(IndustryMaster, IndustryMaster.industry_code == CompanyIndustryMap.industry_code)
-                .where(CompanyIndustryMap.stock_code == stock_code)
-                .order_by(CompanyIndustryMap.is_primary.desc(), IndustryMaster.industry_level.asc())
-            ).all()
-        )
-        return [
-            {
-                "industry_code": industry.industry_code,
-                "industry_name": industry.industry_name,
-                "industry_level": industry.industry_level,
-                "is_primary": mapping.is_primary,
-                "description": industry.description,
-            }
-            for mapping, industry in rows
-        ]
+        company = db.execute(
+            select(CompanyMaster).where(CompanyMaster.stock_code == stock_code)
+        ).scalars().first()
+        if company is None:
+            return []
+        results = []
+        if company.industry_code:
+            industry = db.execute(
+                select(IndustryMaster).where(IndustryMaster.industry_code == company.industry_code)
+            ).scalars().first()
+            if industry:
+                results.append({
+                    "industry_code": industry.industry_code,
+                    "industry_name": industry.industry_name,
+                    "industry_level": getattr(industry, "industry_level", None),
+                    "is_primary": True,
+                    "description": industry.description,
+                })
+        if not results and (company.industry_level1 or company.industry_level2):
+            results.append({
+                "industry_code": company.industry_code or "",
+                "industry_name": company.industry_level2 or company.industry_level1 or "",
+                "industry_level": None,
+                "is_primary": True,
+                "description": None,
+            })
+        return results
 
     def _build_financial_abstract(self, db: Session, stock_code: str) -> list[dict]:
-        income_rows = list(
+        all_rows = list(
             db.execute(
-                select(IncomeStatementHot)
-                .where(IncomeStatementHot.stock_code == stock_code)
-                .order_by(IncomeStatementHot.report_date.desc(), IncomeStatementHot.created_at.desc())
-                .limit(12)
-            ).scalars().all()
-        )
-        balance_rows = list(
-            db.execute(
-                select(BalanceSheetHot)
-                .where(BalanceSheetHot.stock_code == stock_code)
-                .order_by(BalanceSheetHot.report_date.desc(), BalanceSheetHot.created_at.desc())
-                .limit(12)
-            ).scalars().all()
-        )
-        cashflow_rows = list(
-            db.execute(
-                select(CashflowStatementHot)
-                .where(CashflowStatementHot.stock_code == stock_code)
-                .order_by(CashflowStatementHot.report_date.desc(), CashflowStatementHot.created_at.desc())
-                .limit(12)
-            ).scalars().all()
-        )
-        metric_rows = list(
-            db.execute(
-                select(FinancialMetricHot)
-                .where(FinancialMetricHot.stock_code == stock_code)
-                .order_by(FinancialMetricHot.report_date.desc(), FinancialMetricHot.created_at.desc())
-                .limit(100)
+                select(FinancialHot)
+                .where(FinancialHot.stock_code == stock_code)
+                .order_by(FinancialHot.report_date.desc(), FinancialHot.created_at.desc())
+                .limit(50)
             ).scalars().all()
         )
 
-        income_by_year = self._latest_rows_by_year(income_rows, "fiscal_year")
-        balance_by_year = self._latest_rows_by_year(balance_rows, "fiscal_year")
-        cashflow_by_year = self._latest_rows_by_year(cashflow_rows, "fiscal_year")
-        metric_by_year = self._metric_rows_by_year(metric_rows)
+        by_year = self._latest_rows_by_year(all_rows, "fiscal_year")
 
-        years = sorted(
-            {
-                *income_by_year.keys(),
-                *balance_by_year.keys(),
-                *cashflow_by_year.keys(),
-                *metric_by_year.keys(),
-            },
-            reverse=True,
-        )[:4]
-
-        def metric_value(year: int, *names: str):
-            row_map = metric_by_year.get(year, {})
-            for name in names:
-                row = row_map.get(name)
-                if row is not None:
-                    value = to_float(row.metric_value, None)
-                    if value is None:
-                        return None
-                    if row.metric_unit == "ratio" or name.endswith("_ratio") or name in {"gross_margin", "roe", "debt_ratio"}:
-                        return normalize_percent(value)
-                    return value
-            return None
+        years = sorted(by_year.keys(), reverse=True)[:4]
 
         def row_payload(label: str, resolver):
             payload = {"选项": "核心指标", "指标": label}
@@ -350,74 +326,53 @@ class StockService:
         rows = [
             row_payload(
                 "营业总收入",
-                lambda year: to_float(getattr(income_by_year.get(year), "revenue", None), None),
+                lambda year: to_float(getattr(by_year.get(year), "revenue", None), None),
             ),
             row_payload(
                 "归母净利润",
-                lambda year: to_float(getattr(income_by_year.get(year), "net_profit", None), None),
+                lambda year: to_float(getattr(by_year.get(year), "net_profit", None), None),
             ),
             row_payload(
                 "扣非净利润",
-                lambda year: to_float(getattr(income_by_year.get(year), "net_profit_deducted", None), None),
+                lambda year: to_float(getattr(by_year.get(year), "net_profit_deducted", None), None),
             ),
             row_payload(
                 "净资产收益率(ROE)",
-                lambda year: metric_value(year, "roe")
-                or self._safe_ratio(
-                    getattr(income_by_year.get(year), "net_profit", None),
-                    getattr(balance_by_year.get(year), "equity", None),
+                lambda year: self._safe_ratio(
+                    getattr(by_year.get(year), "net_profit", None),
+                    getattr(by_year.get(year), "total_assets", None),
                 ),
             ),
             row_payload(
                 "毛利率",
-                lambda year: metric_value(year, "gross_margin")
+                lambda year: normalize_percent(to_float(getattr(by_year.get(year), "gross_margin", None), None))
                 or self._safe_ratio(
-                    getattr(income_by_year.get(year), "gross_profit", None),
-                    getattr(income_by_year.get(year), "revenue", None),
+                    getattr(by_year.get(year), "gross_profit", None),
+                    getattr(by_year.get(year), "revenue", None),
                 ),
             ),
             row_payload(
                 "资产负债率",
-                lambda year: metric_value(year, "debt_ratio")
+                lambda year: normalize_percent(to_float(getattr(by_year.get(year), "debt_ratio", None), None))
                 or self._safe_ratio(
-                    getattr(balance_by_year.get(year), "total_liabilities", None),
-                    getattr(balance_by_year.get(year), "total_assets", None),
+                    getattr(by_year.get(year), "total_liabilities", None),
+                    getattr(by_year.get(year), "total_assets", None),
                 ),
             ),
             row_payload(
                 "经营现金流量净额",
-                lambda year: to_float(getattr(cashflow_by_year.get(year), "operating_cashflow", None), None),
+                lambda year: to_float(getattr(by_year.get(year), "operating_cashflow", None), None),
             ),
             row_payload(
                 "基本每股收益",
-                lambda year: to_float(getattr(income_by_year.get(year), "eps", None), None),
+                lambda year: to_float(getattr(by_year.get(year), "eps", None), None),
             ),
         ]
         return [item for item in rows if item is not None]
 
     def _build_main_business(self, db: Session, stock_code: str) -> list[dict]:
-        segment_rows = list(
-            db.execute(
-                select(BusinessSegmentHot)
-                .where(BusinessSegmentHot.stock_code == stock_code)
-                .order_by(BusinessSegmentHot.report_date.desc(), BusinessSegmentHot.created_at.desc())
-                .limit(20)
-            ).scalars().all()
-        )
-        if segment_rows:
-            return [
-                {
-                    "分类类型": "按业务分类",
-                    "主营构成": row.segment_name,
-                    "主营收入": to_float(row.revenue, None),
-                    "收入占比": normalize_percent(row.revenue_ratio),
-                    "毛利率": normalize_percent(row.gross_margin),
-                }
-                for row in segment_rows
-            ]
-
         profile = db.execute(
-            select(CompanyProfile).where(CompanyProfile.stock_code == stock_code)
+            select(CompanyMaster).where(CompanyMaster.stock_code == stock_code)
         ).scalars().first()
         if profile is not None and profile.main_segments_json:
             raw = profile.main_segments_json
@@ -472,22 +427,64 @@ class StockService:
         limit = 8 if compact else 20
         rows = list(
             db.execute(
-                select(NewsCompanyMapHot, NewsRawHot)
-                .join(NewsRawHot, NewsRawHot.id == NewsCompanyMapHot.news_id)
-                .where(NewsCompanyMapHot.stock_code == stock_code)
-                .order_by(NewsRawHot.publish_time.desc(), NewsRawHot.created_at.desc())
+                select(NewsHot)
+                .where(NewsHot.related_stock_codes_json.isnot(None))
+                .order_by(NewsHot.publish_time.desc(), NewsHot.created_at.desc())
+                .limit(limit * 5)
+            ).scalars().all()
+        )
+        matched = []
+        for row in rows:
+            codes = row.related_stock_codes_json
+            if isinstance(codes, str):
+                try:
+                    codes = json.loads(codes)
+                except Exception:
+                    codes = [codes]
+            if isinstance(codes, list) and stock_code in codes:
+                matched.append(row)
+            elif isinstance(codes, dict) and stock_code in codes:
+                matched.append(row)
+            if len(matched) >= limit:
+                break
+        return [
+            {
+                "发布时间": row.publish_time.isoformat() if row.publish_time else "",
+                "新闻标题": row.title,
+                "文章来源": row.source_name,
+                "影响方向": "",
+                "影响说明": row.summary_text or "",
+            }
+            for row in matched
+        ]
+
+    def _build_research_reports(self, db: Session, stock_code: str, compact: bool) -> list[dict]:
+        limit = 12 if compact else 30
+        rows = list(
+            db.execute(
+                select(ResearchReportHot)
+                .where(
+                    (ResearchReportHot.stock_code == stock_code)
+                    | (
+                        (ResearchReportHot.scope_type == "industry")
+                        & (ResearchReportHot.stock_code.is_(None))
+                    )
+                )
+                .order_by(ResearchReportHot.publish_date.desc(), ResearchReportHot.created_at.desc())
                 .limit(limit)
-            ).all()
+            ).scalars().all()
         )
         return [
             {
-                "发布时间": news.publish_time.isoformat() if news.publish_time else "",
-                "新闻标题": news.title,
-                "文章来源": news.source_name,
-                "影响方向": mapping.impact_direction,
-                "影响说明": mapping.reason_text,
+                "序号": i + 1,
+                "报告名称": row.title,
+                "机构": row.report_org or "--",
+                "行业": "",
+                "日期": row.publish_date.isoformat() if row.publish_date else "--",
+                "东财评级": "",
+                "报告PDF链接": row.source_url or "",
             }
-            for mapping, news in rows
+            for i, row in enumerate(rows)
         ]
 
     def _latest_rows_by_year(self, rows: Iterable, year_attr: str) -> dict[int, object]:
@@ -500,14 +497,6 @@ class StockService:
             if year is None or year in grouped:
                 continue
             grouped[int(year)] = row
-        return grouped
-
-    def _metric_rows_by_year(self, rows: Iterable[FinancialMetricHot]) -> dict[int, dict[str, FinancialMetricHot]]:
-        grouped: dict[int, dict[str, FinancialMetricHot]] = {}
-        for row in rows:
-            year = int(row.fiscal_year or row.report_date.year)
-            bucket = grouped.setdefault(year, {})
-            bucket.setdefault(row.metric_name, row)
         return grouped
 
     def _safe_ratio(self, numerator, denominator) -> float | None:

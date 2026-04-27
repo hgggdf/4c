@@ -36,6 +36,7 @@
                 v-else
                 mode="stock"
                 :stocks="stocks"
+                :panel-width="panelWidth"
                 @open-detail="selectedStock = $event"
               />
             </Transition>
@@ -55,6 +56,7 @@
                 v-else
                 mode="industry"
                 :industries="industries"
+                :panel-width="panelWidth"
                 @open-industry="selectedIndustry = $event"
               />
             </Transition>

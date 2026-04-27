@@ -148,6 +148,19 @@ class GLMMinimalAgent:
             state.tool_plan,
             dry_run=True,
         )
+        state.tool_trace = [
+            {
+                "tool_name": item.get("tool_name"),
+                "tool_input": item.get("tool_input") or {},
+                "success": item.get("success"),
+                "execution_status": item.get("execution_status"),
+                "warning": item.get("warning"),
+                "error": item.get("error"),
+                "can_score": item.get("can_score"),
+                "freshness": item.get("freshness"),
+            }
+            for item in state.tool_results
+        ]
         for item in state.tool_results or []:
             if item.get("success") is False:
                 state.warnings.append({
@@ -198,7 +211,9 @@ class GLMMinimalAgent:
         stock_context = self._resolve_stock_context(question, targets=targets, current_stock_code=current_stock_code)
         analysis_summary = self._build_analysis_summary(stock_context, year=_extract_year(question))
         chart_context = self._build_chart_context(stock_context)
+        self._trace_state = []
         evidence_items = self._collect_evidence(question, stock_context)
+        state.retrieval_trace = list(getattr(self, "_trace_state", []))
 
         cache_key = self._build_cache_key(question, stock_context, session_id=session_id, selected_mode=state.resolved_mode)
         source_signature = self._build_source_signature(analysis_summary, chart_context, evidence_items)
@@ -223,44 +238,10 @@ class GLMMinimalAgent:
             return state.to_agent_result()
 
         local_fallback = self._build_local_fallback(question, stock_context, analysis_summary, evidence_items, chart_context)
-        if not self.llm_client.is_configured():
-            payload = {
-                **local_fallback,
-                "framework": self.framework,
-                "agent_mode": "kimi-config-missing",
-            }
-            state.answer = payload.get("answer")
-            state.suggestion = payload.get("suggestion")
-            state.chart_desc = payload.get("chart_desc")
-            state.report_markdown = payload.get("report_markdown")
-            state.agent_mode = payload.get("agent_mode")
-            state.framework = payload.get("framework") or self.framework
-            return state.to_agent_result()
-
-        messages = build_chat_messages(
-            user_question=question,
-            stock_context=stock_context,
-            analysis_summary=analysis_summary,
-            chart_context=chart_context,
-            evidence_items=evidence_items,
-            history=history,
-        )
-
-        try:
-            response_text = self.llm_client.chat(messages, temperature=1.0, max_tokens=DEFAULT_GLM_MAX_TOKENS)
-            parsed = _extract_json_object(response_text) or {}
-        except Exception as exc:
-            llm_error_summary = _compact_text(str(exc), limit=220) or exc.__class__.__name__
-            logger.warning("GLM minimal fallback: %s", llm_error_summary)
-            parsed = {}
-
         payload = {
-            "answer": str(parsed.get("answer") or local_fallback["answer"]).strip(),
-            "suggestion": str(parsed.get("suggestion") or local_fallback["suggestion"]).strip(),
-            "chart_desc": str(parsed.get("chart_desc") or local_fallback["chart_desc"]).strip(),
-            "report_markdown": str(parsed.get("report_markdown") or local_fallback["report_markdown"]).strip(),
+            **local_fallback,
             "framework": self.framework,
-            "agent_mode": self.agent_mode,
+            "agent_mode": "local-knowledge-only",
         }
         state.answer = payload.get("answer")
         state.suggestion = payload.get("suggestion")
@@ -268,6 +249,10 @@ class GLMMinimalAgent:
         state.report_markdown = payload.get("report_markdown")
         state.agent_mode = payload.get("agent_mode")
         state.framework = payload.get("framework") or self.framework
+        state.warnings.append({
+            "type": "knowledge_scope",
+            "message": "当前回答仅允许使用本地知识库与本地数据库证据，不调用外部知识源。",
+        })
         result = state.to_agent_result()
         self._set_cached_result(
             cache_key,
@@ -391,10 +376,24 @@ class GLMMinimalAgent:
             result = handler(SearchRequest(query=question, stock_code=stock_code, top_k=limit))
             if not result.success or not result.data:
                 continue
+            trace_entry = {
+                "doc_type": doc_type,
+                "query": question,
+                "top_k": limit,
+                "stock_code": stock_code,
+                "item_count": len(result.data.get("items") or []),
+            }
+            state = getattr(self, "_trace_state", None)
+            if isinstance(state, list):
+                state.append(trace_entry)
             for item in result.data.get("items") or []:
                 compressed = self._compress_retrieval_item(item, default_kind=doc_type)
                 if compressed:
                     items.append(compressed)
+
+        # 无具体公司时，额外触发向量库全库语义检索，覆盖行业/政策类问题
+        if not stock_code:
+            items.extend(self._collect_industry_vector_evidence(question, top_k=4))
 
         items.extend(self._collect_temporary_report_evidence(question, stock_code=stock_code, limit=1))
 
@@ -434,6 +433,29 @@ class GLMMinimalAgent:
             "source": str(source),
             "summary": summary,
         }
+
+    def _collect_industry_vector_evidence(self, question: str, *, top_k: int = 4) -> list[dict[str, Any]]:
+        from app.knowledge.retriever import search_unstructured
+        try:
+            hits = search_unstructured(question, top_k=top_k, stock_code=None)
+        except Exception:
+            return []
+        items: list[dict[str, Any]] = []
+        for hit in hits:
+            meta = hit.get("meta") or hit.get("metadata") or {}
+            text = hit.get("text") or hit.get("content") or ""
+            title = meta.get("title") or meta.get("doc_type") or "知识库"
+            summary = _compact_text(text, limit=180)
+            if not summary:
+                continue
+            items.append({
+                "kind": meta.get("doc_type") or "knowledge",
+                "title": str(title),
+                "date": str(meta.get("publish_date") or meta.get("date") or ""),
+                "source": str(meta.get("source_type") or "vector_store"),
+                "summary": summary,
+            })
+        return items
 
     def _collect_temporary_report_evidence(self, question: str, *, stock_code: str | None, limit: int) -> list[dict[str, Any]]:
         filters: dict[str, Any] = {"type": "research_report"}
@@ -525,7 +547,8 @@ class GLMMinimalAgent:
         evidence_items: list[dict[str, Any]],
         chart_context: list[dict[str, Any]],
     ) -> dict[str, str]:
-        stock_name = (stock_context or {}).get("stock_name") or (stock_context or {}).get("stock_code") or "当前标的"
+        stock_name = (stock_context or {}).get("stock_name") or (stock_context or {}).get("stock_code") or None
+
         if analysis_summary:
             answer = (
                 f"{stock_name} 当前可用本地分析结果显示：综合评分 {analysis_summary.get('total_score', 'N/A')} 分，"
@@ -533,9 +556,20 @@ class GLMMinimalAgent:
                 f"重点建议：{analysis_summary.get('suggestion') or '建议结合公告、财报附注与新闻继续跟踪。'}"
             )
             suggestion = str(analysis_summary.get("suggestion") or "继续跟踪核心财务指标与公告催化。")
+        elif evidence_items:
+            # 行业/政策类问题：用所有 evidence 拼出有意义的回答
+            evidence_summaries = [
+                f"【{item.get('title', item.get('kind', '证据'))}】{item['summary']}"
+                for item in evidence_items[:4]
+                if item.get("summary")
+            ]
+            if evidence_summaries:
+                answer = f"关于「{question}」，根据本地知识库检索到以下相关信息：\n\n" + "\n\n".join(evidence_summaries)
+            else:
+                answer = f"关于「{question}」，当前本地知识库暂无直接匹配的证据，建议补充更多数据后再做判断。"
+            suggestion = "建议结合最新公告、行业研报与政策动态进一步跟踪。"
         else:
-            evidence_text = evidence_items[0]["summary"] if evidence_items else "当前本地证据有限。"
-            answer = f"关于“{question}”，当前已检索到的本地证据表明：{evidence_text}"
+            answer = f"关于「{question}」，当前本地证据有限，无法给出充分分析。"
             suggestion = "建议补充更多结构化证据后再做结论判断。"
 
         if chart_context:
@@ -544,11 +578,12 @@ class GLMMinimalAgent:
         else:
             chart_desc = "建议优先展示综合评分、主要维度得分与关键证据时间线。"
 
+        report_title = stock_name or "行业分析"
         report_markdown = "\n".join(
             [
-                f"# {stock_name} 最小分析草稿",
-                f"## 一、财务健康度\n{answer}",
-                f"## 二、成长潜力\n{chart_desc}",
+                f"# {report_title} 分析草稿",
+                f"## 一、核心发现\n{answer}",
+                f"## 二、数据支撑\n{chart_desc}",
                 f"## 三、风险提示\n{_compact_text('；'.join(item['summary'] for item in evidence_items[:2]) or '当前证据不足，需继续跟踪公告与新闻。', limit=220)}",
                 f"## 四、建议\n{suggestion}",
             ]

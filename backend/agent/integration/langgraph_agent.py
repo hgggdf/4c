@@ -10,12 +10,13 @@ from __future__ import annotations
 import json
 import logging
 import os
-from typing import Any
+from typing import Any, Generator
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
-from langgraph.prebuilt import create_react_agent
+from langgraph.prebuilt import create_react_agent, ToolNode
+from openai import OpenAI
 
 from config import get_settings
 
@@ -101,6 +102,21 @@ def tool_search_company_evidence(query: str, stock_code: str, top_k: int = 5) ->
 
 
 @tool
+def tool_search_knowledge(
+    query: str,
+    doc_types: list[str] | None = None,
+    industry_code: str | None = None,
+    top_k: int = 5,
+) -> list[dict]:
+    """对全库文档做语义检索，无需股票代码。适用于行业政策、宏观趋势等无具体公司的问题。
+    query 为检索问题，如'集采对仿制药的影响'、'医保谈判政策'。
+    doc_types 可选过滤文档类型，如 ['announcement', 'news', 'research_report']。
+    industry_code 可选按行业过滤，如 '医药生物'。"""
+    from agent.tools.retrieval_tools import search_documents
+    return search_documents(query, doc_types=doc_types, industry_code=industry_code, top_k=top_k)
+
+
+@tool
 def tool_get_macro_summary(indicator_names: list[str], recent_n: int = 6) -> dict:
     """获取宏观经济指标的时间序列数据。
     indicator_names 可选：GDP增速、CPI、PMI、医药制造业增加值等。recent_n 默认6期。"""
@@ -135,6 +151,7 @@ AGENT_TOOLS = [
     tool_get_clinical_trials,
     tool_get_company_news_impact,
     tool_search_company_evidence,
+    tool_search_knowledge,
     tool_get_macro_summary,
     tool_compare_companies,
 ]
@@ -155,40 +172,43 @@ SYSTEM_PROMPT = """你是一个专业的医药行业投研分析助手。
 - tool_get_drug_approvals：药品批准详情
 - tool_get_clinical_trials：临床试验详情
 - tool_get_company_news_impact：新闻舆情分析
-- tool_search_company_evidence：语义检索公告和财务附注
+- tool_search_company_evidence：语义检索特定公司的公告和财务附注（需要 stock_code）
+- tool_search_knowledge：语义检索全库文档，无需股票代码，适合行业/政策类问题
 - tool_get_macro_summary：宏观经济指标
 - tool_compare_companies：对比多家公司的财务指标
 
-工作原则：
-1. 先用 tool_resolve_company 把公司名转成股票代码，再调其他工具
-2. 根据问题类型选择合适的工具，不要调用无关工具
-3. 只基于工具返回的真实数据作答，禁止编造数据
-4. 数据不足时明确说明，不猜测
-5. 用中文回答，保持专业简洁
+工具选择指引：
+- 问题涉及具体公司 → 先 tool_resolve_company 获取股票代码，再调对应工具
+- 问题是行业趋势、政策影响、宏观分析（无具体公司名）→ 直接调 tool_search_knowledge，不要触发 [CLARIFY]
+- 例如"集采对仿制药行业的影响"、"医保谈判最新政策" → tool_search_knowledge(query=..., doc_types=["announcement","news"])
 
-澄清规则（问数模式专用）：
-- 仅当问题中完全没有任何公司名称、股票代码、公司简称时，才回复：[CLARIFY] 请问您想查询哪家公司的数据？
+工作原则：
+1. 根据问题类型选择合适的工具，不要调用无关工具
+2. 只基于工具返回的真实数据作答，禁止编造数据
+3. 数据不足时明确说明，不猜测
+4. 用中文回答，保持专业简洁
+
+澄清规则：
+- 仅当问题既没有公司名/股票代码，又不属于行业/政策类问题，且无法判断用户意图时，才回复：[CLARIFY] 请问您想了解哪方面的信息？
+- 行业、政策、宏观类问题不需要澄清，直接调 tool_search_knowledge
 - 时间范围不需要澄清，工具默认返回最近数期数据
-- 指标不明确时直接调用 tool_get_financial_summary 获取综合数据，不要澄清
-- 只要能识别出公司，就直接调用工具查询，不要过度澄清
-- 澄清时不调用任何工具，直接回复"""
+- 只要能识别出公司，就直接调用工具查询，不要过度澄清"""
 
 
 class LangGraphAgent:
     """基于 LangGraph ReAct 的真正智能体，采用双模型架构：
-    - 工具调用阶段：moonshot-v1-8k（快速、稳定）
-    - 最终答案生成：kimi-k2.5（更强推理能力）
+    - 工具调用阶段：moonshot-v1-8k（快速、稳定，LangChain）
+    - 最终答案生成：kimi-k2.5（thinking 模型，原生 OpenAI SDK 直调）
     """
 
     framework = "langgraph"
-    agent_mode = "kimi-dual-model"
+    agent_mode = "kimi-react+thinking"
 
     TOOL_CALLING_MODEL = "moonshot-v1-8k"
-    ANSWER_MODEL = "kimi-k2.5"
+    THINKING_MODEL = "kimi-k2.5"
 
     def __init__(self) -> None:
         settings = get_settings()
-        # 工具调用专用模型
         self.tool_llm = ChatOpenAI(
             model=self.TOOL_CALLING_MODEL,
             api_key=settings.kimi_api_key,
@@ -196,17 +216,14 @@ class LangGraphAgent:
             temperature=0.3,
             max_tokens=4096,
         )
-        # 最终答案生成专用模型（kimi-k2.5 只允许 temperature=1）
-        self.answer_llm = ChatOpenAI(
-            model=self.ANSWER_MODEL,
+        # 原生 OpenAI SDK，绕开 LangChain 的 reasoning_content 400 问题
+        self._thinking_client = OpenAI(
             api_key=settings.kimi_api_key,
             base_url=settings.kimi_base_url,
-            temperature=1,
-            max_tokens=4096,
         )
         self._graph = create_react_agent(
             self.tool_llm,
-            tools=AGENT_TOOLS,
+            tools=ToolNode(AGENT_TOOLS, handle_tool_errors=True),
             prompt=SYSTEM_PROMPT,
         )
 
@@ -214,38 +231,145 @@ class LangGraphAgent:
         settings = get_settings()
         return bool(settings.kimi_api_key and settings.kimi_model)
 
+    # ── 工具结果提取 ──────────────────────────────────────────
+
+    def _extract_tool_results(self, messages: list) -> list[dict]:
+        """从 LangGraph messages 提取 [{tool, args, result}]。"""
+        results = []
+        pending: dict[str, dict] = {}  # tool_call_id -> {tool, args}
+
+        for msg in messages:
+            if isinstance(msg, AIMessage) and msg.tool_calls:
+                for tc in msg.tool_calls:
+                    pending[tc["id"]] = {"tool": tc["name"], "args": tc["args"]}
+            elif isinstance(msg, ToolMessage):
+                info = pending.pop(msg.tool_call_id, None)
+                if info:
+                    results.append({
+                        "tool": info["tool"],
+                        "args": info["args"],
+                        "result": msg.content,
+                    })
+        return results
+
+    # ── 合成 prompt 构建 ──────────────────────────────────────
+
+    def _build_synthesis_messages(
+        self,
+        collected_data: list[dict],
+        question: str,
+        history: list[dict[str, Any]] | None,
+        system_context: str | None = None,
+    ) -> list[dict]:
+        data_sections = []
+        for i, item in enumerate(collected_data, 1):
+            args_json = json.dumps(item["args"], ensure_ascii=False, default=str)
+            result_str = item["result"] if isinstance(item["result"], str) else json.dumps(item["result"], ensure_ascii=False, default=str)
+            data_sections.append(
+                f"### 数据源 {i}：{item['tool']}\n"
+                f"调用参数：{args_json}\n"
+                f"返回数据：\n{result_str[:2000]}"
+            )
+
+        history_text = ""
+        for h in (history or [])[-6:]:
+            role = "用户" if h.get("role") == "user" else "助手"
+            history_text += f"{role}：{h.get('content', '')}\n"
+
+        user_content = (
+            f"## 用户问题\n{question}\n\n"
+            + (f"## 对话历史\n{history_text}\n" if history_text else "")
+            + f"## 数据采集结果（共 {len(collected_data)} 个数据源）\n\n"
+            + "\n\n".join(data_sections)
+        )
+
+        system_content = (
+            (system_context + "\n\n" if system_context else "")
+            + "你是专业的医药行业投研分析助手。"
+            "请基于上方工具采集的真实数据进行深度分析，禁止编造数据，用中文回答，结构清晰。"
+        )
+
+        return [
+            {"role": "system", "content": system_content},
+            {"role": "user", "content": user_content},
+        ]
+
+    # ── thinking 模型调用（同步）────────────────────────────
+
+    def _synthesize_with_thinking(
+        self,
+        collected_data: list[dict],
+        question: str,
+        history: list[dict[str, Any]] | None = None,
+        system_context: str | None = None,
+    ) -> str:
+        msgs = self._build_synthesis_messages(collected_data, question, history, system_context)
+        response = self._thinking_client.chat.completions.create(
+            model=self.THINKING_MODEL,
+            messages=msgs,
+            temperature=1.0,
+            max_tokens=4096,
+        )
+        return response.choices[0].message.content or ""
+
+    # ── thinking 模型调用（流式）────────────────────────────
+
+    def _synthesize_with_thinking_stream(
+        self,
+        collected_data: list[dict],
+        question: str,
+        history: list[dict[str, Any]] | None = None,
+        system_context: str | None = None,
+    ) -> Generator[str, None, None]:
+        msgs = self._build_synthesis_messages(collected_data, question, history, system_context)
+        stream = self._thinking_client.chat.completions.create(
+            model=self.THINKING_MODEL,
+            messages=msgs,
+            temperature=1.0,
+            max_tokens=4096,
+            stream=True,
+        )
+        for chunk in stream:
+            delta = chunk.choices[0].delta if chunk.choices else None
+            if delta and delta.content:
+                yield delta.content
+
+    # ── 公共接口 ─────────────────────────────────────────────
+
     def run(
         self,
         message: str,
         *,
         history: list[dict[str, Any]] | None = None,
+        system_context: str | None = None,
         max_iterations: int = 10,
     ) -> dict[str, Any]:
-        """同步运行 Agent，返回最终答案和工具调用记录。
-
-        双模型流程：
-        1. tool_llm (moonshot-v1-8k) 执行工具调用
-        2. answer_llm (kimi-k2.5) 基于工具结果生成最终答案
-        """
-        messages = self._build_messages(message, history)
+        messages = self._build_messages(message, history, system_context=system_context)
         config = {"recursion_limit": max_iterations * 2 + 4}
 
         try:
-            # 阶段1：工具调用（moonshot-v1-8k）
             result = self._graph.invoke({"messages": messages}, config=config)
-
-            # 阶段2：用 kimi-k2.5 重新生成答案
             parsed = self._parse_result(result, message)
+            collected_data = self._extract_tool_results(result.get("messages", []))
 
-            # 如果有工具调用，用更强的模型重新生成答案
-            if parsed["tool_calls"]:
-                enhanced_answer = self._generate_enhanced_answer(
-                    message, parsed["tool_calls"], result.get("messages", [])
-                )
-                parsed["answer"] = enhanced_answer
-                parsed["dual_model_used"] = True
+            if collected_data:
+                try:
+                    answer = self._synthesize_with_thinking(
+                        collected_data, message, history, system_context
+                    )
+                    parsed["answer"] = answer
+                    parsed["thinking_used"] = True
+                except Exception as exc:
+                    logger.warning("kimi-k2.5 synthesis failed, falling back: %s", exc)
+                    parsed["thinking_used"] = False
+                    # 降级：用 moonshot 的原始答案
+                    if not parsed.get("answer"):
+                        for msg in reversed(result.get("messages", [])):
+                            if isinstance(msg, AIMessage) and msg.content and not msg.tool_calls:
+                                parsed["answer"] = msg.content
+                                break
             else:
-                parsed["dual_model_used"] = False
+                parsed["thinking_used"] = False
 
             return parsed
 
@@ -256,7 +380,7 @@ class LangGraphAgent:
                 "tool_calls": [],
                 "framework": self.framework,
                 "agent_mode": self.agent_mode,
-                "dual_model_used": False,
+                "thinking_used": False,
             }
 
     def stream(
@@ -264,72 +388,70 @@ class LangGraphAgent:
         message: str,
         *,
         history: list[dict[str, Any]] | None = None,
+        system_context: str | None = None,
         max_iterations: int = 10,
     ):
-        """流式运行 Agent，逐步 yield 工具调用过程和最终答案。
-
-        双模型流程：
-        1. 流式输出工具调用过程（moonshot-v1-8k）
-        2. 工具调用完成后，用 kimi-k2.5 生成增强答案
-        """
-        messages = self._build_messages(message, history)
+        messages = self._build_messages(message, history, system_context=system_context)
         config = {"recursion_limit": max_iterations * 2 + 4}
 
-        collected_tool_calls = []
-        all_messages = []
+        all_messages: list = []
+        tool_call_count = 0
 
-        # 阶段1：流式输出工具调用过程
+        # 阶段一：moonshot-v1-8k 执行 ReAct 工具调用循环
         for chunk in self._graph.stream({"messages": messages}, config=config, stream_mode="updates"):
             for node, update in chunk.items():
                 msgs = update.get("messages", [])
                 all_messages.extend(msgs)
                 for msg in msgs:
-                    if isinstance(msg, AIMessage):
-                        # LLM 决定调用工具
-                        if msg.tool_calls:
-                            for tc in msg.tool_calls:
-                                tool_info = {
-                                    "tool": tc["name"],
-                                    "args": tc["args"],
-                                }
-                                collected_tool_calls.append(tool_info)
-                                yield {
-                                    "type": "tool_call",
-                                    **tool_info,
-                                }
+                    if isinstance(msg, AIMessage) and msg.tool_calls:
+                        for tc in msg.tool_calls:
+                            tool_call_count += 1
+                            yield {"type": "tool_call", "tool": tc["name"], "args": tc["args"]}
                     elif isinstance(msg, ToolMessage):
-                        # 工具执行结果
                         yield {
                             "type": "tool_result",
                             "tool": msg.name,
                             "content": str(msg.content)[:200],
                         }
 
-        # 阶段2：用 kimi-k2.5 生成增强答案
-        if collected_tool_calls:
-            yield {"type": "status", "content": "正在生成最终答案..."}
-            enhanced_answer = self._generate_enhanced_answer(
-                message, collected_tool_calls, all_messages
-            )
-            yield {
-                "type": "answer",
-                "content": enhanced_answer,
-                "dual_model_used": True,
-            }
+        # 过渡
+        yield {"type": "synthesizing"}
+
+        # 阶段二：kimi-k2.5 流式生成最终答案
+        collected_data = self._extract_tool_results(all_messages)
+
+        if collected_data:
+            try:
+                for chunk_text in self._synthesize_with_thinking_stream(
+                    collected_data, message, history, system_context
+                ):
+                    yield {"type": "answer_chunk", "content": chunk_text}
+            except Exception as exc:
+                logger.warning("kimi-k2.5 stream failed, falling back: %s", exc)
+                # 降级：返回 moonshot 原始答案
+                for msg in reversed(all_messages):
+                    if isinstance(msg, AIMessage) and msg.content and not msg.tool_calls:
+                        yield {"type": "answer_chunk", "content": msg.content}
+                        break
         else:
-            # 没有工具调用，直接返回原始答案
+            # 无工具调用，直接输出 moonshot 的回答
             for msg in all_messages:
-                if isinstance(msg, AIMessage) and msg.content:
-                    yield {
-                        "type": "answer",
-                        "content": msg.content,
-                        "dual_model_used": False,
-                    }
+                if isinstance(msg, AIMessage) and msg.content and not msg.tool_calls:
+                    yield {"type": "answer_chunk", "content": msg.content}
+                    break
+
+        yield {"type": "answer_done"}
 
     def _build_messages(
-        self, message: str, history: list[dict[str, Any]] | None
+        self,
+        message: str,
+        history: list[dict[str, Any]] | None,
+        *,
+        system_context: str | None = None,
     ) -> list:
         msgs = []
+        if system_context:
+            msgs.append(SystemMessage(content=system_context))
         for item in (history or [])[-6:]:
             role = item.get("role", "user")
             content = str(item.get("content", ""))
@@ -372,59 +494,6 @@ class LangGraphAgent:
             "clarification_question": clarification_question,
         }
 
-    def _generate_enhanced_answer(
-        self,
-        question: str,
-        tool_calls: list[dict],
-        messages: list,
-    ) -> str:
-        """用 kimi-k2.5 基于工具调用结果生成增强答案。"""
-        # 收集工具调用结果
-        tool_results_text = []
-        tool_call_iter = iter(tool_calls)
-        current_tool = None
-
-        for msg in messages:
-            if isinstance(msg, AIMessage) and msg.tool_calls:
-                for tc in msg.tool_calls:
-                    current_tool = tc["name"]
-            elif isinstance(msg, ToolMessage):
-                tool_results_text.append(
-                    f"[{msg.name}] 返回结果：\n{str(msg.content)[:2000]}"
-                )
-
-        if not tool_results_text:
-            # 没有工具结果，直接返回原始答案
-            for msg in reversed(messages):
-                if isinstance(msg, AIMessage) and msg.content and not msg.tool_calls:
-                    return msg.content
-            return ""
-
-        context = "\n\n".join(tool_results_text)
-        synthesis_prompt = f"""你是一个专业的医药行业投研分析助手。
-
-以下是通过工具调用获取的真实数据：
-
-{context}
-
-请基于以上真实数据，对用户问题给出专业、详尽的分析回答。
-要求：
-1. 只使用上述工具返回的真实数据，禁止编造
-2. 结构清晰，重点突出
-3. 用中文回答，保持专业简洁
-
-用户问题：{question}"""
-
-        try:
-            response = self.answer_llm.invoke([HumanMessage(content=synthesis_prompt)])
-            return response.content
-        except Exception as exc:
-            logger.warning("answer_llm (kimi-k2.5) failed, falling back to tool_llm answer: %s", exc)
-            # 降级：返回 tool_llm 的原始答案
-            for msg in reversed(messages):
-                if isinstance(msg, AIMessage) and msg.content and not msg.tool_calls:
-                    return msg.content
-            return ""
 
 
 __all__ = ["LangGraphAgent", "AGENT_TOOLS"]

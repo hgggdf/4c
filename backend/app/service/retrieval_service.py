@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-from sqlalchemy import select
+from sqlalchemy import or_, select, update
+
+from app.core.database.models.announcement_hot import AnnouncementRawHot
+from app.core.database.models.company import CompanyMaster, CompanyProfile
+from app.core.database.models.financial_hot import FinancialHot
+from app.core.database.models.news_hot import NewsHot, NewsRawHot
+from app.core.database.models.research_report_hot import ResearchReportHot
 
 from .base import BaseService
 from .guards import require_non_empty, require_positive_int
@@ -27,6 +33,7 @@ class RetrievalService(BaseService):
         "financial_note": "financial_notes_hot",
         "news": "news_raw_hot",
         "company_profile": "company_profile",
+        "report": "research_report_hot",
     }
 
     ANNOUNCEMENT_SOURCE_FIELDS = (
@@ -81,6 +88,22 @@ class RetrievalService(BaseService):
         "updated_at",
     )
 
+    RESEARCH_REPORT_SOURCE_FIELDS = (
+        "id",
+        "report_uid",
+        "scope_type",
+        "stock_code",
+        "industry_code",
+        "title",
+        "publish_date",
+        "report_org",
+        "content",
+        "summary_text",
+        "source_type",
+        "source_url",
+        "created_at",
+    )
+
     def search_announcements(self, req: SearchRequest):
         return self._run(lambda: self._search(req, doc_type="announcement"), trace_id=req.trace_id)
 
@@ -98,6 +121,9 @@ class RetrievalService(BaseService):
 
     def search_text_evidence(self, req: SearchRequest):
         return self._run(lambda: self._search(req, doc_type=None), trace_id=req.trace_id)
+
+    def search_hybrid(self, req: SearchRequest):
+        return self._run(lambda: self._search_hybrid(req), trace_id=req.trace_id)
 
     def search_announcement_evidence(self, req: SearchRequest):
         return self.search_announcements(req)
@@ -188,6 +214,201 @@ class RetrievalService(BaseService):
             "items": hydrated_items,
         }
 
+    def _search_hybrid(self, req: SearchRequest):
+        query = require_non_empty(req.query, "query")
+        top_k = require_positive_int(req.top_k, "top_k")
+        filters = self._build_filters(req, doc_type=None)
+
+        keyword_items = self._keyword_search(query=query, top_k=top_k, filters=filters, doc_types=req.doc_types)
+        vector_items = self._search(req, doc_type=None)["items"]
+
+        merged = self._merge_hybrid_results(keyword_items, vector_items, top_k=top_k)
+        return {
+            "query": query,
+            "resolved_stock_code": filters.get("stock_code"),
+            "top_k": top_k,
+            "doc_types": req.doc_types,
+            "items": merged,
+            "keyword_count": len(keyword_items),
+            "vector_count": len(vector_items),
+        }
+
+    def _keyword_search(self, *, query: str, top_k: int, filters: dict, doc_types: list[str] | None) -> list[dict]:
+        normalized_query = query.strip()
+        stock_code = filters.get("stock_code")
+        industry_code = filters.get("industry_code")
+        lowered_query = normalized_query.lower()
+
+        def _run(db):
+            items: list[dict] = []
+
+            def push_rows(rows, doc_type: str, source_pk_field: str, title_field: str = "title", text_field: str = "content"):
+                for row in rows:
+                    source_pk = getattr(row, source_pk_field, None)
+                    title = getattr(row, title_field, None) or ""
+                    text = getattr(row, text_field, None) or ""
+                    haystack = f"{title} {text}".lower()
+                    score = 0.0
+                    if normalized_query and normalized_query in title:
+                        score += 2.5
+                    if lowered_query and lowered_query in haystack:
+                        score += 1.8
+                    if stock_code and getattr(row, "stock_code", None) == stock_code:
+                        score += 1.0
+                    if industry_code and getattr(row, "industry_code", None) == industry_code:
+                        score += 0.8
+                    if score <= 0:
+                        continue
+                    items.append({
+                        "doc_type": doc_type,
+                        "doc_id": source_pk,
+                        "chunk_id": source_pk,
+                        "text": text[:1000],
+                        "score": round(score, 4),
+                        "metadata": {
+                            "doc_type": doc_type,
+                            "source_pk": str(source_pk) if source_pk is not None else None,
+                            "title": title,
+                        },
+                    })
+
+            if doc_types is None or "announcement" in doc_types:
+                rows = db.execute(
+                    select(AnnouncementRawHot)
+                    .where(
+                        or_(
+                            AnnouncementRawHot.title.contains(normalized_query),
+                            AnnouncementRawHot.content.contains(normalized_query),
+                            AnnouncementRawHot.summary_text.contains(normalized_query),
+                        )
+                    )
+                    .order_by(AnnouncementRawHot.publish_date.desc(), AnnouncementRawHot.created_at.desc())
+                    .limit(top_k * 3)
+                ).scalars().all()
+                push_rows(rows, "announcement", "id", title_field="title", text_field="content")
+
+            if doc_types is None or "news" in doc_types:
+                rows = db.execute(
+                    select(NewsRawHot)
+                    .where(
+                        or_(
+                            NewsRawHot.title.contains(normalized_query),
+                            NewsRawHot.content.contains(normalized_query),
+                            NewsRawHot.summary_text.contains(normalized_query),
+                        )
+                    )
+                    .order_by(NewsRawHot.publish_time.desc(), NewsRawHot.created_at.desc())
+                    .limit(top_k * 3)
+                ).scalars().all()
+                push_rows(rows, "news", "id", title_field="title", text_field="content")
+
+            if doc_types is None or "report" in doc_types:
+                rows = db.execute(
+                    select(ResearchReportHot)
+                    .where(
+                        or_(
+                            ResearchReportHot.title.contains(normalized_query),
+                            ResearchReportHot.content.contains(normalized_query),
+                            ResearchReportHot.summary_text.contains(normalized_query),
+                        )
+                    )
+                    .order_by(ResearchReportHot.publish_date.desc(), ResearchReportHot.created_at.desc())
+                    .limit(top_k * 3)
+                ).scalars().all()
+                push_rows(rows, "report", "id", title_field="title", text_field="content")
+
+            if doc_types is None or "company_profile" in doc_types:
+                rows = db.execute(
+                    select(CompanyProfile, CompanyMaster.stock_name)
+                    .join(CompanyMaster, CompanyMaster.stock_code == CompanyProfile.stock_code)
+                    .where(
+                        or_(
+                            CompanyMaster.stock_name.contains(normalized_query),
+                            CompanyMaster.full_name.contains(normalized_query),
+                            CompanyProfile.business_summary.contains(normalized_query),
+                        )
+                    )
+                    .limit(top_k * 3)
+                ).all()
+                for profile, stock_name in rows:
+                    score = 2.0
+                    if stock_name and normalized_query in stock_name:
+                        score += 1.0
+                    items.append({
+                        "doc_type": "company_profile",
+                        "doc_id": profile.id,
+                        "chunk_id": profile.id,
+                        "text": profile.business_summary or "",
+                        "score": round(score, 4),
+                        "metadata": {
+                            "doc_type": "company_profile",
+                            "source_pk": str(profile.id),
+                            "stock_name": stock_name,
+                            "title": stock_name,
+                        },
+                    })
+
+            items.sort(key=lambda item: item["score"], reverse=True)
+            top_items = items[:top_k]
+
+            # 对命中记录 query_count +1
+            _DOC_TYPE_MODEL = {
+                "announcement": AnnouncementRawHot,
+                "news": NewsRawHot,
+                "report": ResearchReportHot,
+            }
+            for item in top_items:
+                model = _DOC_TYPE_MODEL.get(item.get("doc_type"))
+                pk = item.get("doc_id")
+                if model and pk and hasattr(model, "query_count"):
+                    try:
+                        db.execute(
+                            update(model)
+                            .where(model.id == pk)
+                            .values(query_count=model.query_count + 1)
+                        )
+                    except Exception:
+                        pass
+            try:
+                db.commit()
+            except Exception:
+                db.rollback()
+
+            return self._hydrate_items(top_items)
+
+        return self._with_db(_run)
+
+    def _merge_hybrid_results(self, keyword_items: list[dict], vector_items: list[dict], top_k: int) -> list[dict]:
+        merged: dict[tuple[str | None, str | None], dict] = {}
+
+        def add_item(item: dict, source: str):
+            metadata = dict(item.get("metadata") or {})
+            doc_type = metadata.get("doc_type") or item.get("doc_type")
+            source_pk = metadata.get("source_pk") or item.get("doc_id") or item.get("chunk_id")
+            key = (str(doc_type) if doc_type is not None else None, str(source_pk) if source_pk is not None else None)
+            current = merged.get(key)
+            payload = dict(item)
+            payload["match_source"] = source
+            payload["keyword_score"] = item.get("score") if source == "keyword" else None
+            payload["vector_score"] = item.get("score") if source == "vector" else None
+            payload["final_score"] = float(item.get("score") or 0)
+            if current is None or payload["final_score"] > current["final_score"]:
+                merged[key] = payload
+            elif current is not None:
+                current["match_source"] = "hybrid"
+                current["keyword_score"] = current.get("keyword_score") or payload.get("keyword_score")
+                current["vector_score"] = current.get("vector_score") or payload.get("vector_score")
+                current["final_score"] = max(current["final_score"], payload["final_score"])
+
+        for item in keyword_items:
+            add_item(item, "keyword")
+        for item in vector_items:
+            add_item(item, "vector")
+
+        results = list(merged.values())
+        results.sort(key=lambda item: item.get("final_score", 0), reverse=True)
+        return results[:top_k]
+
     def _hydrate_items(self, items: list[dict]) -> list[dict]:
         if not items:
             return items
@@ -263,6 +484,16 @@ class RetrievalService(BaseService):
             payload = model_to_dict(profile, self.COMPANY_PROFILE_SOURCE_FIELDS)
             payload["stock_name"] = normalize_value(stock_name)
             return payload
+
+        if doc_type == "report":
+            from app.core.database.models.research_report_hot import ResearchReportHot
+
+            entity = db.execute(
+                select(ResearchReportHot).where(ResearchReportHot.id == source_id)
+            ).scalars().first()
+            if not entity:
+                return None
+            return model_to_dict(entity, self.RESEARCH_REPORT_SOURCE_FIELDS)
 
         return None
 

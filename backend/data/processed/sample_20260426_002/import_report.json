@@ -1,0 +1,33 @@
+{
+  "batch_id": "sample_20260426_002",
+  "status": "partial",
+  "finished_at": "2026-04-26T22:29:02.618724",
+  "success_count": 54,
+  "failed_count": 6,
+  "errors": [
+    {
+      "row": 1,
+      "reason": "indicator_name 或 period 为空"
+    },
+    {
+      "row": 2,
+      "reason": "indicator_name 或 period 为空"
+    },
+    {
+      "row": 3,
+      "reason": "indicator_name 或 period 为空"
+    },
+    {
+      "row": 4,
+      "reason": "indicator_name 或 period 为空"
+    },
+    {
+      "row": 5,
+      "reason": "indicator_name 或 period 为空"
+    },
+    {
+      "row": 6,
+      "reason": "indicator_name 或 period 为空"
+    }
+  ]
+}

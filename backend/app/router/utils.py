@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import is_dataclass
+from dataclasses import fields, is_dataclass
 from typing import Any, Type
 
 from fastapi.encoders import jsonable_encoder
@@ -25,6 +25,9 @@ def build_request(req_cls: Type[Any], payload: Any) -> Any:
 		data = {key: value for key, value in payload.items() if value is not None}
 	else:
 		data = payload
+	if is_dataclass(req_cls):
+		valid_keys = {f.name for f in fields(req_cls)}
+		data = {k: v for k, v in data.items() if k in valid_keys}
 	return req_cls(**data)
 
 

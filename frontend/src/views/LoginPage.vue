@@ -6,8 +6,8 @@
       <div class="login-brand">
         <span class="login-logo">⚕</span>
         <div>
-          <div class="login-title">医药投研智能体</div>
-          <div class="login-subtitle">AI-Powered Pharma Investment Platform</div>
+          <div class="login-title">企业运营分析与投研辅助系统</div>
+          <div class="login-subtitle">Enterprise Operations Analysis & Investment Research</div>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ from dataclasses import asdict, is_dataclass
 from typing import Any
 
 from agent.tools import announcement_tools, company_tools, financial_tools, macro_tools, news_tools, retrieval_tools
+from app.knowledge.retriever import search_unstructured
 
 
 def safe_to_dict(value: Any) -> Any:
@@ -46,6 +47,8 @@ def normalize_tool_result(
     error: str | None = None,
     can_score: bool = False,
     freshness: str | None = None,
+    tool_input: dict[str, Any] | None = None,
+    execution_status: str | None = None,
 ) -> dict[str, Any]:
     normalized_data = safe_to_dict(data)
     normalized_sources = safe_to_dict(evidence_sources or [])
@@ -62,6 +65,8 @@ def normalize_tool_result(
         "error": error,
         "can_score": can_score,
         "freshness": freshness,
+        "tool_input": safe_to_dict(tool_input or {}),
+        "execution_status": execution_status or ("success" if success else "failed"),
     }
 
 
@@ -127,7 +132,14 @@ def _run_tool(tool_name: str, input_data: dict[str, Any]) -> tuple[bool, Any, st
         if not user_question and not industry_name:
             return False, None, "缺少必需参数 user_question 或 industry_name"
         query = str(user_question or industry_name or "")
-        return True, macro_tools.get_macro_summary(query), None
+        return True, macro_tools.get_macro_summary([query]), None
+
+    if tool_name == "industry_knowledge_search":
+        if not user_question and not industry_name:
+            return False, None, "缺少必需参数 user_question 或 industry_name"
+        query = str(user_question or industry_name or "")
+        hits = search_unstructured(query, top_k=6, stock_code=None)
+        return True, {"query": query, "hits": hits, "hit_count": len(hits)}, None
 
     return False, None, "未配置真实工具映射"
 
@@ -162,6 +174,8 @@ def execute_tool_plan(
                     error=None,
                     can_score=can_score,
                     freshness=freshness,
+                    tool_input=input_data,
+                    execution_status="dry_run",
                 )
             )
             continue
@@ -180,6 +194,8 @@ def execute_tool_plan(
                     error=None if success else error,
                     can_score=can_score,
                     freshness=freshness,
+                    tool_input=input_data,
+                    execution_status="success" if success else "failed",
                 )
             )
         except Exception as exc:
@@ -195,6 +211,8 @@ def execute_tool_plan(
                     error=str(exc),
                     can_score=can_score,
                     freshness=freshness,
+                    tool_input=input_data,
+                    execution_status="error",
                 )
             )
     return results

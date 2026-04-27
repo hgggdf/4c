@@ -27,6 +27,8 @@ class AgentState:
     freshness_strategy: str | None = None
     tool_plan: list[dict[str, Any]] = field(default_factory=list)
     tool_results: list[dict[str, Any]] = field(default_factory=list)
+    retrieval_trace: list[dict[str, Any]] = field(default_factory=list)
+    tool_trace: list[dict[str, Any]] = field(default_factory=list)
 
     medical_analysis: dict[str, Any] | None = None
     score_result: dict[str, Any] | None = None
@@ -68,6 +70,8 @@ class AgentState:
             "score_result": self.score_result,
             "chart_payload": list(self.chart_payload) if self.chart_payload else [],
             "evidence_list": list(self.evidence_list) if self.evidence_list else [],
+            "retrieval_trace": list(self.retrieval_trace) if self.retrieval_trace else [],
+            "tool_trace": list(self.tool_trace) if self.tool_trace else [],
             "follow_up_questions": list(self.follow_up_questions) if self.follow_up_questions else [],
             "preference_profile": self.preference_profile,
             "warnings": list(self.warnings) if self.warnings else [],

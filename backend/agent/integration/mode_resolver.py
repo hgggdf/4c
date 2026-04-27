@@ -23,6 +23,7 @@ ASCII_MODE_HINTS: dict[str, list[str]] = {
 
 MODE_ALIASES: dict[str, str] = {
     "公司分析": "company_analysis",
+    "企业运营评估": "company_analysis",
     "财务分析": "financial_analysis",
     "药品管线": "pipeline_analysis",
     "政策/集采": "policy_procurement",

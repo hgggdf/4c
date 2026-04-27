@@ -179,9 +179,17 @@ function switchTab(key) {
   activeTab.value = key
 }
 
+watch(activeTab, async (val) => {
+  if (val === 'data' && lastKline) {
+    await nextTick()
+    renderChart(lastKline)
+  }
+})
+
 // ── 数据 ──────────────────────────────────────────
 const chartRef = ref(null)
 let chartInst = null
+let lastKline = null
 const metrics  = ref({})
 const reports  = ref([])
 const concepts = ref({ aliases: [], industries: [] })
@@ -207,6 +215,7 @@ async function loadMarketData() {
     events.value   = ev
     await nextTick()
     renderChart(kline)
+    lastKline = kline
     loadCompanyProfile()
     loadFinancialSummary()
   } finally {
@@ -217,7 +226,7 @@ async function loadMarketData() {
 // ── 图表渲染 ──────────────────────────────────────
 function renderChart(kline) {
   if (!chartRef.value) return
-  if (!chartInst) chartInst = echarts.init(chartRef.value)
+  chartInst = echarts.init(chartRef.value)
   const dates  = kline.map(d => d.date)
   const values = kline.map(d => [d.open, d.close, d.low, d.high])
   const vols   = kline.map(d => d.volume ?? d.vol ?? 0)

@@ -32,7 +32,7 @@
 
       <!-- 顶部标题栏 -->
       <div class="cp-topbar">
-        <span class="cp-topbar-title">⚕ 医药投研智能体</span>
+        <span class="cp-topbar-title">企业运营分析与投研辅助系统</span>
         <button class="cp-logout-btn" @click="logout" title="退出登录">退出</button>
       </div>
 
@@ -56,39 +56,113 @@
                 {{ t.type === 'industry' ? '🏭' : '📈' }} {{ t.name }}
               </span>
             </div>
+
+            <!-- Agent 推理轨迹 -->
+            <AgentTrace
+              v-if="msg.isAgent && (msg.agentTrace?.length || (chatStore.loading && i === chatStore.messages.length - 1))"
+              :steps="msg.agentTrace || []"
+              :sources="msg.agentSources || []"
+              :loading="chatStore.loading && i === chatStore.messages.length - 1"
+            />
+            <!-- 模式与上下文 -->
+            <div v-if="msg.role === 'assistant' && (getModeTitle(msg) || getEvidenceSummary(msg))" class="cp-context-card">
+              <div v-if="getModeTitle(msg)" class="cp-context-row">
+                <span class="cp-context-label">模式</span>
+                <span class="cp-context-value">{{ getModeTitle(msg) }}</span>
+              </div>
+              <div v-if="getEvidenceSummary(msg)" class="cp-context-row">
+                <span class="cp-context-label">本地证据</span>
+                <span class="cp-context-value">{{ getEvidenceSummary(msg) }}</span>
+              </div>
+            </div>
+
             <!-- 气泡 -->
             <div
-              v-if="shouldShowBubble(msg, i)"
+              v-if="shouldShowBubble(msg, i) && msg.role === 'assistant'"
+              class="cp-bubble md-body"
+              :class="{ 'cp-bubble--clarification': msg.isClarification }"
+              v-html="renderMarkdown(msg.content)"
+            ></div>
+            <div
+              v-else-if="shouldShowBubble(msg, i)"
               class="cp-bubble"
               :class="{ 'cp-bubble--clarification': msg.isClarification }"
-            >{{ formatContent(msg) }}</div>
+            >{{ msg.content }}</div>
             <div
               v-else-if="isStreamingAssistant(msg, i)"
               class="cp-bubble cp-bubble--thinking"
             >
               <span class="cp-dot"></span><span class="cp-dot"></span><span class="cp-dot"></span>
             </div>
+
+            <div v-if="hasToolEvents(msg)" class="cp-tool-events">
+              <div v-for="(event, idx) in getToolEvents(msg)" :key="`${i}-tool-${idx}`" class="cp-tool-event">
+                <template v-if="event.type === 'tool_call'">
+                  <div class="cp-tool-event-head">
+                    <span class="cp-tool-event-type">工具调用</span>
+                    <span class="cp-tool-event-name">{{ event.tool }}</span>
+                  </div>
+                  <div class="cp-tool-event-body">{{ formatToolArgs(event.args) }}</div>
+                </template>
+                <template v-else-if="event.type === 'tool_result'">
+                  <div class="cp-tool-event-head">
+                    <span class="cp-tool-event-type">工具结果</span>
+                    <span class="cp-tool-event-name">{{ event.tool }}</span>
+                  </div>
+                  <div class="cp-tool-event-body">{{ event.preview }}</div>
+                </template>
+                <template v-else-if="event.type === 'status'">
+                  <div class="cp-tool-event-head">
+                    <span class="cp-tool-event-type">状态</span>
+                  </div>
+                  <div class="cp-tool-event-body">{{ event.content }}</div>
+                </template>
+                <template v-else-if="event.type === 'clarification'">
+                  <div class="cp-tool-event-head">
+                    <span class="cp-tool-event-type">澄清追问</span>
+                  </div>
+                  <div class="cp-tool-event-body">{{ event.question }}</div>
+                </template>
+              </div>
+            </div>
+
+            <div v-if="msg.role === 'assistant' && (getRetrievalTrace(msg).length || getDataSources(msg).length)" class="cp-retrieval-card">
+              <button class="cp-retrieval-toggle" @click="toggleRetrieval(i)">
+                <span>检索与数据来源</span>
+                <span>{{ expandedRetrievals.has(i) ? '收起' : '展开' }}</span>
+              </button>
+              <div v-if="expandedRetrievals.has(i)" class="cp-retrieval-list">
+                <div v-if="getSourceNotice(msg)" class="cp-source-notice">{{ getSourceNotice(msg) }}</div>
+                <div v-for="(item, idx) in getDataSources(msg)" :key="`${i}-source-${idx}`" class="cp-source-item">
+                  <div class="cp-retrieval-head">
+                    <span class="cp-retrieval-type">{{ item.data_type || 'data' }}</span>
+                    <span class="cp-retrieval-score">{{ item.source }}</span>
+                  </div>
+                  <div class="cp-retrieval-title">{{ item.title || '未命名来源' }}</div>
+                  <div class="cp-retrieval-snippet">置信度：{{ Number(item.confidence || 0).toFixed(2) }}</div>
+                </div>
+                <div v-for="(item, idx) in getRetrievalTrace(msg)" :key="`${i}-${idx}`" class="cp-retrieval-item">
+                  <div class="cp-retrieval-head">
+                    <span class="cp-retrieval-type">{{ item.doc_type || item.metadata?.doc_type || 'result' }}</span>
+                    <span class="cp-retrieval-score">{{ Number(item.final_score ?? item.vector_score ?? item.keyword_score ?? 0).toFixed(2) }}</span>
+                  </div>
+                  <div class="cp-retrieval-title">{{ item.title || item.metadata?.title || '未命名结果' }}</div>
+                  <div class="cp-retrieval-snippet">{{ item.snippet || item.text || item.source_record?.summary_text || item.source_record?.content || '' }}</div>
+                </div>
+              </div>
+            </div>
+
             <!-- 时间 -->
             <div class="cp-time">{{ formatTime(msg.createdAt) }}</div>
           </div>
         </div>
 
-        <!-- 流式生成中（无内容时兜底） -->
-        <div v-if="isGenerating && !hasRenderableAssistantMessage" class="cp-msg-row cp-msg-row--assistant">
+        <!-- 思考中兜底（消息列表里最后一条 assistant 消息无内容时显示） -->
+        <div v-if="(isGenerating || chatStore.loading) && !hasRenderableAssistantMessage" class="cp-msg-row cp-msg-row--assistant">
           <div class="cp-avatar">⚕</div>
           <div class="cp-bubble-wrap">
             <div class="cp-bubble cp-bubble--thinking">
               <span class="cp-dot"></span><span class="cp-dot"></span><span class="cp-dot"></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 思考中 -->
-        <div v-if="chatStore.loading" class="cp-msg-row cp-msg-row--assistant">
-          <div class="cp-avatar">⚕</div>
-          <div class="cp-bubble-wrap">
-            <div class="cp-bubble cp-bubble--thinking">
-              <span class="cp-dot"/><span class="cp-dot"/><span class="cp-dot"/>
             </div>
           </div>
         </div>
@@ -96,6 +170,18 @@
 
       <!-- 输入区 -->
       <div class="cp-input-area">
+        <!-- Agent 模式切换 -->
+        <div class="cp-mode-bar">
+          <button
+            class="cp-mode-btn"
+            :class="{ active: agentMode }"
+            @click="agentMode = !agentMode"
+            title="开启后由 LLM 自主决定调哪些工具"
+          >
+            {{ agentMode ? '🤖 Agent 模式' : '💬 普通模式' }}
+          </button>
+          <span v-if="agentMode" class="cp-mode-hint">LLM 自主决定工具链</span>
+        </div>
         <ChatBox :loading="chatStore.loading" @submit="handleSubmit" />
       </div>
 
@@ -105,16 +191,19 @@
 
 <script setup>
 import { ref, watch, nextTick, onMounted, computed } from 'vue'
-import { formatAssistantContent } from '../utils/format'
+import { renderMarkdown } from '../utils/format'
 import { useRouter } from 'vue-router'
 import { useChatStore } from '../store/chatStore'
 import ChatBox from './ChatBox.vue'
+import AgentTrace from './AgentTrace.vue'
 
 const chatStore = useChatStore()
 const router = useRouter()
 const msgListRef = ref(null)
 const currentUser = sessionStorage.getItem('user') || '我'
-const isGenerating = computed(() => chatStore.loading)
+const agentMode = ref(false)
+const isGenerating = computed(() => chatStore.isSessionLoading(chatStore.activeSessionId))
+const expandedRetrievals = ref(new Set())
 const hasRenderableAssistantMessage = computed(() =>
   chatStore.messages.some((msg, idx) => msg.role === 'assistant' && shouldShowBubble(msg, idx))
 )
@@ -131,7 +220,20 @@ function logout() {
 }
 
 async function handleSubmit(payload) {
-  await chatStore.ask(payload)
+  if (agentMode.value) {
+    let message = typeof payload === 'string' ? payload : (payload.message || '')
+    const targets = payload.targets || []
+    if (targets.length) {
+      const targetInfo = targets.map(t => `${t.name}(${t.symbol})`).join(', ')
+      message = message
+        ? `[标的: ${targetInfo}] ${message}`
+        : `请对以下标的进行分析：${targetInfo}`
+    }
+    if (!message) return
+    await chatStore.askAgent({ message })
+  } else {
+    await chatStore.ask(payload)
+  }
   scrollBottom()
 }
 
@@ -139,9 +241,9 @@ async function removeSession(sessionId) {
   await chatStore.deleteSession(sessionId)
 }
 
-watch(() => chatStore.messages.map(m => `${m.role}:${m.content}`).join('|'), scrollBottom)
+watch(() => chatStore.messages.map(m => `${m.role}:${m.content}:${m.agentTrace?.length}`).join('|'), scrollBottom)
 watch(() => chatStore.activeSessionId, scrollBottom)
-watch(() => chatStore.loading, scrollBottom)
+watch(() => chatStore.isSessionLoading(chatStore.activeSessionId), scrollBottom)
 
 onMounted(() => {
   chatStore.loadSessions()
@@ -164,9 +266,65 @@ function shouldShowBubble(msg, index) {
   return true
 }
 
-function formatContent(msg) {
-  if (msg.role === 'assistant') return formatAssistantContent(msg.content)
-  return msg.content
+function getRetrievalTrace(msg) {
+  if (!msg || msg.role !== 'assistant') return []
+  return msg.retrievalTrace || msg.toolCalls?.retrieval_trace || (Array.isArray(msg.toolCalls) ? msg.toolCalls : []) || []
+}
+
+function getModeTitle(msg) {
+  if (!msg || msg.role !== 'assistant') return ''
+  const mode = msg.selectedMode || msg.selected_mode || ''
+  const map = {
+    company_analysis: '企业运营评估',
+    financial_analysis: '财务分析',
+    pipeline_analysis: '管线分析',
+    risk_warning: '风险预警',
+    industry_compare: '行业对比',
+    report_generation: '生成报告',
+  }
+  return map[mode] || mode
+}
+
+function getEvidenceSummary(msg) {
+  if (!msg || msg.role !== 'assistant') return ''
+  const items = getRetrievalTrace(msg)
+  if (!items.length) return ''
+  return items.slice(0, 3).map((item) => item.title || item.metadata?.title || '未命名结果').join('、')
+}
+
+function getToolEvents(msg) {
+  if (!msg || msg.role !== 'assistant') return []
+  return msg.toolEvents || []
+}
+
+function hasToolEvents(msg) {
+  return getToolEvents(msg).length > 0
+}
+
+function formatToolArgs(args) {
+  if (!args) return ''
+  try {
+    return typeof args === 'string' ? args : JSON.stringify(args, null, 2)
+  } catch {
+    return String(args)
+  }
+}
+
+function getDataSources(msg) {
+  if (!msg || msg.role !== 'assistant') return []
+  return msg.dataSources || msg.toolCalls?.data_sources || []
+}
+
+function getSourceNotice(msg) {
+  if (!msg || msg.role !== 'assistant') return ''
+  return msg.sourceNotice || msg.toolCalls?.source_notice || ''
+}
+
+function toggleRetrieval(index) {
+  const next = new Set(expandedRetrievals.value)
+  if (next.has(index)) next.delete(index)
+  else next.add(index)
+  expandedRetrievals.value = next
 }
 </script>
 
@@ -426,6 +584,78 @@ function formatContent(msg) {
   border-radius: 4px 16px 16px 16px;
 }
 
+/* Markdown 渲染样式 */
+.cp-bubble.md-body {
+  white-space: normal;
+  line-height: 1.7;
+}
+.cp-bubble.md-body :deep(h1),
+.cp-bubble.md-body :deep(h2),
+.cp-bubble.md-body :deep(h3) {
+  font-weight: 700;
+  margin: 0.8em 0 0.3em;
+  color: var(--text-primary);
+}
+.cp-bubble.md-body :deep(h1) { font-size: 1.15em; }
+.cp-bubble.md-body :deep(h2) { font-size: 1.08em; }
+.cp-bubble.md-body :deep(h3) { font-size: 1em; }
+.cp-bubble.md-body :deep(p) { margin: 0.4em 0; }
+.cp-bubble.md-body :deep(ul),
+.cp-bubble.md-body :deep(ol) { padding-left: 1.4em; margin: 0.4em 0; }
+.cp-bubble.md-body :deep(li) { margin: 0.15em 0; }
+.cp-bubble.md-body :deep(strong) { font-weight: 700; color: var(--text-primary); }
+.cp-bubble.md-body :deep(code) {
+  background: var(--bg-card2);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 12px;
+  font-family: monospace;
+}
+.cp-bubble.md-body :deep(pre) {
+  background: var(--bg-card2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 0.5em 0;
+  overflow-x: auto;
+}
+.cp-bubble.md-body :deep(pre code) {
+  background: none;
+  padding: 0;
+}
+.cp-bubble.md-body :deep(blockquote) {
+  border-left: 3px solid var(--accent2);
+  margin: 0.5em 0;
+  padding: 4px 12px;
+  color: var(--text-secondary);
+  background: rgba(75,169,154,0.05);
+  border-radius: 0 6px 6px 0;
+}
+.cp-bubble.md-body :deep(table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5em 0;
+  font-size: 12px;
+}
+.cp-bubble.md-body :deep(th),
+.cp-bubble.md-body :deep(td) {
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  text-align: left;
+}
+.cp-bubble.md-body :deep(th) {
+  background: var(--bg-card2);
+  font-weight: 700;
+}
+.cp-bubble.md-body :deep(hr) {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0.6em 0;
+}
+.cp-bubble.md-body :deep(a) {
+  color: var(--accent2);
+  text-decoration: underline;
+}
+
 /* 思考中动画 */
 .cp-bubble--thinking {
   display: flex; align-items: center; gap: 5px;
@@ -493,5 +723,171 @@ function formatContent(msg) {
 .cp-bubble--clarification {
   border-color: #f59e0b;
   background: rgba(245,158,11,0.08);
+}
+
+.cp-context-card {
+  margin-top: 4px;
+  padding: 8px 12px;
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 12px;
+  background: rgba(248,250,252,0.95);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cp-context-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.cp-context-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  min-width: 52px;
+  flex-shrink: 0;
+}
+.cp-context-value {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.cp-tool-events {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cp-tool-event {
+  border: 1px solid rgba(99,102,241,0.16);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+  overflow: hidden;
+}
+.cp-tool-event-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(99,102,241,0.08);
+}
+.cp-tool-event-type {
+  font-size: 11px;
+  font-weight: 700;
+  color: #4f46e5;
+}
+.cp-tool-event-name {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.cp-tool-event-body {
+  padding: 8px 12px 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.cp-retrieval-card {
+  margin-top: 6px;
+  border: 1px solid rgba(75,169,154,0.16);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+  overflow: hidden;
+}
+.cp-retrieval-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: none;
+  background: rgba(75,169,154,0.08);
+  color: var(--accent2);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cp-retrieval-list {
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cp-retrieval-item, .cp-source-item {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+.cp-retrieval-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.cp-retrieval-type {
+  font-size: 11px;
+  color: var(--accent2);
+  font-weight: 700;
+}
+.cp-retrieval-score {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.cp-retrieval-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.cp-retrieval-snippet {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.cp-source-notice {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(59,130,246,0.08);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  border: 1px solid rgba(59,130,246,0.12);
+}
+
+/* Agent 模式切换栏 */
+.cp-mode-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.cp-mode-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all .2s;
+}
+.cp-mode-btn:hover {
+  border-color: rgba(75,169,154,0.4);
+  color: var(--accent2);
+}
+.cp-mode-btn.active {
+  background: rgba(75,169,154,0.12);
+  border-color: rgba(75,169,154,0.4);
+  color: var(--accent2);
+}
+.cp-mode-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
 }
 </style>

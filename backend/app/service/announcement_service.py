@@ -45,7 +45,7 @@ class AnnouncementService(BaseService):
         days = require_positive_int(req.days, "days")
         self._ensure_company(stock_code)
         rows = AnnouncementRepository(db).list_raw_announcements(stock_code, days=days)
-        fields = ["id", "stock_code", "title", "publish_date", "announcement_type", "exchange", "content", "source_url", "source_type", "file_hash", "created_at"]
+        fields = ["id", "announcement_uid", "stock_code", "title", "publish_date", "announcement_type", "exchange", "summary_text", "key_fields_json", "content", "source_url", "source_type", "file_hash", "query_count", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_structured_announcements(self, db, req: StockCodeDaysRequest) -> list[dict]:
@@ -53,7 +53,7 @@ class AnnouncementService(BaseService):
         days = require_positive_int(req.days, "days")
         self._ensure_company(stock_code)
         rows = AnnouncementRepository(db).list_structured_announcements(stock_code, category=req.category, days=days)
-        fields = ["id", "announcement_id", "stock_code", "category", "summary_text", "key_fields_json", "signal_type", "risk_level", "created_at"]
+        fields = ["id", "announcement_uid", "stock_code", "title", "publish_date", "announcement_type", "exchange", "summary_text", "key_fields_json", "content", "source_url", "source_type", "file_hash", "query_count", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_drug_approvals(self, db, req: StockCodeDaysRequest) -> list[dict]:
@@ -61,7 +61,7 @@ class AnnouncementService(BaseService):
         days = require_positive_int(req.days, "days")
         self._ensure_company(stock_code)
         rows = AnnouncementRepository(db).list_drug_approvals(stock_code, days=days)
-        fields = ["id", "stock_code", "drug_name", "approval_type", "approval_date", "indication", "drug_stage", "is_innovative_drug", "review_status", "market_scope", "source_announcement_id", "source_type", "source_url", "created_at"]
+        fields = ["id", "stock_code", "drug_name", "approval_type", "approval_date", "indication", "drug_stage", "is_innovative_drug", "review_status", "market_scope", "source_announcement_id", "source_type", "source_url", "file_hash", "query_count", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_clinical_trials(self, db, req: StockCodeDaysRequest) -> list[dict]:
@@ -69,7 +69,7 @@ class AnnouncementService(BaseService):
         days = require_positive_int(req.days, "days")
         self._ensure_company(stock_code)
         rows = AnnouncementRepository(db).list_clinical_trials(stock_code, days=days)
-        fields = ["id", "stock_code", "drug_name", "trial_phase", "event_type", "event_date", "indication", "summary_text", "source_announcement_id", "source_type", "source_url", "created_at"]
+        fields = ["id", "stock_code", "drug_name", "trial_phase", "event_type", "event_date", "indication", "summary_text", "source_announcement_id", "source_type", "source_url", "file_hash", "query_count", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_procurement_events(self, db, req: StockCodeDaysRequest) -> list[dict]:
@@ -77,7 +77,7 @@ class AnnouncementService(BaseService):
         days = require_positive_int(req.days, "days")
         self._ensure_company(stock_code)
         rows = AnnouncementRepository(db).list_procurement_events(stock_code, days=days)
-        fields = ["id", "stock_code", "drug_name", "procurement_round", "bid_result", "price_change_ratio", "event_date", "impact_summary", "source_announcement_id", "source_type", "source_url", "created_at"]
+        fields = ["id", "stock_code", "drug_name", "procurement_round", "bid_result", "price_change_ratio", "event_date", "impact_summary", "source_announcement_id", "source_type", "source_url", "file_hash", "query_count", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_regulatory_risks(self, db, req: StockCodeDaysRequest) -> list[dict]:
@@ -85,7 +85,7 @@ class AnnouncementService(BaseService):
         days = require_positive_int(req.days, "days")
         self._ensure_company(stock_code)
         rows = AnnouncementRepository(db).list_regulatory_risks(stock_code, days=days)
-        fields = ["id", "stock_code", "risk_type", "event_date", "risk_level", "summary_text", "source_announcement_id", "source_type", "source_url", "created_at"]
+        fields = ["id", "stock_code", "risk_type", "event_date", "risk_level", "summary_text", "source_announcement_id", "source_type", "source_url", "file_hash", "query_count", "created_at"]
         return [model_to_dict(r, fields) for r in rows]
 
     def _get_company_event_summary(self, db, req: StockCodeDaysRequest) -> dict:

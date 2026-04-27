@@ -118,10 +118,13 @@ def _stock_name_map(db: Session, stock_codes: Iterable[str]) -> dict[str, str]:
     codes = [c for c in {code for code in stock_codes if code}]
     if not codes:
         return {}
-    rows = db.execute(
-        select(CompanyMaster.stock_code, CompanyMaster.stock_name).where(CompanyMaster.stock_code.in_(codes))
-    ).all()
-    return {code: name or "" for code, name in rows}
+    try:
+        rows = db.execute(
+            select(CompanyMaster.stock_code, CompanyMaster.stock_name).where(CompanyMaster.stock_code.in_(codes))
+        ).all()
+        return {code: name or "" for code, name in rows}
+    except Exception:
+        return {}
 
 
 def _load_announcement_metadata(db: Session, row, *, is_hot: bool) -> dict[str, str]:
@@ -142,40 +145,55 @@ def _load_announcement_metadata(db: Session, row, *, is_hot: bool) -> dict[str, 
     RiskModel = RegulatoryRiskEventHot if is_hot else RegulatoryRiskEventArchive
 
     if StructuredModel is not None:
-        structured = _first_scalar(db, select(StructuredModel).where(StructuredModel.announcement_id == row.id))
-        if structured:
-            result["category"] = _choose_first_text(_safe_attr(structured, "category"))
-            result["signal_type"] = _choose_first_text(_safe_attr(structured, "signal_type"))
-            result["risk_level"] = _choose_first_text(_safe_attr(structured, "risk_level"))
+        try:
+            structured = _first_scalar(db, select(StructuredModel).where(StructuredModel.announcement_id == row.id))
+            if structured:
+                result["category"] = _choose_first_text(_safe_attr(structured, "category"))
+                result["signal_type"] = _choose_first_text(_safe_attr(structured, "signal_type"))
+                result["risk_level"] = _choose_first_text(_safe_attr(structured, "risk_level"))
+        except Exception:
+            pass
 
     if DrugModel is not None:
-        drug = _first_scalar(db, select(DrugModel).where(DrugModel.source_announcement_id == row.id))
-        if drug:
-            result["drug_name"] = _choose_first_text(_safe_attr(drug, "drug_name"))
-            result["indication"] = _choose_first_text(_safe_attr(drug, "indication"))
-            result["event_type"] = _choose_first_text(_safe_attr(drug, "approval_type"), "drug_approval")
+        try:
+            drug = _first_scalar(db, select(DrugModel).where(DrugModel.source_announcement_id == row.id))
+            if drug:
+                result["drug_name"] = _choose_first_text(_safe_attr(drug, "drug_name"))
+                result["indication"] = _choose_first_text(_safe_attr(drug, "indication"))
+                result["event_type"] = _choose_first_text(_safe_attr(drug, "approval_type"), "drug_approval")
+        except Exception:
+            pass
 
     if TrialModel is not None:
-        trial = _first_scalar(db, select(TrialModel).where(TrialModel.source_announcement_id == row.id))
-        if trial:
-            result["drug_name"] = _choose_first_text(result["drug_name"], _safe_attr(trial, "drug_name"))
-            result["indication"] = _choose_first_text(result["indication"], _safe_attr(trial, "indication"))
-            result["trial_phase"] = _choose_first_text(_safe_attr(trial, "trial_phase"))
-            result["event_type"] = _choose_first_text(result["event_type"], _safe_attr(trial, "event_type"), "clinical_trial")
+        try:
+            trial = _first_scalar(db, select(TrialModel).where(TrialModel.source_announcement_id == row.id))
+            if trial:
+                result["drug_name"] = _choose_first_text(result["drug_name"], _safe_attr(trial, "drug_name"))
+                result["indication"] = _choose_first_text(result["indication"], _safe_attr(trial, "indication"))
+                result["trial_phase"] = _choose_first_text(_safe_attr(trial, "trial_phase"))
+                result["event_type"] = _choose_first_text(result["event_type"], _safe_attr(trial, "event_type"), "clinical_trial")
+        except Exception:
+            pass
 
     if ProcurementModel is not None:
-        procurement = _first_scalar(db, select(ProcurementModel).where(ProcurementModel.source_announcement_id == row.id))
-        if procurement:
-            result["drug_name"] = _choose_first_text(result["drug_name"], _safe_attr(procurement, "drug_name"))
-            result["event_type"] = _choose_first_text(result["event_type"], "centralized_procurement")
-            result["category"] = _choose_first_text(result["category"], "centralized_procurement")
+        try:
+            procurement = _first_scalar(db, select(ProcurementModel).where(ProcurementModel.source_announcement_id == row.id))
+            if procurement:
+                result["drug_name"] = _choose_first_text(result["drug_name"], _safe_attr(procurement, "drug_name"))
+                result["event_type"] = _choose_first_text(result["event_type"], "centralized_procurement")
+                result["category"] = _choose_first_text(result["category"], "centralized_procurement")
+        except Exception:
+            pass
 
     if RiskModel is not None:
-        risk = _first_scalar(db, select(RiskModel).where(RiskModel.source_announcement_id == row.id))
-        if risk:
-            result["risk_level"] = _choose_first_text(result["risk_level"], _safe_attr(risk, "risk_level"))
-            result["event_type"] = _choose_first_text(result["event_type"], _safe_attr(risk, "risk_type"), "regulatory_risk")
-            result["category"] = _choose_first_text(result["category"], "regulatory_risk")
+        try:
+            risk = _first_scalar(db, select(RiskModel).where(RiskModel.source_announcement_id == row.id))
+            if risk:
+                result["risk_level"] = _choose_first_text(result["risk_level"], _safe_attr(risk, "risk_level"))
+                result["event_type"] = _choose_first_text(result["event_type"], _safe_attr(risk, "risk_type"), "regulatory_risk")
+                result["category"] = _choose_first_text(result["category"], "regulatory_risk")
+        except Exception:
+            pass
 
     return result
 
@@ -201,7 +219,7 @@ def sync_announcements(
 
     total = 0
     for row in rows:
-        content = _normalize_text(_safe_attr(row, "content"))
+        content = _normalize_text(_safe_attr(row, "content")) or _normalize_text(_safe_attr(row, "summary_text"))
         if not content:
             continue
 
@@ -422,29 +440,41 @@ def _load_news_related_metadata(db: Session, row, *, is_hot: bool) -> dict[str, 
     CompanyMapModel = NewsCompanyMapHot if is_hot else NewsCompanyMapArchive
 
     if StructuredModel is not None:
-        structured = _first_scalar(db, select(StructuredModel).where(StructuredModel.news_id == row.id))
-        if structured:
-            result["topic_category"] = _choose_first_text(_safe_attr(structured, "topic_category"))
-            result["signal_type"] = _choose_first_text(_safe_attr(structured, "signal_type"))
-            result["impact_level"] = _choose_first_text(_safe_attr(structured, "impact_level"))
-            result["impact_horizon"] = _choose_first_text(_safe_attr(structured, "impact_horizon"))
+        try:
+            structured = _first_scalar(db, select(StructuredModel).where(StructuredModel.news_id == row.id))
+            if structured:
+                result["topic_category"] = _choose_first_text(_safe_attr(structured, "topic_category"))
+                result["signal_type"] = _choose_first_text(_safe_attr(structured, "signal_type"))
+                result["impact_level"] = _choose_first_text(_safe_attr(structured, "impact_level"))
+                result["impact_horizon"] = _choose_first_text(_safe_attr(structured, "impact_horizon"))
+        except Exception:
+            pass
 
     if CompanyMapModel is not None:
-        company_map = _first_scalar(db, select(CompanyMapModel).where(CompanyMapModel.news_id == row.id))
-        if company_map:
-            result["stock_code"] = _choose_first_text(_safe_attr(company_map, "stock_code"))
-            result["impact_direction"] = _choose_first_text(_safe_attr(company_map, "impact_direction"))
+        try:
+            company_map = _first_scalar(db, select(CompanyMapModel).where(CompanyMapModel.news_id == row.id))
+            if company_map:
+                result["stock_code"] = _choose_first_text(_safe_attr(company_map, "stock_code"))
+                result["impact_direction"] = _choose_first_text(_safe_attr(company_map, "impact_direction"))
+        except Exception:
+            pass
 
     if IndustryMapModel is not None:
-        industry_map = _first_scalar(db, select(IndustryMapModel).where(IndustryMapModel.news_id == row.id))
-        if industry_map:
-            result["industry_code"] = _choose_first_text(_safe_attr(industry_map, "industry_code"))
-            result["impact_direction"] = _choose_first_text(result["impact_direction"], _safe_attr(industry_map, "impact_direction"))
-            if result["industry_code"]:
-                industry_name = db.execute(
-                    select(IndustryMaster.industry_name).where(IndustryMaster.industry_code == result["industry_code"])
-                ).scalar_one_or_none()
-                result["industry_name"] = industry_name or ""
+        try:
+            industry_map = _first_scalar(db, select(IndustryMapModel).where(IndustryMapModel.news_id == row.id))
+            if industry_map:
+                result["industry_code"] = _choose_first_text(_safe_attr(industry_map, "industry_code"))
+                result["impact_direction"] = _choose_first_text(result["impact_direction"], _safe_attr(industry_map, "impact_direction"))
+                if result["industry_code"]:
+                    try:
+                        industry_name = db.execute(
+                            select(IndustryMaster.industry_name).where(IndustryMaster.industry_code == result["industry_code"])
+                        ).scalar_one_or_none()
+                        result["industry_name"] = industry_name or ""
+                    except Exception:
+                        pass
+        except Exception:
+            pass
 
     return result
 

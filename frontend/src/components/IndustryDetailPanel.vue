@@ -84,7 +84,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { getMacroSummary } from '../api/macro'
-import { getNewsByIndustry } from '../api/news'
+import { getReportsByIndustry } from '../api/news'
 
 const props = defineProps({
   industry: { type: Object, required: true },
@@ -132,14 +132,14 @@ const reports = ref([])
 
 async function loadReports() {
   try {
-    const items = await getNewsByIndustry(props.industry.code || props.industry.name, 30)
+    const items = await getReportsByIndustry(props.industry.code || props.industry.name, 365)
     const list = Array.isArray(items) ? items : []
     reports.value = list.slice(0, 10).map((item, i) => ({
       id: item.id || i,
-      title: item.title || item.headline || item['新闻标题'] || '',
-      broker: item.source || item.publisher || item['新闻来源'] || '--',
-      date: (item.publish_date || item.date || item['发布时间'] || '').slice(0, 10),
-      rating: item.rating || item.sentiment || '中性',
+      title: item.title || '',
+      broker: item.report_org || '--',
+      date: (item.publish_date || '').slice(0, 10),
+      rating: '',
     }))
   } catch (err) {
     console.error('[loadReports]', err)

@@ -50,7 +50,7 @@
 <script setup>
 import { ref, watch, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import * as echarts from 'echarts'
-import { getMacroIndicator, getMacroSummary } from '../api/macro'
+import { getMacroIndicator, getMacroSummary, listMacroIndicators } from '../api/macro'
 import { getNewsByIndustry } from '../api/news'
 
 // ── 指标 ──────────────────────────────────────────
@@ -76,19 +76,24 @@ const keyMetrics = ref([])
 
 async function loadKeyMetrics() {
   try {
-    const items = await getMacroSummary(['CPI', 'PPI', 'PMI', 'GDP', '社融', '医药研发投入'], 1)
-    const list = Array.isArray(items) ? items : []
-    keyMetrics.value = list.map(item => ({
-      label: item.indicator_name || item.name || '',
-      value: item.latest_value ?? item.value ?? '--',
-      sub: item.latest_period ?? item.period ?? '',
-      trend: (() => {
-        if (item.trend) return item.trend
-        const v = parseFloat(item.latest_value ?? item.value)
-        if (isNaN(v)) return ''
-        return v > 0 ? 'up' : v < 0 ? 'down' : ''
-      })(),
-    }))
+    const res = await getMacroSummary(['CPI', 'PPI', 'PMI', 'GDP', '社融', '医药研发投入'], 1)
+    const series = res?.series || res || {}
+    const list = []
+    for (const [name, records] of Object.entries(series)) {
+      if (!Array.isArray(records) || !records.length) continue
+      const latest = records[0]
+      list.push({
+        label: latest.indicator_name || name,
+        value: latest.value ?? '--',
+        sub: latest.period ?? '',
+        trend: (() => {
+          const v = parseFloat(latest.value)
+          if (isNaN(v)) return ''
+          return v > 0 ? 'up' : v < 0 ? 'down' : ''
+        })(),
+      })
+    }
+    keyMetrics.value = list
   } catch (err) {
     console.error('[loadKeyMetrics]', err)
   }
@@ -126,13 +131,16 @@ async function loadAndRender() {
   chartInst?.clear()
 
   try {
-    const res = await getMacroIndicator(current.value)
-    const items = Array.isArray(res) ? res : (res?.data ?? [])
-    if (!items.length) { loading.value = false; return }
+    const items = await listMacroIndicators([current.value])
+    const list = Array.isArray(items) ? items : []
+    if (!list.length) { loading.value = false; return }
 
-    const dates  = items.map(d => d.period ?? d.date ?? '')
-    const values = items.map(d => {
-      const v = d.value ?? d.val
+    // 按 period 正序排列用于图表
+    list.sort((a, b) => (a.period || '').localeCompare(b.period || ''))
+
+    const dates  = list.map(d => d.period ?? '')
+    const values = list.map(d => {
+      const v = d.value
       return v !== null && v !== undefined ? Number(v) : null
     })
 
@@ -140,13 +148,13 @@ async function loadAndRender() {
     loading.value = false
     await nextTick()
     if (!chartRef.value) return
-    if (!chartInst) chartInst = echarts.init(chartRef.value)
+    chartInst = echarts.init(chartRef.value)
 
     const isBar = current.value === 'GDP' || current.value === '医药研发投入'
     chartInst.setOption({
       backgroundColor: 'transparent',
       tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/><b>${p[0].value ?? '--'}</b>` },
-      grid: { left: 52, right: 16, top: 24, bottom: 36 },
+      grid: { left: 70, right: 16, top: 24, bottom: 36 },
       xAxis: {
         type: 'category', data: dates,
         axisLabel: { color: '#94a3b8', fontSize: 10, rotate: dates.length > 8 ? 30 : 0 },
@@ -187,7 +195,7 @@ watch(current, loadAndRender)
 function onResize() { chartInst?.resize() }
 
 onMounted(() => { loadAndRender(); loadKeyMetrics(); loadPolicies(); window.addEventListener('resize', onResize) })
-onBeforeUnmount(() => { window.removeEventListener('resize', onResize); chartInst?.dispose() })
+onBeforeUnmount(() => { window.removeEventListener('resize', onResize); chartInst?.dispose(); chartInst = null })
 </script>
 
 <style scoped>

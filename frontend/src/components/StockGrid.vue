@@ -21,7 +21,7 @@
     </div>
 
     <!-- 个股网格 -->
-    <div v-if="mode === 'stock'" class="stock-grid stock-grid-5col">
+    <div v-if="mode === 'stock'" class="stock-grid stock-grid-5col" :style="gridStyle">
 
       <!-- 自选股区域 -->
       <template v-if="watchlistStocks.length">
@@ -115,7 +115,7 @@
     </div>
 
     <!-- 行业网格 -->
-    <div v-else class="stock-grid stock-grid-5col">
+    <div v-else class="stock-grid stock-grid-5col" :style="gridStyle">
       <div
         v-for="(item, idx) in industries"
         :key="item.code"
@@ -155,13 +155,21 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getWatchlist, addToWatchlist, removeFromWatchlist } from '../api/stock'
+
+const WATCHLIST_KEY = '4c_watchlist'
 
 const props = defineProps({
   mode: { type: String, default: 'stock' }, // 'stock' | 'industry'
   stocks: { type: Array, default: () => [] },
   industries: { type: Array, default: () => [] },
+  panelWidth: { type: Number, default: 320 },
 })
+
+// 展开档(>=480px)用4列，收缩档用2列
+const gridCols = computed(() => props.panelWidth >= 480 ? 4 : 2)
+const gridStyle = computed(() => ({
+  gridTemplateColumns: `repeat(${gridCols.value}, 1fr)`,
+}))
 
 defineEmits(['open-detail', 'open-industry', 'drag-item'])
 
@@ -201,28 +209,25 @@ function isInWatchlist(symbol) {
   return watchlist.value.has(symbol)
 }
 
-async function toggleWatchlist(symbol) {
-  try {
-    if (isInWatchlist(symbol)) {
-      await removeFromWatchlist(symbol)
-      const next = new Set(watchlist.value)
-      next.delete(symbol)
-      watchlist.value = next
-    } else {
-      await addToWatchlist(symbol)
-      watchlist.value = new Set([...watchlist.value, symbol])
-    }
-  } catch (err) {
-    console.error('自选股操作失败:', err)
+function toggleWatchlist(symbol) {
+  const next = new Set(watchlist.value)
+  if (next.has(symbol)) {
+    next.delete(symbol)
+  } else {
+    next.add(symbol)
   }
+  watchlist.value = next
+  localStorage.setItem(WATCHLIST_KEY, JSON.stringify([...next]))
 }
 
-async function loadWatchlist() {
+function loadWatchlist() {
   try {
-    const list = await getWatchlist()
-    watchlist.value = new Set((list || []).map(item => item.symbol))
-  } catch (err) {
-    console.error('加载自选股失败:', err)
+    const saved = localStorage.getItem(WATCHLIST_KEY)
+    if (saved) {
+      watchlist.value = new Set(JSON.parse(saved))
+    }
+  } catch {
+    watchlist.value = new Set()
   }
 }
 
@@ -295,10 +300,9 @@ function onDragEnd(e) {
 }
 .sg-filter:focus { border-color: var(--border-hl); }
 
-/* ── 自适应列数（两列档~320px，五列档~600px） ── */
+/* ── 列数由 JS gridStyle 控制，此处只设 gap ── */
 .stock-grid-5col {
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
-  gap: 8px !important;
+  gap: 10px !important;
 }
 
 /* ── 分隔线 ── */
@@ -365,17 +369,6 @@ function onDragEnd(e) {
   mix-blend-mode: screen;
 }
 
-/* ── 卡片底部厚度阴影 ── */
-.tilt-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: inherit;
-  transform: translateZ(-8px);
-  filter: brightness(0.7);
-  z-index: 0;
-}
 
 /* ── 顶部边缘高光线 ── */
 .tilt-card::after {
@@ -389,7 +382,7 @@ function onDragEnd(e) {
   pointer-events: none;
 }
 
-/* ── 自选按钮（更大，方便点击） ── */
+/* ── 自选按钮 ── */
 .sc-header {
   display: flex; justify-content: space-between; align-items: flex-start;
   margin-bottom: 2px;
@@ -397,21 +390,80 @@ function onDragEnd(e) {
 .watchlist-btn {
   background: none; border: none;
   color: var(--text-muted);
-  font-size: 26px; line-height: 1;
-  cursor: pointer; padding: 2px 4px;
+  font-size: 24px; line-height: 1;
+  cursor: pointer; padding: 0 2px;
   transition: color .2s, transform .2s;
   flex-shrink: 0;
 }
 .watchlist-btn:hover { color: var(--gold); transform: scale(1.2); }
 .watchlist-btn.active { color: var(--gold); }
 
-/* 拖拽提示 */
+/* 拖拽提示 — 绝对定位，不占卡片高度 */
 .drag-tip {
+  position: absolute;
+  bottom: 4px; left: 0; right: 0;
+  text-align: center;
   font-size: 10px; color: var(--text-muted);
-  margin-top: 4px; opacity: 0;
+  opacity: 0;
   transition: opacity .2s;
+  pointer-events: none;
 }
 .tilt-card:hover .drag-tip { opacity: 1; }
 
-.ic-leader { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.ic-leader { font-size: 11px; color: var(--text-muted); margin-top: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ic-count  { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+.ic-change { font-size: 15px; font-weight: 800; margin-top: 5px; }
+.ic-bar    { height: 3px; border-radius: 2px; background: var(--bg-card2); margin-top: 5px; overflow: hidden; }
+
+/* 个股次要信息字号 */
+.stock-card .sc-code     { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+.stock-card .sc-price    { font-size: 15px; font-weight: 800; margin-top: 5px; }
+.stock-card .sc-change   { font-size: 11px; margin-top: 2px; }
+.stock-card .sc-industry { font-size: 11px; color: var(--text-muted); margin-top: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+/* ── 统一个股和行业卡片尺寸 ── */
+.card-scene {
+  height: 155px;
+}
+
+.stock-card,
+.industry-card {
+  padding: 10px 12px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.stock-card .card-face,
+.industry-card .card-face {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 个股名称：允许换行，最多两行，字体自适应 */
+.stock-card .sc-name {
+  font-size: clamp(11px, 1.8vw, 14px);
+  white-space: normal;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.3;
+  word-break: break-all;
+}
+
+/* 行业名称：允许换行，最多两行，字体自适应 */
+.industry-card .ic-name {
+  font-size: clamp(11px, 1.8vw, 14px);
+  white-space: normal;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.3;
+  word-break: break-all;
+}
 </style>

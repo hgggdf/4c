@@ -112,6 +112,7 @@ function mapCompanyToStock(summary = {}, dataset = null) {
     symbol: summary.symbol || quote.symbol,
     name: summary.name || quote.name || summary.symbol,
     industry: extractIndustry(dataset || {}),
+    industry_code: summary.industry_code || null,
     exchange: summary.exchange || dataset?.exchange || '',
     collected_at: summary.collected_at || dataset?.collected_at || '',
   }
@@ -188,7 +189,7 @@ function buildIndustryList(stocks = []) {
     const industryName = stock.industry || '未分类'
     const current = groups.get(industryName) || {
       name: industryName,
-      code: industryName,
+      code: stock.industry_code || industryName,
       count: 0,
       totalChangePct: 0,
       leader: null,

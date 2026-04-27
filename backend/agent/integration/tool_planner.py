@@ -17,6 +17,7 @@ TOOL_NAMES = {
     "risk_event_search",
     "research_report_search",
     "macro_policy_search",
+    "industry_knowledge_search",
 }
 
 
@@ -104,10 +105,10 @@ def build_tool_plan(
         )
 
     if mode == "company_analysis":
-        add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
-        add("financial_metrics", purpose="获取公司核心财务指标", required=True, data_source_type="财报", can_score=True, freshness_value="local")
-        add("announcement_search", purpose="检索公司公告", required=False, data_source_type="公告", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
-        add("news_search", purpose="检索公司相关新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
+        add("company_basic_info", purpose="获取企业基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
+        add("financial_metrics", purpose="获取企业核心财务指标", required=True, data_source_type="财报", can_score=True, freshness_value="local")
+        add("announcement_search", purpose="检索企业公告", required=False, data_source_type="公告", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
+        add("news_search", purpose="检索企业相关新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
         add("research_report_search", purpose="检索相关研报", required=False, data_source_type="研报", can_score=False, freshness_value="local")
         return plan
 
@@ -128,12 +129,18 @@ def build_tool_plan(
         return plan
 
     if mode == "policy_procurement":
-        add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
-        add("financial_metrics", purpose="获取财务指标", required=False, data_source_type="财报", can_score=True, freshness_value="local")
-        add("procurement_events", purpose="检索集采/采购事件", required=True, data_source_type="政策", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "hot")
-        add("policy_search", purpose="检索政策信息", required=True, data_source_type="政策", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "hot")
-        add("announcement_search", purpose="检索相关公告", required=False, data_source_type="公告", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
-        add("news_search", purpose="检索相关新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
+        if company_entity:
+            add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
+            add("financial_metrics", purpose="获取财务指标", required=False, data_source_type="财报", can_score=True, freshness_value="local")
+            add("procurement_events", purpose="检索集采/采购事件", required=True, data_source_type="政策", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "hot")
+            add("announcement_search", purpose="检索相关公告", required=False, data_source_type="公告", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
+            add("news_search", purpose="检索相关新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
+        else:
+            # 无具体公司，走行业/政策语义检索路径
+            add("industry_knowledge_search", purpose="语义检索行业政策相关知识", required=True, data_source_type="知识库", can_score=False, freshness_value="local")
+            add("macro_policy_search", purpose="检索宏观政策信息", required=True, data_source_type="政策", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "hot")
+            add("news_search", purpose="检索行业相关新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "local")
+            add("research_report_search", purpose="检索行业研报", required=False, data_source_type="研报", can_score=False, freshness_value="local")
         return plan
 
     if mode == "risk_warning":

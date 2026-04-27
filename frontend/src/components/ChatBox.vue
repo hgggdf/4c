@@ -72,7 +72,7 @@
       </div>
       <button
         class="send-btn"
-        :disabled="loading || (!text.trim() && !droppedItems.length)"
+        :disabled="loading || (!text.trim() && !droppedItems.length && !activeFeature)"
         @click="handleSubmit"
       >
         <span v-if="loading">思考中…</span>
@@ -92,13 +92,22 @@ const props = defineProps({
 const emit = defineEmits(['submit'])
 
 const featureButtons = [
-  { key: 'company_analysis', label: '公司分析', icon: '🧠' },
+  { key: 'company_analysis', label: '企业运营评估', icon: '🧠' },
   { key: 'financial_analysis', label: '财务分析', icon: '💹' },
   { key: 'pipeline_analysis', label: '管线分析', icon: '🧪' },
   { key: 'risk_warning', label: '风险预警', icon: '⚠️' },
   { key: 'industry_compare', label: '行业对比', icon: '🏭' },
   { key: 'report_generation', label: '生成报告', icon: '📄' },
 ]
+
+const FEATURE_PROMPTS = {
+  company_analysis:  '请对[公司名]进行企业运营评估，包括主营业务、竞争优势、管理层、近期经营动态。',
+  financial_analysis:'请分析[公司名]的财务状况，包括营收趋势、利润率、现金流、负债结构。',
+  pipeline_analysis: '请分析[公司名]的研发管线，包括在研品种、临床阶段、获批情况、商业化前景。',
+  risk_warning:      '请对[公司名]进行风险预警分析，包括集采风险、监管风险、研发失败风险、财务风险。',
+  industry_compare:  '请对[公司名]与同行业主要竞争对手进行对比分析，包括市场份额、财务指标、研发投入。',
+  report_generation: '请为[公司名]生成一份完整的投研报告，包括公司概况、财务分析、管线分析、风险提示、投资建议。',
+}
 
 const text = ref('')
 const isDragOver = ref(false)
@@ -129,7 +138,19 @@ function removeItem(symbol) {
 }
 
 function selectFeature(key) {
-  activeFeature.value = activeFeature.value === key ? '' : key
+  const wasActive = activeFeature.value === key
+  const oldPrompt = FEATURE_PROMPTS[activeFeature.value] || ''
+  activeFeature.value = wasActive ? '' : key
+
+  if (wasActive) {
+    if (!text.value.trim() || text.value === oldPrompt) {
+      text.value = ''
+    }
+  } else {
+    if (!text.value.trim() || text.value === oldPrompt) {
+      text.value = FEATURE_PROMPTS[key] || ''
+    }
+  }
 }
 
 function handleSubmit() {
@@ -175,7 +196,7 @@ async function handleFileChange(evt) {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  padding: 0 0 12px;
+  padding: 12px 12px 12px;
 }
 .feature-btn {
   display: flex;

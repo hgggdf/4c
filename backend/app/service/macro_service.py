@@ -25,13 +25,13 @@ class MacroService(BaseService):
         row = MacroRepository(db).get_indicator(indicator_name, period=req.period)
         if row is None:
             return None
-        return model_to_dict(row, ["indicator_name", "period", "value", "unit", "source_type", "source_url", "created_at"])
+        return model_to_dict(row, ["id", "indicator_name", "period", "period_date", "value", "unit", "category", "summary_text", "source_type", "source_url", "created_at", "updated_at"])
 
     def _list_macro_indicators(self, db, req: MacroListRequest) -> list[dict]:
         if not req.indicator_names:
             raise ValueError("indicator_names is required")
         rows = MacroRepository(db).list_indicators(req.indicator_names, periods=req.periods)
-        return [model_to_dict(r, ["indicator_name", "period", "value", "unit", "source_type", "source_url", "created_at"]) for r in rows]
+        return [model_to_dict(r, ["id", "indicator_name", "period", "period_date", "value", "unit", "category", "summary_text", "source_type", "source_url", "created_at", "updated_at"]) for r in rows]
 
     def _get_macro_summary(self, db, req: MacroSummaryRequest) -> dict:
         if not req.indicator_names:
@@ -40,7 +40,7 @@ class MacroService(BaseService):
         rows = MacroRepository(db).list_recent(req.indicator_names, recent_n=recent_n)
         grouped = defaultdict(list)
         for row in rows:
-            grouped[row.indicator_name].append(model_to_dict(row, ["indicator_name", "period", "value", "unit", "source_type", "source_url", "created_at"]))
+            grouped[row.indicator_name].append(model_to_dict(row, ["id", "indicator_name", "period", "period_date", "value", "unit", "category", "summary_text", "source_type", "source_url", "created_at", "updated_at"]))
         for key in list(grouped.keys()):
             grouped[key] = grouped[key][:recent_n]
         return {"recent_n": recent_n, "series": dict(grouped)}

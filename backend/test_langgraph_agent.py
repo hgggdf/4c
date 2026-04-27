@@ -84,7 +84,7 @@ def case_tool_registration():
     """验证 10 个工具都正确注册，名称和描述不为空。"""
     from agent.integration.langgraph_agent import AGENT_TOOLS
 
-    assert len(AGENT_TOOLS) == 10, f"期望 10 个工具，实际 {len(AGENT_TOOLS)}"
+    assert len(AGENT_TOOLS) == 12, f"期望 12 个工具，实际 {len(AGENT_TOOLS)}"
     for t in AGENT_TOOLS:
         name = t.name
         desc = t.description
@@ -101,13 +101,15 @@ def case_agent_init():
     agent = LangGraphAgent()
     assert agent.is_configured(), "Kimi API 未配置，请检查 .env"
     assert agent.framework == "langgraph"
-    assert agent.agent_mode == "kimi-dual-model"
+    assert agent.agent_mode == "kimi-react+thinking", \
+        f"agent_mode 应为 kimi-react+thinking，实际: {agent.agent_mode}"
     assert agent._graph is not None, "LangGraph 图未构建"
     assert agent.tool_llm is not None, "工具调用模型未初始化"
-    assert agent.answer_llm is not None, "答案生成模型未初始化"
+    assert agent._thinking_client is not None, "_thinking_client 未初始化"
+    assert not hasattr(agent, "answer_llm"), "旧的 answer_llm 应已移除"
     step(f"framework={agent.framework}  mode={agent.agent_mode}")
     step(f"工具调用模型={agent.tool_llm.model_name}")
-    step(f"答案生成模型={agent.answer_llm.model_name}")
+    step(f"thinking 客户端={type(agent._thinking_client).__name__}")
     from agent.integration.langgraph_agent import AGENT_TOOLS
     step(f"工具数量={len(AGENT_TOOLS)}")
 
@@ -176,7 +178,7 @@ def case_sync_run_name_only():
 
 
 def case_stream():
-    """流式 stream()：验证双模型流程中工具调用和增强答案事件完整。"""
+    """流式 stream()：验证新事件序列 tool_call* → synthesizing → answer_chunk+ → answer_done。"""
     from agent.integration.langgraph_agent import LangGraphAgent
 
     agent = LangGraphAgent()
@@ -199,25 +201,35 @@ def case_stream():
         elif etype == "tool_result":
             preview = event["content"][:60].replace("\n", " ")
             print(f"  [工具结果] {event['tool']} → {preview}...")
-        elif etype == "status":
-            print(f"  [状态] {event['content']}")
-        elif etype == "answer":
-            content = event["content"]
-            answer_chunks.append(content)
-            dual = event.get("dual_model_used", False)
-            print(f"  [最终答案({'kimi-k2.5' if dual else 'moonshot-v1-8k'})] {content[:80]}...")
+        elif etype == "synthesizing":
+            print(f"  [合成中] kimi-k2.5 开始生成...")
+        elif etype == "answer_chunk":
+            answer_chunks.append(event["content"])
+            print(event["content"], end="", flush=True)
+        elif etype == "answer_done":
+            print()
+            print(f"  [完成]")
 
     print()
     event_types = [e["type"] for e in events]
     step(f"共 {len(events)} 个事件: {set(event_types)}")
 
     assert "tool_call" in event_types, "应有 tool_call 事件"
-    assert "answer" in event_types, "应有 answer 事件"
-    assert len(answer_chunks) > 0, "answer 不能为空"
+    assert "synthesizing" in event_types, "应有 synthesizing 过渡事件"
+    assert "answer_chunk" in event_types, "应有 answer_chunk 事件"
+    assert "answer_done" in event_types, "应有 answer_done 结束事件"
+    assert "answer" not in event_types, "旧的 answer 事件类型不应出现"
+    assert len(answer_chunks) > 0, "answer_chunk 不能为空"
 
-    # 验证答案事件携带 dual_model_used 标志
-    answer_events = [e for e in events if e["type"] == "answer"]
-    assert "dual_model_used" in answer_events[-1], "answer 事件应包含 dual_model_used 字段"
+    # 验证事件顺序：所有 tool_call/tool_result 在 synthesizing 之前
+    synth_idx = next(i for i, e in enumerate(events) if e["type"] == "synthesizing")
+    for i, e in enumerate(events[:synth_idx]):
+        assert e["type"] in ("tool_call", "tool_result"), \
+            f"synthesizing 之前出现了非预期事件: {e['type']}"
+
+    # answer_done 是最后一个事件
+    assert events[-1]["type"] == "answer_done", \
+        f"最后一个事件应为 answer_done，实际: {events[-1]['type']}"
 
 
 def case_multi_turn():
@@ -268,34 +280,136 @@ def case_no_relevant_data():
 
 
 def case_dual_model_architecture():
-    """专项验证双模型架构：工具调用用 moonshot-v1-8k，答案生成用 kimi-k2.5。"""
+    """专项验证双模型架构：工具调用用 moonshot-v1-8k，答案生成用原生 kimi-k2.5。"""
     from agent.integration.langgraph_agent import LangGraphAgent
+    from openai import OpenAI
 
     agent = LangGraphAgent()
 
-    # 验证两个模型配置不同
     assert agent.tool_llm.model_name == "moonshot-v1-8k", \
         f"工具调用模型应为 moonshot-v1-8k，实际: {agent.tool_llm.model_name}"
-    assert agent.answer_llm.model_name == "kimi-k2.5", \
-        f"答案生成模型应为 kimi-k2.5，实际: {agent.answer_llm.model_name}"
+    assert isinstance(agent._thinking_client, OpenAI), \
+        "_thinking_client 应为原生 OpenAI 实例"
+    assert agent.THINKING_MODEL == "kimi-k2.5", \
+        f"THINKING_MODEL 应为 kimi-k2.5，实际: {agent.THINKING_MODEL}"
     step(f"工具调用模型: {agent.tool_llm.model_name}")
-    step(f"答案生成模型: {agent.answer_llm.model_name}")
+    step(f"thinking 客户端: {type(agent._thinking_client).__name__}  model={agent.THINKING_MODEL}")
 
-    # 验证 agent_mode 已更新
-    assert agent.agent_mode == "kimi-dual-model", \
-        f"agent_mode 应为 kimi-dual-model，实际: {agent.agent_mode}"
+    assert agent.agent_mode == "kimi-react+thinking", \
+        f"agent_mode 应为 kimi-react+thinking，实际: {agent.agent_mode}"
     step(f"agent_mode: {agent.agent_mode}")
 
-    # 运行一个有工具调用的问题，验证 dual_model_used=True
     question = "恒瑞医药600276的毛利率是多少？"
     step(f"测试问题: {question}")
     result = agent.run(question)
 
-    assert result.get("dual_model_used") is True, \
-        "有工具调用时 dual_model_used 应为 True"
+    assert result.get("thinking_used") is True, \
+        "有工具调用时 thinking_used 应为 True"
     assert len(result["answer"]) > 0, "答案不能为空"
-    step(f"dual_model_used={result['dual_model_used']}  答案长度={len(result['answer'])}字")
+    step(f"thinking_used={result['thinking_used']}  答案长度={len(result['answer'])}字")
     step(f"答案前100字: {result['answer'][:100]}...")
+
+
+
+# ─────────────────────────────────────────────
+# 新增用例
+# ─────────────────────────────────────────────
+
+def case_thinking_flag():
+    """run() 返回 thinking_used=True，answer 非空。"""
+    from agent.integration.langgraph_agent import LangGraphAgent
+
+    agent = LangGraphAgent()
+    result = agent.run("恒瑞医药600276最近的药品获批情况")
+
+    assert isinstance(result, dict), "应返回 dict"
+    assert "thinking_used" in result, "缺少 thinking_used 字段"
+    assert "answer" in result, "缺少 answer 字段"
+    assert result["thinking_used"] is True, \
+        f"有工具调用时 thinking_used 应为 True，实际: {result['thinking_used']}"
+    assert len(result["answer"]) > 0, "answer 不能为空"
+    step(f"thinking_used={result['thinking_used']}  answer 长度={len(result['answer'])}字")
+
+
+def case_tool_calls_structure():
+    """每个 tool_call 有 tool / args / result_preview 三字段。"""
+    from agent.integration.langgraph_agent import LangGraphAgent
+
+    agent = LangGraphAgent()
+    result = agent.run("恒瑞医药600276的财务状况")
+
+    assert len(result["tool_calls"]) >= 1, "应至少调用 1 个工具"
+    for tc in result["tool_calls"]:
+        assert "tool" in tc, f"tool_call 缺少 tool 字段: {tc}"
+        assert "args" in tc, f"tool_call 缺少 args 字段: {tc}"
+        assert "result_preview" in tc, f"tool_call 缺少 result_preview 字段: {tc}"
+        step(f"{tc['tool']}  preview={tc['result_preview'][:40]}")
+
+
+def case_stream_events():
+    """事件顺序：tool_call* → tool_result* → synthesizing → answer_chunk+ → answer_done。"""
+    from agent.integration.langgraph_agent import LangGraphAgent
+
+    agent = LangGraphAgent()
+    events = list(agent.stream("恒瑞医药600276的集采风险"))
+    types = [e["type"] for e in events]
+
+    step(f"事件序列: {types}")
+
+    assert "synthesizing" in types, "缺少 synthesizing 事件"
+    assert "answer_chunk" in types, "缺少 answer_chunk 事件"
+    assert "answer_done" in types, "缺少 answer_done 事件"
+    assert types[-1] == "answer_done", f"最后一个事件应为 answer_done，实际: {types[-1]}"
+
+    synth_idx = types.index("synthesizing")
+    done_idx = types.index("answer_done")
+    first_chunk_idx = types.index("answer_chunk")
+
+    assert synth_idx < first_chunk_idx, "synthesizing 应在 answer_chunk 之前"
+    assert first_chunk_idx < done_idx, "answer_chunk 应在 answer_done 之前"
+
+    # synthesizing 之前只允许 tool_call / tool_result
+    for t in types[:synth_idx]:
+        assert t in ("tool_call", "tool_result"), \
+            f"synthesizing 之前出现了非预期事件类型: {t}"
+
+
+def case_stream_content():
+    """所有 answer_chunk 拼接长度 > 50 字。"""
+    from agent.integration.langgraph_agent import LangGraphAgent
+
+    agent = LangGraphAgent()
+    chunks = [
+        e["content"]
+        for e in agent.stream("恒瑞医药600276的研发费用率趋势")
+        if e["type"] == "answer_chunk"
+    ]
+
+    full_answer = "".join(chunks)
+    step(f"answer_chunk 数量={len(chunks)}  拼接长度={len(full_answer)}字")
+    assert len(full_answer) > 50, \
+        f"拼接答案长度应 > 50 字，实际: {len(full_answer)}"
+
+
+def case_fallback():
+    """mock _thinking_client 抛异常 → thinking_used=False，answer 非空（降级到 moonshot）。"""
+    from unittest.mock import patch, MagicMock
+    from agent.integration.langgraph_agent import LangGraphAgent
+
+    agent = LangGraphAgent()
+
+    # mock _thinking_client.chat.completions.create 抛异常
+    mock_client = MagicMock()
+    mock_client.chat.completions.create.side_effect = RuntimeError("模拟 kimi-k2.5 不可用")
+
+    with patch.object(agent, "_thinking_client", mock_client):
+        result = agent.run("恒瑞医药600276的营收情况")
+
+    assert isinstance(result, dict), "应返回 dict"
+    assert result.get("thinking_used") is False, \
+        f"kimi-k2.5 失败时 thinking_used 应为 False，实际: {result.get('thinking_used')}"
+    assert len(result.get("answer", "")) > 0, "降级后 answer 不能为空"
+    step(f"thinking_used={result['thinking_used']}  降级答案长度={len(result['answer'])}字")
 
 
 # ─────────────────────────────────────────────
@@ -303,14 +417,19 @@ def case_dual_model_architecture():
 # ─────────────────────────────────────────────
 
 CASES = {
-    "tools":        ("工具注册验证",              case_tool_registration),
-    "init":         ("Agent 初始化",              case_agent_init),
-    "dual_model":   ("双模型架构验证",             case_dual_model_architecture),
-    "run_code":     ("同步run - 有股票代码",       case_sync_run_with_code),
-    "run_name":     ("同步run - 只有公司名",       case_sync_run_name_only),
-    "stream":       ("流式stream输出",             case_stream),
-    "multi_turn":   ("多轮对话",                  case_multi_turn),
-    "no_data":      ("边界-无关数据",              case_no_relevant_data),
+    "tools":          ("工具注册验证",                case_tool_registration),
+    "init":           ("Agent 初始化",                case_agent_init),
+    "dual_model":     ("双模型架构验证",               case_dual_model_architecture),
+    "run_code":       ("同步run - 有股票代码",         case_sync_run_with_code),
+    "run_name":       ("同步run - 只有公司名",         case_sync_run_name_only),
+    "stream":         ("流式stream输出",               case_stream),
+    "multi_turn":     ("多轮对话",                    case_multi_turn),
+    "no_data":        ("边界-无关数据",                case_no_relevant_data),
+    "thinking_flag":  ("thinking_used 标志验证",       case_thinking_flag),
+    "tool_struct":    ("tool_call 结构验证",           case_tool_calls_structure),
+    "stream_events":  ("stream 事件顺序验证",          case_stream_events),
+    "stream_content": ("stream 内容长度验证",          case_stream_content),
+    "fallback":       ("kimi-k2.5 降级验证",           case_fallback),
 }
 
 def main():

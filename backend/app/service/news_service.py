@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import Counter
 
 from app.core.repositories import NewsRepository
+from app.core.repositories.research_report_repository import ResearchReportRepository
 
 from .base import BaseService
 from .guards import require_non_empty, require_positive_int, require_stock_code
@@ -37,6 +38,9 @@ class NewsService(BaseService):
     def get_news_impact_summary(self, req: ImpactSummaryRequest):
         return self._run(lambda: self._with_db(lambda db: self._get_news_impact_summary(db, req)), trace_id=req.trace_id)
 
+    def get_reports_by_industry(self, req: IndustryDaysRequest):
+        return self._run(lambda: self._with_db(lambda db: self._get_reports_by_industry(db, req)), trace_id=req.trace_id)
+
     def _ensure_company(self, stock_code: str) -> None:
         if self.company_service:
             ok = self.company_service.ensure_company_exists(stock_code).data
@@ -44,10 +48,10 @@ class NewsService(BaseService):
                 raise ValueError(f"company not found: {stock_code}")
 
     def _news_raw_dict(self, row) -> dict:
-        return model_to_dict(row, ["id", "news_uid", "title", "publish_time", "source_name", "source_url", "author_name", "content", "news_type", "language", "file_hash", "created_at"])
+        return model_to_dict(row, ["id", "news_uid", "title", "publish_time", "source_name", "source_url", "author_name", "content", "summary_text", "news_type", "language", "related_stock_codes_json", "related_industry_codes_json", "key_fields_json", "file_hash", "query_count", "created_at"])
 
     def _structured_dict(self, row) -> dict:
-        return model_to_dict(row, ["id", "news_id", "topic_category", "summary_text", "keywords_json", "signal_type", "impact_level", "impact_horizon", "sentiment_label", "confidence_score", "created_at"])
+        return model_to_dict(row, ["id", "news_id", "topic_category", "summary_text", "keywords_json", "signal_type", "impact_level", "impact_horizon", "sentiment_label", "confidence_score", "related_stock_codes_json", "related_industry_codes_json", "created_at"])
 
     def _get_news_raw(self, db, req: NewsRawRequest) -> list[dict]:
         days = require_positive_int(req.days, "days")
@@ -59,32 +63,13 @@ class NewsService(BaseService):
         days = require_positive_int(req.days, "days")
         self._ensure_company(stock_code)
         rows = NewsRepository(db).list_news_by_company(stock_code, days=days)
-        results = []
-        for mapping, news in rows:
-            item = self._news_raw_dict(news)
-            item.update({
-                "impact_direction": mapping.impact_direction,
-                "impact_strength": float(mapping.impact_strength) if mapping.impact_strength is not None else None,
-                "reason_text": mapping.reason_text,
-            })
-            results.append(item)
-        return results
+        return [self._news_raw_dict(r) for r in rows]
 
     def _get_news_by_industry(self, db, req: IndustryDaysRequest) -> list[dict]:
         industry_code = require_non_empty(req.industry_code, "industry_code")
         days = require_positive_int(req.days, "days")
         rows = NewsRepository(db).list_news_by_industry(industry_code, days=days)
-        results = []
-        for mapping, news in rows:
-            item = self._news_raw_dict(news)
-            item.update({
-                "industry_code": mapping.industry_code,
-                "impact_direction": mapping.impact_direction,
-                "impact_strength": float(mapping.impact_strength) if mapping.impact_strength is not None else None,
-                "reason_text": mapping.reason_text,
-            })
-            results.append(item)
-        return results
+        return [self._news_raw_dict(r) for r in rows]
 
     def _get_news_structured(self, db, req: NewsStructuredRequest) -> list[dict]:
         days = require_positive_int(req.days, "days")
@@ -147,3 +132,11 @@ class NewsService(BaseService):
         structured = self._get_news_structured(db, NewsStructuredRequest(days=days, trace_id=req.trace_id))
         sentiments = Counter(item.get("sentiment_label") or "unknown" for item in structured)
         return {"days": days, "raw_items": raw, "structured_items": structured, "sentiment_counts": dict(sentiments)}
+
+    def _report_dict(self, row) -> dict:
+        return model_to_dict(row, ["id", "report_uid", "scope_type", "stock_code", "industry_code", "title", "publish_date", "report_org", "summary_text", "source_type", "source_url"])
+
+    def _get_reports_by_industry(self, db, req: IndustryDaysRequest) -> list[dict]:
+        industry_code = require_non_empty(req.industry_code, "industry_code")
+        rows = ResearchReportRepository(db).list_by_industry(industry_code, limit=30)
+        return [self._report_dict(r) for r in rows]
