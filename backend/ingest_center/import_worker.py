@@ -451,8 +451,18 @@ def _upsert_announcement(db: Session, rec: dict) -> None:
 
 
 def _merge_research_report(db: Session, records: list[dict]) -> int:
+    valid_codes = set(
+        row[0] for row in db.execute(select(Company.stock_code)).all()
+    )
     count = 0
     for rec in sorted(records, key=lambda r: (r.get("scope_type", ""), r.get("stock_code") or r.get("industry_code", ""), str(r.get("publish_date", "")))):
+        scope_type = rec.get("scope_type", "company")
+        stock_code = rec.get("stock_code")
+        # scope_type=company 必须携带有效 stock_code，否则跳过
+        if scope_type == "company" and not stock_code:
+            continue
+        if stock_code and stock_code not in valid_codes:
+            continue
         try:
             _upsert_research_report(db, rec)
             count += 1

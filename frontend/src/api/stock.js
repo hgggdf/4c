@@ -107,11 +107,16 @@ function mapCompanyToStock(summary = {}, dataset = null) {
     name: summary.name || dataset?.name,
   })
 
+  const industry =
+    summary.industry_level2 ||
+    summary.industry_level1 ||
+    extractIndustry(dataset || {})
+
   return {
     ...quote,
     symbol: summary.symbol || quote.symbol,
     name: summary.name || quote.name || summary.symbol,
-    industry: extractIndustry(dataset || {}),
+    industry,
     industry_code: summary.industry_code || null,
     exchange: summary.exchange || dataset?.exchange || '',
     collected_at: summary.collected_at || dataset?.collected_at || '',

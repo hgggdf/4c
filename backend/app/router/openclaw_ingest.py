@@ -511,9 +511,37 @@ def _ingest_research_report(envelope: OpenClawEnvelope, container: ServiceContai
     document = envelope.document
     source = envelope.source
 
+    stock_code = entity.get("stock_code") or None
+    scope_type = payload.get("scope_type", "company")
+
+    # scope_type=company 必须携带有效 stock_code
+    if scope_type == "company" and not stock_code:
+        from app.service.dto import ServiceResult
+        return service_result_response(
+            ServiceResult(success=False, message="scope_type=company but stock_code is empty, skipped")
+        )
+
+    # stock_code 不在 company 表则拒绝入库
+    if stock_code:
+        from sqlalchemy import select
+        from app.core.database.models.company import Company
+        from app.core.database.session import SessionLocal
+        db = SessionLocal()
+        try:
+            exists = db.execute(
+                select(Company).where(Company.stock_code == stock_code)
+            ).scalars().first()
+            if not exists:
+                from app.service.dto import ServiceResult
+                return service_result_response(
+                    ServiceResult(success=False, message=f"stock_code {stock_code} not in company table, skipped")
+                )
+        finally:
+            db.close()
+
     report = {
-        "scope_type": payload.get("scope_type", "company"),
-        "stock_code": entity.get("stock_code") or None,
+        "scope_type": scope_type,
+        "stock_code": stock_code,
         "industry_code": entity.get("industry_code") or None,
         "title": document.get("title", ""),
         "publish_date": (document.get("publish_time") or "").split("T")[0] if document.get("publish_time") else None,

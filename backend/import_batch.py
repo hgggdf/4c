@@ -332,14 +332,20 @@ def ingest_research_report(batch_id: str, batch_dir: Path, records: list[dict]) 
                 scope_type = rec.get("scope_type", "company")
                 stock_code = rec.get("stock_code") or None
                 industry_code = rec.get("industry_code") or None
-                sub_key = stock_code or industry_code or "unknown"
-                move_file_to_raw(batch_dir, rec.get("local_file", ""), "research_report", sub_key)
 
-                # 校验外键
+                # scope_type=company 必须携带有效 stock_code，否则跳过
+                if scope_type == "company" and not stock_code:
+                    fail += 1
+                    continue
                 if stock_code:
                     exists = db.execute(select(Company).where(Company.stock_code == stock_code)).scalars().first()
                     if not exists:
-                        stock_code = None
+                        fail += 1
+                        continue
+
+                sub_key = stock_code or industry_code or "unknown"
+                move_file_to_raw(batch_dir, rec.get("local_file", ""), "research_report", sub_key)
+
                 if industry_code:
                     exists = db.execute(select(IndustryMaster).where(IndustryMaster.industry_code == industry_code)).scalars().first()
                     if not exists:

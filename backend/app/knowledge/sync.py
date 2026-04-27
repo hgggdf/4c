@@ -16,6 +16,7 @@ from app.core.database.models.announcement_hot import (
 )
 from app.core.database.models.company import CompanyMaster, CompanyProfile, IndustryMaster
 from app.core.database.models.financial_hot import FinancialNotesHot
+from app.core.database.models.research_report_hot import ResearchReportHot
 from app.core.database.models.news_hot import (
     NewsCompanyMapHot,
     NewsIndustryMapHot,
@@ -50,6 +51,11 @@ except Exception:
     NewsStructuredArchive = None
     NewsIndustryMapArchive = None
     NewsCompanyMapArchive = None
+
+try:
+    from app.core.database.models.research_report_hot import ResearchReportArchive
+except Exception:
+    ResearchReportArchive = None
 
 
 def _doc_id(prefix: str, pk: int, text: str) -> str:
@@ -617,3 +623,84 @@ def sync_external_document(
         is_hot=is_hot,
     )
     return _write_document(text, doc_type, meta)
+
+
+def _resolve_industry_name(db: Session, industry_code: str) -> str:
+    if not industry_code:
+        return ""
+    try:
+        name = db.execute(
+            select(IndustryMaster.industry_name).where(IndustryMaster.industry_code == industry_code)
+        ).scalar_one_or_none()
+        return name or ""
+    except Exception:
+        return ""
+
+
+def _sync_research_report_row(db: Session, row, *, is_hot: bool, stock_name_by_code: dict[str, str]) -> int:
+    content = _normalize_text(_safe_attr(row, "content")) or _normalize_text(_safe_attr(row, "summary_text"))
+    if not content:
+        return 0
+
+    stock_code = _safe_attr(row, "stock_code", "") or ""
+    industry_code = _safe_attr(row, "industry_code", "") or ""
+    industry_name = _resolve_industry_name(db, industry_code) if industry_code else ""
+    source_table = ResearchReportHot.__tablename__ if is_hot else (ResearchReportArchive.__tablename__ if ResearchReportArchive else "research_report_archive")
+
+    meta = ChunkMetadata(
+        doc_type="report",
+        doc_id=_doc_id("report", row.id, content),
+        stock_code=stock_code,
+        stock_name=stock_name_by_code.get(stock_code, ""),
+        title=_safe_attr(row, "title", "") or "",
+        publish_date=str(_safe_attr(row, "publish_date", "") or ""),
+        category=_safe_attr(row, "scope_type", "") or "",
+        source_type=_safe_attr(row, "source_type", "") or "",
+        source_url=_safe_attr(row, "source_url", "") or "",
+        source_table=source_table,
+        source_pk=str(row.id),
+        industry_code=industry_code,
+        industry_name=industry_name,
+        is_hot=1 if is_hot else 0,
+    )
+    return _write_document(content, "report", meta)
+
+
+def sync_research_reports(
+    db: Session,
+    is_hot: bool = True,
+    stock_code: str | None = None,
+    limit: int | None = None,
+) -> int:
+    Model = ResearchReportHot if is_hot else ResearchReportArchive
+    if Model is None:
+        return 0
+
+    stmt = select(Model)
+    if stock_code:
+        stmt = stmt.where(Model.stock_code == stock_code)
+    if limit:
+        stmt = stmt.limit(limit)
+
+    rows = db.execute(stmt).scalars().all()
+    stock_name_by_code = _stock_name_map(db, [getattr(r, "stock_code", "") for r in rows])
+
+    total = 0
+    for row in rows:
+        total += _sync_research_report_row(db, row, is_hot=is_hot, stock_name_by_code=stock_name_by_code)
+    return total
+
+
+def sync_research_reports_by_ids(db: Session, source_ids: list[int], is_hot: bool = True) -> int:
+    Model = ResearchReportHot if is_hot else ResearchReportArchive
+    if Model is None or not source_ids:
+        return 0
+
+    stmt = select(Model).where(Model.id.in_(source_ids))
+    rows = db.execute(stmt).scalars().all()
+    stock_name_by_code = _stock_name_map(db, [getattr(r, "stock_code", "") for r in rows])
+
+    total = 0
+    for row in rows:
+        total += _sync_research_report_row(db, row, is_hot=is_hot, stock_name_by_code=stock_name_by_code)
+    return total

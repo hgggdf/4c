@@ -160,6 +160,29 @@ class RetrievalService(BaseService):
             return first.get("stock_code")
         return getattr(first, "stock_code", None)
 
+    _INDUSTRY_CODE_ALIASES: dict[str, list[str]] = {
+        "medical_device":    ["MED_DEVICE"],
+        "MED_DEVICE":        ["medical_device"],
+        "biological":        ["MED_BIOLOGICAL"],
+        "MED_BIOLOGICAL":    ["biological"],
+        "pharma":            ["MED_MANUFACTURING"],
+        "MED_MANUFACTURING": ["pharma"],
+        "tcm":               ["MED_CHINESE_MEDICINE"],
+        "MED_CHINESE_MEDICINE": ["tcm"],
+        "healthcare":        ["MED_SERVICE"],
+        "medical_service":   ["MED_SERVICE"],
+        "MED_SERVICE":       ["healthcare", "medical_service"],
+        "pharma_trade":      ["MED_PHARMA_TRADE"],
+        "MED_PHARMA_TRADE":  ["pharma_trade"],
+        "MED_RD":            ["pharma", "MED_MANUFACTURING"],
+    }
+
+    def _expand_industry_codes(self, code: str) -> list[str]:
+        codes = {code}
+        for alias in self._INDUSTRY_CODE_ALIASES.get(code, []):
+            codes.add(alias)
+        return list(codes)
+
     def _build_filters(self, req: SearchRequest, *, doc_type: str | None) -> dict:
         filters: dict = {}
         if doc_type:
@@ -170,7 +193,11 @@ class RetrievalService(BaseService):
             filters["stock_code"] = stock_code
 
         if req.industry_code:
-            filters["industry_code"] = req.industry_code
+            expanded = self._expand_industry_codes(req.industry_code)
+            if len(expanded) > 1:
+                filters["industry_code"] = expanded
+            else:
+                filters["industry_code"] = req.industry_code
 
         return filters
 
@@ -520,6 +547,8 @@ class RetrievalService(BaseService):
                 return kg_sync.sync_company_profiles_by_ids(db, req.source_ids)
             if doc_type == "news":
                 return kg_sync.sync_news_by_ids(db, req.source_ids, is_hot=True)
+            if doc_type == "report":
+                return kg_sync.sync_research_reports_by_ids(db, req.source_ids, is_hot=True)
             return 0
 
         count = self._with_db(_run_sync)
