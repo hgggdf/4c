@@ -55,12 +55,12 @@ import { getNewsByIndustry } from '../api/news'
 
 // ── 指标 ──────────────────────────────────────────
 const indicators = [
-  { key: 'CPI',    label: 'CPI',    desc: 'CPI（居民消费价格指数）同比变化，反映通货膨胀水平，影响医药消费品定价空间。' },
-  { key: 'PPI',    label: 'PPI',    desc: 'PPI（工业生产者出厂价格指数）同比，影响原料药及医疗耗材成本端压力。' },
+  { key: 'CPI同比',    label: 'CPI',    desc: 'CPI（居民消费价格指数）同比变化，反映通货膨胀水平，影响医药消费品定价空间。' },
+  { key: 'PPI同比',    label: 'PPI',    desc: 'PPI（工业生产者出厂价格指数）同比，影响原料药及医疗耗材成本端压力。' },
   { key: 'PMI',    label: 'PMI',    desc: 'PMI 制造业采购经理指数，50 以上为扩张，反映工业景气度。' },
-  { key: '社融',   label: '社融',   desc: '社会融资规模存量同比增速，衡量宏观流动性松紧，影响医药行业再融资环境。' },
-  { key: 'GDP',    label: 'GDP',    desc: 'GDP 同比增速，宏观经济总量指标，与医疗支出规模正相关。' },
-  { key: '医药研发投入', label: '医药研发', desc: '医药行业全年研发投入增速，反映创新药研发景气度。' },
+  { key: '社融存量同比',   label: '社融',   desc: '社会融资规模存量同比增速，衡量宏观流动性松紧，影响医药行业再融资环境。' },
+  { key: 'GDP增速',    label: 'GDP增速',    desc: 'GDP 同比增速，宏观经济总量指标，与医疗支出规模正相关。' },
+  { key: '医药研发投入增速', label: '医药研发', desc: '医药行业全年研发投入增速，反映创新药研发景气度。' },
 ]
 
 const current = ref('CPI')
@@ -76,7 +76,7 @@ const keyMetrics = ref([])
 
 async function loadKeyMetrics() {
   try {
-    const res = await getMacroSummary(['CPI', 'PPI', 'PMI', 'GDP', '社融', '医药研发投入'], 1)
+    const res = await getMacroSummary(['CPI同比', 'PPI同比', 'PMI', 'GDP增速', '社融存量同比', '医药研发投入增速'], 1)
     const series = res?.series || res || {}
     const list = []
     for (const [name, records] of Object.entries(series)) {
@@ -84,7 +84,7 @@ async function loadKeyMetrics() {
       const latest = records[0]
       list.push({
         label: latest.indicator_name || name,
-        value: latest.value ?? '--',
+        value: (latest.value ?? '--') + (latest.unit || ''),
         sub: latest.period ?? '',
         trend: (() => {
           const v = parseFloat(latest.value)
@@ -150,10 +150,11 @@ async function loadAndRender() {
     if (!chartRef.value) return
     chartInst = echarts.init(chartRef.value)
 
-    const isBar = current.value === 'GDP' || current.value === '医药研发投入'
+    const unit = list[0]?.unit || ''
+    const isBar = current.value === 'GDP增速' || current.value === '医药研发投入增速'
     chartInst.setOption({
       backgroundColor: 'transparent',
-      tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/><b>${p[0].value ?? '--'}</b>` },
+      tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/><b>${p[0].value ?? '--'}${unit}</b>` },
       grid: { left: 70, right: 16, top: 24, bottom: 36 },
       xAxis: {
         type: 'category', data: dates,
