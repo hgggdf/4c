@@ -161,6 +161,7 @@ export const useChatStore = defineStore('chat', {
         createdAt: Date.now(),
         retrievalTrace: [],
         toolEvents: [],
+        docPreviews: [],
         modeTitle: selectedMode,
         sessionId,
         selectedMode,
@@ -209,6 +210,15 @@ export const useChatStore = defineStore('chat', {
               assistantMsg.toolEvents.push({ type: 'tool_result', tool: event.tool, preview: event.content || event.preview || '' })
             } else if (event.type === 'status') {
               assistantMsg.toolEvents.push({ type: 'status', content: event.content })
+            } else if (event.type === 'doc_preview') {
+              assistantMsg.docPreviews.push({
+                title: event.title,
+                kind: event.kind,
+                date: event.date,
+                file_name: event.file_name,
+                image_source: event.image_source,
+                images: event.images || [],
+              })
             } else if (event.type === 'clarification') {
               // 澄清事件：把 assistant 消息标记为澄清气泡，暂停输入
               assistantMsg.isClarification = true

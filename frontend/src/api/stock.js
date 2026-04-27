@@ -165,16 +165,16 @@ function mapEvents(dataset = {}) {
     title: a['公告标题'] || a['标题'] || '公告',
     category: a['公告类型'] || a['类型'] || '',
     date: a['公告日期'] || a['日期'] || '',
-    url: a['网址'] || a['链接'] || '',
+    url: a['来源链接'] || a['网址'] || a['链接'] || '',
   }))
 
   const newsEvents = news.slice(0, 20).map(n => ({
     type: 'news',
     title: n['新闻标题'] || n['标题'] || '新闻',
-    category: n['新闻来源'] || n['来源'] || '',
+    category: n['文章来源'] || n['新闻来源'] || n['来源'] || '',
     date: (n['发布时间'] || n['时间'] || '').slice(0, 10),
     url: n['新闻链接'] || n['链接'] || '',
-    summary: n['新闻内容'] || n['摘要'] || '',
+    summary: n['影响说明'] || n['新闻内容'] || n['摘要'] || '',
   }))
 
   return [...annEvents, ...newsEvents]

@@ -454,6 +454,8 @@ class StockService:
                 "文章来源": row.source_name,
                 "影响方向": "",
                 "影响说明": row.summary_text or "",
+                "新闻链接": row.source_url or "",
+                "新闻内容": row.content or "",
             }
             for row in matched
         ]
@@ -463,13 +465,7 @@ class StockService:
         rows = list(
             db.execute(
                 select(ResearchReportHot)
-                .where(
-                    (ResearchReportHot.stock_code == stock_code)
-                    | (
-                        (ResearchReportHot.scope_type == "industry")
-                        & (ResearchReportHot.stock_code.is_(None))
-                    )
-                )
+                .where(ResearchReportHot.stock_code == stock_code)
                 .order_by(ResearchReportHot.publish_date.desc(), ResearchReportHot.created_at.desc())
                 .limit(limit)
             ).scalars().all()

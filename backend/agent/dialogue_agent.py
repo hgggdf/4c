@@ -10,6 +10,7 @@ from agent.integration.langgraph_agent import LangGraphAgent
 from agent.llm_clients import KimiClient
 from app.service.container import ServiceContainer
 from app.service.requests import SearchRequest
+from app.service.doc_image_service import get_doc_images
 
 logger = logging.getLogger(__name__)
 
@@ -219,7 +220,127 @@ class DialogueAgent:
             deduped.append(item)
             if len(deduped) >= 6:
                 break
+
+        # 向量检索无数据时，直接从数据库补充最新研报/公告并附带图片
+        if stock_code and not deduped:
+            deduped = self._collect_db_evidence_with_images(stock_code, selected_mode)
+
         return deduped
+
+    def _collect_db_evidence_with_images(
+        self,
+        stock_code: str,
+        selected_mode: str | None,
+    ) -> list[dict[str, Any]]:
+        """直接从数据库查最新研报和公告，附带本地 PDF 图片。"""
+        from app.core.database.session import get_db
+        from app.core.database.models.research_report_hot import ResearchReportHot
+        from app.core.database.models.announcement_hot import AnnouncementHot
+
+        items: list[dict[str, Any]] = []
+        try:
+            db = next(get_db())
+
+            # 最新研报（最多2条）—— 只查该公司的研报，排除 stock_code=None 的行业研报
+            if selected_mode not in ("risk_warning",):
+                reports = (
+                    db.query(ResearchReportHot)
+                    .filter(
+                        ResearchReportHot.stock_code == stock_code,
+                        ResearchReportHot.scope_type == "company",
+                    )
+                    .order_by(ResearchReportHot.publish_date.desc())
+                    .limit(2)
+                    .all()
+                )
+                for r in reports:
+                    date_str = str(r.publish_date) if r.publish_date else ""
+                    img_result = get_doc_images(
+                        "research_report",
+                        stock_code=stock_code,
+                        publish_date=date_str,
+                        source_url=r.source_url or "",
+                        max_pages=2,
+                    )
+                    item: dict[str, Any] = {
+                        "kind": "report",
+                        "title": r.title or "研报",
+                        "date": date_str,
+                        "source": r.report_org or r.source_type or "research_report",
+                        "summary": _compact_text(r.summary_text or r.content or "", limit=180),
+                    }
+                    if img_result["images"]:
+                        item["images"] = img_result["images"]
+                        item["image_source"] = img_result["source"]
+                        item["file_name"] = img_result["file_name"]
+                    items.append(item)
+
+            # 最新公告（最多2条）
+            announcements = (
+                db.query(AnnouncementHot)
+                .filter(AnnouncementHot.stock_code == stock_code)
+                .order_by(AnnouncementHot.publish_date.desc())
+                .limit(2)
+                .all()
+            )
+            for a in announcements:
+                date_str = str(a.publish_date) if a.publish_date else ""
+                img_result = get_doc_images(
+                    "announcement",
+                    stock_code=stock_code,
+                    publish_date=date_str,
+                    source_url=a.source_url or "",
+                    max_pages=2,
+                )
+                item = {
+                    "kind": "announcement",
+                    "title": a.title or "公告",
+                    "date": date_str,
+                    "source": a.announcement_type or "announcement",
+                    "summary": _compact_text(a.summary_text or a.content or "", limit=180),
+                }
+                if img_result["images"]:
+                    item["images"] = img_result["images"]
+                    item["image_source"] = img_result["source"]
+                    item["file_name"] = img_result["file_name"]
+                items.append(item)
+
+            # 若公司研报为空，补充最新行业研报（scope_type='industry'）
+            has_report = any(i["kind"] == "report" for i in items)
+            if not has_report and selected_mode not in ("risk_warning",):
+                ind_reports = (
+                    db.query(ResearchReportHot)
+                    .filter(ResearchReportHot.scope_type == "industry")
+                    .order_by(ResearchReportHot.publish_date.desc())
+                    .limit(2)
+                    .all()
+                )
+                for r in ind_reports:
+                    date_str = str(r.publish_date) if r.publish_date else ""
+                    img_result = get_doc_images(
+                        "research_report",
+                        industry_code=r.industry_code or "",
+                        publish_date=date_str,
+                        source_url=r.source_url or "",
+                        max_pages=2,
+                    )
+                    item = {
+                        "kind": "report",
+                        "title": r.title or "行业研报",
+                        "date": date_str,
+                        "source": r.report_org or "industry_report",
+                        "summary": _compact_text(r.summary_text or r.content or "", limit=180),
+                    }
+                    if img_result["images"]:
+                        item["images"] = img_result["images"]
+                        item["image_source"] = img_result["source"]
+                        item["file_name"] = img_result["file_name"]
+                    items.append(item)
+
+        except Exception as exc:
+            logger.debug("_collect_db_evidence_with_images failed: %s", exc)
+
+        return items
 
     def _compress_retrieval_item(
         self,
@@ -369,6 +490,17 @@ class DialogueAgent:
                     f"{idx}. [{ev['kind']}] {ev['title']} ({ev['date']})"
                 )
                 system_lines.append(f"   {ev['summary']}")
+        elif stock_context:
+            # 明确告知 LLM 本地无数据，禁止生成虚假分析
+            system_lines.append("")
+            system_lines.append(
+                "⚠️ 数据缺失警告：本地数据库中没有该标的的任何研报、公告或新闻记录。"
+            )
+            system_lines.append(
+                "你必须直接告知用户「本系统暂无该公司的本地数据，无法进行基于真实文件的分析」，"
+                "并说明用户可以通过哪些渠道自行获取（如东方财富、Wind 等）。"
+                "严禁基于训练知识编造分析结论、数据或研报内容。"
+            )
 
         return "\n".join(system_lines)
 
@@ -454,6 +586,22 @@ class DialogueAgent:
             evidence_items=evidence_items,
         )
 
+        # 把带图片的 evidence 通过 SSE 发给前端展示
+        doc_images_for_llm: list[str] = []
+        for ev in evidence_items:
+            imgs = ev.get("images") or []
+            if imgs:
+                yield {
+                    "type": "doc_preview",
+                    "title": ev.get("title", ""),
+                    "kind": ev.get("kind", ""),
+                    "date": ev.get("date", ""),
+                    "file_name": ev.get("file_name", ""),
+                    "image_source": ev.get("image_source", ""),
+                    "images": imgs,
+                }
+                doc_images_for_llm.extend(imgs[:1])  # 每份文档取第一页传给 LLM
+
         if tool_autonomy:
             yield from self._chat_stream_with_tool_autonomy(
                 question,
@@ -467,6 +615,32 @@ class DialogueAgent:
 
         if not self.is_configured():
             yield "Kimi API 未配置，请在 backend/.env 中设置 KIMI_API_KEY、KIMI_BASE_URL 和 KIMI_MODEL。"
+            return
+
+        # 有图片且 Claude 已配置时，优先用 Claude 做视觉分析
+        from agent.llm_clients import ClaudeClient
+        claude = ClaudeClient()
+        if doc_images_for_llm and claude.is_configured():
+            try:
+                max_tokens = 4096 if selected_mode == "report_generation" else 2048
+                result = claude.chat_with_images(
+                    question,
+                    doc_images_for_llm[:3],
+                    system=system_context,
+                    max_tokens=max_tokens,
+                )
+                yield {"type": "answer", "content": result}
+            except Exception as exc:
+                logger.warning("Claude vision failed, fallback to Kimi: %s", exc)
+                messages = self.build_messages(
+                    question, history, targets, current_stock_code, selected_mode=selected_mode
+                )
+                try:
+                    max_tokens = 4096 if selected_mode == "report_generation" else 2048
+                    yield from self.llm_client.chat_stream(messages, temperature=1.0, max_tokens=max_tokens)
+                except Exception as exc2:
+                    logger.exception("DialogueAgent chat_stream fallback error")
+                    yield f"\n\n[对话异常: {exc2}]"
             return
 
         messages = self.build_messages(

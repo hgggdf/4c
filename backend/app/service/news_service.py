@@ -137,6 +137,6 @@ class NewsService(BaseService):
         return model_to_dict(row, ["id", "report_uid", "scope_type", "stock_code", "industry_code", "title", "publish_date", "report_org", "summary_text", "source_type", "source_url"])
 
     def _get_reports_by_industry(self, db, req: IndustryDaysRequest) -> list[dict]:
-        industry_code = require_non_empty(req.industry_code, "industry_code")
+        industry_code = req.industry_code or ""
         rows = ResearchReportRepository(db).list_by_industry(industry_code, limit=30)
         return [self._report_dict(r) for r in rows]

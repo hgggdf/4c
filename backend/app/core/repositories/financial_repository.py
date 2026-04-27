@@ -10,7 +10,8 @@ from app.core.repositories.base import BaseRepository
 class FinancialRepository(BaseRepository):
     def list_income_statements(self, stock_code: str, *, limit: int = 4) -> list[FinancialHot]:
         stmt = (select(FinancialHot)
-                .where(FinancialHot.stock_code == stock_code)
+                .where(FinancialHot.stock_code == stock_code,
+                       FinancialHot.report_type != 'daily')
                 .order_by(FinancialHot.report_date.desc())
                 .limit(limit))
         return self.scalars_all(stmt)

@@ -66,6 +66,10 @@
             <MacroPanel />
           </template>
 
+          <template v-else-if="activeSection === 'news'">
+            <NewsPanel />
+          </template>
+
         </div>
       </div>
     </div>
@@ -110,6 +114,7 @@ import StockGrid from '../components/StockGrid.vue'
 import StockDetailPanel from '../components/StockDetailPanel.vue'
 import IndustryDetailPanel from '../components/IndustryDetailPanel.vue'
 import MacroPanel from '../components/MacroPanel.vue'
+import NewsPanel from '../components/NewsPanel.vue'
 import ChatPanel from '../components/ChatPanel.vue'
 import { getStockList, getIndustryList } from '../api/stock'
 
@@ -121,6 +126,7 @@ const TABS = [
   { key: 'stock',    label: '个股', icon: '📈' },
   { key: 'industry', label: '行业', icon: '🏭' },
   { key: 'macro',    label: '宏观', icon: '🌐' },
+  { key: 'news',     label: '新闻', icon: '📰' },
 ]
 
 // ── 面板状态 ──────────────────────────────────────

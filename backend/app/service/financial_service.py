@@ -129,20 +129,39 @@ class FinancialService(BaseService):
         count = require_positive_int(req.period_count, "period_count")
         self._ensure_company(stock_code)
         repo = FinancialRepository(db)
-        income = [model_to_dict(r, ["report_date", "fiscal_year", "report_type", "revenue", "gross_profit", "net_profit", "net_profit_deducted", "rd_expense", "eps"]) for r in repo.get_income_statements(stock_code, limit=count)]
-        balance = [model_to_dict(r, ["report_date", "fiscal_year", "report_type", "total_assets", "total_liabilities", "cash", "equity", "goodwill"]) for r in repo.get_balance_sheets(stock_code, limit=count)]
-        cashflows = [model_to_dict(r, ["report_date", "fiscal_year", "report_type", "operating_cashflow", "investing_cashflow", "financing_cashflow", "free_cashflow"]) for r in repo.get_cashflow_statements(stock_code, limit=count)]
-        key_metrics = [model_to_dict(r, ["report_date", "fiscal_year", "metric_name", "metric_value", "metric_unit"]) for r in repo.get_metrics(stock_code, ["gross_margin", "net_margin", "rd_ratio", "debt_ratio", "roe"], limit=count*5)]
-        latest_income = {"stock_code": stock_code, **income[0]} if income else None
-        latest_balance = {"stock_code": stock_code, **balance[0]} if balance else None
-        latest_cashflow = {"stock_code": stock_code, **cashflows[0]} if cashflows else None
+        _fields = ["report_date", "fiscal_year", "report_type",
+                   "revenue", "operating_cost", "gross_profit", "gross_margin",
+                   "selling_expense", "admin_expense", "rd_expense", "rd_ratio",
+                   "operating_profit", "net_profit", "net_profit_deducted", "eps",
+                   "total_assets", "total_liabilities", "debt_ratio",
+                   "operating_cashflow", "investing_cashflow", "financing_cashflow"]
+        rows = repo.get_income_statements(stock_code, limit=count)
+        statements = [model_to_dict(r, _fields) for r in rows]
+
+        # compute net_margin and roe inline
+        for s in statements:
+            rev = s.get("revenue")
+            np_ = s.get("net_profit")
+            ta  = s.get("total_assets")
+            tl  = s.get("total_liabilities")
+            s["net_margin"] = round(float(np_) / float(rev), 6) if np_ and rev and float(rev) != 0 else None
+            equity = (float(ta) - float(tl)) if ta and tl else None
+            s["roe"] = round(float(np_) / equity, 6) if np_ and equity and equity != 0 else None
+
+        latest = {"stock_code": stock_code, **statements[0]} if statements else None
         return {
             "stock_code": stock_code,
-            "latest_income": latest_income,
-            "latest_balance": latest_balance,
-            "latest_cashflow": latest_cashflow,
-            "income_statements": income,
-            "balance_sheets": balance,
-            "cashflow_statements": cashflows,
-            "key_metrics": key_metrics,
+            "latest_income": latest,
+            "latest_balance": latest,
+            "latest_cashflow": latest,
+            "income_statements": statements,
+            "balance_sheets": statements,
+            "cashflow_statements": statements,
+            "key_metrics": [
+                {"report_date": s["report_date"], "fiscal_year": s["fiscal_year"],
+                 "gross_margin": s.get("gross_margin"), "net_margin": s.get("net_margin"),
+                 "rd_ratio": s.get("rd_ratio"), "debt_ratio": s.get("debt_ratio"),
+                 "roe": s.get("roe")}
+                for s in statements
+            ],
         }

@@ -165,6 +165,36 @@
               </div>
             </div>
 
+            <!-- 文档原文预览（研报/公告图片） -->
+            <div v-if="msg.role === 'assistant' && msg.docPreviews?.length" class="cp-doc-previews">
+              <div class="cp-doc-previews-title">引用原文</div>
+              <div class="cp-doc-preview-list">
+                <div
+                  v-for="(doc, di) in msg.docPreviews"
+                  :key="`doc-${i}-${di}`"
+                  class="cp-doc-preview-item"
+                >
+                  <div class="cp-doc-preview-meta">
+                    <span class="cp-doc-kind">{{ docKindLabel(doc.kind) }}</span>
+                    <span class="cp-doc-title">{{ doc.title }}</span>
+                    <span class="cp-doc-date">{{ doc.date }}</span>
+                    <span v-if="doc.image_source === 'local'" class="cp-doc-source-badge">本地</span>
+                    <span v-else-if="doc.image_source === 'url'" class="cp-doc-source-badge cp-doc-source-badge--url">网络</span>
+                  </div>
+                  <div class="cp-doc-images">
+                    <img
+                      v-for="(img, ii) in doc.images"
+                      :key="`img-${di}-${ii}`"
+                      :src="img"
+                      class="cp-doc-thumb"
+                      @click="openLightbox(img)"
+                      title="点击放大"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- 时间 -->
             <div class="cp-time">{{ formatTime(msg.createdAt) }}</div>
           </div>
@@ -189,21 +219,42 @@
           <span class="cp-clarification-bar-text">请先回答上方问题，或直接输入补充信息</span>
           <button class="cp-clarification-bar-dismiss" @click="chatStore.pendingClarification = null">跳过</button>
         </div>
-        <!-- Agent 模式切换 -->
-        <div class="cp-mode-bar">
+        <!-- 模式选择卡片 -->
+        <div class="cp-mode-cards">
           <button
-            class="cp-mode-btn"
-            :class="{ active: agentMode }"
-            @click="agentMode = !agentMode"
-            title="开启后由 LLM 自主决定调哪些工具"
+            class="cp-mode-card"
+            :class="{ active: !agentMode }"
+            @click="agentMode = false"
           >
-            {{ agentMode ? '🤖 Agent 模式' : '💬 普通模式' }}
+            <span class="cp-mode-card-icon">💬</span>
+            <div class="cp-mode-card-body">
+              <span class="cp-mode-card-title">普通模式</span>
+              <span class="cp-mode-card-desc">按预设流程调用工具，速度快、结果稳定</span>
+            </div>
+            <span class="cp-mode-card-tag">推荐</span>
           </button>
-          <span v-if="agentMode" class="cp-mode-hint">LLM 自主决定工具链</span>
+          <button
+            class="cp-mode-card"
+            :class="{ active: agentMode }"
+            @click="agentMode = true"
+          >
+            <span class="cp-mode-card-icon">🤖</span>
+            <div class="cp-mode-card-body">
+              <span class="cp-mode-card-title">Agent 模式</span>
+              <span class="cp-mode-card-desc">AI 自主决定调哪些工具，适合复杂开放问题</span>
+            </div>
+            <span class="cp-mode-card-tag cp-mode-card-tag--agent">自主</span>
+          </button>
         </div>
         <ChatBox :loading="chatStore.loading" @submit="handleSubmit" />
       </div>
 
+    </div>
+
+    <!-- 图片灯箱 -->
+    <div v-if="lightboxImg" class="cp-lightbox" @click="lightboxImg = null">
+      <img :src="lightboxImg" class="cp-lightbox-img" @click.stop />
+      <button class="cp-lightbox-close" @click="lightboxImg = null">✕</button>
     </div>
   </div>
 </template>
@@ -223,9 +274,15 @@ const currentUser = sessionStorage.getItem('user') || '我'
 const agentMode = ref(false)
 const isGenerating = computed(() => chatStore.isSessionLoading(chatStore.activeSessionId))
 const expandedRetrievals = ref(new Set())
+const lightboxImg = ref(null)
 const hasRenderableAssistantMessage = computed(() =>
   chatStore.messages.some((msg, idx) => msg.role === 'assistant' && shouldShowBubble(msg, idx))
 )
+
+function openLightbox(img) { lightboxImg.value = img }
+
+const DOC_KIND_LABELS = { report: '研报', announcement: '公告', news: '新闻', financial_note: '财报' }
+function docKindLabel(kind) { return DOC_KIND_LABELS[kind] || kind }
 
 function scrollBottom() {
   nextTick(() => {
@@ -877,37 +934,78 @@ function toggleRetrieval(index) {
   border: 1px solid rgba(59,130,246,0.12);
 }
 
-/* Agent 模式切换栏 */
-.cp-mode-bar {
-  display: flex;
-  align-items: center;
+/* 模式选择卡片 */
+.cp-mode-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
   margin-bottom: 8px;
 }
-.cp-mode-btn {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 14px;
-  border-radius: 20px;
+.cp-mode-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
   border: 1px solid var(--border);
+  border-radius: 12px;
   background: var(--bg-card);
-  color: var(--text-secondary);
   cursor: pointer;
+  text-align: left;
   transition: all .2s;
+  position: relative;
 }
-.cp-mode-btn:hover {
-  border-color: rgba(75,169,154,0.4);
+.cp-mode-card:hover {
+  border-color: rgba(75,169,154,0.35);
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(75,169,154,0.08);
+}
+.cp-mode-card.active {
+  border-color: var(--accent);
+  background: rgba(75,169,154,0.07);
+  box-shadow: 0 2px 12px rgba(75,169,154,0.12);
+}
+.cp-mode-card-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.cp-mode-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.cp-mode-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.cp-mode-card.active .cp-mode-card-title {
   color: var(--accent2);
 }
-.cp-mode-btn.active {
-  background: rgba(75,169,154,0.12);
-  border-color: rgba(75,169,154,0.4);
-  color: var(--accent2);
-}
-.cp-mode-hint {
-  font-size: 11px;
+.cp-mode-card-desc {
+  font-size: 10px;
   color: var(--text-muted);
-  font-style: italic;
+  line-height: 1.4;
+  white-space: normal;
+}
+.cp-mode-card-tag {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 20px;
+  background: rgba(75,169,154,0.1);
+  color: var(--accent2);
+  border: 1px solid rgba(75,169,154,0.2);
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+.cp-mode-card-tag--agent {
+  background: rgba(99,102,241,0.1);
+  color: #4f46e5;
+  border-color: rgba(99,102,241,0.2);
 }
 
 /* ── 澄清气泡 ── */
@@ -983,4 +1081,128 @@ function toggleRetrieval(index) {
   background: #f59e0b;
   color: #fff;
 }
+
+/* ── 文档原文预览 ── */
+.cp-doc-previews {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.cp-doc-previews-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  background: var(--bg-card2);
+  border-bottom: 1px solid var(--border);
+}
+.cp-doc-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.cp-doc-preview-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.cp-doc-preview-item:last-child { border-bottom: none; }
+.cp-doc-preview-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.cp-doc-kind {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(75,169,154,0.12);
+  color: var(--accent2);
+  flex-shrink: 0;
+}
+.cp-doc-title {
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cp-doc-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.cp-doc-source-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: rgba(75,169,154,0.1);
+  color: var(--accent2);
+  border: 1px solid rgba(75,169,154,0.25);
+  flex-shrink: 0;
+}
+.cp-doc-source-badge--url {
+  background: rgba(245,158,11,0.1);
+  color: #b45309;
+  border-color: rgba(245,158,11,0.3);
+}
+.cp-doc-images {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cp-doc-thumb {
+  width: 160px;
+  height: 110px;
+  object-fit: cover;
+  object-position: top;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: zoom-in;
+  transition: transform .15s, box-shadow .15s;
+}
+.cp-doc-thumb:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+/* ── 灯箱 ── */
+.cp-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.82);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cp-lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+.cp-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+.cp-lightbox-close:hover { background: rgba(255,255,255,0.28); }
 </style>

@@ -563,6 +563,7 @@ def process_batch(batch_dir: Path):
             json.dump(report, f, ensure_ascii=False, indent=2)
         if batch_dir.resolve() != dest.resolve():
             shutil.copytree(str(batch_dir), str(dest), dirs_exist_ok=True)
+            shutil.rmtree(str(batch_dir))
         log(f"批次已移动到 {dest}")
         return False
 
@@ -575,6 +576,7 @@ def process_batch(batch_dir: Path):
         json.dump(report, f, ensure_ascii=False, indent=2)
     if batch_dir.resolve() != dest.resolve():
         shutil.copytree(str(batch_dir), str(dest), dirs_exist_ok=True)
+        shutil.rmtree(str(batch_dir))
     log(f"批次已移动到 {dest}")
     return True
 

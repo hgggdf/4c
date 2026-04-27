@@ -19,7 +19,7 @@ def detect_clarification(user_question, *, selected_mode=None, history=None, tar
     mode = str(selected_mode or "")
     if mode in _NO_CLARIFY_MODES:
         return _no_clarification()
-    if len(q) <= _SHORT_QUESTION_THRESHOLD and not extract_stock_code(q) and not extract_company_name(q):
+    if len(q) <= _SHORT_QUESTION_THRESHOLD and not extract_stock_code(q) and not extract_company_name(q) and not targets and not current_stock_code:
         return _make_clarification(
             reason="问题过短",
             question="您想分析哪家公司或哪个行业？",

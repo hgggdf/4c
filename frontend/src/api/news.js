@@ -1,5 +1,9 @@
 import request from './request'
 
+export function getNewsLatest(days = 7, news_type = null) {
+  return request.post('/api/news/raw', { days, news_type })
+}
+
 export function getNewsByCompany(stock_code, days = 30) {
   return request.post('/api/news/by-company', { stock_code, days })
 }

@@ -17,9 +17,28 @@ class ClaudeClient:
     def is_configured(self) -> bool:
         return bool(self.api_key and self.model)
 
+    @staticmethod
+    def _build_vision_content(text: str, images: list[str]) -> list[dict[str, Any]]:
+        """把文本和 base64 图片列表组合成 Claude vision content blocks。"""
+        content: list[dict[str, Any]] = []
+        for img_b64 in images:
+            # 格式：data:image/png;base64,<data>
+            if "," in img_b64:
+                media_type_part, data_part = img_b64.split(",", 1)
+                media_type = media_type_part.split(":")[1].split(";")[0] if ":" in media_type_part else "image/png"
+            else:
+                data_part = img_b64
+                media_type = "image/png"
+            content.append({
+                "type": "image",
+                "source": {"type": "base64", "media_type": media_type, "data": data_part},
+            })
+        content.append({"type": "text", "text": text})
+        return content
+
     def chat(
         self,
-        messages: list[dict[str, str]],
+        messages: list[dict[str, Any]],
         *,
         temperature: float = 0.2,
         max_tokens: int = 1024,
@@ -33,9 +52,15 @@ class ClaudeClient:
         user_messages: list[dict[str, Any]] = []
         for msg in messages:
             if msg["role"] == "system":
-                system_content = msg["content"]
+                system_content = str(msg.get("content") or "")
+                continue
+            images: list[str] = msg.get("images") or []
+            text = str(msg.get("content") or "")
+            if images:
+                content = self._build_vision_content(text, images)
             else:
-                user_messages.append({"role": msg["role"], "content": msg["content"]})
+                content = text
+            user_messages.append({"role": msg["role"], "content": content})
 
         kwargs: dict[str, Any] = {
             "model": self.model,
@@ -54,6 +79,21 @@ class ClaudeClient:
                 return block.text.strip()
 
         raise RuntimeError("Claude response did not contain any text content.")
+
+    def chat_with_images(
+        self,
+        question: str,
+        images: list[str],
+        *,
+        system: str = "",
+        max_tokens: int = 2048,
+    ) -> str:
+        """直接传入图片列表进行视觉分析，返回分析文本。"""
+        messages: list[dict[str, Any]] = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": question, "images": images})
+        return self.chat(messages, max_tokens=max_tokens)
 
 
 __all__ = ["ClaudeClient"]

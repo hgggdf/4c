@@ -22,16 +22,13 @@
         class="tab-btn"
         :class="{ active: activeTab === t.key }"
         @click="activeTab = t.key"
-      >
-        <span class="tab-icon">{{ t.icon }}</span>
-        <span class="tab-label">{{ t.label }}</span>
-      </button>
+      >{{ t.label }}</button>
     </div>
 
     <div class="content-scroll">
 
-      <!-- 公司 & 宏观 Tab -->
-      <div v-if="activeTab === 'overview'">
+      <!-- 公司 & 宏观 -->
+      <template v-if="activeTab === 'overview'">
         <div class="section-title">板块成分股</div>
         <div class="company-list">
           <div v-for="c in companies" :key="c.symbol" class="company-item">
@@ -58,24 +55,30 @@
             <div class="macro-sub">{{ m.sub }}</div>
           </div>
         </div>
-      </div>
+      </template>
 
-      <!-- 行业研报 Tab -->
-      <div v-else-if="activeTab === 'report'">
+      <!-- 行业研报 -->
+      <template v-else-if="activeTab === 'report'">
         <div class="section-title">行业研报</div>
-        <div v-if="reports.length === 0" class="empty-state">暂无研报数据</div>
-        <div class="report-list">
-          <div v-for="r in reports" :key="r.id" class="report-item">
+        <div v-if="reportsLoading" class="empty-state">加载中...</div>
+        <div v-else-if="reports.length === 0" class="empty-state">暂无研报数据</div>
+        <div v-else class="report-list">
+          <a
+            v-for="r in reports"
+            :key="r.id"
+            class="report-item"
+            :href="r.source_url || '#'"
+            target="_blank"
+            rel="noopener"
+          >
             <div class="report-title">{{ r.title }}</div>
-            <div class="report-meta">{{ r.broker }}<template v-if="r.date"> · {{ r.date }}</template></div>
-            <span class="report-rating" :class="{
-              'rating-buy':  r.rating === '买入' || r.rating === '增持',
-              'rating-hold': r.rating === '中性' || r.rating === '推荐',
-              'rating-sell': r.rating === '卖出' || r.rating === '减持',
-            }">{{ r.rating }}</span>
-          </div>
+            <div class="report-meta">
+              {{ r.broker }}<template v-if="r.date"> · {{ r.date }}</template>
+              <span class="preview-hint">点击跳转 ↗</span>
+            </div>
+          </a>
         </div>
-      </div>
+      </template>
 
     </div>
   </div>
@@ -87,24 +90,23 @@ import { getMacroSummary } from '../api/macro'
 import { getReportsByIndustry } from '../api/news'
 
 const props = defineProps({
-  industry: { type: Object, required: true },
-  stocks:   { type: Array,  default: () => [] },
+  industry:   { type: Object, required: true },
+  stocks:     { type: Array,  default: () => [] },
   panelWidth: { type: Number, default: 0 },
 })
 defineEmits(['back'])
 
 const activeTab = ref('overview')
 const tabs = [
-  { key: 'overview', label: '公司 & 宏观', icon: '🏢' },
-  { key: 'report',   label: '行业研报',   icon: '📄' },
+  { key: 'overview', label: '公司 & 宏观' },
+  { key: 'report',   label: '行业研报' },
 ]
 
-// 该行业下的成分股
 const companies = computed(() =>
   props.stocks.filter(s => s.industry === props.industry.name)
 )
 
-// 宏观数据（从后端加载）
+// 宏观数据
 const macroData = ref([])
 
 async function loadMacroData() {
@@ -114,7 +116,7 @@ async function loadMacroData() {
     macroData.value = list.map(item => ({
       label: (item.indicator_name || item.name || '') + ' 同比',
       value: item.latest_value ?? item.value ?? '--',
-      sub: item.latest_period ?? item.period ?? '',
+      sub:   item.latest_period ?? item.period ?? '',
       trend: (() => {
         if (item.trend) return item.trend
         const v = parseFloat(item.latest_value ?? item.value)
@@ -127,22 +129,28 @@ async function loadMacroData() {
   }
 }
 
-// 行业研报（从后端加载）
+// 行业研报
 const reports = ref([])
+const reportsLoading = ref(false)
 
 async function loadReports() {
+  reportsLoading.value = true
   try {
-    const items = await getReportsByIndustry(props.industry.code || props.industry.name, 365)
+    const industryCode = props.industry.code || props.industry.name
+    const items = await getReportsByIndustry(industryCode, 365)
     const list = Array.isArray(items) ? items : []
-    reports.value = list.slice(0, 10).map((item, i) => ({
-      id: item.id || i,
-      title: item.title || '',
-      broker: item.report_org || '--',
-      date: (item.publish_date || '').slice(0, 10),
-      rating: '',
+    reports.value = list.slice(0, 30).map((item, i) => ({
+      id:         item.id || i,
+      title:      item.title || '',
+      broker:     item.report_org || '--',
+      date:       (item.publish_date || '').slice(0, 10),
+      source_url: item.source_url || '',
+      publish_date: item.publish_date || '',
     }))
   } catch (err) {
     console.error('[loadReports]', err)
+  } finally {
+    reportsLoading.value = false
   }
 }
 
@@ -152,6 +160,7 @@ onMounted(() => {
 })
 
 watch(() => props.industry, () => {
+  activeTab.value = 'overview'
   loadMacroData()
   loadReports()
 })
@@ -163,34 +172,25 @@ watch(() => props.industry, () => {
   background: var(--bg-panel);
 }
 
-/* ── Header ── */
 .detail-header {
   padding: 10px 14px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: flex; align-items: center; gap: 8px;
   overflow: hidden;
 }
 
 .back-btn {
   display: inline-flex; align-items: center; gap: 4px;
-  background: var(--bg-card2);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-size: 13px; font-weight: 500;
-  padding: 5px 12px 5px 8px;
-  flex-shrink: 0;
+  background: var(--bg-card2); border: 1px solid var(--border);
+  border-radius: 24px; color: var(--text-secondary);
+  cursor: pointer; font-size: 13px; font-weight: 500;
+  padding: 5px 12px 5px 8px; flex-shrink: 0;
   transition: background .2s, border-color .2s, color .2s, transform .15s;
 }
 .back-btn:hover {
-  background: rgba(75,169,154,0.1);
-  border-color: var(--accent);
-  color: var(--accent);
-  transform: translateX(-2px);
+  background: rgba(75,169,154,0.1); border-color: var(--accent);
+  color: var(--accent); transform: translateX(-2px);
 }
 .back-arrow { font-size: 18px; line-height: 1; font-weight: 300; }
 .back-text  { font-size: 13px; }
@@ -202,10 +202,8 @@ watch(() => props.industry, () => {
 }
 .detail-code {
   font-size: 11px; color: var(--text-muted);
-  background: var(--bg-card2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1px 5px;
+  background: var(--bg-card2); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1px 5px;
   white-space: nowrap; flex-shrink: 0;
 }
 .detail-spacer { flex: 1; }
@@ -213,40 +211,30 @@ watch(() => props.industry, () => {
 .red   { color: var(--red); }
 .green { color: var(--green); }
 
-/* ── Tab 栏 ── */
+/* Tab 栏 */
 .tab-bar {
   display: flex; flex-shrink: 0;
-  width: 100%;
   border-bottom: 2px solid var(--border);
   background: var(--bg-card);
 }
 .tab-btn {
-  flex: 1;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 6px; padding: 12px 0;
+  flex: 1; padding: 10px 0;
   background: none; border: none;
-  border-right: 1px solid var(--border);
   border-bottom: 3px solid transparent;
-  color: var(--text-muted);
-  font-size: 13px; font-weight: 500;
+  color: var(--text-muted); font-size: 13px; font-weight: 500;
   cursor: pointer; transition: all .2s; outline: none;
 }
-.tab-btn:last-child { border-right: none; }
 .tab-btn:hover { color: var(--text-primary); background: rgba(75,169,154,0.08); }
 .tab-btn.active {
-  color: var(--accent);
-  background: rgba(75,169,154,0.12);
-  border-bottom-color: var(--accent);
-  font-weight: 600;
+  color: var(--accent); background: rgba(75,169,154,0.12);
+  border-bottom-color: var(--accent); font-weight: 600;
 }
-.tab-icon  { font-size: 22px; line-height: 1; }
-.tab-label { font-size: 13px; font-weight: 600; }
 
 .content-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 16px; }
 
 .section-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; }
 
-/* ── 成分股列表 ── */
+/* 成分股列表 */
 .company-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
 .company-item {
   display: flex; align-items: center; justify-content: space-between;
@@ -260,7 +248,7 @@ watch(() => props.industry, () => {
 .ci-price { font-size: 14px; font-weight: 700; }
 .ci-change{ font-size: 11px; font-weight: 500; }
 
-/* ── 宏观数据格 ── */
+/* 宏观数据 */
 .macro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .macro-card {
   background: var(--bg-card); border: 1px solid var(--border);
@@ -270,21 +258,98 @@ watch(() => props.industry, () => {
 .macro-value { font-size: 16px; font-weight: 700; color: var(--text-primary); }
 .macro-sub   { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-/* ── 研报（与个股详情页一致） ── */
+/* 研报列表 */
 .report-list { display: flex; flex-direction: column; gap: 10px; }
 .report-item {
   background: var(--bg-card); border-radius: 10px;
-  padding: 12px; border: 1px solid var(--border); position: relative;
+  padding: 12px; border: 1px solid var(--border);
+  cursor: pointer; transition: border-color .2s, box-shadow .2s;
 }
-.report-title { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; padding-right: 60px; }
-.report-meta  { font-size: 11px; color: var(--text-muted); }
-.report-rating {
-  position: absolute; top: 12px; right: 12px;
-  font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+.report-item:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(75,169,154,0.12);
 }
-.rating-buy  { background: rgba(34,197,94,.12);  color: var(--green); }
-.rating-hold { background: rgba(245,158,11,.12); color: var(--gold); }
-.rating-sell { background: rgba(239,68,68,.12);  color: var(--red); }
+.report-title { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+.report-meta  { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+.preview-hint {
+  margin-left: auto;
+  font-size: 10px; color: var(--accent);
+  opacity: 0; transition: opacity .2s;
+}
+.report-item:hover .preview-hint { opacity: 1; }
 
 .empty-state { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
+
+/* 预览弹窗 */
+.preview-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.preview-modal {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  width: min(680px, 92vw);
+  max-height: 85vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+.preview-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.preview-title {
+  flex: 1; font-size: 13px; font-weight: 600; color: var(--text-primary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.preview-close {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 16px; padding: 2px 6px;
+  border-radius: 6px; transition: background .2s, color .2s;
+}
+.preview-close:hover { background: var(--bg-card2); color: var(--text-primary); }
+
+.preview-body {
+  flex: 1; overflow-y: auto; padding: 16px;
+}
+.preview-loading {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; padding: 48px; color: var(--text-muted); font-size: 13px;
+}
+.spinner {
+  width: 28px; height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.preview-error {
+  text-align: center; padding: 48px;
+  color: var(--text-muted); font-size: 13px; line-height: 1.6;
+}
+.preview-pages { display: flex; flex-direction: column; gap: 20px; }
+.preview-page {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.preview-page-label {
+  font-size: 11px; font-weight: 700; color: var(--accent2);
+  background: rgba(75,169,154,0.08);
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.preview-text {
+  font-size: 13px; line-height: 1.9; color: var(--text-primary);
+  white-space: pre-wrap; word-break: break-word;
+  padding: 16px 18px;
+  font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+}
 </style>
