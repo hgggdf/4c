@@ -43,10 +43,10 @@ npm-debug.log*
 backend/local_data/*.db
 backend/local_data/*.sqlite
 backend/local_data/*.sqlite3
-backend/chroma_db/
+# backend/chroma_db/
 
-# Data directories (raw/processed batch data)
-backend/data/incoming/
-backend/data/processed/
-backend/data/failed/
-backend/data/raw_files/
+# # Data directories (raw/processed batch data)
+# backend/data/incoming/
+# backend/data/processed/
+# backend/data/failed/
+# backend/data/raw_files/

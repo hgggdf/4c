@@ -91,6 +91,11 @@ def _run_tool(tool_name: str, input_data: dict[str, Any]) -> tuple[bool, Any, st
             return False, None, "缺少必需参数 stock_code"
         return True, financial_tools.get_financial_metrics(stock_code, ["gross_margin", "net_margin", "roe", "rd_ratio"]), None
 
+    if tool_name == "financial_trend":
+        if not stock_code:
+            return False, None, "缺少必需参数 stock_code"
+        return True, financial_tools.get_financial_summary(stock_code, period_count=8), None
+
     if tool_name == "announcement_search":
         if not stock_code:
             return False, None, "缺少必需参数 stock_code"

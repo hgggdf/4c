@@ -138,7 +138,6 @@ class FinancialService(BaseService):
         rows = repo.get_income_statements(stock_code, limit=count)
         statements = [model_to_dict(r, _fields) for r in rows]
 
-        # compute net_margin and roe inline
         for s in statements:
             rev = s.get("revenue")
             np_ = s.get("net_profit")

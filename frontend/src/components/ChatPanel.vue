@@ -174,7 +174,7 @@
               </div>
             </div>
 
-            <!-- 文档原文预览（研报/公告图片） -->
+            <!-- 引用原文（研报/公告链接） -->
             <div v-if="msg.role === 'assistant' && msg.docPreviews?.length" class="cp-doc-previews">
               <div class="cp-doc-previews-title">引用原文</div>
               <div class="cp-doc-preview-list">
@@ -187,19 +187,16 @@
                     <span class="cp-doc-kind">{{ docKindLabel(doc.kind) }}</span>
                     <span class="cp-doc-title">{{ doc.title }}</span>
                     <span class="cp-doc-date">{{ doc.date }}</span>
-                    <span v-if="doc.image_source === 'local'" class="cp-doc-source-badge">本地</span>
-                    <span v-else-if="doc.image_source === 'url'" class="cp-doc-source-badge cp-doc-source-badge--url">网络</span>
                   </div>
-                  <div class="cp-doc-images">
-                    <img
-                      v-for="(img, ii) in doc.images"
-                      :key="`img-${di}-${ii}`"
-                      :src="img"
-                      class="cp-doc-thumb"
-                      @click="openLightbox(img)"
-                      title="点击放大"
-                    />
-                  </div>
+                  <div v-if="doc.summary" class="cp-doc-summary">{{ doc.summary }}</div>
+                  <a
+                    v-if="doc.source_url"
+                    :href="doc.source_url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="cp-doc-link"
+                  >查看原文 ↗</a>
+                  <span v-else class="cp-doc-no-link">暂无原文链接</span>
                 </div>
               </div>
             </div>
@@ -1251,24 +1248,35 @@ function toggleRetrieval(index) {
   color: #b45309;
   border-color: rgba(245,158,11,0.3);
 }
-.cp-doc-images {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+.cp-doc-summary {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 4px 0 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.cp-doc-thumb {
-  width: 160px;
-  height: 110px;
-  object-fit: cover;
-  object-position: top;
-  border: 1px solid var(--border);
+.cp-doc-link {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--accent2, #4ba99a);
+  text-decoration: none;
+  padding: 3px 10px;
+  border: 1px solid var(--accent2, #4ba99a);
   border-radius: 6px;
-  cursor: zoom-in;
-  transition: transform .15s, box-shadow .15s;
+  transition: background .15s, color .15s;
+  cursor: pointer;
 }
-.cp-doc-thumb:hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+.cp-doc-link:hover {
+  background: var(--accent2, #4ba99a);
+  color: #fff;
+}
+.cp-doc-no-link {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.6;
 }
 
 /* ── 灯箱 ── */

@@ -5,13 +5,13 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from app.core.database.models.announcement_hot import AnnouncementHot
+from app.core.database.models.announcement_hot import AnnouncementHot, AnnouncementArchive
 from app.core.database.models.company import CompanyMaster
-from app.core.database.models.financial_hot import FinancialHot
-from app.core.database.models.news_hot import NewsHot
+from app.core.database.models.financial_hot import FinancialHot, FinancialArchive
+from app.core.database.models.news_hot import NewsHot, NewsArchive
 
 from .shared import normalize_percent, resolve_company, to_float
 
@@ -126,6 +126,17 @@ def _score_to_level(score: float) -> str:
 
 class AnalysisService:
     """基于当前财务、公告和新闻热表提供分析能力。"""
+
+    @staticmethod
+    def _bump_query_count(db: Session, rows: list, model) -> None:
+        ids = [r.id for r in rows if hasattr(r, "id")]
+        if not ids:
+            return
+        try:
+            db.execute(update(model).where(model.id.in_(ids)).values(query_count=model.query_count + 1))
+            db.commit()
+        except Exception:
+            db.rollback()
 
     def get_metric_snapshot(
         self,
@@ -339,6 +350,17 @@ class AnalysisService:
                 .order_by(FinancialHot.report_date.desc(), FinancialHot.created_at.desc())
             ).scalars().all()
         )
+        if not all_rows:
+            all_rows = list(
+                db.execute(
+                    select(FinancialArchive)
+                    .where(FinancialArchive.stock_code == stock_code)
+                    .order_by(FinancialArchive.report_date.desc(), FinancialArchive.created_at.desc())
+                ).scalars().all()
+            )
+            self._bump_query_count(db, all_rows, FinancialArchive)
+        else:
+            self._bump_query_count(db, all_rows, FinancialHot)
 
         by_year = self._latest_by_year(all_rows, "fiscal_year")
 
@@ -478,6 +500,18 @@ class AnalysisService:
                 .limit(5)
             ).scalars().all()
         )
+        if not announcements:
+            announcements = list(
+                db.execute(
+                    select(AnnouncementArchive)
+                    .where(AnnouncementArchive.stock_code == stock_code)
+                    .order_by(AnnouncementArchive.publish_date.desc(), AnnouncementArchive.created_at.desc())
+                    .limit(5)
+                ).scalars().all()
+            )
+            self._bump_query_count(db, announcements, AnnouncementArchive)
+        else:
+            self._bump_query_count(db, announcements, AnnouncementHot)
         for row in announcements:
             ann_type = (row.announcement_type or "").lower()
             key_fields = row.key_fields_json or {}
@@ -508,6 +542,15 @@ class AnalysisService:
                 .limit(30)
             ).scalars().all()
         )
+        if not all_news:
+            all_news = list(
+                db.execute(
+                    select(NewsArchive)
+                    .where(NewsArchive.related_stock_codes_json.isnot(None))
+                    .order_by(NewsArchive.publish_time.desc(), NewsArchive.created_at.desc())
+                    .limit(30)
+                ).scalars().all()
+            )
         matched = []
         for row in all_news:
             codes = row.related_stock_codes_json
@@ -522,6 +565,9 @@ class AnalysisService:
                 matched.append(row)
             if len(matched) >= 5:
                 break
+        if matched:
+            model = type(matched[0])
+            self._bump_query_count(db, matched, model)
         for news in matched:
             key_fields = news.key_fields_json or {}
             if isinstance(key_fields, str):

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from sqlalchemy import or_, select, update
 
-from app.core.database.models.announcement_hot import AnnouncementRawHot
+from app.core.database.models.announcement_hot import AnnouncementRawHot, AnnouncementRawArchive
 from app.core.database.models.company import CompanyMaster, CompanyProfile
-from app.core.database.models.financial_hot import FinancialHot
-from app.core.database.models.news_hot import NewsHot, NewsRawHot
-from app.core.database.models.research_report_hot import ResearchReportHot
+from app.core.database.models.financial_hot import FinancialHot, FinancialNotesHot, FinancialNotesArchive
+from app.core.database.models.news_hot import NewsHot, NewsRawHot, NewsRawArchive
+from app.core.database.models.research_report_hot import ResearchReportHot, ResearchReportArchive
 
 from .base import BaseService
 from .guards import require_non_empty, require_positive_int
@@ -209,6 +209,7 @@ class RetrievalService(BaseService):
                 {
                     "chunk_id": hit.get("chunk_id") or hit.get("id"),
                     "doc_id": hit.get("doc_id") or meta.get("doc_id"),
+                    "doc_type": hit.get("doc_type") or meta.get("doc_type"),
                     "text": hit.get("text") or hit.get("document") or "",
                     "score": normalize_value(hit.get("score") if hit.get("score") is not None else hit.get("distance")),
                     "metadata": normalize_value(meta),
@@ -380,22 +381,26 @@ class RetrievalService(BaseService):
 
             # 对命中记录 query_count +1
             _DOC_TYPE_MODEL = {
-                "announcement": AnnouncementRawHot,
-                "news": NewsRawHot,
-                "report": ResearchReportHot,
+                "announcement": (AnnouncementRawHot, AnnouncementRawArchive),
+                "news": (NewsRawHot, NewsRawArchive),
+                "report": (ResearchReportHot, ResearchReportArchive),
+                "financial_note": (FinancialNotesHot, FinancialNotesArchive),
             }
             for item in top_items:
-                model = _DOC_TYPE_MODEL.get(item.get("doc_type"))
+                pair = _DOC_TYPE_MODEL.get(item.get("doc_type"))
                 pk = item.get("doc_id")
-                if model and pk and hasattr(model, "query_count"):
-                    try:
-                        db.execute(
-                            update(model)
-                            .where(model.id == pk)
-                            .values(query_count=model.query_count + 1)
-                        )
-                    except Exception:
-                        pass
+                if pair and pk:
+                    hot_model, archive_model = pair
+                    for model in (hot_model, archive_model):
+                        if hasattr(model, "query_count"):
+                            try:
+                                db.execute(
+                                    update(model)
+                                    .where(model.id == pk)
+                                    .values(query_count=model.query_count + 1)
+                                )
+                            except Exception:
+                                pass
             try:
                 db.commit()
             except Exception:

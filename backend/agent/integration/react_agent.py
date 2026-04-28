@@ -53,8 +53,53 @@ TOOLS_SCHEMA = [
     {
         "type": "function",
         "function": {
+            "name": "get_financial_summary",
+            "description": "获取财务数据汇总：最近N期利润表（营业收入、净利润、毛利润、营业成本、销售费用、管理费用、研发费用、每股收益）、资产负债表（总资产、总负债）、现金流量表（经营/投资/筹资现金流）和关键指标（毛利率、净利率、ROE、资产负债率）。这是获取公司完整财务数据的首选工具。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码"},
+                    "period_count": {"type": "integer", "description": "返回期数，默认4", "default": 4},
+                },
+                "required": ["stock_code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "get_income_statements",
-            "description": "获取利润表数据：营业收入、净利润、毛利润、研发费用等，支持多期历史数据。",
+            "description": "获取利润表数据：营业收入、营业成本、毛利润、销售费用、管理费用、研发费用、营业利润、净利润、扣非净利润、每股收益，支持多期历史数据。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码"},
+                    "limit": {"type": "integer", "description": "返回期数，默认4", "default": 4},
+                },
+                "required": ["stock_code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_balance_sheets",
+            "description": "获取资产负债表数据：总资产、总负债、资产负债率，支持多期历史数据。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码"},
+                    "limit": {"type": "integer", "description": "返回期数，默认4", "default": 4},
+                },
+                "required": ["stock_code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_cashflow_statements",
+            "description": "获取现金流量表数据：经营活动现金流、投资活动现金流、筹资活动现金流，支持多期历史数据。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -205,6 +250,8 @@ SYSTEM_PROMPT = """你是"医策经纬"——面向医药上市公司的多智�
 
 工具选择指引：
 - 问题涉及具体公司 → 先 resolve_company 获取股票代码，再调对应工具
+- 需要全面财务分析 → 优先调 get_financial_summary，它一次返回利润表+资产负债表+现金流量表+关键指标
+- 需要单项财务数据 → 分别调 get_income_statements / get_balance_sheets / get_cashflow_statements
 - 问题是行业趋势、政策影响、宏观分析（无具体公司名）→ 直接调 search_documents，不要要求用户澄清
 - 例如"集采对仿制药行业的影响" → search_documents(query="集采对仿制药的影响", doc_types=["announcement","news"])
 - 例如"医保谈判最新政策" → search_documents(query="医保谈判政策", doc_types=["news","announcement"])
@@ -243,6 +290,21 @@ def _execute_tool(name: str, args: dict[str, Any]) -> tuple[Any, str]:
             from agent.tools import get_income_statements
             result = get_income_statements(args["stock_code"], limit=args.get("limit", 4))
             return result, f"财务数据库·利润表 [{args['stock_code']}]"
+
+        if name == "get_financial_summary":
+            from agent.tools import get_financial_summary
+            result = get_financial_summary(args["stock_code"], period_count=args.get("period_count", 4))
+            return result, f"财务数据库·财务汇总 [{args['stock_code']}]"
+
+        if name == "get_balance_sheets":
+            from agent.tools import get_balance_sheets
+            result = get_balance_sheets(args["stock_code"], limit=args.get("limit", 4))
+            return result, f"财务数据库·资产负债表 [{args['stock_code']}]"
+
+        if name == "get_cashflow_statements":
+            from agent.tools import get_cashflow_statements
+            result = get_cashflow_statements(args["stock_code"], limit=args.get("limit", 4))
+            return result, f"财务数据库·现金流量表 [{args['stock_code']}]"
 
         if name == "get_financial_metrics":
             from agent.tools import get_financial_metrics
@@ -306,9 +368,9 @@ def _execute_tool(name: str, args: dict[str, Any]) -> tuple[Any, str]:
 
 def _safe_json(obj: Any) -> str:
     try:
-        return json.dumps(obj, ensure_ascii=False, default=str)[:3000]
+        return json.dumps(obj, ensure_ascii=False, default=str)[:6000]
     except Exception:
-        return str(obj)[:3000]
+        return str(obj)[:6000]
 
 
 # ─────────────────────────────────────────────────────────────
@@ -407,7 +469,7 @@ class ReactAgent:
 
                 result_str = _safe_json(result)
                 preview = result_str[:300] + ("..." if len(result_str) > 300 else "")
-                all_tool_results.append(f"[{tool_name} | {source}]\n{result_str[:2000]}")
+                all_tool_results.append(f"[{tool_name} | {source}]\n{result_str[:6000]}")
 
                 yield {
                     "type": "tool_result",

@@ -165,20 +165,18 @@ def get_financial_summary(stock_code: str, period_count: int = 4) -> dict[str, A
     Returns:
         财务汇总字典，包含：
         - stock_code: 股票代码
-        - latest_income: 最新一期利润表
-        - latest_balance: 最新一期资产负债表
-        - latest_cashflow: 最新一期现金流量表
-        - income_statements: 利润表列表
-        - balance_sheets: 资产负债表列表
-        - cashflow_statements: 现金流量表列表
-        - key_metrics: 关键指标列表（毛利率、净利率、研发费用率、资产负债率、ROE）
+        - periods: 各期完整财务数据（利润表+资产负债表+现金流+关键指标合并）
     """
     container = ServiceContainer.build_default()
     req = FinancialSummaryRequest(stock_code=stock_code, period_count=period_count)
     result = container.financial.get_financial_summary(req)
     if not result.success:
         raise ValueError(f"获取财务汇总失败: {result.message}")
-    return result.data
+    data = result.data
+    return {
+        "stock_code": data["stock_code"],
+        "periods": data.get("income_statements") or [],
+    }
 
 
 __all__ = [

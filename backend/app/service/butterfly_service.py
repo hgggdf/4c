@@ -1,14 +1,11 @@
 """蝴蝶效应分析服务层。
 
-从数据库拉取公司和财务数据，调用 ButterflyAnalyzer 流式输出，
-流结束后把完整分析结果写入 NewsHot.key_fields_json 存档。
+从数据库拉取公司和财务数据，调用 ButterflyAnalyzer 流式输出。
 """
 from __future__ import annotations
 
-import hashlib
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
 from typing import Any, Generator
 
 from sqlalchemy import select, func
@@ -17,7 +14,6 @@ from app.core.database.models.company import Company
 from app.core.database.models.financial_hot import FinancialHot
 from app.core.database.models.news_hot import NewsHot
 from app.core.repositories.news_repository import NewsRepository
-from app.core.repositories.news_write_repository import NewsWriteRepository
 from .base import BaseService
 from .dto import BaseRequest
 from .serializers import model_to_dict
@@ -62,7 +58,6 @@ class ButterflyService(BaseService):
         yield from analyzer.analyze_stream(
             req.event,
             company_exposures=company_exposures,
-            on_result=self._save_result,
         )
 
     def list_history(self, req: ButterflyHistoryRequest):
@@ -100,42 +95,6 @@ class ButterflyService(BaseService):
                 "narrative": r.content or "",
             })
         return results
-
-    # ── 写库回调 ──────────────────────────────────────────────────────────
-
-    def _save_result(self, result: dict) -> None:
-        """把完整分析结果写入 NewsHot.key_fields_json。"""
-        event_text = result.get("event_text", "")
-        parsed = result.get("event_parsed", {})
-        now = datetime.now()
-
-        # news_uid 用事件文本 + 分析时间戳的 hash，保证每次分析独立存档
-        uid_src = f"butterfly:{event_text}:{now.strftime('%Y%m%d%H%M%S')}"
-        news_uid = hashlib.md5(uid_src.encode()).hexdigest()
-
-        item = {
-            "news_uid": news_uid,
-            "title": f"【蝴蝶效应分析】{event_text[:60]}",
-            "publish_time": now,
-            "source_name": "butterfly_analyzer",
-            "news_type": "butterfly_analysis",
-            "content": result.get("narrative", ""),
-            "summary_text": parsed.get("event_summary", event_text[:120]),
-            "key_fields_json": {
-                "event_text": event_text,
-                "event_parsed": parsed,
-                "industry_impacts": result.get("industry_impacts", []),
-                "risk_alerts": result.get("risk_alerts", []),
-                "opportunity_alerts": result.get("opportunity_alerts", []),
-                "analyzed_at": now.isoformat(),
-            },
-        }
-
-        try:
-            self._with_db(lambda db: NewsWriteRepository(db).batch_upsert_news_raw([item]))
-            logger.info("Butterfly analysis saved: %s", news_uid)
-        except Exception as exc:
-            logger.warning("Failed to save butterfly analysis: %s", exc)
 
     # ── 数据库查询 ────────────────────────────────────────────────────────
 

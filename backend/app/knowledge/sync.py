@@ -368,15 +368,16 @@ def sync_financial_notes_by_ids(db: Session, source_ids: list[int], is_hot: bool
 
 
 def sync_company_profiles(db: Session, stock_code: str | None = None, limit: int | None = None) -> int:
-    stmt = select(CompanyProfile, CompanyMaster.stock_name).join(CompanyMaster, CompanyProfile.stock_code == CompanyMaster.stock_code)
+    stmt = select(CompanyProfile)
     if stock_code:
         stmt = stmt.where(CompanyProfile.stock_code == stock_code)
     if limit:
         stmt = stmt.limit(limit)
 
-    rows = db.execute(stmt).all()
+    rows = db.execute(stmt).scalars().all()
     total = 0
-    for profile, stock_name in rows:
+    for profile in rows:
+        stock_name = getattr(profile, "stock_name", "") or ""
         parts = [p for p in [profile.business_summary, profile.market_position, profile.management_summary] if p]
         if not parts:
             continue
@@ -384,12 +385,12 @@ def sync_company_profiles(db: Session, stock_code: str | None = None, limit: int
         text = "\n".join(parts)
         meta = ChunkMetadata(
             doc_type="company_profile",
-            doc_id=_doc_id("company_profile", profile.id, text),
+            doc_id=_doc_id("company_profile", profile.stock_code, text),
             stock_code=profile.stock_code or "",
-            stock_name=stock_name or "",
-            title=stock_name or "",
+            stock_name=stock_name,
+            title=stock_name,
             source_table=CompanyProfile.__tablename__,
-            source_pk=str(profile.id),
+            source_pk=profile.stock_code or "",
             is_hot=1,
         )
         total += _write_document(text, "company_profile", meta)
@@ -402,14 +403,14 @@ def sync_company_profiles_by_ids(db: Session, source_ids: list[int]) -> int:
         return 0
 
     stmt = (
-        select(CompanyProfile, CompanyMaster.stock_name)
-        .join(CompanyMaster, CompanyProfile.stock_code == CompanyMaster.stock_code)
-        .where(CompanyProfile.id.in_(source_ids))
+        select(CompanyProfile)
+        .where(CompanyProfile.stock_code.in_([str(s) for s in source_ids]))
     )
-    rows = db.execute(stmt).all()
+    rows = db.execute(stmt).scalars().all()
 
     total = 0
-    for profile, stock_name in rows:
+    for profile in rows:
+        stock_name = getattr(profile, "stock_name", "") or ""
         parts = [p for p in [profile.business_summary, profile.market_position, profile.management_summary] if p]
         if not parts:
             continue
@@ -417,10 +418,10 @@ def sync_company_profiles_by_ids(db: Session, source_ids: list[int]) -> int:
         text = "\n".join(parts)
         meta = ChunkMetadata(
             doc_type="company_profile",
-            doc_id=_doc_id("company_profile", profile.id, text),
+            doc_id=_doc_id("company_profile", profile.stock_code, text),
             stock_code=profile.stock_code or "",
-            stock_name=stock_name or "",
-            title=stock_name or "",
+            stock_name=stock_name,
+            title=stock_name,
             source_table=CompanyProfile.__tablename__,
             source_pk=str(profile.id),
             is_hot=1,
@@ -430,6 +431,9 @@ def sync_company_profiles_by_ids(db: Session, source_ids: list[int]) -> int:
 
 
 def _load_news_related_metadata(db: Session, row, *, is_hot: bool) -> dict[str, str]:
+    """从 NewsHot/NewsArchive 自身字段提取关联元数据（v3 合表后不再 join 扩展表）。"""
+    import json as _json
+
     result = {
         "topic_category": "",
         "signal_type": "",
@@ -441,44 +445,52 @@ def _load_news_related_metadata(db: Session, row, *, is_hot: bool) -> dict[str, 
         "impact_direction": "",
     }
 
-    StructuredModel = NewsStructuredHot if is_hot else NewsStructuredArchive
-    IndustryMapModel = NewsIndustryMapHot if is_hot else NewsIndustryMapArchive
-    CompanyMapModel = NewsCompanyMapHot if is_hot else NewsCompanyMapArchive
+    # news_type 即 topic_category
+    result["topic_category"] = _choose_first_text(_safe_attr(row, "news_type"))
 
-    if StructuredModel is not None:
+    # key_fields_json 包含结构化字段
+    kf = getattr(row, "key_fields_json", None) or {}
+    if isinstance(kf, str):
         try:
-            structured = _first_scalar(db, select(StructuredModel).where(StructuredModel.news_id == row.id))
-            if structured:
-                result["topic_category"] = _choose_first_text(_safe_attr(structured, "topic_category"))
-                result["signal_type"] = _choose_first_text(_safe_attr(structured, "signal_type"))
-                result["impact_level"] = _choose_first_text(_safe_attr(structured, "impact_level"))
-                result["impact_horizon"] = _choose_first_text(_safe_attr(structured, "impact_horizon"))
+            kf = _json.loads(kf)
         except Exception:
-            pass
+            kf = {}
+    if isinstance(kf, dict):
+        result["signal_type"] = _choose_first_text(kf.get("signal_type", ""))
+        result["impact_level"] = _choose_first_text(kf.get("impact_level", ""))
+        result["impact_horizon"] = _choose_first_text(kf.get("impact_horizon", ""))
+        result["impact_direction"] = _choose_first_text(kf.get("impact_direction", ""))
 
-    if CompanyMapModel is not None:
+    # related_stock_codes_json 取第一个 stock_code
+    stock_codes = getattr(row, "related_stock_codes_json", None)
+    if isinstance(stock_codes, str):
         try:
-            company_map = _first_scalar(db, select(CompanyMapModel).where(CompanyMapModel.news_id == row.id))
-            if company_map:
-                result["stock_code"] = _choose_first_text(_safe_attr(company_map, "stock_code"))
-                result["impact_direction"] = _choose_first_text(_safe_attr(company_map, "impact_direction"))
+            stock_codes = _json.loads(stock_codes)
         except Exception:
-            pass
+            stock_codes = None
+    if isinstance(stock_codes, list) and stock_codes:
+        result["stock_code"] = str(stock_codes[0])
+    elif isinstance(stock_codes, dict) and stock_codes:
+        result["stock_code"] = str(next(iter(stock_codes.values()), ""))
 
-    if IndustryMapModel is not None:
+    # related_industry_codes_json 取第一个 industry_code
+    industry_codes = getattr(row, "related_industry_codes_json", None)
+    if isinstance(industry_codes, str):
         try:
-            industry_map = _first_scalar(db, select(IndustryMapModel).where(IndustryMapModel.news_id == row.id))
-            if industry_map:
-                result["industry_code"] = _choose_first_text(_safe_attr(industry_map, "industry_code"))
-                result["impact_direction"] = _choose_first_text(result["impact_direction"], _safe_attr(industry_map, "impact_direction"))
-                if result["industry_code"]:
-                    try:
-                        industry_name = db.execute(
-                            select(IndustryMaster.industry_name).where(IndustryMaster.industry_code == result["industry_code"])
-                        ).scalar_one_or_none()
-                        result["industry_name"] = industry_name or ""
-                    except Exception:
-                        pass
+            industry_codes = _json.loads(industry_codes)
+        except Exception:
+            industry_codes = None
+    if isinstance(industry_codes, list) and industry_codes:
+        result["industry_code"] = str(industry_codes[0])
+    elif isinstance(industry_codes, dict) and industry_codes:
+        result["industry_code"] = str(next(iter(industry_codes.values()), ""))
+
+    if result["industry_code"]:
+        try:
+            industry_name = db.execute(
+                select(IndustryMaster.industry_name).where(IndustryMaster.industry_code == result["industry_code"])
+            ).scalar_one_or_none()
+            result["industry_name"] = industry_name or ""
         except Exception:
             pass
 

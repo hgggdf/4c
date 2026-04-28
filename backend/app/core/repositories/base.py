@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Sequence
 from typing import Any
 
-from sqlalchemy import Select, and_, delete, select
+from sqlalchemy import Select, and_, delete, select, update
 from sqlalchemy.orm import Session
 
 
@@ -134,3 +134,60 @@ class BaseRepository:
     @staticmethod
     def stmt(model: Any) -> Select[Any]:
         return select(model)
+
+    # ------------------------------------------------------------------
+    # 热冷库查询 + query_count 自增
+    # ------------------------------------------------------------------
+
+    # 热库结果少于此值时才查冷库补充
+    COLD_FALLBACK_THRESHOLD = 5
+
+    def _hot_cold_list(
+        self,
+        hot_stmt: Select[Any],
+        cold_stmt: Select[Any],
+        *,
+        limit: int | None = None,
+    ) -> list[Any]:
+        """热库优先查询，结果不足 COLD_FALLBACK_THRESHOLD 时从冷库补充。"""
+        hot_rows = self.scalars_all(hot_stmt)
+        if len(hot_rows) < self.COLD_FALLBACK_THRESHOLD:
+            needed = (limit or self.COLD_FALLBACK_THRESHOLD) - len(hot_rows)
+            if needed > 0:
+                cold_rows = self.scalars_all(cold_stmt.limit(needed))
+                all_rows = hot_rows + cold_rows
+            else:
+                all_rows = hot_rows
+        else:
+            all_rows = hot_rows[:limit] if limit else hot_rows
+        self._increment_query_count(all_rows)
+        return all_rows
+
+    def _hot_cold_get(self, hot_model: Any, cold_model: Any, record_id: int) -> Any | None:
+        """按 id 查单条：先热库，没有再查冷库。"""
+        row = self.scalar_one_or_none(select(hot_model).where(hot_model.id == record_id))
+        if row is None:
+            row = self.scalar_one_or_none(select(cold_model).where(cold_model.id == record_id))
+        if row is not None:
+            self._increment_query_count([row])
+        return row
+
+    def _increment_query_count(self, rows: list[Any]) -> None:
+        """批量自增 query_count，按模型分组执行 UPDATE。"""
+        if not rows:
+            return
+        groups: dict[type, list[int]] = {}
+        for row in rows:
+            if hasattr(row, "query_count") and hasattr(row, "id"):
+                groups.setdefault(type(row), []).append(row.id)
+        for model, ids in groups.items():
+            try:
+                self.db.execute(
+                    update(model).where(model.id.in_(ids)).values(query_count=model.query_count + 1)
+                )
+            except Exception:
+                pass
+        try:
+            self.db.commit()
+        except Exception:
+            self.db.rollback()

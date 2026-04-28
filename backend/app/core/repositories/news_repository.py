@@ -13,44 +13,49 @@ class NewsRepository(BaseRepository):
     def _since(days: int) -> datetime:
         return datetime.now() - timedelta(days=days)
 
-    def list_news_raw(self, *, days: int = 30, news_type: str | None = None) -> list[NewsHot]:
-        stmt = select(NewsHot).where(NewsHot.publish_time >= self._since(days))
+    def list_news_raw(self, *, days: int = 30, news_type: str | None = None, limit: int | None = None) -> list[NewsHot | NewsArchive]:
+        hot_stmt = select(NewsHot).where(NewsHot.publish_time >= self._since(days))
+        cold_stmt = select(NewsArchive).where(NewsArchive.publish_time >= self._since(days))
         if news_type:
-            stmt = stmt.where(NewsHot.news_type == news_type)
-        return self.scalars_all(stmt.order_by(NewsHot.publish_time.desc()))
+            hot_stmt = hot_stmt.where(NewsHot.news_type == news_type)
+            cold_stmt = cold_stmt.where(NewsArchive.news_type == news_type)
+        hot_stmt = hot_stmt.order_by(NewsHot.publish_time.desc())
+        cold_stmt = cold_stmt.order_by(NewsArchive.publish_time.desc())
+        return self._hot_cold_list(hot_stmt, cold_stmt, limit=limit)
 
-    def get_news_raw_by_id(self, news_id: int) -> NewsHot | None:
-        return self.scalar_one_or_none(select(NewsHot).where(NewsHot.id == news_id))
+    def get_news_raw_by_id(self, news_id: int) -> NewsHot | NewsArchive | None:
+        return self._hot_cold_get(NewsHot, NewsArchive, news_id)
 
-    # 旧版 news_company_map → 按 related_stock_codes_json 过滤
-    def list_news_by_company(self, stock_code: str, *, days: int = 30) -> list[NewsHot]:
-        rows = self.scalars_all(
-            select(NewsHot)
-            .where(NewsHot.publish_time >= self._since(days))
-            .order_by(NewsHot.publish_time.desc())
-        )
+    def list_news_by_company(self, stock_code: str, *, days: int = 30) -> list[NewsHot | NewsArchive]:
+        hot_stmt = (select(NewsHot)
+                    .where(NewsHot.publish_time >= self._since(days))
+                    .order_by(NewsHot.publish_time.desc()))
+        cold_stmt = (select(NewsArchive)
+                     .where(NewsArchive.publish_time >= self._since(days))
+                     .order_by(NewsArchive.publish_time.desc()))
+        rows = self._hot_cold_list(hot_stmt, cold_stmt)
         return [r for r in rows if _code_in_json(r.related_stock_codes_json, stock_code)]
 
-    # 旧版 news_industry_map → 按 related_industry_codes_json 过滤
-    def list_news_by_industry(self, industry_code: str, *, days: int = 30) -> list[NewsHot]:
-        rows = self.scalars_all(
-            select(NewsHot)
-            .where(NewsHot.publish_time >= self._since(days))
-            .order_by(NewsHot.publish_time.desc())
-        )
+    def list_news_by_industry(self, industry_code: str, *, days: int = 30) -> list[NewsHot | NewsArchive]:
+        hot_stmt = (select(NewsHot)
+                    .where(NewsHot.publish_time >= self._since(days))
+                    .order_by(NewsHot.publish_time.desc()))
+        cold_stmt = (select(NewsArchive)
+                     .where(NewsArchive.publish_time >= self._since(days))
+                     .order_by(NewsArchive.publish_time.desc()))
+        rows = self._hot_cold_list(hot_stmt, cold_stmt)
         return [r for r in rows if _code_in_json(r.related_industry_codes_json, industry_code)]
 
-    # 旧版 news_structured → 直接返回 news_hot（key_fields_json 含结构化字段）
-    def list_news_structured(self, *, days: int = 30, topic_category: str | None = None) -> list[NewsHot]:
+    def list_news_structured(self, *, days: int = 30, topic_category: str | None = None) -> list[NewsHot | NewsArchive]:
         return self.list_news_raw(days=days, news_type=topic_category)
 
-    def list_company_impact_maps(self, stock_code: str, *, days: int = 30) -> list[NewsHot]:
+    def list_company_impact_maps(self, stock_code: str, *, days: int = 30) -> list[NewsHot | NewsArchive]:
         return self.list_news_by_company(stock_code, days=days)
 
-    def list_industry_impact_maps(self, industry_code: str, *, days: int = 30) -> list[NewsHot]:
+    def list_industry_impact_maps(self, industry_code: str, *, days: int = 30) -> list[NewsHot | NewsArchive]:
         return self.list_news_by_industry(industry_code, days=days)
 
-    def list_industry_impact_events(self, industry_code: str, *, days: int = 30) -> list[NewsHot]:
+    def list_industry_impact_events(self, industry_code: str, *, days: int = 30) -> list[NewsHot | NewsArchive]:
         return self.list_news_by_industry(industry_code, days=days)
 
     def list_butterfly_analyses(
@@ -61,17 +66,19 @@ class NewsRepository(BaseRepository):
         severity: str | None = None,
         keyword: str | None = None,
         limit: int = 50,
-    ) -> list[NewsHot]:
-        stmt = (
+    ) -> list[NewsHot | NewsArchive]:
+        hot_stmt = (
             select(NewsHot)
-            .where(
-                NewsHot.news_type == "butterfly_analysis",
-                NewsHot.publish_time >= self._since(days),
-            )
+            .where(NewsHot.news_type == "butterfly_analysis", NewsHot.publish_time >= self._since(days))
             .order_by(NewsHot.publish_time.desc())
             .limit(limit)
         )
-        rows = self.scalars_all(stmt)
+        cold_stmt = (
+            select(NewsArchive)
+            .where(NewsArchive.news_type == "butterfly_analysis", NewsArchive.publish_time >= self._since(days))
+            .order_by(NewsArchive.publish_time.desc())
+        )
+        rows = self._hot_cold_list(hot_stmt, cold_stmt, limit=limit)
         results = []
         for r in rows:
             kf = r.key_fields_json or {}

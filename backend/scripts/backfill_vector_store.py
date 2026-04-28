@@ -16,6 +16,8 @@ from app.knowledge.sync import (
     sync_announcements,
     sync_financial_notes,
     sync_news,
+    sync_research_reports,
+    sync_company_profiles,
 )
 from app.paths import CHROMA_DB_DIR
 
@@ -23,6 +25,7 @@ BACKFILL_ORDER = (
     ("announcement", sync_announcements),
     ("financial_note", sync_financial_notes),
     ("news", sync_news),
+    ("research_report", sync_research_reports),
 )
 
 
@@ -33,6 +36,7 @@ def run_backfill() -> dict:
         try:
             for doc_type, sync_fn in BACKFILL_ORDER:
                 step_counts[doc_type] = int(sync_fn(db, is_hot=True))
+            step_counts["company_profile"] = int(sync_company_profiles(db))
             db.commit()
         except Exception:
             db.rollback()

@@ -293,6 +293,7 @@ class DialogueAgent:
                         "date": date_str,
                         "source": r.report_org or r.source_type or "research_report",
                         "summary": _compact_text(r.summary_text or r.content or "", limit=180),
+                        "source_url": r.source_url or "",
                     }
                     if img_result["images"]:
                         item["images"] = img_result["images"]
@@ -323,6 +324,7 @@ class DialogueAgent:
                     "date": date_str,
                     "source": a.announcement_type or "announcement",
                     "summary": _compact_text(a.summary_text or a.content or "", limit=180),
+                    "source_url": a.source_url or "",
                 }
                 if img_result["images"]:
                     item["images"] = img_result["images"]
@@ -355,6 +357,7 @@ class DialogueAgent:
                         "date": date_str,
                         "source": r.report_org or "industry_report",
                         "summary": _compact_text(r.summary_text or r.content or "", limit=180),
+                        "source_url": r.source_url or "",
                     }
                     if img_result["images"]:
                         item["images"] = img_result["images"]
@@ -505,11 +508,18 @@ class DialogueAgent:
                     "请严格围绕该模式作答，输出对应维度的结论、依据与建议。",
                 ])
 
+        financial_text: str | None = None
         if stock_context:
             system_lines.append("")
             system_lines.append(
                 f"当前关注标的：{stock_context.get('stock_name', '')} ({stock_context.get('stock_code', '')})"
             )
+
+            financial_text = self._fetch_financial_context(stock_context.get("stock_code", ""))
+            if financial_text:
+                system_lines.append("")
+                system_lines.append("以下是该公司的真实财务数据（来自数据库 financial_hot 表），请在分析中直接引用：")
+                system_lines.append(financial_text)
 
         if evidence_items:
             system_lines.append("")
@@ -519,19 +529,79 @@ class DialogueAgent:
                     f"{idx}. [{ev['kind']}] {ev['title']} ({ev['date']})"
                 )
                 system_lines.append(f"   {ev['summary']}")
-        elif stock_context:
-            # 明确告知 LLM 本地无数据，禁止生成虚假分析
+        elif stock_context and not financial_text:
             system_lines.append("")
             system_lines.append(
-                "⚠️ 数据缺失警告：本地数据库中没有该标的的任何研报、公告或新闻记录。"
+                "⚠️ 数据缺失警告：本地数据库中没有该标的的任何研报、公告、新闻或财务记录。"
             )
             system_lines.append(
                 "你必须直接告知用户「本系统暂无该公司的本地数据，无法进行基于真实文件的分析」，"
                 "并说明用户可以通过哪些渠道自行获取（如东方财富、Wind 等）。"
                 "严禁基于训练知识编造分析结论、数据或研报内容。"
             )
+        elif stock_context and financial_text and not evidence_items:
+            system_lines.append("")
+            system_lines.append(
+                "注意：本地暂无该公司的研报、公告或新闻记录，但上方已提供真实财务数据。"
+                "请基于财务数据进行分析，不要声称缺乏数据。"
+            )
 
         return "\n".join(system_lines)
+
+    def _fetch_financial_context(self, stock_code: str) -> str | None:
+        """从 financial_hot 查询结构化财务数据，格式化为文本注入 system prompt。"""
+        if not stock_code:
+            return None
+        try:
+            from agent.tools.financial_tools import get_financial_summary
+            data = get_financial_summary(stock_code, period_count=4)
+            periods = data.get("periods") or []
+            if not periods:
+                return None
+
+            lines: list[str] = []
+            for p in periods:
+                label = f"{p.get('fiscal_year', '')}年 {p.get('report_date', '')} ({p.get('report_type', '')})"
+                parts = [f"【{label}】"]
+
+                def _fmt(val, unit="元"):
+                    if val is None:
+                        return "N/A"
+                    if isinstance(val, float) and abs(val) >= 1e8:
+                        return f"{val / 1e8:.2f}亿{unit}"
+                    if isinstance(val, float) and abs(val) >= 1e4:
+                        return f"{val / 1e4:.2f}万{unit}"
+                    return f"{val}{unit}"
+
+                def _pct(val):
+                    if val is None:
+                        return "N/A"
+                    return f"{val * 100:.2f}%"
+
+                parts.append(f"营业收入: {_fmt(p.get('revenue'))}")
+                parts.append(f"营业成本: {_fmt(p.get('operating_cost'))}")
+                parts.append(f"毛利润: {_fmt(p.get('gross_profit'))}")
+                parts.append(f"毛利率: {_pct(p.get('gross_margin'))}")
+                parts.append(f"销售费用: {_fmt(p.get('selling_expense'))}")
+                parts.append(f"管理费用: {_fmt(p.get('admin_expense'))}")
+                parts.append(f"研发费用: {_fmt(p.get('rd_expense'))}")
+                parts.append(f"营业利润: {_fmt(p.get('operating_profit'))}")
+                parts.append(f"净利润: {_fmt(p.get('net_profit'))}")
+                parts.append(f"扣非净利润: {_fmt(p.get('net_profit_deducted'))}")
+                parts.append(f"每股收益: {p.get('eps') or 'N/A'}元")
+                parts.append(f"总资产: {_fmt(p.get('total_assets'))}")
+                parts.append(f"总负债: {_fmt(p.get('total_liabilities'))}")
+                parts.append(f"经营现金流: {_fmt(p.get('operating_cashflow'))}")
+                parts.append(f"投资现金流: {_fmt(p.get('investing_cashflow'))}")
+                parts.append(f"筹资现金流: {_fmt(p.get('financing_cashflow'))}")
+                parts.append(f"净利率: {_pct(p.get('net_margin'))}")
+                parts.append(f"ROE: {_pct(p.get('roe'))}")
+                lines.append(" | ".join(parts))
+
+            return "\n".join(lines)
+        except Exception as exc:
+            logger.debug("_fetch_financial_context failed for %s: %s", stock_code, exc)
+            return None
 
     def _compress_history(self, messages: list[dict[str, str]]) -> str:
         """用 Kimi 将旧消息压缩成摘要，供记忆缓存调用。"""
@@ -660,18 +730,18 @@ class DialogueAgent:
         # 把带图片的 evidence 通过 SSE 发给前端展示
         doc_images_for_llm: list[str] = []
         for ev in evidence_items:
+            yield {
+                "type": "doc_preview",
+                "title": ev.get("title", ""),
+                "kind": ev.get("kind", ""),
+                "date": ev.get("date", ""),
+                "file_name": ev.get("file_name", ""),
+                "source_url": ev.get("source_url", ""),
+                "summary": ev.get("summary", ""),
+            }
             imgs = ev.get("images") or []
             if imgs:
-                yield {
-                    "type": "doc_preview",
-                    "title": ev.get("title", ""),
-                    "kind": ev.get("kind", ""),
-                    "date": ev.get("date", ""),
-                    "file_name": ev.get("file_name", ""),
-                    "image_source": ev.get("image_source", ""),
-                    "images": imgs,
-                }
-                doc_images_for_llm.extend(imgs[:1])  # 每份文档取第一页传给 LLM
+                doc_images_for_llm.extend(imgs[:1])
 
         if tool_autonomy:
             yield from self._chat_stream_with_tool_autonomy(
@@ -686,42 +756,6 @@ class DialogueAgent:
 
         if not self.is_configured():
             yield {"type": "error", "message": "Kimi API 未配置，请在 backend/.env 中设置 KIMI_API_KEY、KIMI_BASE_URL 和 KIMI_MODEL。"}
-            return
-
-        # 有图片且 Claude 已配置时，优先用 Claude 做视觉分析
-        from agent.llm_clients import ClaudeClient
-        claude = ClaudeClient()
-        if doc_images_for_llm and claude.is_configured():
-            try:
-                max_tokens = 4096 if selected_mode == "report_generation" else 2048
-                result = claude.chat_with_images(
-                    question,
-                    doc_images_for_llm[:3],
-                    system=system_context,
-                    max_tokens=max_tokens,
-                )
-                yield {"type": "answer", "content": result}
-                if session_id is not None:
-                    self._memory.append(session_id, "user", question)
-                    self._memory.append(session_id, "assistant", result)
-            except Exception as exc:
-                logger.warning("Claude vision failed, fallback to Kimi: %s", exc)
-                messages = self.build_messages(
-                    question, history, targets, current_stock_code, selected_mode=selected_mode,
-                    session_id=session_id, db_messages=db_messages,
-                )
-                fallback_chunks: list[str] = []
-                try:
-                    max_tokens = 4096 if selected_mode == "report_generation" else 2048
-                    for chunk in self.llm_client.chat_stream(messages, temperature=1.0, max_tokens=max_tokens):
-                        fallback_chunks.append(chunk)
-                        yield {"type": "answer_chunk", "content": str(chunk)}
-                    if session_id is not None and fallback_chunks:
-                        self._memory.append(session_id, "user", question)
-                        self._memory.append(session_id, "assistant", "".join(fallback_chunks))
-                except Exception as exc2:
-                    logger.exception("DialogueAgent chat_stream fallback error")
-                    yield {"type": "error", "message": f"对话异常: {exc2}"}
             return
 
         # report_generation 模式：用本地数据生成带图表的结构化报告

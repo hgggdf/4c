@@ -44,7 +44,7 @@ def tool_get_company_overview(stock_code: str) -> dict:
 
 @tool
 def tool_get_financial_summary(stock_code: str, period_count: int = 4) -> dict:
-    """获取财务数据汇总：最近N期利润表、资产负债表、现金流量表和关键指标（毛利率、ROE等）。
+    """获取财务数据汇总：最近N期完整财务数据，包含营业收入、营业成本、毛利润、毛利率、销售费用、管理费用、研发费用、营业利润、净利润、扣非净利润、每股收益、总资产、总负债、资产负债率、经营现金流、投资现金流、筹资现金流、净利率、ROE。
     参数 stock_code 为6位数字股票代码。period_count 默认4期。"""
     from agent.tools import get_financial_summary
     return get_financial_summary(stock_code, period_count=period_count)
@@ -261,7 +261,7 @@ class LangGraphAgent:
             data_sections.append(
                 f"### 数据源 {i}：{item['tool']}\n"
                 f"调用参数：{args_json}\n"
-                f"返回数据：\n{result_str[:2000]}"
+                f"返回数据：\n{result_str[:6000]}"
             )
 
         history_text = ""

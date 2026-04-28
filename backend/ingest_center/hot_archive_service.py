@@ -50,6 +50,7 @@ ANNOUNCEMENT_COLD_YEARS = 2
 RESEARCH_REPORT_COLD_YEARS = 2
 NEWS_COLD_DAYS = 365
 COLD_QUERY_THRESHOLD = 10
+FINANCIAL_DAILY_COLD_DAYS = 180
 
 # 冷转热阈值
 RESTORE_QUERY_THRESHOLD = 30
@@ -91,11 +92,21 @@ class HotArchiveService:
         return result
 
     def _archive_financial(self, dry_run: bool) -> int:
-        cutoff = date.today() - timedelta(days=FINANCIAL_COLD_YEARS * 365)
-        stmt = (select(FinancialHot)
-                .where(FinancialHot.report_date < cutoff)
-                .where(FinancialHot.query_count < COLD_QUERY_THRESHOLD))
-        rows = list(self.db.execute(stmt).scalars().all())
+        cutoff_normal = date.today() - timedelta(days=FINANCIAL_COLD_YEARS * 365)
+        cutoff_daily = date.today() - timedelta(days=FINANCIAL_DAILY_COLD_DAYS)
+
+        # 非 daily：原逻辑（超期 + 低频）
+        stmt_normal = (select(FinancialHot)
+                       .where(FinancialHot.report_type != 'daily')
+                       .where(FinancialHot.report_date < cutoff_normal)
+                       .where(FinancialHot.query_count < COLD_QUERY_THRESHOLD))
+        # daily：只按时间（半年），不看 query_count
+        stmt_daily = (select(FinancialHot)
+                      .where(FinancialHot.report_type == 'daily')
+                      .where(FinancialHot.report_date < cutoff_daily))
+
+        rows = (list(self.db.execute(stmt_normal).scalars().all()) +
+                list(self.db.execute(stmt_daily).scalars().all()))
         if dry_run:
             return len(rows)
         return self._move_to_archive(rows, FinancialArchive, "financial_hot")
@@ -237,9 +248,11 @@ class HotArchiveService:
         row.query_count = (row.query_count or 0) + 1
         self.db.commit()
 
-        # 冷库记录达到回温阈值时自动回温
+        # 冷库记录达到回温阈值时自动回温（daily 类型不回温）
         if is_archive and row.query_count >= RESTORE_QUERY_THRESHOLD:
-            self.restore_hot(data_type, record_id)
+            is_daily = data_type == "financial" and getattr(row, "report_type", None) == "daily"
+            if not is_daily:
+                self.restore_hot(data_type, record_id)
 
     # ------------------------------------------------------------------
     # query_count 衰减

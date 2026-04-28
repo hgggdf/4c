@@ -133,6 +133,14 @@ def daily_sync_job():
         except Exception as e:
             logger.error("冷热交替异常: %s", e, exc_info=True)
 
+        # 入库后同步向量库
+        try:
+            from scripts.backfill_vector_store import run_backfill
+            result = run_backfill()
+            logger.info("向量库回填完成: %s", result)
+        except Exception as e:
+            logger.error("向量库回填异常: %s", e, exc_info=True)
+
     except Exception as e:
         logger.error("每日同步异常: %s", e, exc_info=True)
     finally:

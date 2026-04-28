@@ -216,8 +216,8 @@ export const useChatStore = defineStore('chat', {
                 kind: event.kind,
                 date: event.date,
                 file_name: event.file_name,
-                image_source: event.image_source,
-                images: event.images || [],
+                source_url: event.source_url || '',
+                summary: event.summary || '',
               })
             } else if (event.type === 'clarification') {
               // 澄清事件：把 assistant 消息标记为澄清气泡，暂停输入

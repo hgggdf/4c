@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import logging
+import time
 from typing import Any, Iterator
 
 from openai import OpenAI
 
 from config import get_settings
+
+logger = logging.getLogger(__name__)
 
 
 class KimiClient:
@@ -16,6 +20,9 @@ class KimiClient:
 
     def is_configured(self) -> bool:
         return bool(self.api_key and self.base_url and self.model)
+
+    def _make_client(self) -> OpenAI:
+        return OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def chat(
         self,
@@ -29,7 +36,7 @@ class KimiClient:
                 "Kimi is not configured. Set KIMI_API_KEY, KIMI_BASE_URL, and KIMI_MODEL in backend/.env."
             )
 
-        client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        client = self._make_client()
         response = client.chat.completions.create(
             model=self.model,
             messages=messages,
@@ -44,24 +51,37 @@ class KimiClient:
         *,
         temperature: float = 1.0,
         max_tokens: int = 2048,
+        max_retries: int = 2,
     ) -> Iterator[str]:
         if not self.is_configured():
             raise RuntimeError(
                 "Kimi is not configured. Set KIMI_API_KEY, KIMI_BASE_URL, and KIMI_MODEL in backend/.env."
             )
 
-        client = OpenAI(api_key=self.api_key, base_url=self.base_url)
-        response = client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            stream=True,
-        )
-        for chunk in response:
-            delta = chunk.choices[0].delta
-            if delta and delta.content:
-                yield delta.content
+        last_exc: Exception | None = None
+        for attempt in range(max_retries + 1):
+            try:
+                client = self._make_client()
+                response = client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    stream=True,
+                )
+                for chunk in response:
+                    delta = chunk.choices[0].delta
+                    if delta and delta.content:
+                        yield delta.content
+                return
+            except Exception as exc:
+                last_exc = exc
+                if attempt < max_retries:
+                    wait = 2 * (attempt + 1)
+                    logger.warning("Kimi stream attempt %d failed (%s), retrying in %ds...", attempt + 1, exc, wait)
+                    time.sleep(wait)
+                else:
+                    raise
 
 
 __all__ = ["KimiClient"]
