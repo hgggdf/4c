@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990145",
+      "stock_name": "宇材料45股份有限公司",
+      "full_name": "华电子45股份有限公司",
+      "exchange": "BSE",
+      "industry_level1": "汽车",
+      "industry_level2": "半导体",
+      "listing_date": "2017-10-08",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990145",
+      "business_summary": "这是光食品公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A145",
+        "产品B145"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块145A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块145B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

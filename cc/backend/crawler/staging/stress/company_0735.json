@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990735",
+      "stock_name": "银电子35股份有限公司",
+      "full_name": "光电子35股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "汽车",
+      "industry_level2": "通用设备",
+      "listing_date": "2011-03-04",
+      "status": "suspended",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990735",
+      "business_summary": "这是南股份公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A735",
+        "产品B735"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块735A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块735B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

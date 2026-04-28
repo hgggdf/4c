@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "job_id": "company_600050",
+  "data_category": "company",
+  "staging_path": "backend/crawler/staging/company/company_600050.json",
+  "checksum_sha256": "79d5a7eb1aded79f95a0ffc9de9bb3f424e360577ba6f381b0bfe0c4ad78161a",
+  "record_count": 1,
+  "time_window": {
+    "begin_date": "2014-12-20",
+    "end_date": "2026-04-24"
+  },
+  "fields": {
+    "stock_code": "string",
+    "stock_name": "string",
+    "full_name": "string",
+    "exchange": "string",
+    "listing_date": "string",
+    "status": "string"
+  },
+  "null_checks": {
+    "stock_code": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "stock_name": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "listing_date": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {},
+  "quality_score": 1.0,
+  "status": "ready"
+}

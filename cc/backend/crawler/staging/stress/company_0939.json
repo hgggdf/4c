@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990939",
+      "stock_name": "天食品39股份有限公司",
+      "full_name": "电能源39股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "计算机",
+      "industry_level2": "半导体",
+      "listing_date": "2021-09-01",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990939",
+      "business_summary": "这是中股份公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A939",
+        "产品B939"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块939A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块939B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

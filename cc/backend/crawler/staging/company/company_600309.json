@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "600309",
+      "stock_name": "万华化学",
+      "full_name": "万华化学股份有限公司",
+      "exchange": "SSE",
+      "listing_date": "2021-07-27",
+      "status": "active",
+      "alias_json": [
+        "万华化学"
+      ]
+    },
+    "company_profile": {
+      "stock_code": "600309",
+      "business_summary": "万华化学为主营业务，公司当前股价 87.65 元。",
+      "market_position": "SSE上市公司，行业领先企业。",
+      "management_summary": "公司管理层稳定，治理结构完善。",
+      "source_type": "sina_hq_api",
+      "source_url": "https://hq.sinajs.cn/list=600309"
+    },
+    "industries": [
+      {
+        "industry_code": "IND_化工",
+        "industry_name": "化工",
+        "parent_industry_code": "IND_化工",
+        "industry_level": 1,
+        "description": "化工行业"
+      },
+      {
+        "industry_code": "IND_化学制品",
+        "industry_name": "化学制品",
+        "parent_industry_code": "IND_化工",
+        "industry_level": 2,
+        "description": "化学制品行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "600309",
+        "industry_code": "IND_化工",
+        "is_primary": false
+      },
+      {
+        "stock_code": "600309",
+        "industry_code": "IND_化学制品",
+        "is_primary": true
+      }
+    ]
+  }
+}

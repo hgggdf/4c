@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990710",
+      "stock_name": "天股份10股份有限公司",
+      "full_name": "银汽车10股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "银行",
+      "industry_level2": "软件开发",
+      "listing_date": "2012-09-24",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990710",
+      "business_summary": "这是华食品公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A710",
+        "产品B710"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块710A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块710B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

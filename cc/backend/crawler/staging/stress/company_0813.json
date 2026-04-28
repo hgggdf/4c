@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990813",
+      "stock_name": "星集团13股份有限公司",
+      "full_name": "电实业13股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "食品饮料",
+      "industry_level2": "白酒",
+      "listing_date": "2021-02-13",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990813",
+      "business_summary": "这是华食品公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A813",
+        "产品B813"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块813A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块813B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

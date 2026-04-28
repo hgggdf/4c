@@ -1,0 +1,34 @@
+{
+  "stock_code": "600000",
+  "report_date": "2025-12-31",
+  "report_type": "annual",
+  "quality_score": 0.95,
+  "checks": {
+    "income_statement": {
+      "passed": true,
+      "missing_fields": []
+    },
+    "balance_sheet": {
+      "passed": true,
+      "missing_fields": []
+    },
+    "cashflow_statement": {
+      "passed": true,
+      "missing_fields": []
+    },
+    "financial_metrics": {
+      "passed": true,
+      "missing_fields": []
+    },
+    "financial_notes": {
+      "passed": true,
+      "missing_fields": []
+    },
+    "business_segments": {
+      "passed": true,
+      "missing_fields": []
+    }
+  },
+  "warnings": [],
+  "generated_at": "2026-04-23T14:00:00+08:00"
+}

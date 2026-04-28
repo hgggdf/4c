@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-04-23T19:19:58.909563+00:00",
+  "job_id": "stock_daily_600016_2025-12-22_2026-04-23",
+  "data_category": "stock_daily",
+  "staging_path": "backend/crawler/staging/stock_daily/stock_daily_600016_2025-12-22_2026-04-23.json",
+  "checksum_sha256": "51d32029cb163339a5620b67fe88cb1c6a66b1800effdbb640f390e75cc83c95",
+  "record_count": 80,
+  "time_window": {
+    "begin_date": "2025-12-22",
+    "end_date": "2026-04-23"
+  },
+  "fields": {
+    "stock_code": "string",
+    "trade_date": "string",
+    "open_price": "float",
+    "close_price": "float",
+    "high_price": "float",
+    "low_price": "float",
+    "volume": "integer",
+    "turnover": "float",
+    "adj_type": "string",
+    "source_type": "string"
+  },
+  "null_checks": {
+    "stock_code": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "trade_date": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "close_price": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {
+    "close_price": {
+      "min": 3.69,
+      "max": 4.0
+    },
+    "volume": {
+      "min": 97812006,
+      "max": 570445100
+    }
+  },
+  "quality_score": 1.0,
+  "status": "ready"
+}

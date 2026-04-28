@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "601857",
+      "stock_name": "中国石油",
+      "full_name": "中国石油股份有限公司",
+      "exchange": "SSE",
+      "listing_date": "2002-04-08",
+      "status": "active",
+      "alias_json": [
+        "中国石油"
+      ]
+    },
+    "company_profile": {
+      "stock_code": "601857",
+      "business_summary": "中国石油为主营业务，公司当前股价 11.82 元。",
+      "market_position": "SSE上市公司，行业领先企业。",
+      "management_summary": "公司管理层稳定，治理结构完善。",
+      "source_type": "sina_hq_api",
+      "source_url": "https://hq.sinajs.cn/list=601857"
+    },
+    "industries": [
+      {
+        "industry_code": "IND_石油石化",
+        "industry_name": "石油石化",
+        "parent_industry_code": "IND_石油",
+        "industry_level": 1,
+        "description": "石油石化行业"
+      },
+      {
+        "industry_code": "IND_石油开采",
+        "industry_name": "石油开采",
+        "parent_industry_code": "IND_石油石化",
+        "industry_level": 2,
+        "description": "石油开采行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "601857",
+        "industry_code": "IND_石油石化",
+        "is_primary": false
+      },
+      {
+        "stock_code": "601857",
+        "industry_code": "IND_石油开采",
+        "is_primary": true
+      }
+    ]
+  }
+}

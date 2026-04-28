@@ -1,0 +1,537 @@
+{
+  "generated_at": "2026-04-23T17:11:30.115375+00:00",
+  "payload": {
+    "macro_indicators": [],
+    "news_raw": [
+      {
+        "news_uid": "stress_news_0121",
+        "title": "Stress新闻121: 600120行业动态",
+        "publish_time": "2026-01-31T00:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/121",
+        "author_name": "Stress Author",
+        "content": "Stress新闻121详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "stress_news_0122",
+        "title": "Stress新闻122: 600121行业动态",
+        "publish_time": "2026-02-01T01:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/122",
+        "author_name": "Stress Author",
+        "content": "Stress新闻122详细内容...",
+        "news_type": "industry_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "stress_news_0123",
+        "title": "Stress新闻123: 600122行业动态",
+        "publish_time": "2026-02-02T02:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/123",
+        "author_name": "Stress Author",
+        "content": "Stress新闻123详细内容...",
+        "news_type": "policy_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "stress_news_0124",
+        "title": "Stress新闻124: 600123行业动态",
+        "publish_time": "2026-02-03T03:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/124",
+        "author_name": "Stress Author",
+        "content": "Stress新闻124详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "stress_news_0125",
+        "title": "Stress新闻125: 600124行业动态",
+        "publish_time": "2026-02-04T04:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/125",
+        "author_name": "Stress Author",
+        "content": "Stress新闻125详细内容...",
+        "news_type": "industry_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "stress_news_0126",
+        "title": "Stress新闻126: 600125行业动态",
+        "publish_time": "2026-02-05T05:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/126",
+        "author_name": "Stress Author",
+        "content": "Stress新闻126详细内容...",
+        "news_type": "policy_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "stress_news_0127",
+        "title": "Stress新闻127: 600126行业动态",
+        "publish_time": "2026-02-06T06:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/127",
+        "author_name": "Stress Author",
+        "content": "Stress新闻127详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      },
+      {
+        "news_uid": "stress_news_0128",
+        "title": "Stress新闻128: 600127行业动态",
+        "publish_time": "2026-02-07T07:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/128",
+        "author_name": "Stress Author",
+        "content": "Stress新闻128详细内容...",
+        "news_type": "industry_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "stress_news_0129",
+        "title": "Stress新闻129: 600128行业动态",
+        "publish_time": "2026-02-08T08:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/129",
+        "author_name": "Stress Author",
+        "content": "Stress新闻129详细内容...",
+        "news_type": "policy_news",
+        "language": "zh"
+      },
+      {
+        "news_uid": "stress_news_0130",
+        "title": "Stress新闻130: 600129行业动态",
+        "publish_time": "2026-02-09T09:00:00",
+        "source_name": "Stress Mock News",
+        "source_url": "http://stress.example.com/news/130",
+        "author_name": "Stress Author",
+        "content": "Stress新闻130详细内容...",
+        "news_type": "company_research_report",
+        "language": "zh"
+      }
+    ],
+    "news_structured": [
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻121: 600120行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.7,
+        "news_uid": "stress_news_0121"
+      },
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻122: 600121行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "negative",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.77,
+        "news_uid": "stress_news_0122"
+      },
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻123: 600122行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.94,
+        "news_uid": "stress_news_0123"
+      },
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻124: 600123行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.8,
+        "news_uid": "stress_news_0124"
+      },
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻125: 600124行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "negative",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.76,
+        "news_uid": "stress_news_0125"
+      },
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻126: 600125行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.97,
+        "news_uid": "stress_news_0126"
+      },
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻127: 600126行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.8,
+        "news_uid": "stress_news_0127"
+      },
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻128: 600127行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "negative",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.78,
+        "news_uid": "stress_news_0128"
+      },
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻129: 600128行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "neutral",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.9,
+        "news_uid": "stress_news_0129"
+      },
+      {
+        "topic_category": "行业动态",
+        "summary_text": "Stress新闻130: 600129行业动态摘要。",
+        "keywords_json": [
+          "医药",
+          "行业",
+          "动态"
+        ],
+        "signal_type": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "sentiment_label": "neutral",
+        "confidence_score": 0.95,
+        "news_uid": "stress_news_0130"
+      }
+    ],
+    "news_industry_maps": {
+      "stress_news_0121": [
+        {
+          "industry_code": "C27",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0121对C27行业的影响。"
+        }
+      ],
+      "stress_news_0122": [
+        {
+          "industry_code": "C35",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0122对C35行业的影响。"
+        }
+      ],
+      "stress_news_0123": [
+        {
+          "industry_code": "C26",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0123对C26行业的影响。"
+        }
+      ],
+      "stress_news_0124": [
+        {
+          "industry_code": "C28",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0124对C28行业的影响。"
+        }
+      ],
+      "stress_news_0125": [
+        {
+          "industry_code": "C36",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0125对C36行业的影响。"
+        }
+      ],
+      "stress_news_0126": [
+        {
+          "industry_code": "C37",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0126对C37行业的影响。"
+        }
+      ],
+      "stress_news_0127": [
+        {
+          "industry_code": "C39",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0127对C39行业的影响。"
+        }
+      ],
+      "stress_news_0128": [
+        {
+          "industry_code": "C40",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0128对C40行业的影响。"
+        }
+      ],
+      "stress_news_0129": [
+        {
+          "industry_code": "I64",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0129对I64行业的影响。"
+        }
+      ],
+      "stress_news_0130": [
+        {
+          "industry_code": "I65",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0130对I65行业的影响。"
+        }
+      ]
+    },
+    "news_company_maps": {
+      "stress_news_0121": [
+        {
+          "stock_code": "600120",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0121对600120的影响。"
+        }
+      ],
+      "stress_news_0122": [
+        {
+          "stock_code": "600121",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0122对600121的影响。"
+        }
+      ],
+      "stress_news_0123": [
+        {
+          "stock_code": "600122",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0123对600122的影响。"
+        }
+      ],
+      "stress_news_0124": [
+        {
+          "stock_code": "600123",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0124对600123的影响。"
+        }
+      ],
+      "stress_news_0125": [
+        {
+          "stock_code": "600124",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0125对600124的影响。"
+        }
+      ],
+      "stress_news_0126": [
+        {
+          "stock_code": "600125",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0126对600125的影响。"
+        }
+      ],
+      "stress_news_0127": [
+        {
+          "stock_code": "600126",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0127对600126的影响。"
+        }
+      ],
+      "stress_news_0128": [
+        {
+          "stock_code": "600127",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0128对600127的影响。"
+        }
+      ],
+      "stress_news_0129": [
+        {
+          "stock_code": "600128",
+          "impact_direction": "positive",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0129对600128的影响。"
+        }
+      ],
+      "stress_news_0130": [
+        {
+          "stock_code": "600129",
+          "impact_direction": "negative",
+          "impact_strength": 0.6,
+          "reason_text": "新闻stress_news_0130对600129的影响。"
+        }
+      ]
+    },
+    "industry_impact_events": [
+      {
+        "industry_code": "C27",
+        "event_name": "事件stress_news_0121",
+        "impact_direction": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0121摘要。",
+        "event_date": "2026-01-31",
+        "news_uid": "stress_news_0121"
+      },
+      {
+        "industry_code": "C35",
+        "event_name": "事件stress_news_0122",
+        "impact_direction": "negative",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0122摘要。",
+        "event_date": "2026-02-01",
+        "news_uid": "stress_news_0122"
+      },
+      {
+        "industry_code": "C26",
+        "event_name": "事件stress_news_0123",
+        "impact_direction": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0123摘要。",
+        "event_date": "2026-02-02",
+        "news_uid": "stress_news_0123"
+      },
+      {
+        "industry_code": "C28",
+        "event_name": "事件stress_news_0124",
+        "impact_direction": "negative",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0124摘要。",
+        "event_date": "2026-02-03",
+        "news_uid": "stress_news_0124"
+      },
+      {
+        "industry_code": "C36",
+        "event_name": "事件stress_news_0125",
+        "impact_direction": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0125摘要。",
+        "event_date": "2026-02-04",
+        "news_uid": "stress_news_0125"
+      },
+      {
+        "industry_code": "C37",
+        "event_name": "事件stress_news_0126",
+        "impact_direction": "negative",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0126摘要。",
+        "event_date": "2026-02-05",
+        "news_uid": "stress_news_0126"
+      },
+      {
+        "industry_code": "C39",
+        "event_name": "事件stress_news_0127",
+        "impact_direction": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0127摘要。",
+        "event_date": "2026-02-06",
+        "news_uid": "stress_news_0127"
+      },
+      {
+        "industry_code": "C40",
+        "event_name": "事件stress_news_0128",
+        "impact_direction": "negative",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0128摘要。",
+        "event_date": "2026-02-07",
+        "news_uid": "stress_news_0128"
+      },
+      {
+        "industry_code": "I64",
+        "event_name": "事件stress_news_0129",
+        "impact_direction": "positive",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0129摘要。",
+        "event_date": "2026-02-08",
+        "news_uid": "stress_news_0129"
+      },
+      {
+        "industry_code": "I65",
+        "event_name": "事件stress_news_0130",
+        "impact_direction": "negative",
+        "impact_level": "medium",
+        "impact_horizon": "short",
+        "summary_text": "行业影响事件stress_news_0130摘要。",
+        "event_date": "2026-02-09",
+        "news_uid": "stress_news_0130"
+      }
+    ],
+    "sync_vector_index": true
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "generated_at": "2026-04-23T11:11:16.865906+00:00",
+  "records": [
+    {
+      "indicator_name": "GDP",
+      "period": "2026-Q1",
+      "value": 11.34,
+      "unit": "%",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/GDP"
+    },
+    {
+      "indicator_name": "CPI",
+      "period": "2026-Q2",
+      "value": 6.4,
+      "unit": "%",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/CPI"
+    },
+    {
+      "indicator_name": "PPI",
+      "period": "2026-Q3",
+      "value": 5.8,
+      "unit": "%",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/PPI"
+    },
+    {
+      "indicator_name": "PMI",
+      "period": "2026-Q4",
+      "value": 10.28,
+      "unit": "指数",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/PMI"
+    },
+    {
+      "indicator_name": "M2",
+      "period": "2026-Q1",
+      "value": 9.59,
+      "unit": "万亿元",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/M2"
+    },
+    {
+      "indicator_name": "社会消费品零售总额",
+      "period": "2026-Q2",
+      "value": 9.64,
+      "unit": "亿元",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/社会消费品零售总额"
+    },
+    {
+      "indicator_name": "固定资产投资",
+      "period": "2026-Q3",
+      "value": 6.94,
+      "unit": "%",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/固定资产投资"
+    },
+    {
+      "indicator_name": "进出口总额",
+      "period": "2026-Q4",
+      "value": 1.04,
+      "unit": "亿美元",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/进出口总额"
+    },
+    {
+      "indicator_name": "失业率",
+      "period": "2026-Q1",
+      "value": 11.5,
+      "unit": "%",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/失业率"
+    },
+    {
+      "indicator_name": "工业增加值",
+      "period": "2026-Q2",
+      "value": 10.0,
+      "unit": "%",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/工业增加值"
+    },
+    {
+      "indicator_name": "LPR_1Y",
+      "period": "2026-Q3",
+      "value": 6.3,
+      "unit": "%",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/LPR_1Y"
+    },
+    {
+      "indicator_name": "LPR_5Y",
+      "period": "2026-Q4",
+      "value": 7.24,
+      "unit": "%",
+      "source_type": "e2e_mock",
+      "source_url": "http://e2e.example.com/macro/LPR_5Y"
+    }
+  ]
+}

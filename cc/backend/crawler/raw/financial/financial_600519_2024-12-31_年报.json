@@ -1,0 +1,147 @@
+{
+  "generated_at": "2026-04-23T19:26:40.504588+00:00",
+  "payload": {
+    "income_statements": [
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "report_type": "年报",
+        "revenue": 150500000000.0,
+        "operating_cost": 28000000000.0,
+        "gross_profit": 122500000000.0,
+        "selling_expense": 4500000000.0,
+        "admin_expense": 2200000000.0,
+        "rd_expense": 0.0,
+        "operating_profit": 115000000000.0,
+        "net_profit": 88000000000.0,
+        "net_profit_deducted": 87000000000.0,
+        "eps": 70.56,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600519.shtml"
+      }
+    ],
+    "balance_sheets": [
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "report_type": "年报",
+        "total_assets": 280000000000.0,
+        "total_liabilities": 45000000000.0,
+        "accounts_receivable": 1200000000.0,
+        "inventory": 38000000000.0,
+        "cash": 156000000000.0,
+        "equity": 235000000000.0,
+        "goodwill": 0.0,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600519.shtml"
+      }
+    ],
+    "cashflow_statements": [
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "report_type": "年报",
+        "operating_cashflow": 91000000000.0,
+        "investing_cashflow": -5000000000.0,
+        "financing_cashflow": -28000000000.0,
+        "free_cashflow": 86000000000.0,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600519.shtml"
+      }
+    ],
+    "financial_metrics": [
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "metric_name": "ROE",
+        "metric_value": 37.45,
+        "metric_unit": "%",
+        "calc_method": "净利润/平均净资产",
+        "source_ref_json": {
+          "source": "company_report"
+        }
+      },
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "metric_name": "毛利率",
+        "metric_value": 81.4,
+        "metric_unit": "%",
+        "calc_method": "毛利润/营业收入",
+        "source_ref_json": {
+          "source": "company_report"
+        }
+      },
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "metric_name": "净利率",
+        "metric_value": 58.47,
+        "metric_unit": "%",
+        "calc_method": "净利润/营业收入",
+        "source_ref_json": {
+          "source": "company_report"
+        }
+      },
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "metric_name": "EPS",
+        "metric_value": 70.56,
+        "metric_unit": "元/股",
+        "calc_method": "净利润/总股本",
+        "source_ref_json": {
+          "source": "company_report"
+        }
+      }
+    ],
+    "financial_notes": [
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "note_type": "accounting_policy",
+        "note_json": {
+          "policy_change": "适用新收入准则",
+          "assessment_method": "逾期天数法"
+        },
+        "note_text": "公司2024-12-31年度财务报告已按照新会计准则编制。",
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600519.shtml"
+      }
+    ],
+    "business_segments": [
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "segment_name": "茅台酒",
+        "segment_type": "product",
+        "revenue": 120000000000.0,
+        "revenue_ratio": 0.7973,
+        "gross_margin": 0.93,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600519.shtml"
+      },
+      {
+        "stock_code": "600519",
+        "report_date": "2024-12-31",
+        "fiscal_year": 2024,
+        "segment_name": "系列酒",
+        "segment_type": "product",
+        "revenue": 22000000000.0,
+        "revenue_ratio": 0.1462,
+        "gross_margin": 0.65,
+        "source_type": "company_annual_report",
+        "source_url": "https://www.sse.com.cn/disclosure/listed/listed/600519.shtml"
+      }
+    ],
+    "sync_vector_index": true
+  }
+}

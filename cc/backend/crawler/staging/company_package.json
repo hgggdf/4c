@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-04-23T07:24:42.592008+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "600276",
+      "stock_name": "恒瑞医药",
+      "full_name": "江苏恒瑞医药股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "医药生物",
+      "industry_level2": "化学制药",
+      "listing_date": "2000-10-18",
+      "status": "active",
+      "source_type": "crawler"
+    },
+    "company_profile": {
+      "stock_code": "600276",
+      "business_summary": "主营创新药和高端仿制药研发生产",
+      "core_products_json": [
+        "抗肿瘤药",
+        "麻醉药"
+      ],
+      "main_segments_json": [
+        {
+          "name": "抗肿瘤",
+          "ratio": 0.45
+        }
+      ],
+      "market_position": "国内创新药龙头之一"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

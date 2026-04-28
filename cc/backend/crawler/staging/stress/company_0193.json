@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990193",
+      "stock_name": "银电子93股份有限公司",
+      "full_name": "海金融93股份有限公司",
+      "exchange": "BSE",
+      "industry_level1": "房地产",
+      "industry_level2": "通用设备",
+      "listing_date": "2018-11-04",
+      "status": "delisted",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990193",
+      "business_summary": "这是中能源公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A193",
+        "产品B193"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块193A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块193B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

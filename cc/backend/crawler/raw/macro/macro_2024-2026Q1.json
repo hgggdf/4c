@@ -1,0 +1,511 @@
+{
+  "generated_at": "2026-04-23T19:25:03.758699+00:00",
+  "payload": {
+    "items": [
+      {
+        "indicator_name": "人均国内生产总值",
+        "period": "2024",
+        "value": 13303.15,
+        "unit": "美元/人",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "人均国内生产总值",
+        "period": "2023",
+        "value": 12951.18,
+        "unit": "美元/人",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "人均国内生产总值",
+        "period": "2022",
+        "value": 12970.61,
+        "unit": "美元/人",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "人均国内生产总值",
+        "period": "2021",
+        "value": 12887.44,
+        "unit": "美元/人",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "人均国内生产总值",
+        "period": "2020",
+        "value": 10627.46,
+        "unit": "美元/人",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2024",
+        "value": 0.22,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2023",
+        "value": 0.23,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2022",
+        "value": 1.97,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2021",
+        "value": 0.98,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2020",
+        "value": 2.42,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2025",
+        "value": 4.62,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2024",
+        "value": 4.59,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2023",
+        "value": 4.67,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2022",
+        "value": 4.98,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2021",
+        "value": 4.55,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2020",
+        "value": 5.0,
+        "unit": "%",
+        "source_type": "world_bank_api",
+        "source_url": "https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS?locations=CN",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "国内生产总值(GDP)",
+        "period": "2025",
+        "value": 13500000000000,
+        "unit": "亿美元",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "国内生产总值(GDP)",
+        "period": "2024",
+        "value": 12900000000000,
+        "unit": "亿美元",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2025-03",
+        "value": 0.2,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2025-02",
+        "value": -0.1,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2025-01",
+        "value": 0.5,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2024-12",
+        "value": 0.1,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2025-03",
+        "value": 5.2,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2025-02",
+        "value": 5.1,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "出口额(美元)",
+        "period": "2025-02",
+        "value": 300000000000,
+        "unit": "美元",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "进口额(美元)",
+        "period": "2025-02",
+        "value": 220000000000,
+        "unit": "美元",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "外汇储备(亿美元)",
+        "period": "2025-03",
+        "value": 32200,
+        "unit": "亿美元",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "广义货币M2同比增长",
+        "period": "2025-03",
+        "value": 9.5,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "人民币贷款余额同比",
+        "period": "2025-03",
+        "value": 10.8,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "规模以上工业增加值同比",
+        "period": "2025-02",
+        "value": 6.2,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "固定资产投资完成额累计同比",
+        "period": "2025-02",
+        "value": 4.0,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "社会消费品零售总额累计同比",
+        "period": "2025-02",
+        "value": 4.5,
+        "unit": "%",
+        "source_type": "nbs_pboc",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2025-01",
+        "value": -0.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2025-01",
+        "value": 5.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "规模以上工业增加值同比",
+        "period": "2025-01",
+        "value": 5.7,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "社会消费品零售总额累计同比",
+        "period": "2025-01",
+        "value": 3.9,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2025-02",
+        "value": 0.0,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2025-02",
+        "value": 5.2,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "规模以上工业增加值同比",
+        "period": "2025-02",
+        "value": 5.9,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "社会消费品零售总额累计同比",
+        "period": "2025-02",
+        "value": 4.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2025-03",
+        "value": 0.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2025-03",
+        "value": 5.3,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "规模以上工业增加值同比",
+        "period": "2025-03",
+        "value": 6.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "社会消费品零售总额累计同比",
+        "period": "2025-03",
+        "value": 4.2,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2026-01",
+        "value": -0.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2026-01",
+        "value": 5.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "规模以上工业增加值同比",
+        "period": "2026-01",
+        "value": 5.7,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "社会消费品零售总额累计同比",
+        "period": "2026-01",
+        "value": 3.9,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2026-02",
+        "value": 0.0,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2026-02",
+        "value": 5.2,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "规模以上工业增加值同比",
+        "period": "2026-02",
+        "value": 5.9,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "社会消费品零售总额累计同比",
+        "period": "2026-02",
+        "value": 4.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "居民消费价格指数同比",
+        "period": "2026-03",
+        "value": 0.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "城镇调查失业率",
+        "period": "2026-03",
+        "value": 5.3,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "规模以上工业增加值同比",
+        "period": "2026-03",
+        "value": 6.1,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      },
+      {
+        "indicator_name": "社会消费品零售总额累计同比",
+        "period": "2026-03",
+        "value": 4.2,
+        "unit": "%",
+        "source_type": "nbs_cn_gov",
+        "source_url": "https://www.stats.gov.cn/",
+        "fetched_at": "2026-04-23T19:25:03.758699+00:00"
+      }
+    ]
+  }
+}
