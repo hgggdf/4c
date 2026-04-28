@@ -21,7 +21,7 @@
 
       <!-- 内容区 -->
       <div class="content-area">
-        <div class="content-area-inner" :class="{ 'no-padding': selectedStock || selectedIndustry || activeSection === 'butterfly' }">
+        <div class="content-area-inner" :class="{ 'no-padding': selectedStock || selectedIndustry }">
 
           <template v-if="activeSection === 'stock'">
             <Transition name="detail-slide" mode="out-in">
@@ -70,9 +70,7 @@
             <NewsPanel />
           </template>
 
-          <template v-else-if="activeSection === 'butterfly'">
-            <ButterflyPanel />
-          </template>
+
 
         </div>
       </div>
@@ -119,7 +117,6 @@ import StockDetailPanel from '../components/StockDetailPanel.vue'
 import IndustryDetailPanel from '../components/IndustryDetailPanel.vue'
 import MacroPanel from '../components/MacroPanel.vue'
 import NewsPanel from '../components/NewsPanel.vue'
-import ButterflyPanel from '../components/ButterflyPanel.vue'
 import ChatPanel from '../components/ChatPanel.vue'
 import { getStockList, getIndustryList } from '../api/stock'
 
@@ -132,7 +129,6 @@ const TABS = [
   { key: 'industry',  label: '行业', icon: '🏭' },
   { key: 'macro',     label: '宏观', icon: '🌐' },
   { key: 'news',      label: '新闻', icon: '📰' },
-  { key: 'butterfly', label: '蝴蝶', icon: '🦋' },
 ]
 
 // ── 面板状态 ──────────────────────────────────────

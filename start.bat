@@ -2,9 +2,10 @@
 chcp 65001 >nul
 title Medical Strategy - Starting
 
-set BACKEND=C:\Users\chenyichang\Desktop\cc\cc\backend
-set FRONTEND=C:\Users\chenyichang\Desktop\cc\cc\frontend
-set ROOT=C:\Users\chenyichang\Desktop\cc\cc
+set ROOT=%~dp0
+set ROOT=%ROOT:~0,-1%
+set BACKEND=%ROOT%\backend
+set FRONTEND=%ROOT%\frontend
 
 echo ==========================================
 echo   Medical Strategy - One Click Start

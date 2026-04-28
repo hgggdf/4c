@@ -13,6 +13,7 @@ MODE_LABELS: dict[str, str] = {
     "chart_analysis": "chart_analysis",
     "report_generation": "report_generation",
     "attribution_analysis": "attribution_analysis",
+    "butterfly_analysis": "butterfly_analysis",
     "quick_query": "quick_query",
 }
 
@@ -35,6 +36,8 @@ MODE_ALIASES: dict[str, str] = {
     "报告生成": "report_generation",
     "归因分析": "attribution_analysis",
     "原因分析": "attribution_analysis",
+    "蝴蝶效应": "butterfly_analysis",
+    "蝴蝶分析": "butterfly_analysis",
     "快速查询": "quick_query",
 }
 
@@ -170,11 +173,23 @@ MODE_KEYWORDS: dict[str, list[str]] = {
         "毛利率下降",
         "净利率下降",
     ],
+    "butterfly_analysis": [
+        "蝴蝶效应",
+        "蝴蝶",
+        "传导链",
+        "传导路径",
+        "连锁反应",
+        "宏观传导",
+        "事件传导",
+        "冲击传导",
+        "影响链",
+    ],
 }
 
 MODE_PRIORITY = [
     "policy_procurement",
     "pipeline_analysis",
+    "butterfly_analysis",
     "risk_warning",
     "attribution_analysis",
     "financial_analysis",

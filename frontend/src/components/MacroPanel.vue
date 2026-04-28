@@ -58,7 +58,7 @@ const indicators = [
   { key: 'CPI同比',    label: 'CPI',    desc: 'CPI（居民消费价格指数）同比变化，反映通货膨胀水平，影响医药消费品定价空间。' },
   { key: 'PPI同比',    label: 'PPI',    desc: 'PPI（工业生产者出厂价格指数）同比，影响原料药及医疗耗材成本端压力。' },
   { key: 'PMI',    label: 'PMI',    desc: 'PMI 制造业采购经理指数，50 以上为扩张，反映工业景气度。' },
-  { key: 'GDP增速',    label: 'GDP增速',    desc: 'GDP 同比增速，宏观经济总量指标，与医疗支出规模正相关。' },
+  { key: 'GDP增速',    label: 'GDP',    desc: 'GDP（国内生产总值）衡量一国经济总量，反映整体经济运行状况，与医疗支出规模正相关。' },
 ]
 
 const current = ref('CPI')
@@ -74,14 +74,17 @@ const keyMetrics = ref([])
 
 async function loadKeyMetrics() {
   try {
-    const res = await getMacroSummary(['CPI同比', 'PPI同比', 'PMI', 'GDP增速'], 1)
+    const res = await getMacroSummary(['CPI同比', 'PPI同比', 'PMI', 'GDP增速'], 4)
     const series = res?.series || res || {}
     const list = []
     for (const [name, records] of Object.entries(series)) {
       if (!Array.isArray(records) || !records.length) continue
-      const latest = records[0]
+      const isGDP = name === 'GDP增速' || name === 'GDP'
+      const filtered = isGDP ? records.filter(r => !(r.period || '').startsWith('2026')) : records
+      if (!filtered.length) continue
+      const latest = filtered[0]
       list.push({
-        label: latest.indicator_name || name,
+        label: (latest.indicator_name || name).replace('GDP增速', 'GDP'),
         value: (latest.value ?? '--') + (latest.unit || ''),
         sub: latest.period ?? '',
         trend: (() => {
@@ -130,7 +133,10 @@ async function loadAndRender() {
 
   try {
     const items = await listMacroIndicators([current.value])
-    const list = Array.isArray(items) ? items : []
+    let list = Array.isArray(items) ? items : []
+    if (current.value === 'GDP增速') {
+      list = list.filter(d => !(d.period || '').startsWith('2026'))
+    }
     if (!list.length) { loading.value = false; return }
 
     // 按 period 正序排列用于图表

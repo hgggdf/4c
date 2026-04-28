@@ -37,6 +37,7 @@ class DialogueAgent:
         "industry_compare": "行业对比",
         "report_generation": "生成报告",
         "attribution_analysis": "归因分析",
+        "butterfly_analysis": "蝴蝶效应",
     }
 
     MODE_SYSTEM_TEMPLATES = {
@@ -107,6 +108,16 @@ class DialogueAgent:
 3. 外部因素归因（行业政策、集采影响、市场竞争、宏观环境）
 4. 关键驱动因子排序（按影响程度从高到低）
 5. 后续跟踪建议（需持续关注的指标与催化剂）""",
+
+        "butterfly_analysis": """\
+当前任务：蝴蝶效应分析
+请按以下框架逐层推演宏观事件的传导链路：
+1. 事件解读（事件性质、严重程度、影响时间窗口）
+2. 宏观层传导（对GDP、利率、汇率、通胀等宏观变量的影响）
+3. 行业层传导（受影响的行业板块、传导机制、影响程度排序）
+4. 公司层传导（具体受影响的上市公司、影响路径）
+5. 风险提示（需警惕的连锁反应与尾部风险）
+6. 投资机会（可能受益的行业与标的）""",
     }
 
     MODE_DOC_TYPES = {
@@ -117,6 +128,7 @@ class DialogueAgent:
         "industry_compare": ["news", "report", "financial_note"],
         "report_generation": ["announcement", "financial_note", "news", "report"],
         "attribution_analysis": ["financial_note", "announcement", "news", "report"],
+        "butterfly_analysis": ["news", "report"],
     }
 
     def __init__(self) -> None:

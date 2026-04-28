@@ -1,5 +1,5 @@
-import sys, hashlib
-sys.path.insert(0, r'C:\Users\chenyichang\Desktop\4c\backend')
+import sys, os, hashlib
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
 from app.core.database.session import SessionLocal
 from app.core.database.models.announcement_hot import AnnouncementRawHot

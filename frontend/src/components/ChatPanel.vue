@@ -425,6 +425,7 @@ function getModeTitle(msg) {
     company_analysis: '企业运营评估',
     financial_analysis: '财务分析',
     pipeline_analysis: '管线分析',
+    butterfly_analysis: '蝴蝶效应',
     risk_warning: '风险预警',
     industry_compare: '行业对比',
     report_generation: '生成报告',

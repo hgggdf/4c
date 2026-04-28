@@ -1,5 +1,5 @@
 import sys, os
-sys.path.insert(0, r'C:\Users\chenyichang\Desktop\4c\backend')
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 os.environ['TRANSFORMERS_OFFLINE'] = '1'
 
 from app.knowledge.store import get_vector_store

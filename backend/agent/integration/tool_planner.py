@@ -187,6 +187,13 @@ def build_tool_plan(
         add("news_search", purpose="检索外部事件新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="local")
         return plan
 
+    if mode == "butterfly_analysis":
+        add("macro_policy_search", purpose="检索宏观政策与事件信息", required=True, data_source_type="政策", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "hot")
+        add("news_search", purpose="检索事件相关新闻与行业影响", required=True, data_source_type="新闻", can_score=False, freshness_value="fresh" if freshness == "local_plus_fresh" else "hot")
+        add("industry_knowledge_search", purpose="检索受影响行业知识", required=True, data_source_type="知识库", can_score=False, freshness_value="local")
+        add("research_report_search", purpose="检索相关研报分析", required=False, data_source_type="研报", can_score=False, freshness_value="local")
+        return plan
+
     if mode == "report_generation":
         add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
         add("financial_metrics", purpose="获取财务指标", required=True, data_source_type="财报", can_score=True, freshness_value="local")

@@ -55,8 +55,8 @@ class Settings(BaseSettings):
     crawler_source_mode: str = "auto"
 
     sync_enabled: bool = True
-    sync_hour: int = 3
-    sync_minute: int = 28
+    sync_hour: int = 0
+    sync_minute: int = 30
     sync_ssh_host: str = "8.219.129.250"
     sync_ssh_user: str = "admin"
     sync_ssh_local_port: int = 8900
