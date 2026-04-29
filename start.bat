@@ -84,13 +84,13 @@ if not exist "%FRONTEND%\node_modules" (
 echo.
 
 echo [5/6] Checking .env config...
-if not exist "%BACKEND%\.env" (
-    if exist "%BACKEND%\.env.example" (
+if not exist "%ROOT%\.env" (
+    if exist "%ROOT%\.env.example" (
         echo Creating .env from .env.example...
-        copy "%BACKEND%\.env.example" "%BACKEND%\.env" >nul
-        echo WARNING: Please edit backend\.env with your MySQL credentials and API keys.
+        copy "%ROOT%\.env.example" "%ROOT%\.env" >nul
+        echo WARNING: Please edit .env with your MySQL credentials and API keys.
     ) else (
-        echo ERROR: backend\.env not found and no .env.example available.
+        echo ERROR: .env not found and no .env.example available.
         goto :error
     )
 )
@@ -101,7 +101,7 @@ echo [6/6] Starting services...
 cd /d "%BACKEND%"
 "%PYTHON%" "%ROOT%\check_db.py" >nul 2>&1
 if errorlevel 1 (
-    echo WARNING: MySQL not reachable. Check backend\.env config.
+    echo WARNING: MySQL not reachable. Check .env config.
     echo Backend will start but may fail at runtime.
 )
 start "Backend" cmd /k "cd /d %BACKEND% && "%PYTHON%" main.py"

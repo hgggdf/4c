@@ -423,7 +423,7 @@ class DialogueAgent:
         if not self.tool_agent.is_configured():
             yield {
                 "type": "status",
-                "content": "Kimi 工具调用模型未配置，请检查 backend/.env 中的 KIMI_API_KEY、KIMI_BASE_URL 和 KIMI_MODEL。",
+                "content": "Kimi 工具调用模型未配置，请检查项目根目录 .env 中的 KIMI_API_KEY、KIMI_BASE_URL 和 KIMI_MODEL。",
             }
             return
 
@@ -755,7 +755,7 @@ class DialogueAgent:
             return
 
         if not self.is_configured():
-            yield {"type": "error", "message": "Kimi API 未配置，请在 backend/.env 中设置 KIMI_API_KEY、KIMI_BASE_URL 和 KIMI_MODEL。"}
+            yield {"type": "error", "message": "Kimi API 未配置，请在项目根目录 .env 中设置 KIMI_API_KEY、KIMI_BASE_URL 和 KIMI_MODEL。"}
             return
 
         # report_generation 模式：用本地数据生成带图表的结构化报告

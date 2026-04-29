@@ -2,12 +2,8 @@
 node_modules/
 __pycache__/
 
-# Environment files — real secrets stay local, examples are tracked
-.env
-backend/.env
+# Environment files
 frontend/.env
-!.env.example
-!backend/.env.example
 !frontend/.env.example
 
 

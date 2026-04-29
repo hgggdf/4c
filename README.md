@@ -113,7 +113,7 @@ python main.py
 
 - 必须先进入 backend 目录再执行 python main.py；如果在仓库根目录执行，会报找不到 main.py。
 - 推荐直接使用 backend/.venv 中的解释器，避免混用系统 Python 或 Conda 环境。
-- 首次启动前先基于 backend/.env.example 创建 backend/.env，再填入自己的 MySQL 连接信息。
+- 首次启动前先基于项目根目录 .env.example 创建 .env，再填入自己的 MySQL 连接信息。
 - 当前后端依赖 MySQL；如果 127.0.0.1:3306 不可用，或 stock_agent 库不存在，服务不会启动。
 
 默认地址：

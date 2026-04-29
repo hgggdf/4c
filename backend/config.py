@@ -8,11 +8,7 @@ from sqlalchemy.engine import make_url
 
 
 _CONFIG_DIR = Path(__file__).resolve().parent
-ENV_FILE = _CONFIG_DIR / ".env"
-ROOT_ENV_FILE = _CONFIG_DIR.parent / ".env"
-
-if not ENV_FILE.exists() and ROOT_ENV_FILE.exists():
-    ENV_FILE = ROOT_ENV_FILE
+ENV_FILE = _CONFIG_DIR.parent / ".env"
 
 
 class Settings(BaseSettings):

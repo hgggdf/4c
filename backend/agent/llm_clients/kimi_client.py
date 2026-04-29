@@ -33,7 +33,7 @@ class KimiClient:
     ) -> str:
         if not self.is_configured():
             raise RuntimeError(
-                "Kimi is not configured. Set KIMI_API_KEY, KIMI_BASE_URL, and KIMI_MODEL in backend/.env."
+                "Kimi is not configured. Set KIMI_API_KEY, KIMI_BASE_URL, and KIMI_MODEL in .env."
             )
 
         client = self._make_client()
@@ -55,7 +55,7 @@ class KimiClient:
     ) -> Iterator[str]:
         if not self.is_configured():
             raise RuntimeError(
-                "Kimi is not configured. Set KIMI_API_KEY, KIMI_BASE_URL, and KIMI_MODEL in backend/.env."
+                "Kimi is not configured. Set KIMI_API_KEY, KIMI_BASE_URL, and KIMI_MODEL in .env."
             )
 
         last_exc: Exception | None = None

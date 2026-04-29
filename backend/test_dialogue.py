@@ -17,7 +17,7 @@ def test_chat_stream():
     # 检查配置
     if not agent.is_configured():
         print("❌ Kimi API 未配置")
-        print("请在 backend/.env 中设置:")
+        print("请在项目根目录 .env 中设置:")
         print("  KIMI_API_KEY=your_key")
         print("  KIMI_BASE_URL=https://api.moonshot.ai/v1")
         print("  KIMI_MODEL=moonshot-v1-8k")

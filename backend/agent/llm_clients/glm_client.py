@@ -85,7 +85,7 @@ class GLMClient:
         max_tokens: int = 500,
     ) -> str:
         if not self.is_configured():
-            raise RuntimeError("GLM is not configured. Set GLM_API_KEY, GLM_BASE_URL, and GLM_MODEL in backend/.env.")
+            raise RuntimeError("GLM is not configured. Set GLM_API_KEY, GLM_BASE_URL, and GLM_MODEL in .env.")
 
         try:
             response = requests.post(
