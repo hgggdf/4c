@@ -51,14 +51,13 @@ class KimiClient:
         *,
         temperature: float = 1.0,
         max_tokens: int = 2048,
-        max_retries: int = 2,
+        max_retries: int = 3,
     ) -> Iterator[str]:
         if not self.is_configured():
             raise RuntimeError(
                 "Kimi is not configured. Set KIMI_API_KEY, KIMI_BASE_URL, and KIMI_MODEL in .env."
             )
 
-        last_exc: Exception | None = None
         for attempt in range(max_retries + 1):
             try:
                 client = self._make_client()
@@ -75,13 +74,65 @@ class KimiClient:
                         yield delta.content
                 return
             except Exception as exc:
-                last_exc = exc
                 if attempt < max_retries:
-                    wait = 2 * (attempt + 1)
+                    wait = self._retry_wait(exc, attempt)
                     logger.warning("Kimi stream attempt %d failed (%s), retrying in %ds...", attempt + 1, exc, wait)
                     time.sleep(wait)
                 else:
                     raise
+
+
+    def chat_stream_with_finish_reason(
+        self,
+        messages: list[dict[str, str]],
+        *,
+        temperature: float = 1.0,
+        max_tokens: int = 4096,
+        max_retries: int = 3,
+    ) -> Iterator[tuple[str | None, str | None]]:
+        """Like chat_stream but yields (content, finish_reason) tuples.
+        finish_reason is None for intermediate chunks, 'stop'/'length' on the final chunk.
+        """
+        if not self.is_configured():
+            raise RuntimeError(
+                "Kimi is not configured. Set KIMI_API_KEY, KIMI_BASE_URL, and KIMI_MODEL in .env."
+            )
+
+        for attempt in range(max_retries + 1):
+            try:
+                client = self._make_client()
+                response = client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    stream=True,
+                )
+                for chunk in response:
+                    choice = chunk.choices[0]
+                    delta = choice.delta
+                    finish = choice.finish_reason
+                    content = delta.content if delta else None
+                    if content:
+                        yield (content, None)
+                    if finish:
+                        yield (None, finish)
+                return
+            except Exception as exc:
+                if attempt < max_retries:
+                    wait = self._retry_wait(exc, attempt)
+                    logger.warning("Kimi stream attempt %d failed (%s), retrying in %ds...", attempt + 1, exc, wait)
+                    time.sleep(wait)
+                else:
+                    raise
+
+    @staticmethod
+    def _retry_wait(exc: Exception, attempt: int) -> int:
+        """429 错误使用更长退避时间，其他错误用标准退避。"""
+        is_rate_limit = "429" in str(exc) or "overloaded" in str(exc).lower()
+        if is_rate_limit:
+            return 10 * (attempt + 1)
+        return 2 * (attempt + 1)
 
 
 __all__ = ["KimiClient"]

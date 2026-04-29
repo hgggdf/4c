@@ -548,6 +548,56 @@ class DialogueAgent:
 
         return "\n".join(system_lines)
 
+    def _build_system_context_from_tools(
+        self,
+        question: str,
+        *,
+        stock_context: dict[str, Any] | None,
+        tool_results: list[dict[str, Any]],
+    ) -> str:
+        """将预定义工具执行结果格式化为 system prompt。"""
+        import json
+
+        system_lines = [
+            "你是「医药投研智能助手」，由 Moonshot Kimi 大模型驱动，专注于医药行业的投资研究分析。",
+            "",
+            "回答规则：",
+            "- 基于下方提供的真实数据作答，禁止编造",
+            "- 证据不足时明确说明",
+            "- 使用中文回答，保持专业、简洁、有逻辑",
+            "- 可适当使用 Markdown 格式增强可读性",
+            "- 如果内容较多，请完整输出，不要省略或截断",
+        ]
+
+        if stock_context:
+            system_lines.append("")
+            system_lines.append(
+                f"当前关注标的：{stock_context.get('stock_name', '')} ({stock_context.get('stock_code', '')})"
+            )
+
+        has_data = False
+        for tr in tool_results:
+            if not tr.get("success") or not tr.get("data"):
+                continue
+            tool_name = tr.get("tool_name", "")
+            data = tr["data"]
+            data_str = json.dumps(data, ensure_ascii=False, default=str)
+            if len(data_str) > 4000:
+                data_str = data_str[:4000] + "...(数据已截断)"
+
+            system_lines.append("")
+            system_lines.append(f"### 数据源：{tool_name}")
+            system_lines.append(data_str)
+            has_data = True
+
+        if not has_data:
+            system_lines.append("")
+            system_lines.append(
+                "⚠️ 数据缺失：工具执行未返回有效数据，请基于你的知识谨慎回答，并告知用户本地数据不足。"
+            )
+
+        return "\n".join(system_lines)
+
     def _fetch_financial_context(self, stock_code: str) -> str | None:
         """从 financial_hot 查询结构化财务数据，格式化为文本注入 system prompt。"""
         if not stock_code:
@@ -635,23 +685,27 @@ class DialogueAgent:
         *,
         session_id: int | None = None,
         db_messages: list[dict[str, str]] | None = None,
+        system_context_override: str | None = None,
     ) -> list[dict[str, str]]:
-        stock_context = self._resolve_stock_context(
-            question,
-            targets=targets,
-            current_stock_code=current_stock_code,
-        )
-        evidence_items = (
-            self._collect_evidence(question, stock_context, selected_mode=selected_mode)
-            if stock_context
-            else []
-        )
-        system_content = self._build_system_context(
-            question,
-            selected_mode=selected_mode,
-            stock_context=stock_context,
-            evidence_items=evidence_items,
-        )
+        if system_context_override:
+            system_content = system_context_override
+        else:
+            stock_context = self._resolve_stock_context(
+                question,
+                targets=targets,
+                current_stock_code=current_stock_code,
+            )
+            evidence_items = (
+                self._collect_evidence(question, stock_context, selected_mode=selected_mode)
+                if stock_context
+                else []
+            )
+            system_content = self._build_system_context(
+                question,
+                selected_mode=selected_mode,
+                stock_context=stock_context,
+                evidence_items=evidence_items,
+            )
 
         messages: list[dict[str, str]] = [
             {"role": "system", "content": system_content}
@@ -715,33 +769,74 @@ class DialogueAgent:
             targets=targets,
             current_stock_code=current_stock_code,
         )
-        evidence_items = (
-            self._collect_evidence(question, stock_context, selected_mode=selected_mode)
-            if stock_context
-            else []
-        )
-        system_context = self._build_system_context(
-            question,
-            selected_mode=selected_mode,
-            stock_context=stock_context,
-            evidence_items=evidence_items,
-        )
 
-        # 把带图片的 evidence 通过 SSE 发给前端展示
-        doc_images_for_llm: list[str] = []
-        for ev in evidence_items:
-            yield {
-                "type": "doc_preview",
-                "title": ev.get("title", ""),
-                "kind": ev.get("kind", ""),
-                "date": ev.get("date", ""),
-                "file_name": ev.get("file_name", ""),
-                "source_url": ev.get("source_url", ""),
-                "summary": ev.get("summary", ""),
+        # ── quick_query 模式：预定义工具流程 ──────────────────────────────
+        system_context_override: str | None = None
+        if selected_mode in (None, "quick_query") and stock_context and not tool_autonomy:
+            from agent.integration.tool_planner import build_tool_plan
+            from agent.integration.tool_executor import execute_tool_plan
+
+            company_entity = {
+                "stock_code": stock_context.get("stock_code"),
+                "company_name": stock_context.get("stock_name"),
             }
-            imgs = ev.get("images") or []
-            if imgs:
-                doc_images_for_llm.extend(imgs[:1])
+
+            tool_plan = build_tool_plan(
+                question,
+                selected_mode="quick_query",
+                freshness_strategy="local_only",
+                company_entity=company_entity,
+            )
+
+            if tool_plan:
+                yield {"type": "status", "content": "正在收集数据..."}
+                tool_results = execute_tool_plan(tool_plan, dry_run=False)
+
+                for tr in tool_results:
+                    if tr.get("success"):
+                        yield {
+                            "type": "status",
+                            "content": f"✓ {tr.get('tool_name')} 完成",
+                        }
+
+                system_context_override = self._build_system_context_from_tools(
+                    question,
+                    stock_context=stock_context,
+                    tool_results=tool_results,
+                )
+
+        # ── 非 quick_query 或无 stock_context：走原有 evidence 路径 ────────
+        if system_context_override is None:
+            evidence_items = (
+                self._collect_evidence(question, stock_context, selected_mode=selected_mode)
+                if stock_context
+                else []
+            )
+            system_context = self._build_system_context(
+                question,
+                selected_mode=selected_mode,
+                stock_context=stock_context,
+                evidence_items=evidence_items,
+            )
+
+            # 把带图片的 evidence 通过 SSE 发给前端展示
+            doc_images_for_llm: list[str] = []
+            for ev in evidence_items:
+                yield {
+                    "type": "doc_preview",
+                    "title": ev.get("title", ""),
+                    "kind": ev.get("kind", ""),
+                    "date": ev.get("date", ""),
+                    "file_name": ev.get("file_name", ""),
+                    "source_url": ev.get("source_url", ""),
+                    "summary": ev.get("summary", ""),
+                }
+                imgs = ev.get("images") or []
+                if imgs:
+                    doc_images_for_llm.extend(imgs[:1])
+        else:
+            system_context = system_context_override
+            evidence_items = []
 
         if tool_autonomy:
             yield from self._chat_stream_with_tool_autonomy(
@@ -789,20 +884,56 @@ class DialogueAgent:
         messages = self.build_messages(
             question, history, targets, current_stock_code, selected_mode=selected_mode,
             session_id=session_id, db_messages=db_messages,
+            system_context_override=system_context_override,
         )
 
+        # ── 流式输出 + 自动续写 ──────────────────────────────────────────
+        max_tokens = 4096 if selected_mode in (None, "quick_query", "report_generation", "financial_analysis", "company_analysis") else 2048
         answer_chunks: list[str] = []
+        finish_reason: str | None = None
         try:
-            max_tokens = 4096 if selected_mode == "report_generation" else 2048
-            for chunk in self.llm_client.chat_stream(
+            for content, fr in self.llm_client.chat_stream_with_finish_reason(
                 messages, temperature=1.0, max_tokens=max_tokens
             ):
-                answer_chunks.append(chunk)
-                yield {"type": "answer_chunk", "content": str(chunk)}
+                if content:
+                    answer_chunks.append(content)
+                    yield {"type": "answer_chunk", "content": content}
+                if fr:
+                    finish_reason = fr
         except Exception as exc:
             logger.exception("DialogueAgent chat_stream error")
             yield {"type": "error", "message": f"对话异常: {exc}"}
             return
+
+        # 自动续写：finish_reason == "length" 表示被截断
+        MAX_CONTINUATIONS = 2
+        continuation_count = 0
+        while finish_reason == "length" and continuation_count < MAX_CONTINUATIONS:
+            continuation_count += 1
+
+            full_answer = "".join(answer_chunks)
+            continuation_messages = list(messages)
+            continuation_messages.append({"role": "assistant", "content": full_answer})
+            continuation_messages.append({"role": "user", "content": "请继续，从上次中断处接着输出，不要重复已有内容。"})
+
+            finish_reason = None
+            got_content = False
+            try:
+                for content, fr in self.llm_client.chat_stream_with_finish_reason(
+                    continuation_messages, temperature=1.0, max_tokens=max_tokens
+                ):
+                    if content:
+                        got_content = True
+                        answer_chunks.append(content)
+                        yield {"type": "answer_chunk", "content": content}
+                    if fr:
+                        finish_reason = fr
+            except Exception as exc:
+                logger.warning("Continuation stream failed: %s", exc)
+                break
+
+            if not got_content:
+                break
 
         # 流结束后把本轮问答追加到记忆缓存，下轮无需重查数据库
         if session_id is not None and answer_chunks:

@@ -205,7 +205,8 @@ def build_tool_plan(
 
     if mode == "quick_query":
         if company_entity:
-            add("company_basic_info", purpose="获取公司基础信息", required=False, data_source_type="公司", can_score=False, freshness_value="local")
+            add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
+            add("financial_metrics", purpose="获取核心财务指标", required=False, data_source_type="财报", can_score=True, freshness_value="local")
             add("announcement_search", purpose="检索公告", required=False, data_source_type="公告", can_score=False, freshness_value="local")
             add("news_search", purpose="检索新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="local")
         return plan
