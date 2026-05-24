@@ -87,7 +87,7 @@ class KimiClient:
         messages: list[dict[str, str]],
         *,
         temperature: float = 1.0,
-        max_tokens: int = 4096,
+        max_tokens: int = 8192,
         max_retries: int = 3,
     ) -> Iterator[tuple[str | None, str | None]]:
         """Like chat_stream but yields (content, finish_reason) tuples.

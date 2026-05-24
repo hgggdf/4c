@@ -882,7 +882,7 @@ class DialogueAgent:
         )
 
         # ── 流式输出 + 自动续写 ──────────────────────────────────────────
-        max_tokens = 4096
+        max_tokens = 8192
         answer_chunks: list[str] = []
         finish_reason: str | None = None
         try:
