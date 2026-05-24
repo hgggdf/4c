@@ -18,6 +18,13 @@ TOOL_NAMES = {
     "research_report_search",
     "macro_policy_search",
     "industry_knowledge_search",
+    # 估值分析
+    "valuation_metrics",
+    "dcf_valuation",
+    "valuation_comparison",
+    # 量价分析
+    "price_volume_analysis",
+    "price_volume_event_correlation",
 }
 
 
@@ -121,6 +128,7 @@ def build_tool_plan(
         add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
         add("financial_metrics", purpose="获取财务指标", required=True, data_source_type="财报", can_score=True, freshness_value="local")
         add("financial_trend", purpose="获取财务趋势", required=True, data_source_type="财报", can_score=True, freshness_value="local")
+        add("valuation_metrics", purpose="计算PE/PB/PS/PEG/EV-EBITDA估值指标", required=False, data_source_type="估值", can_score=True, freshness_value="local")
         return plan
 
     if mode == "pipeline_analysis":
@@ -209,6 +217,27 @@ def build_tool_plan(
             add("financial_metrics", purpose="获取核心财务指标", required=False, data_source_type="财报", can_score=True, freshness_value="local")
             add("announcement_search", purpose="检索公告", required=False, data_source_type="公告", can_score=False, freshness_value="local")
             add("news_search", purpose="检索新闻", required=False, data_source_type="新闻", can_score=False, freshness_value="local")
+            _VALUATION_KW = ("估值", "pe", "pb", "ps", "peg", "市盈率", "市净率", "市销率",
+                             "dcf", "内在价值", "安全边际", "高估", "低估", "贵不贵", "值不值")
+            if any(kw in question.lower() for kw in _VALUATION_KW):
+                add("valuation_metrics", purpose="计算PE/PB/PS/PEG/EV-EBITDA估值指标", required=True, data_source_type="估值", can_score=True, freshness_value="local")
+                add("dcf_valuation", purpose="DCF贴现现金流估值", required=False, data_source_type="估值", can_score=True, freshness_value="local")
+            _PV_KW = ("量价", "成交量", "放量", "缩量", "技术面", "k线", "均线", "换手", "量能")
+            if any(kw in question.lower() for kw in _PV_KW):
+                add("price_volume_analysis", purpose="量价技术分析", required=True, data_source_type="行情", can_score=False, freshness_value="local")
+        return plan
+
+    if mode == "valuation_analysis":
+        add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
+        add("valuation_metrics", purpose="计算PE/PB/PS/PEG/EV-EBITDA估值指标", required=True, data_source_type="估值", can_score=True, freshness_value="local")
+        add("dcf_valuation", purpose="DCF贴现现金流估值", required=True, data_source_type="估值", can_score=True, freshness_value="local")
+        add("financial_trend", purpose="获取财务趋势以支撑估值判断", required=False, data_source_type="财报", can_score=True, freshness_value="local")
+        return plan
+
+    if mode == "price_volume_analysis":
+        add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
+        add("price_volume_analysis", purpose="量价技术分析（MA/量价相关/信号）", required=True, data_source_type="行情", can_score=False, freshness_value="local")
+        add("price_volume_event_correlation", purpose="量价异动与公告事件关联", required=False, data_source_type="行情", can_score=False, freshness_value="local")
         return plan
 
     add("company_basic_info", purpose="获取公司基础信息", required=False, data_source_type="公司", can_score=False, freshness_value="local")

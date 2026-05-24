@@ -39,10 +39,20 @@ from .news_tools import (
     get_news_by_industry,
     get_news_raw,
 )
+from .price_volume_tools import (
+    get_price_volume_data,
+    get_price_volume_analysis,
+    get_price_volume_event_correlation,
+)
 from .retrieval_tools import (
     search_company_evidence,
     search_documents,
     search_news_evidence,
+)
+from .valuation_tools import (
+    get_dcf_valuation,
+    get_valuation_comparison,
+    get_valuation_metrics,
 )
 
 __all__ = [
@@ -83,4 +93,12 @@ __all__ = [
     "search_documents",
     "search_company_evidence",
     "search_news_evidence",
+    # Valuation tools
+    "get_valuation_metrics",
+    "get_dcf_valuation",
+    "get_valuation_comparison",
+    # Price-volume tools
+    "get_price_volume_data",
+    "get_price_volume_analysis",
+    "get_price_volume_event_correlation",
 ]

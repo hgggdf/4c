@@ -250,7 +250,54 @@ def make_report(stock_code: str, stock_name: str, pub_date: date, org: str) -> R
     )
 
 
-def make_macro(name: str, period: str, period_date: date, value: float, unit: str, category: str) -> MacroIndicator:
+def _trading_days(end: date, count: int) -> list[date]:
+    """从 end 往前生成 count 个交易日（跳过周末）。"""
+    days = []
+    cur = end
+    while len(days) < count:
+        if cur.weekday() < 5:  # 0=Mon ... 4=Fri
+            days.append(cur)
+        cur -= timedelta(days=1)
+    return list(reversed(days))
+
+
+def make_daily_quotes(stock_code: str, base_price: float, end: date, count: int = 120) -> list[FinancialHot]:
+    """用随机游走生成 count 条日行情记录。"""
+    trade_dates = _trading_days(end, count)
+    records = []
+    price = base_price
+    base_vol = random.uniform(5e6, 5e7)  # 基础日成交量（手）
+
+    for i, td in enumerate(trade_dates):
+        # 日涨跌幅 ±2.5%，偶尔有大行情 ±5%
+        daily_range = 0.05 if random.random() < 0.08 else 0.025
+        change = random.uniform(-daily_range, daily_range)
+        prev_close = price
+        close = round(prev_close * (1 + change), 2)
+        open_p = round(prev_close * (1 + random.uniform(-0.01, 0.01)), 2)
+        high = round(max(open_p, close) * (1 + random.uniform(0, 0.015)), 2)
+        low = round(min(open_p, close) * (1 - random.uniform(0, 0.015)), 2)
+        vol = round(base_vol * random.uniform(0.4, 2.2), 2)
+        amount = round(vol * close, 2)
+        change_pct = round((close - prev_close) / prev_close, 6)
+        price = close
+
+        records.append(FinancialHot(
+            stock_code=stock_code,
+            report_date=td,
+            report_type="日行情",
+            fiscal_year=td.year,
+            trade_date=td,
+            open_price=open_p,
+            close_price=close,
+            high_price=high,
+            low_price=low,
+            volume=vol,
+            amount=amount,
+            change_pct=change_pct,
+            query_count=0,
+        ))
+    return records
     return MacroIndicator(
         indicator_name=name,
         period=period,
@@ -407,6 +454,32 @@ def seed(db: Session) -> None:
     db.flush()
     print(f"  ✓ 宏观指标（新增 {macro_count} 条）")
 
+    # 9. 日行情数据 — 每家公司最近 120 个交易日
+    BASE_PRICES = {
+        "600276": 55.0, "000858": 120.0, "300760": 158.0, "002007": 14.5,
+        "600196": 25.0, "300347": 60.0,  "600085": 48.0,  "002252": 8.5,
+    }
+    quote_end = date(2026, 4, 30)
+    quote_count = 0
+    for sc, *_ in COMPANIES:
+        base_price = BASE_PRICES.get(sc, 30.0)
+        # 检查是否已有日行情数据
+        existing = db.query(FinancialHot).filter_by(
+            stock_code=sc, report_type="日行情"
+        ).count()
+        if existing >= 100:
+            continue
+        # 删除已有的不完整日行情，重新生成
+        if existing > 0:
+            db.query(FinancialHot).filter_by(
+                stock_code=sc, report_type="日行情"
+            ).delete()
+        for rec in make_daily_quotes(sc, base_price, quote_end, count=120):
+            db.add(rec)
+            quote_count += 1
+    db.flush()
+    print(f"  ✓ 日行情数据（新增 {quote_count} 条）")
+
     db.commit()
     print("\n全部种子数据写入完成！")
     print(f"  公司：{len(COMPANIES)} 家")
@@ -415,6 +488,7 @@ def seed(db: Session) -> None:
     print(f"  新闻：{news_count} 条")
     print(f"  研报：{rr_count} 条")
     print(f"  宏观：{macro_count} 条")
+    print(f"  日行情：{quote_count} 条")
 
 
 if __name__ == "__main__":

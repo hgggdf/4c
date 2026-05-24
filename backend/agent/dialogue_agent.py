@@ -32,6 +32,8 @@ class DialogueAgent:
         "report_generation": "生成报告",
         "attribution_analysis": "归因分析",
         "butterfly_analysis": "蝴蝶效应",
+        "valuation_analysis": "估值分析",
+        "price_volume_analysis": "量价分析",
     }
 
     MODE_SYSTEM_TEMPLATES = {
@@ -123,6 +125,8 @@ class DialogueAgent:
         "report_generation": ["announcement", "financial_note", "news", "report"],
         "attribution_analysis": ["financial_note", "announcement", "news", "report"],
         "butterfly_analysis": ["news", "report"],
+        "valuation_analysis": ["financial_note", "report"],
+        "price_volume_analysis": ["announcement", "news"],
     }
 
     def __init__(self) -> None:

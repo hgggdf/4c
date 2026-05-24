@@ -244,6 +244,101 @@ TOOLS_SCHEMA = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_valuation_metrics",
+            "description": "计算公司核心估值指标：PE（市盈率）、PB（市净率）、PS（市销率）、PEG、EV/EBITDA，并给出综合估值结论（高估/合理/低估）。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码，如'600276'"},
+                    "current_price": {"type": "number", "description": "当前股价（元）。不传则自动取数据库最新收盘价。"},
+                },
+                "required": ["stock_code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_dcf_valuation",
+            "description": "基于历史自由现金流的DCF贴现现金流估值，计算每股内在价值和安全边际，采用Gordon增长模型计算终值。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码"},
+                    "wacc": {"type": "number", "description": "加权平均资本成本，默认0.10（10%）", "default": 0.10},
+                    "terminal_growth": {"type": "number", "description": "永续增长率，默认0.03（3%）", "default": 0.03},
+                    "forecast_years": {"type": "integer", "description": "预测年数，默认5年", "default": 5},
+                },
+                "required": ["stock_code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_valuation_comparison",
+            "description": "对多家公司进行估值横向对比，基于PE/PB/PS/PEG/ROE给出综合吸引力排名和行业均值。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_codes": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "股票代码列表，最多8家，如['600276', '300760']",
+                    },
+                },
+                "required": ["stock_codes"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_price_volume_data",
+            "description": "获取公司最近N个交易日的原始日行情序列（OHLC、成交量、成交额、涨跌幅）。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码"},
+                    "days": {"type": "integer", "description": "返回交易日数，默认60", "default": 60},
+                },
+                "required": ["stock_code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_price_volume_analysis",
+            "description": "量价技术分析：计算MA5/10/20均线、量均线、量价Pearson相关系数、价格动量、识别放量上涨/放量下跌/缩量背离等量价信号，给出综合判断。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码"},
+                    "days": {"type": "integer", "description": "分析窗口（交易日数），默认60", "default": 60},
+                },
+                "required": ["stock_code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_price_volume_event_correlation",
+            "description": "量价异动与公司公告/新闻事件关联分析。找出近N日内的放量异动点（成交量>均量1.5倍且涨跌幅>3%），并检索前后3天内的公告和新闻，解释异动原因。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码"},
+                    "days": {"type": "integer", "description": "回溯天数，默认120", "default": 120},
+                },
+                "required": ["stock_code"],
+            },
+        },
+    },
 ]
 
 SYSTEM_PROMPT = """你是"医策经纬"——面向医药上市公司的多智能体运营诊断与投研辅助系统，具备真正的 Agent 能力。
@@ -252,6 +347,12 @@ SYSTEM_PROMPT = """你是"医策经纬"——面向医药上市公司的多智�
 - 问题涉及具体公司 → 先 resolve_company 获取股票代码，再调对应工具
 - 需要全面财务分析 → 优先调 get_financial_summary，它一次返回利润表+资产负债表+现金流量表+关键指标
 - 需要单项财务数据 → 分别调 get_income_statements / get_balance_sheets / get_cashflow_statements
+- 需要估值分析（PE/PB/PS/PEG/EV-EBITDA）→ 调 get_valuation_metrics
+- 需要DCF内在价值估算 → 调 get_dcf_valuation
+- 需要多家公司估值横向对比 → 调 get_valuation_comparison，传入股票代码列表
+- 需要量价分析、技术面判断 → 调 get_price_volume_analysis
+- 需要解释放量/缩量/异动原因 → 调 get_price_volume_event_correlation
+- 需要获取原始日行情序列 → 调 get_price_volume_data
 - 问题是行业趋势、政策影响、宏观分析（无具体公司名）→ 直接调 search_documents，不要要求用户澄清
 - 例如"集采对仿制药行业的影响" → search_documents(query="集采对仿制药的影响", doc_types=["announcement","news"])
 - 例如"医保谈判最新政策" → search_documents(query="医保谈判政策", doc_types=["news","announcement"])
@@ -358,6 +459,42 @@ def _execute_tool(name: str, args: dict[str, Any]) -> tuple[Any, str]:
             from agent.tools import get_macro_summary
             result = get_macro_summary(args["indicator_names"], recent_n=args.get("recent_n", 6))
             return result, f"宏观经济数据库 [{', '.join(args['indicator_names'])}]"
+
+        if name == "get_valuation_metrics":
+            from agent.tools import get_valuation_metrics
+            result = get_valuation_metrics(args["stock_code"], current_price=args.get("current_price"))
+            return result, f"估值分析 [{args['stock_code']}]"
+
+        if name == "get_dcf_valuation":
+            from agent.tools import get_dcf_valuation
+            result = get_dcf_valuation(
+                args["stock_code"],
+                wacc=args.get("wacc", 0.10),
+                terminal_growth=args.get("terminal_growth", 0.03),
+                forecast_years=args.get("forecast_years", 5),
+            )
+            return result, f"DCF估值 [{args['stock_code']}]"
+
+        if name == "get_valuation_comparison":
+            from agent.tools import get_valuation_comparison
+            result = get_valuation_comparison(args["stock_codes"])
+            codes_str = ", ".join(args["stock_codes"])
+            return result, f"估值横向对比 [{codes_str}]"
+
+        if name == "get_price_volume_data":
+            from agent.tools import get_price_volume_data
+            result = get_price_volume_data(args["stock_code"], days=args.get("days", 60))
+            return result, f"日行情序列 [{args['stock_code']}]"
+
+        if name == "get_price_volume_analysis":
+            from agent.tools import get_price_volume_analysis
+            result = get_price_volume_analysis(args["stock_code"], days=args.get("days", 60))
+            return result, f"量价分析 [{args['stock_code']}]"
+
+        if name == "get_price_volume_event_correlation":
+            from agent.tools import get_price_volume_event_correlation
+            result = get_price_volume_event_correlation(args["stock_code"], days=args.get("days", 120))
+            return result, f"量价事件关联 [{args['stock_code']}]"
 
         return {"error": f"未知工具: {name}"}, "未知"
 

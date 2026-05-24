@@ -143,6 +143,40 @@ def _run_tool(tool_name: str, input_data: dict[str, Any]) -> tuple[bool, Any, st
         data = comparison_tools.compare_financial_metrics(stock_codes, metrics)
         return True, data, None
 
+    if tool_name == "valuation_metrics":
+        if not stock_code:
+            return False, None, "缺少必需参数 stock_code"
+        from agent.tools.valuation_tools import get_valuation_metrics
+        return True, get_valuation_metrics(stock_code), None
+
+    if tool_name == "dcf_valuation":
+        if not stock_code:
+            return False, None, "缺少必需参数 stock_code"
+        from agent.tools.valuation_tools import get_dcf_valuation
+        return True, get_dcf_valuation(stock_code), None
+
+    if tool_name == "valuation_comparison":
+        company_list = input_data.get("company_list") or []
+        codes = [c["stock_code"] for c in company_list if c.get("stock_code")]
+        if not codes and stock_code:
+            codes = [stock_code]
+        if not codes:
+            return False, None, "估值对比至少需要1家公司的股票代码"
+        from agent.tools.valuation_tools import get_valuation_comparison
+        return True, get_valuation_comparison(codes), None
+
+    if tool_name == "price_volume_analysis":
+        if not stock_code:
+            return False, None, "缺少必需参数 stock_code"
+        from agent.tools.price_volume_tools import get_price_volume_analysis
+        return True, get_price_volume_analysis(stock_code), None
+
+    if tool_name == "price_volume_event_correlation":
+        if not stock_code:
+            return False, None, "缺少必需参数 stock_code"
+        from agent.tools.price_volume_tools import get_price_volume_event_correlation
+        return True, get_price_volume_event_correlation(stock_code), None
+
     return False, None, "未配置真实工具映射"
 
 

@@ -1,0 +1,446 @@
+"""量价分析工具函数
+
+提供日行情序列获取、MA/量价相关/信号检测、量价异动与事件关联三个层次的分析。
+数据来源：financial_hot 表中 report_type='日行情' 的记录。
+不依赖 numpy / pandas，全部用纯 Python 计算。
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+from app.core.database.session import SessionLocal
+from app.service.container import ServiceContainer
+
+
+# ── 内部辅助 ──────────────────────────────────────────────────────────────────
+
+def _ma(values: list[float], n: int) -> list[float | None]:
+    """计算 N 日移动均线，长度与 values 相同，前 n-1 个位置为 None。"""
+    result: list[float | None] = []
+    for i in range(len(values)):
+        if i < n - 1:
+            result.append(None)
+        else:
+            result.append(round(sum(values[i - n + 1: i + 1]) / n, 4))
+    return result
+
+
+def _pearson(xs: list[float], ys: list[float]) -> float | None:
+    """计算 Pearson 相关系数，xs/ys 长度相同。"""
+    n = len(xs)
+    if n < 3:
+        return None
+    mx = sum(xs) / n
+    my = sum(ys) / n
+    num = sum((xs[i] - mx) * (ys[i] - my) for i in range(n))
+    dx = (sum((x - mx) ** 2 for x in xs)) ** 0.5
+    dy = (sum((y - my) ** 2 for y in ys)) ** 0.5
+    if dx == 0 or dy == 0:
+        return None
+    return round(num / (dx * dy), 4)
+
+
+def _momentum(closes: list[float], n: int) -> float | None:
+    """近 n 日价格动量（累计涨跌幅）。"""
+    if len(closes) < n + 1:
+        return None
+    start = closes[-(n + 1)]
+    end = closes[-1]
+    if start == 0:
+        return None
+    return round((end - start) / start, 4)
+
+
+def _corr_interpretation(r: float | None) -> str:
+    if r is None:
+        return "数据不足，无法计算"
+    if r > 0.6:
+        return f"量价正相关（r={r:.2f}），上涨伴随放量，趋势较为健康"
+    if r > 0.3:
+        return f"量价弱正相关（r={r:.2f}），量价配合一般"
+    if r > -0.3:
+        return f"量价无明显相关（r={r:.2f}），近期资金情绪中性"
+    if r > -0.6:
+        return f"量价弱负相关（r={r:.2f}），涨时缩量或跌时放量，需警惕"
+    return f"量价负相关（r={r:.2f}），量价背离明显，行情分歧较大"
+
+
+# ── 公开工具函数 ───────────────────────────────────────────────────────────────
+
+def get_price_volume_data(stock_code: str, days: int = 60) -> dict[str, Any]:
+    """
+    获取公司最近 N 个交易日的原始日行情序列。
+
+    Args:
+        stock_code: 6位股票代码
+        days: 返回交易日数，默认60
+
+    Returns:
+        dict，包含：
+        - stock_code / stock_name
+        - count: 实际返回条数
+        - trade_dates / close_prices / open_prices / high_prices / low_prices
+        - volumes / amounts / change_pcts
+        - latest: 最新一日行情摘要
+    """
+    container = ServiceContainer.build_default()
+    company_res = container.company.get_company_basic_info(stock_code)
+    stock_name = (
+        company_res.data.get("stock_name", stock_code)
+        if company_res.success and company_res.data
+        else stock_code
+    )
+
+    from sqlalchemy import select, desc
+    from app.core.database.models.financial_hot import FinancialHot
+
+    db = SessionLocal()
+    try:
+        rows = db.execute(
+            select(FinancialHot)
+            .where(
+                FinancialHot.stock_code == stock_code,
+                FinancialHot.report_type == "日行情",
+                FinancialHot.close_price.isnot(None),
+            )
+            .order_by(desc(FinancialHot.report_date))
+            .limit(days)
+        ).scalars().all()
+    finally:
+        db.close()
+
+    if not rows:
+        return {
+            "stock_code": stock_code,
+            "stock_name": stock_name,
+            "error": "数据库中暂无该公司的日行情数据（report_type='日行情'）。",
+            "count": 0,
+        }
+
+    rows = list(reversed(rows))  # 升序
+
+    trade_dates = [str(r.report_date) for r in rows]
+    close_prices = [float(r.close_price) for r in rows]
+    open_prices = [float(r.open_price) if r.open_price else None for r in rows]
+    high_prices = [float(r.high_price) if r.high_price else None for r in rows]
+    low_prices = [float(r.low_price) if r.low_price else None for r in rows]
+    volumes = [float(r.volume) if r.volume else None for r in rows]
+    amounts = [float(r.amount) if r.amount else None for r in rows]
+    change_pcts = [float(r.change_pct) if r.change_pct else None for r in rows]
+
+    latest = rows[-1]
+    return {
+        "stock_code": stock_code,
+        "stock_name": stock_name,
+        "count": len(rows),
+        "trade_dates": trade_dates,
+        "close_prices": close_prices,
+        "open_prices": open_prices,
+        "high_prices": high_prices,
+        "low_prices": low_prices,
+        "volumes": volumes,
+        "amounts": amounts,
+        "change_pcts": change_pcts,
+        "latest": {
+            "date": str(latest.report_date),
+            "close": float(latest.close_price),
+            "change_pct": float(latest.change_pct) if latest.change_pct else None,
+            "volume": float(latest.volume) if latest.volume else None,
+        },
+    }
+
+
+def get_price_volume_analysis(stock_code: str, days: int = 60) -> dict[str, Any]:
+    """
+    量价技术分析：MA均线、量价相关系数、价格动量、量价信号检测。
+
+    Args:
+        stock_code: 6位股票代码
+        days: 分析窗口，默认60个交易日
+
+    Returns:
+        dict，包含：
+        - price_trend: MA5/10/20、当前价相对MA20的偏离、近5/10/20日动量
+        - volume_trend: 量MA5/10、最新成交量相对量MA10的倍数
+        - correlation: 近20日量价Pearson相关系数及解读
+        - amplitude: 近期振幅均值
+        - signals: 识别到的量价信号列表（最近10条）
+        - summary: 综合量价判断
+    """
+    raw = get_price_volume_data(stock_code, days=max(days, 30))
+    if "error" in raw:
+        return raw
+
+    closes = raw["close_prices"]
+    vols = [v for v in raw["volumes"] if v is not None]
+    dates = raw["trade_dates"]
+    change_pcts = raw["change_pcts"]
+    highs = raw["high_prices"]
+    lows = raw["low_prices"]
+    opens = raw["open_prices"]
+
+    # ── 价格均线 ──
+    ma5 = _ma(closes, 5)
+    ma10 = _ma(closes, 10)
+    ma20 = _ma(closes, 20)
+
+    latest_close = closes[-1]
+    latest_ma20 = ma20[-1]
+    ma20_deviation = (
+        round((latest_close - latest_ma20) / latest_ma20, 4)
+        if latest_ma20 else None
+    )
+
+    # ── 量均线 ──
+    vol_ma5 = _ma(vols, 5) if len(vols) >= 5 else [None] * len(vols)
+    vol_ma10 = _ma(vols, 10) if len(vols) >= 10 else [None] * len(vols)
+    latest_vol = vols[-1] if vols else None
+    latest_vol_ma10 = vol_ma10[-1] if vol_ma10 else None
+    vol_ratio = (
+        round(latest_vol / latest_vol_ma10, 2)
+        if latest_vol and latest_vol_ma10 and latest_vol_ma10 > 0
+        else None
+    )
+
+    # ── 量价相关（近20日）──
+    window = 20
+    corr_closes = closes[-window:] if len(closes) >= window else closes
+    corr_vols = vols[-window:] if len(vols) >= window else vols
+    min_len = min(len(corr_closes), len(corr_vols))
+    corr = _pearson(corr_closes[-min_len:], corr_vols[-min_len:])
+
+    # ── 振幅均值（近20日）──
+    amp_vals = []
+    for i in range(max(0, len(closes) - 20), len(closes)):
+        h = highs[i] if highs[i] else closes[i]
+        l = lows[i] if lows[i] else closes[i]
+        o = opens[i] if opens[i] else closes[i]
+        if o and o > 0:
+            amp_vals.append((h - l) / o)
+    avg_amplitude = round(sum(amp_vals) / len(amp_vals), 4) if amp_vals else None
+
+    # ── 量价信号检测 ──
+    signals: list[dict] = []
+    for i in range(len(closes)):
+        v = vols[i] if i < len(vols) else None
+        vm10 = vol_ma10[i] if i < len(vol_ma10) else None
+        chg = change_pcts[i] if i < len(change_pcts) else None
+        if v is None or vm10 is None or chg is None or vm10 == 0:
+            continue
+
+        vol_r = v / vm10
+        sig_type = None
+        detail = None
+
+        if vol_r > 1.5 and chg > 0.02:
+            sig_type = "放量上涨"
+            detail = f"成交量为均量{vol_r:.1f}倍，涨幅{chg*100:.2f}%，资金积极入场，趋势强化信号"
+        elif vol_r > 1.5 and chg < -0.02:
+            sig_type = "放量下跌"
+            detail = f"成交量为均量{vol_r:.1f}倍，跌幅{abs(chg)*100:.2f}%，抛压较重，注意风险"
+        elif vol_r < 0.7 and chg > 0.01:
+            sig_type = "缩量上涨"
+            detail = f"成交量仅均量{vol_r:.1f}倍，涨幅{chg*100:.2f}%，量价背离，上涨持续性存疑"
+        elif vol_r < 0.7 and chg < -0.01:
+            sig_type = "缩量下跌"
+            detail = f"成交量仅均量{vol_r:.1f}倍，跌幅{abs(chg)*100:.2f}%，缩量企稳，可能筑底"
+
+        if sig_type:
+            signals.append({
+                "date": dates[i],
+                "type": sig_type,
+                "close": closes[i],
+                "change_pct": chg,
+                "volume_ratio": round(vol_r, 2),
+                "detail": detail,
+            })
+
+    # 只返回最近 10 条信号
+    recent_signals = signals[-10:] if len(signals) > 10 else signals
+
+    # ── 综合判断 ──
+    bull_signals = sum(1 for s in signals[-20:] if s["type"] == "放量上涨")
+    bear_signals = sum(1 for s in signals[-20:] if s["type"] == "放量下跌")
+    diverge_up = sum(1 for s in signals[-20:] if s["type"] == "缩量上涨")
+
+    if bull_signals > bear_signals + diverge_up and (corr or 0) > 0.3:
+        summary = f"近期量价配合良好，放量上涨信号{bull_signals}次，量价趋势健康，多头占优。"
+    elif bear_signals > bull_signals:
+        summary = f"近期抛压信号偏多，放量下跌{bear_signals}次，需警惕进一步回调风险。"
+    elif diverge_up > 2:
+        summary = f"近期出现{diverge_up}次缩量上涨，量价背离，上涨动能不足，建议谨慎追涨。"
+    elif (corr or 0) < -0.3:
+        summary = "近期量价关系背离明显，行情分歧较大，建议观望等待方向明朗。"
+    else:
+        summary = "近期量价信号中性，无明显趋势特征，建议结合基本面综合判断。"
+
+    return {
+        "stock_code": stock_code,
+        "stock_name": raw["stock_name"],
+        "data_days": raw["count"],
+        "latest": raw["latest"],
+        "price_trend": {
+            "ma5": ma5[-1],
+            "ma10": ma10[-1],
+            "ma20": ma20[-1],
+            "ma20_deviation": ma20_deviation,
+            "momentum_5d": _momentum(closes, 5),
+            "momentum_10d": _momentum(closes, 10),
+            "momentum_20d": _momentum(closes, 20),
+        },
+        "volume_trend": {
+            "vol_ma5": round(vol_ma5[-1], 2) if vol_ma5[-1] else None,
+            "vol_ma10": round(vol_ma10[-1], 2) if vol_ma10[-1] else None,
+            "vol_ratio_latest": vol_ratio,
+        },
+        "correlation": {
+            "pearson_20d": corr,
+            "interpretation": _corr_interpretation(corr),
+        },
+        "amplitude": {
+            "avg_amplitude_20d": avg_amplitude,
+            "pct": f"{avg_amplitude*100:.2f}%" if avg_amplitude else "N/A",
+        },
+        "signals": recent_signals,
+        "signal_stats": {
+            "total": len(signals),
+            "放量上涨": bull_signals,
+            "放量下跌": bear_signals,
+            "缩量上涨": diverge_up,
+            "缩量下跌": sum(1 for s in signals[-20:] if s["type"] == "缩量下跌"),
+        },
+        "summary": summary,
+    }
+
+
+def get_price_volume_event_correlation(stock_code: str, days: int = 120) -> dict[str, Any]:
+    """
+    量价异动与公司公告/新闻事件关联分析。
+
+    找出近 N 日内的量价异动点（成交量 > 均量1.5倍 且 涨跌幅绝对值 > 3%），
+    并在异动日前后 ±3 天内检索相关公告和新闻，尝试解释异动原因。
+
+    Args:
+        stock_code: 6位股票代码
+        days: 回溯天数，默认120
+
+    Returns:
+        dict，包含：
+        - anomalies: 异动列表，每条含 date/price_change_pct/volume_ratio/type/nearby_events/interpretation
+        - summary: 汇总结论
+    """
+    raw = get_price_volume_data(stock_code, days=days)
+    if "error" in raw:
+        return raw
+
+    closes = raw["close_prices"]
+    vols = [v if v else 0.0 for v in raw["volumes"]]
+    dates = raw["trade_dates"]
+    change_pcts = raw["change_pcts"]
+
+    vol_ma10 = _ma(vols, 10)
+
+    from datetime import date as date_type, timedelta
+    from sqlalchemy import select, and_, or_
+    from app.core.database.models.announcement_hot import AnnouncementHot
+    from app.core.database.models.news_hot import NewsHot
+
+    anomalies = []
+    for i in range(len(closes)):
+        vm10 = vol_ma10[i]
+        v = vols[i]
+        chg = change_pcts[i] or 0.0
+        if vm10 is None or vm10 == 0:
+            continue
+        vol_r = v / vm10
+        if vol_r < 1.5 or abs(chg) < 0.03:
+            continue
+
+        anom_date = date_type.fromisoformat(dates[i])
+        anom_type = "放量上涨" if chg > 0 else "放量下跌"
+        window_start = anom_date - timedelta(days=3)
+        window_end = anom_date + timedelta(days=3)
+
+        db = SessionLocal()
+        try:
+            anns = db.execute(
+                select(AnnouncementHot.title, AnnouncementHot.publish_date, AnnouncementHot.announcement_type)
+                .where(
+                    AnnouncementHot.stock_code == stock_code,
+                    AnnouncementHot.publish_date >= window_start,
+                    AnnouncementHot.publish_date <= window_end,
+                )
+                .limit(3)
+            ).all()
+
+            news = db.execute(
+                select(NewsHot.title, NewsHot.publish_time, NewsHot.news_type)
+                .where(
+                    NewsHot.related_stock_codes_json.contains(stock_code),
+                    NewsHot.publish_time >= window_start,
+                    NewsHot.publish_time <= window_end,
+                )
+                .limit(3)
+            ).all()
+        finally:
+            db.close()
+
+        nearby_events = []
+        for a in anns:
+            nearby_events.append({
+                "date": str(a.publish_date),
+                "type": "公告",
+                "category": a.announcement_type or "",
+                "title": a.title or "",
+            })
+        for n in news:
+            nearby_events.append({
+                "date": str(n.publish_time)[:10],
+                "type": "新闻",
+                "category": n.news_type or "",
+                "title": n.title or "",
+            })
+
+        if nearby_events:
+            event_titles = "、".join(e["title"][:20] for e in nearby_events[:2])
+            interpretation = f"异动日附近发现{len(nearby_events)}条事件（{event_titles}等），可能是驱动{anom_type}的催化剂。"
+        else:
+            interpretation = f"异动日前后未找到明确公告或新闻，{anom_type}可能由市场情绪或大盘联动驱动。"
+
+        anomalies.append({
+            "date": dates[i],
+            "close": closes[i],
+            "price_change_pct": round(chg, 4),
+            "volume_ratio": round(vol_r, 2),
+            "type": anom_type,
+            "nearby_events": nearby_events,
+            "interpretation": interpretation,
+        })
+
+    explained = sum(1 for a in anomalies if a["nearby_events"])
+    total = len(anomalies)
+    if total == 0:
+        summary = f"近{days}日内未发现显著量价异动（无成交量>均量1.5倍且涨跌幅>3%的记录）。"
+    else:
+        summary = (
+            f"近{days}日共发现 {total} 次量价异动，其中 {explained} 次有对应公告或新闻事件，"
+            f"事件解释率 {explained/total*100:.0f}%。"
+            f"{'建议关注无法解释的异动，可能存在信息不对称风险。' if total - explained > 2 else ''}"
+        )
+
+    return {
+        "stock_code": stock_code,
+        "stock_name": raw["stock_name"],
+        "days_analyzed": raw["count"],
+        "anomaly_count": total,
+        "anomalies": anomalies,
+        "summary": summary,
+    }
+
+
+__all__ = [
+    "get_price_volume_data",
+    "get_price_volume_analysis",
+    "get_price_volume_event_correlation",
+]
