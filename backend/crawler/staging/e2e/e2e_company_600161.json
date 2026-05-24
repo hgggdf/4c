@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-04-23T11:11:16.768870+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "600161",
+      "stock_name": "天坛生物",
+      "full_name": "北京天坛生物制品股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "C",
+      "industry_level2": "C27",
+      "listing_date": "2010-01-01",
+      "status": "active",
+      "source_type": "e2e_mock"
+    },
+    "company_profile": {
+      "stock_code": "600161",
+      "business_summary": "天坛生物主营业务涵盖医药研发、生产与销售，是国内领先的医药企业。",
+      "main_segments_json": [
+        "医药制造",
+        "医疗器械",
+        "研发服务"
+      ],
+      "market_position": "天坛生物在细分行业中处于领先地位。"
+    },
+    "industries": [
+      {
+        "industry_code": "C27",
+        "industry_name": "医药制造业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "600161",
+        "industry_code": "C27",
+        "is_primary": true
+      }
+    ]
+  }
+}

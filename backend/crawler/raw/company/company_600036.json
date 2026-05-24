@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "600036",
+      "stock_name": "招商银行",
+      "full_name": "招商银行股份有限公司",
+      "exchange": "SSE",
+      "listing_date": "2018-04-24",
+      "status": "active",
+      "alias_json": [
+        "招商银行"
+      ]
+    },
+    "company_profile": {
+      "stock_code": "600036",
+      "business_summary": "招商银行为主营业务，公司当前股价 39.81 元。",
+      "market_position": "SSE上市公司，行业领先企业。",
+      "management_summary": "公司管理层稳定，治理结构完善。",
+      "source_type": "sina_hq_api",
+      "source_url": "https://hq.sinajs.cn/list=600036"
+    },
+    "industries": [
+      {
+        "industry_code": "IND_银行",
+        "industry_name": "银行",
+        "parent_industry_code": "IND_银行",
+        "industry_level": 1,
+        "description": "银行行业"
+      },
+      {
+        "industry_code": "IND_股份制银行",
+        "industry_name": "股份制银行",
+        "parent_industry_code": "IND_银行",
+        "industry_level": 2,
+        "description": "股份制银行行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "600036",
+        "industry_code": "IND_银行",
+        "is_primary": false
+      },
+      {
+        "stock_code": "600036",
+        "industry_code": "IND_股份制银行",
+        "is_primary": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990504",
+      "stock_name": "星食品4股份有限公司",
+      "full_name": "西汽车4股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "房地产",
+      "industry_level2": "化学制品",
+      "listing_date": "2016-07-20",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990504",
+      "business_summary": "这是中集团公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A504",
+        "产品B504"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块504A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块504B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

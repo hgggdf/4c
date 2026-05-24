@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-04-23T11:11:16.761957+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "300015",
+      "stock_name": "爱尔眼科",
+      "full_name": "爱尔眼科医院集团股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "Q",
+      "industry_level2": "Q83",
+      "listing_date": "2010-01-01",
+      "status": "active",
+      "source_type": "e2e_mock"
+    },
+    "company_profile": {
+      "stock_code": "300015",
+      "business_summary": "爱尔眼科主营业务涵盖医药研发、生产与销售，是国内领先的医药企业。",
+      "main_segments_json": [
+        "医药制造",
+        "医疗器械",
+        "研发服务"
+      ],
+      "market_position": "爱尔眼科在细分行业中处于领先地位。"
+    },
+    "industries": [
+      {
+        "industry_code": "Q83",
+        "industry_name": "医药制造业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "300015",
+        "industry_code": "Q83",
+        "is_primary": true
+      }
+    ]
+  }
+}

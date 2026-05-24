@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990542",
+      "stock_name": "北医药42股份有限公司",
+      "full_name": "电金融42股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "房地产",
+      "industry_level2": "半导体",
+      "listing_date": "2011-11-04",
+      "status": "suspended",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990542",
+      "business_summary": "这是东集团公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A542",
+        "产品B542"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块542A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块542B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

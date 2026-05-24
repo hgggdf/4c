@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "job_id": "patent_stress_1000",
+  "data_category": "patent",
+  "staging_path": "backend/crawler/staging/stress/patent_1000.json",
+  "checksum_sha256": "35060320076c4bdc13eb3fdba88f45ff49ac978155d522f3031e890a54ffe5f5",
+  "record_count": 1000,
+  "time_window": {
+    "begin_date": "2025-01-01",
+    "end_date": "2026-04-23"
+  },
+  "fields": {
+    "patent_number": "string",
+    "title": "string",
+    "application_date": "string",
+    "public_date": "string",
+    "applicant": "string",
+    "inventor": "string",
+    "patent_type": "string",
+    "abstract": "string",
+    "source_url": "string",
+    "source_type": "string",
+    "file_hash": "string"
+  },
+  "null_checks": {
+    "patent_number": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "title": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "application_date": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {},
+  "quality_score": 1.0,
+  "status": "ready"
+}

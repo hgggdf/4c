@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990022",
+      "stock_name": "宇机械22股份有限公司",
+      "full_name": "华机械22股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "计算机",
+      "industry_level2": "证券",
+      "listing_date": "2015-07-10",
+      "status": "suspended",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990022",
+      "business_summary": "这是东食品公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A22",
+        "产品B22"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块22A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块22B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

@@ -1,0 +1,305 @@
+{
+  "generated_at": "2026-04-23T17:11:30.251362+00:00",
+  "records": [
+    {
+      "patent_id": "CN2026STRESS0001",
+      "title": "Stress专利1: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司000",
+      "application_date": "2026-01-01"
+    },
+    {
+      "patent_id": "CN2026STRESS0002",
+      "title": "Stress专利2: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司001",
+      "application_date": "2026-01-02"
+    },
+    {
+      "patent_id": "CN2026STRESS0003",
+      "title": "Stress专利3: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司002",
+      "application_date": "2026-01-03"
+    },
+    {
+      "patent_id": "CN2026STRESS0004",
+      "title": "Stress专利4: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司003",
+      "application_date": "2026-01-04"
+    },
+    {
+      "patent_id": "CN2026STRESS0005",
+      "title": "Stress专利5: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司004",
+      "application_date": "2026-01-05"
+    },
+    {
+      "patent_id": "CN2026STRESS0006",
+      "title": "Stress专利6: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司005",
+      "application_date": "2026-01-06"
+    },
+    {
+      "patent_id": "CN2026STRESS0007",
+      "title": "Stress专利7: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司006",
+      "application_date": "2026-01-07"
+    },
+    {
+      "patent_id": "CN2026STRESS0008",
+      "title": "Stress专利8: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司007",
+      "application_date": "2026-01-08"
+    },
+    {
+      "patent_id": "CN2026STRESS0009",
+      "title": "Stress专利9: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司008",
+      "application_date": "2026-01-09"
+    },
+    {
+      "patent_id": "CN2026STRESS0010",
+      "title": "Stress专利10: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司009",
+      "application_date": "2026-01-10"
+    },
+    {
+      "patent_id": "CN2026STRESS0011",
+      "title": "Stress专利11: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司010",
+      "application_date": "2026-01-11"
+    },
+    {
+      "patent_id": "CN2026STRESS0012",
+      "title": "Stress专利12: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司011",
+      "application_date": "2026-01-12"
+    },
+    {
+      "patent_id": "CN2026STRESS0013",
+      "title": "Stress专利13: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司012",
+      "application_date": "2026-01-13"
+    },
+    {
+      "patent_id": "CN2026STRESS0014",
+      "title": "Stress专利14: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司013",
+      "application_date": "2026-01-14"
+    },
+    {
+      "patent_id": "CN2026STRESS0015",
+      "title": "Stress专利15: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司014",
+      "application_date": "2026-01-15"
+    },
+    {
+      "patent_id": "CN2026STRESS0016",
+      "title": "Stress专利16: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司015",
+      "application_date": "2026-01-16"
+    },
+    {
+      "patent_id": "CN2026STRESS0017",
+      "title": "Stress专利17: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司016",
+      "application_date": "2026-01-17"
+    },
+    {
+      "patent_id": "CN2026STRESS0018",
+      "title": "Stress专利18: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司017",
+      "application_date": "2026-01-18"
+    },
+    {
+      "patent_id": "CN2026STRESS0019",
+      "title": "Stress专利19: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司018",
+      "application_date": "2026-01-19"
+    },
+    {
+      "patent_id": "CN2026STRESS0020",
+      "title": "Stress专利20: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司019",
+      "application_date": "2026-01-20"
+    },
+    {
+      "patent_id": "CN2026STRESS0021",
+      "title": "Stress专利21: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司020",
+      "application_date": "2026-01-21"
+    },
+    {
+      "patent_id": "CN2026STRESS0022",
+      "title": "Stress专利22: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司021",
+      "application_date": "2026-01-22"
+    },
+    {
+      "patent_id": "CN2026STRESS0023",
+      "title": "Stress专利23: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司022",
+      "application_date": "2026-01-23"
+    },
+    {
+      "patent_id": "CN2026STRESS0024",
+      "title": "Stress专利24: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司023",
+      "application_date": "2026-01-24"
+    },
+    {
+      "patent_id": "CN2026STRESS0025",
+      "title": "Stress专利25: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司024",
+      "application_date": "2026-01-25"
+    },
+    {
+      "patent_id": "CN2026STRESS0026",
+      "title": "Stress专利26: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司025",
+      "application_date": "2026-01-26"
+    },
+    {
+      "patent_id": "CN2026STRESS0027",
+      "title": "Stress专利27: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司026",
+      "application_date": "2026-01-27"
+    },
+    {
+      "patent_id": "CN2026STRESS0028",
+      "title": "Stress专利28: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司027",
+      "application_date": "2026-01-28"
+    },
+    {
+      "patent_id": "CN2026STRESS0029",
+      "title": "Stress专利29: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司028",
+      "application_date": "2026-01-29"
+    },
+    {
+      "patent_id": "CN2026STRESS0030",
+      "title": "Stress专利30: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司029",
+      "application_date": "2026-01-30"
+    },
+    {
+      "patent_id": "CN2026STRESS0031",
+      "title": "Stress专利31: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司030",
+      "application_date": "2026-01-31"
+    },
+    {
+      "patent_id": "CN2026STRESS0032",
+      "title": "Stress专利32: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司031",
+      "application_date": "2026-02-01"
+    },
+    {
+      "patent_id": "CN2026STRESS0033",
+      "title": "Stress专利33: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司032",
+      "application_date": "2026-02-02"
+    },
+    {
+      "patent_id": "CN2026STRESS0034",
+      "title": "Stress专利34: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司033",
+      "application_date": "2026-02-03"
+    },
+    {
+      "patent_id": "CN2026STRESS0035",
+      "title": "Stress专利35: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司034",
+      "application_date": "2026-02-04"
+    },
+    {
+      "patent_id": "CN2026STRESS0036",
+      "title": "Stress专利36: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司035",
+      "application_date": "2026-02-05"
+    },
+    {
+      "patent_id": "CN2026STRESS0037",
+      "title": "Stress专利37: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司036",
+      "application_date": "2026-02-06"
+    },
+    {
+      "patent_id": "CN2026STRESS0038",
+      "title": "Stress专利38: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司037",
+      "application_date": "2026-02-07"
+    },
+    {
+      "patent_id": "CN2026STRESS0039",
+      "title": "Stress专利39: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司038",
+      "application_date": "2026-02-08"
+    },
+    {
+      "patent_id": "CN2026STRESS0040",
+      "title": "Stress专利40: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司039",
+      "application_date": "2026-02-09"
+    },
+    {
+      "patent_id": "CN2026STRESS0041",
+      "title": "Stress专利41: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司040",
+      "application_date": "2026-02-10"
+    },
+    {
+      "patent_id": "CN2026STRESS0042",
+      "title": "Stress专利42: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司041",
+      "application_date": "2026-02-11"
+    },
+    {
+      "patent_id": "CN2026STRESS0043",
+      "title": "Stress专利43: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司042",
+      "application_date": "2026-02-12"
+    },
+    {
+      "patent_id": "CN2026STRESS0044",
+      "title": "Stress专利44: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司043",
+      "application_date": "2026-02-13"
+    },
+    {
+      "patent_id": "CN2026STRESS0045",
+      "title": "Stress专利45: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司044",
+      "application_date": "2026-02-14"
+    },
+    {
+      "patent_id": "CN2026STRESS0046",
+      "title": "Stress专利46: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司045",
+      "application_date": "2026-02-15"
+    },
+    {
+      "patent_id": "CN2026STRESS0047",
+      "title": "Stress专利47: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司046",
+      "application_date": "2026-02-16"
+    },
+    {
+      "patent_id": "CN2026STRESS0048",
+      "title": "Stress专利48: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司047",
+      "application_date": "2026-02-17"
+    },
+    {
+      "patent_id": "CN2026STRESS0049",
+      "title": "Stress专利49: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司048",
+      "application_date": "2026-02-18"
+    },
+    {
+      "patent_id": "CN2026STRESS0050",
+      "title": "Stress专利50: 一种医药化合物及其制备方法",
+      "applicant": "Stress公司049",
+      "application_date": "2026-02-19"
+    }
+  ]
+}

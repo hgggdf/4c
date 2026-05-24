@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990888",
+      "stock_name": "航股份88股份有限公司",
+      "full_name": "天机械88股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "银行",
+      "industry_level2": "国有银行",
+      "listing_date": "2014-03-07",
+      "status": "suspended",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990888",
+      "business_summary": "这是东集团公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A888",
+        "产品B888"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块888A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块888B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

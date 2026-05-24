@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990285",
+      "stock_name": "宇机械85股份有限公司",
+      "full_name": "中实业85股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "汽车",
+      "industry_level2": "整车",
+      "listing_date": "2023-03-11",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990285",
+      "business_summary": "这是宇地产公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A285",
+        "产品B285"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块285A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块285B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990383",
+      "stock_name": "天实业83股份有限公司",
+      "full_name": "华地产83股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "房地产",
+      "industry_level2": "化学制品",
+      "listing_date": "2014-06-06",
+      "status": "delisted",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990383",
+      "business_summary": "这是电能源公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A383",
+        "产品B383"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块383A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块383B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

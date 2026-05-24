@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "job_id": "announcement_raw_stress_1000",
+  "data_category": "announcement_raw",
+  "staging_path": "backend/crawler/staging/stress/announcement_raw_1000.json",
+  "checksum_sha256": "30e12dc670086da037e64c6fdcff4c3ef63de03dcb550173ed2d2f33b0a64249",
+  "record_count": 1000,
+  "time_window": {
+    "begin_date": "2026-03-01",
+    "end_date": "2026-04-23"
+  },
+  "fields": {
+    "stock_code": "string",
+    "title": "string",
+    "publish_date": "string",
+    "announcement_type": "string",
+    "exchange": "string",
+    "content": "string",
+    "source_url": "string",
+    "source_type": "string",
+    "file_hash": "string"
+  },
+  "null_checks": {
+    "stock_code": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "title": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    },
+    "publish_date": {
+      "null_count": 0,
+      "null_ratio": 0.0
+    }
+  },
+  "value_ranges": {},
+  "quality_score": 1.0,
+  "status": "ready"
+}

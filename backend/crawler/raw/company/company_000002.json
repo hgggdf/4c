@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-04-23T19:21:18.237369+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "000002",
+      "stock_name": "万 科Ａ",
+      "full_name": "万 科Ａ股份有限公司",
+      "exchange": "SZSE",
+      "listing_date": "2005-03-11",
+      "status": "active",
+      "alias_json": [
+        "万 科Ａ"
+      ]
+    },
+    "company_profile": {
+      "stock_code": "000002",
+      "business_summary": "万 科Ａ为主营业务，公司当前股价 3.81 元。",
+      "market_position": "SZSE上市公司，行业领先企业。",
+      "management_summary": "公司管理层稳定，治理结构完善。",
+      "source_type": "sina_hq_api",
+      "source_url": "https://hq.sinajs.cn/list=000002"
+    },
+    "industries": [
+      {
+        "industry_code": "IND_房地产",
+        "industry_name": "房地产",
+        "parent_industry_code": "IND_房地",
+        "industry_level": 1,
+        "description": "房地产行业"
+      },
+      {
+        "industry_code": "IND_房地产开发",
+        "industry_name": "房地产开发",
+        "parent_industry_code": "IND_房地产",
+        "industry_level": 2,
+        "description": "房地产开发行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "000002",
+        "industry_code": "IND_房地产",
+        "is_primary": false
+      },
+      {
+        "stock_code": "000002",
+        "industry_code": "IND_房地产开发",
+        "is_primary": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990854",
+      "stock_name": "天食品54股份有限公司",
+      "full_name": "海医药54股份有限公司",
+      "exchange": "BSE",
+      "industry_level1": "食品饮料",
+      "industry_level2": "化学制品",
+      "listing_date": "2015-05-08",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990854",
+      "business_summary": "这是南汽车公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A854",
+        "产品B854"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块854A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块854B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

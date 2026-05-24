@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990491",
+      "stock_name": "中能源91股份有限公司",
+      "full_name": "星能源91股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "医药生物",
+      "industry_level2": "证券",
+      "listing_date": "2017-03-04",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990491",
+      "business_summary": "这是中地产公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A491",
+        "产品B491"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块491A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块491B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

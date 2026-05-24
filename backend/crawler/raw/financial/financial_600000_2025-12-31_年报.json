@@ -1,0 +1,10 @@
+{
+  "stock_code": "600000",
+  "report_date": "2025-12-31",
+  "report_type": "年报",
+  "fiscal_year": 2025,
+  "raw_content": "原始财务报表PDF提取文本（模拟）",
+  "pages": 120,
+  "source_url": "https://test.example.com/financial/pdf",
+  "extracted_at": "2026-04-23T14:00:00+08:00"
+}

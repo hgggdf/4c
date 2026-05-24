@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990522",
+      "stock_name": "东金融22股份有限公司",
+      "full_name": "西集团22股份有限公司",
+      "exchange": "SSE",
+      "industry_level1": "汽车",
+      "industry_level2": "软件开发",
+      "listing_date": "2019-06-18",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990522",
+      "business_summary": "这是西股份公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A522",
+        "产品B522"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块522A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块522B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

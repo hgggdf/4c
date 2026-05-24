@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-04-23T17:11:28.468870+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "600098",
+      "stock_name": "Stress公司098",
+      "full_name": "Stress公司098股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "I",
+      "industry_level2": "I64",
+      "listing_date": "2010-01-01",
+      "status": "active",
+      "source_type": "stress_mock"
+    },
+    "company_profile": {
+      "stock_code": "600098",
+      "business_summary": "Stress公司098主营业务涵盖医药研发、生产制造及销售。",
+      "main_segments_json": [
+        "医药制造",
+        "医疗器械",
+        "研发服务"
+      ],
+      "market_position": "Stress公司098在细分领域具有较强竞争力。"
+    },
+    "industries": [
+      {
+        "industry_code": "I64",
+        "industry_name": "I64行业"
+      }
+    ],
+    "company_industries": [
+      {
+        "stock_code": "600098",
+        "industry_code": "I64",
+        "is_primary": true
+      }
+    ]
+  }
+}

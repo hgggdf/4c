@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-04-23T10:14:48.839680+00:00",
+  "payload": {
+    "company_master": {
+      "stock_code": "990851",
+      "stock_name": "海医药51股份有限公司",
+      "full_name": "华电子51股份有限公司",
+      "exchange": "SZSE",
+      "industry_level1": "银行",
+      "industry_level2": "国有银行",
+      "listing_date": "2015-07-25",
+      "status": "active",
+      "source_type": "mock_stress_test"
+    },
+    "company_profile": {
+      "stock_code": "990851",
+      "business_summary": "这是银食品公司的业务简介，用于压测数据。",
+      "core_products_json": [
+        "产品A851",
+        "产品B851"
+      ],
+      "main_segments_json": [
+        {
+          "name": "业务板块851A",
+          "ratio": 0.6
+        },
+        {
+          "name": "业务板块851B",
+          "ratio": 0.4
+        }
+      ],
+      "market_position": "压测用模拟数据"
+    },
+    "industries": [],
+    "company_industries": []
+  }
+}

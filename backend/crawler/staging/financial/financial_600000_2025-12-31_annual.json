@@ -1,0 +1,122 @@
+{
+  "payload": {
+    "income_statements": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "report_type": "annual",
+        "revenue": 5000000000.0,
+        "operating_cost": 3000000000.0,
+        "gross_profit": 2000000000.0,
+        "selling_expense": 500000000.0,
+        "admin_expense": 300000000.0,
+        "rd_expense": 200000000.0,
+        "operating_profit": 1000000000.0,
+        "net_profit": 850000000.0,
+        "net_profit_deducted": 820000000.0,
+        "eps": 2.5,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "balance_sheets": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "report_type": "annual",
+        "total_assets": 50000000000.0,
+        "total_liabilities": 30000000000.0,
+        "accounts_receivable": 5000000000.0,
+        "inventory": 3000000000.0,
+        "cash": 8000000000.0,
+        "equity": 20000000000.0,
+        "goodwill": 1000000000.0,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "cashflow_statements": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "report_type": "annual",
+        "operating_cashflow": 1200000000.0,
+        "investing_cashflow": -500000000.0,
+        "financing_cashflow": -300000000.0,
+        "free_cashflow": 900000000.0,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "financial_metrics": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "metric_name": "ROE",
+        "metric_value": 0.1523,
+        "metric_unit": "%",
+        "calc_method": "net_profit / equity",
+        "source_ref_json": {
+          "page": 45,
+          "table": "financial_metrics"
+        }
+      },
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "fiscal_year": 2025,
+        "metric_name": "debt_to_asset_ratio",
+        "metric_value": 0.6,
+        "metric_unit": "%",
+        "calc_method": "total_liabilities / total_assets",
+        "source_ref_json": {
+          "page": 32,
+          "table": "balance_sheet"
+        }
+      }
+    ],
+    "financial_notes": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "note_type": "accounting_policy_change",
+        "note_json": {
+          "change_item": "revenue_recognition",
+          "effective_date": "2025-01-01"
+        },
+        "note_text": "Adjusted according to new revenue recognition standards for the current year.",
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "business_segments": [
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "segment_name": "Retail Banking",
+        "segment_type": "business_segment",
+        "revenue": 3000000000.0,
+        "revenue_ratio": 0.6,
+        "gross_margin": 0.45,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      },
+      {
+        "stock_code": "600000",
+        "report_date": "2025-12-31",
+        "segment_name": "Corporate Banking",
+        "segment_type": "business_segment",
+        "revenue": 2000000000.0,
+        "revenue_ratio": 0.4,
+        "gross_margin": 0.5,
+        "source_type": "manual_test",
+        "source_url": "https://test.example.com/financial"
+      }
+    ],
+    "sync_vector_index": false
+  }
+}
