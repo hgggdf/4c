@@ -26,6 +26,7 @@ _CODE_ALIASES: dict[str, list[str]] = {
 
 def _expand_codes(industry_code: str) -> list[str]:
     """展开 code 及其所有别名（递归，防止循环）。"""
+    # 行业代码有旧版 code 和 MED_* code 两套口径；查询前先扩展为等价代码集合。
     visited: set[str] = set()
     queue = [industry_code]
     while queue:
@@ -40,7 +41,17 @@ def _expand_codes(industry_code: str) -> list[str]:
 
 
 class ResearchReportRepository(BaseRepository):
+    """研报读库入口。
+
+    研报采用 research_report_hot + research_report_archive 双表结构。
+    行业查询优先返回行业研报，不足时用同业公司研报补齐。
+    """
+
     def list_by_industry(self, industry_code: str, *, limit: int = 30) -> list:
+        """按行业代码查询研报。
+
+        查询顺序：热库行业研报、冷库行业研报、热库公司研报、冷库公司研报。
+        """
         if not industry_code:
             return []
 

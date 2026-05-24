@@ -1,8 +1,10 @@
 """Repository layer.
 
-Repositories directly interact with the database (ORM / SQLAlchemy Session)
-and expose table/entity oriented methods. Services should compose repositories
-into business-oriented capabilities.
+仓储层。
+
+仓储直接与数据库（ORM / SQLAlchemy Session）交互，
+并暴露面向表或实体的方法。Service 层应将多个仓储组合起来，
+形成面向业务的功能。
 """
 
 from .announcement_repository import AnnouncementRepository
