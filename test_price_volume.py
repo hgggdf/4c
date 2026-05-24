@@ -35,7 +35,7 @@ db = SessionLocal()
 try:
     counts = {}
     for sc in ["600276", "300760", "002007", "600196"]:
-        n = db.query(FinancialHot).filter_by(stock_code=sc, report_type="日行情").count()
+        n = db.query(FinancialHot).filter_by(stock_code=sc, report_type="daily").count()
         counts[sc] = n
 finally:
     db.close()
@@ -98,7 +98,7 @@ section("TEST 4 — 量价信号详情（最近10条）")
 signals = ana.get("signals", [])
 if signals:
     for s in signals[:5]:
-        print(f"  [{s['date']}] {s['type']}  涨跌:{s['change_pct']*100:.2f}%  量比:{s['volume_ratio']}x")
+        print(f"  [{s['date']}] {s['type']}  涨跌:{s['change_pct']:.2f}%  量比:{s['volume_ratio']}x")
         print(f"    {s['detail']}")
     print(f"\n  共 {len(signals)} 条信号（展示前5条）")
     print("[PASS] 信号检测正常")
@@ -119,7 +119,7 @@ assert "error" not in corr, f"[FAIL] {corr.get('error')}"
 print(f"\n  分析天数: {corr['days_analyzed']}  异动次数: {corr['anomaly_count']}")
 if corr["anomalies"]:
     for a in corr["anomalies"][:3]:
-        print(f"\n  [{a['date']}] {a['type']}  涨跌:{a['price_change_pct']*100:.2f}%  量比:{a['volume_ratio']}x")
+        print(f"\n  [{a['date']}] {a['type']}  涨跌:{a['price_change_pct']:.2f}%  量比:{a['volume_ratio']}x")
         print(f"    相关事件: {len(a['nearby_events'])} 条")
         print(f"    解读: {a['interpretation']}")
 print(f"\n  汇总: {corr['summary']}")

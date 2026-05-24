@@ -285,7 +285,7 @@ def make_daily_quotes(stock_code: str, base_price: float, end: date, count: int 
         records.append(FinancialHot(
             stock_code=stock_code,
             report_date=td,
-            report_type="日行情",
+            report_type="daily",
             fiscal_year=td.year,
             trade_date=td,
             open_price=open_p,
@@ -465,14 +465,14 @@ def seed(db: Session) -> None:
         base_price = BASE_PRICES.get(sc, 30.0)
         # 检查是否已有日行情数据
         existing = db.query(FinancialHot).filter_by(
-            stock_code=sc, report_type="日行情"
+            stock_code=sc, report_type="daily"
         ).count()
         if existing >= 100:
             continue
         # 删除已有的不完整日行情，重新生成
         if existing > 0:
             db.query(FinancialHot).filter_by(
-                stock_code=sc, report_type="日行情"
+                stock_code=sc, report_type="daily"
             ).delete()
         for rec in make_daily_quotes(sc, base_price, quote_end, count=120):
             db.add(rec)

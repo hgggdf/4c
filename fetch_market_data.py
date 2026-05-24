@@ -118,14 +118,14 @@ def fetch_one(stock_code: str, stock_name: str, max_retries: int = 3) -> list[di
 def write_quotes(db, stock_code: str, rows: list[dict]) -> int:
     """删除旧日行情，写入新数据，返回写入条数。"""
     db.query(FinancialHot).filter_by(
-        stock_code=stock_code, report_type="日行情"
+        stock_code=stock_code, report_type="daily"
     ).delete()
 
     for r in rows:
         db.add(FinancialHot(
             stock_code=stock_code,
             report_date=r["trade_date"],
-            report_type="日行情",
+            report_type="daily",
             fiscal_year=r["trade_date"].year,
             trade_date=r["trade_date"],
             open_price=r["open_price"],

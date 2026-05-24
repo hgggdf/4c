@@ -1,7 +1,7 @@
 """量价分析工具函数
 
 提供日行情序列获取、MA/量价相关/信号检测、量价异动与事件关联三个层次的分析。
-数据来源：financial_hot 表中 report_type='日行情' 的记录。
+数据来源：financial_hot 表中 report_type='daily' 的记录。
 不依赖 numpy / pandas，全部用纯 Python 计算。
 """
 
@@ -101,7 +101,7 @@ def get_price_volume_data(stock_code: str, days: int = 60) -> dict[str, Any]:
             select(FinancialHot)
             .where(
                 FinancialHot.stock_code == stock_code,
-                FinancialHot.report_type == "日行情",
+                FinancialHot.report_type == "daily",
                 FinancialHot.close_price.isnot(None),
             )
             .order_by(desc(FinancialHot.report_date))
@@ -114,7 +114,7 @@ def get_price_volume_data(stock_code: str, days: int = 60) -> dict[str, Any]:
         return {
             "stock_code": stock_code,
             "stock_name": stock_name,
-            "error": "数据库中暂无该公司的日行情数据（report_type='日行情'）。",
+            "error": "数据库中暂无该公司的日行情数据（report_type='daily'）。",
             "count": 0,
         }
 
@@ -221,6 +221,7 @@ def get_price_volume_analysis(stock_code: str, days: int = 60) -> dict[str, Any]
     avg_amplitude = round(sum(amp_vals) / len(amp_vals), 4) if amp_vals else None
 
     # ── 量价信号检测 ──
+    # change_pct 在数据库中存的是百分比单位（如 -0.9751 表示 -0.9751%）
     signals: list[dict] = []
     for i in range(len(closes)):
         v = vols[i] if i < len(vols) else None
@@ -233,18 +234,18 @@ def get_price_volume_analysis(stock_code: str, days: int = 60) -> dict[str, Any]
         sig_type = None
         detail = None
 
-        if vol_r > 1.5 and chg > 0.02:
+        if vol_r > 1.5 and chg > 2.0:
             sig_type = "放量上涨"
-            detail = f"成交量为均量{vol_r:.1f}倍，涨幅{chg*100:.2f}%，资金积极入场，趋势强化信号"
-        elif vol_r > 1.5 and chg < -0.02:
+            detail = f"成交量为均量{vol_r:.1f}倍，涨幅{chg:.2f}%，资金积极入场，趋势强化信号"
+        elif vol_r > 1.5 and chg < -2.0:
             sig_type = "放量下跌"
-            detail = f"成交量为均量{vol_r:.1f}倍，跌幅{abs(chg)*100:.2f}%，抛压较重，注意风险"
-        elif vol_r < 0.7 and chg > 0.01:
+            detail = f"成交量为均量{vol_r:.1f}倍，跌幅{abs(chg):.2f}%，抛压较重，注意风险"
+        elif vol_r < 0.7 and chg > 1.0:
             sig_type = "缩量上涨"
-            detail = f"成交量仅均量{vol_r:.1f}倍，涨幅{chg*100:.2f}%，量价背离，上涨持续性存疑"
-        elif vol_r < 0.7 and chg < -0.01:
+            detail = f"成交量仅均量{vol_r:.1f}倍，涨幅{chg:.2f}%，量价背离，上涨持续性存疑"
+        elif vol_r < 0.7 and chg < -1.0:
             sig_type = "缩量下跌"
-            detail = f"成交量仅均量{vol_r:.1f}倍，跌幅{abs(chg)*100:.2f}%，缩量企稳，可能筑底"
+            detail = f"成交量仅均量{vol_r:.1f}倍，跌幅{abs(chg):.2f}%，缩量企稳，可能筑底"
 
         if sig_type:
             signals.append({
@@ -354,11 +355,10 @@ def get_price_volume_event_correlation(stock_code: str, days: int = 120) -> dict
         if vm10 is None or vm10 == 0:
             continue
         vol_r = v / vm10
-        if vol_r < 1.5 or abs(chg) < 0.03:
+        if vol_r < 1.5 or abs(chg) < 3.0:
             continue
-
-        anom_date = date_type.fromisoformat(dates[i])
         anom_type = "放量上涨" if chg > 0 else "放量下跌"
+        anom_date = date_type.fromisoformat(dates[i])
         window_start = anom_date - timedelta(days=3)
         window_end = anom_date + timedelta(days=3)
 
