@@ -110,6 +110,15 @@
             <div class="score-info">
               <div class="score-level">{{ diagnoseData.level }}</div>
               <div class="score-year">{{ diagnoseData.year }}年度</div>
+              <span
+                v-if="diagnoseData.data_completeness != null && diagnoseData.data_completeness < 1.0"
+                class="completeness-badge"
+                :style="{
+                  background: diagnoseData.data_completeness >= 0.75 ? 'rgba(234,179,8,0.12)' : 'rgba(249,115,22,0.12)',
+                  color: diagnoseData.data_completeness >= 0.75 ? '#b45309' : '#c2410c',
+                  border: `1px solid ${diagnoseData.data_completeness >= 0.75 ? '#fde68a' : '#fed7aa'}`,
+                }"
+              >数据完整度 {{ Math.round(diagnoseData.data_completeness * 100) }}%</span>
             </div>
           </div>
 
@@ -125,8 +134,8 @@
                 <div class="dim-bar-fill" :style="{ width: dim.score + '%' }" :class="scoreClass(dim.score)"></div>
               </div>
               <div class="dim-metrics">
-                <span v-for="(v, k) in dim.metrics" :key="k" class="metric-tag">
-                  {{ k }}: {{ v.value }}{{ v.unit }}
+                <span v-for="(v, k) in dim.metrics" :key="k" class="metric-tag" :class="{ 'metric-missing': v.missing }">
+                  {{ k }}: {{ v.value != null ? (v.value + (v.unit || '')) : '暂无数据' }}
                 </span>
               </div>
             </div>
@@ -322,6 +331,10 @@ onMounted(loadData)
 .score-unit { font-size: 18px; color: var(--text-muted); margin-left: 4px; }
 .score-level { font-size: 16px; color: var(--text-primary); font-weight: 600; }
 .score-year { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+.completeness-badge {
+  display: inline-block; margin-top: 6px;
+  font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500;
+}
 
 .radar-chart { width: 100%; height: 300px; margin-bottom: 20px; }
 

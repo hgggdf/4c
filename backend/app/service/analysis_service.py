@@ -53,6 +53,23 @@ DIMENSIONS = {
     "创新投入": ["研发费用率"],
 }
 
+# 市场潜力维度：公告关键词 → 管线事件分值（正分=利好，负分=利空）
+PIPELINE_EVENT_SCORES: dict[str, int] = {
+    "NDA获批": 90, "上市批准": 90, "新药批准": 90,
+    "三期临床达终点": 75, "III期达终点": 75, "3期达终点": 75,
+    "NDA申报": 65, "NDA受理": 65, "上市申请受理": 65,
+    "三期临床启动": 55, "III期启动": 55,
+    "II期达终点": 50, "二期达终点": 50,
+    "医保谈判中标": 70, "医保目录": 60, "纳入医保": 65,
+    "集采中标": 40,
+    "FDA快速通道": 60, "突破性疗法": 65, "优先审评": 60,
+    "监管函": -30, "警告信": -30, "行政处罚": -35,
+    "临床暂停": -40, "临床失败": -40, "终止临床": -40,
+}
+
+# data_completeness 分母：DIMENSIONS 8 个 + 市场潜力 2 个
+_TOTAL_SCORABLE_METRICS = sum(len(v) for v in DIMENSIONS.values()) + 2  # = 10
+
 
 @dataclass
 class DimensionScore:
@@ -73,6 +90,7 @@ class DiagnoseResult:
     strengths: list[str] = field(default_factory=list)
     weaknesses: list[str] = field(default_factory=list)
     suggestion: str = ""
+    data_completeness: float = 1.0
 
 
 @dataclass
@@ -238,6 +256,8 @@ class AnalysisService:
                 value, unit = self._metric_from_snapshot(snapshot, metric)
                 rule = METRIC_RULES.get(metric)
                 if value is None or rule is None:
+                    metric_details[metric] = {"value": None, "unit": "", "score": 0, "missing": True}
+                    scores.append(0.0)
                     continue
                 score = _score_metric(value, rule)
                 scores.append(score)
@@ -245,9 +265,8 @@ class AnalysisService:
                     "value": round(value, 4),
                     "unit": unit,
                     "score": round(score, 1),
+                    "missing": False,
                 }
-            if not scores:
-                continue
 
             dim_score = round(sum(scores) / len(scores), 1)
             dimensions.append(
@@ -260,10 +279,31 @@ class AnalysisService:
             )
             all_scores.append(dim_score)
 
+        # 市场潜力维度
+        mkt_score, mkt_metrics = self._score_market_potential(db, stock_code, snapshot)
+        dimensions.append(
+            DimensionScore(
+                name="市场潜力",
+                score=round(mkt_score, 1),
+                metrics=mkt_metrics,
+                comment=f"市场潜力处于{_score_to_level(mkt_score)}水平（{mkt_score:.0f}分）",
+            )
+        )
+        all_scores.append(mkt_score)
+
         if not dimensions:
             return None
 
         total_score = round(sum(all_scores) / len(all_scores), 1)
+
+        # 数据完整度：统计非 missing 的指标数 / 总指标数
+        filled = sum(
+            1 for dim in dimensions
+            for m in dim.metrics.values()
+            if not m.get("missing")
+        )
+        data_completeness = round(filled / _TOTAL_SCORABLE_METRICS, 2)
+
         strengths = [f"{item.name}（{item.score:.0f}分）" for item in dimensions if item.score >= 75]
         weaknesses = [f"{item.name}（{item.score:.0f}分）" for item in dimensions if item.score < 50]
 
@@ -276,6 +316,10 @@ class AnalysisService:
             suggestion_parts.append("需要继续提升研发投入强度和成果转化效率")
         if not suggestion_parts:
             suggestion_parts.append("整体经营结构相对稳健，建议持续跟踪行业政策与产品落地进度")
+        if data_completeness < 0.75:
+            suggestion_parts.append(
+                f"注意：当前评分数据完整度为 {data_completeness * 100:.0f}%，部分指标缺失，评分结论仅供参考"
+            )
 
         return DiagnoseResult(
             stock_code=company.stock_code,
@@ -287,6 +331,7 @@ class AnalysisService:
             strengths=strengths,
             weaknesses=weaknesses,
             suggestion="；".join(suggestion_parts),
+            data_completeness=data_completeness,
         )
 
     def scan_risks(self, db: Session, stock_codes: list[str] | None = None) -> list[dict]:
@@ -375,7 +420,7 @@ class AnalysisService:
                 gross_margin=normalize_percent(to_float(getattr(row, "gross_margin", None), None))
                     or self._ratio(getattr(row, "gross_profit", None), getattr(row, "revenue", None)),
                 net_margin=self._ratio(getattr(row, "net_profit", None), getattr(row, "revenue", None)),
-                roe=self._ratio(getattr(row, "net_profit", None), getattr(row, "total_assets", None)),
+                roe=self._roe(row),
                 debt_ratio=normalize_percent(to_float(getattr(row, "debt_ratio", None), None))
                     or self._ratio(getattr(row, "total_liabilities", None), getattr(row, "total_assets", None)),
                 rd_ratio=normalize_percent(to_float(getattr(row, "rd_ratio", None), None))
@@ -397,6 +442,98 @@ class AnalysisService:
         if num is None or den in (None, 0):
             return None
         return round(num / den * 100, 4)
+
+    def _roe(self, row) -> float | None:
+        """净资产收益率 = 净利润 / (总资产 - 总负债)。"""
+        net_profit = to_float(getattr(row, "net_profit", None), None)
+        total_assets = to_float(getattr(row, "total_assets", None), None)
+        total_liab = to_float(getattr(row, "total_liabilities", None), None)
+        if None in (net_profit, total_assets, total_liab):
+            return None
+        equity = total_assets - total_liab
+        if equity <= 0:
+            return None
+        return round(net_profit / equity * 100, 4)
+
+    def _score_market_potential(
+        self, db: Session, stock_code: str, snapshot: YearSnapshot
+    ) -> tuple[float, dict]:
+        """市场潜力维度：管线进展分 + 现金跑道分。"""
+        from datetime import date, timedelta
+
+        # ── 管线进展分：近12个月公告关键词匹配 ──
+        cutoff = date.today() - timedelta(days=365)
+        announcements = list(
+            db.execute(
+                select(AnnouncementHot)
+                .where(
+                    AnnouncementHot.stock_code == stock_code,
+                    AnnouncementHot.publish_date >= cutoff,
+                )
+                .order_by(AnnouncementHot.publish_date.desc())
+                .limit(30)
+            ).scalars().all()
+        )
+
+        hit_scores: list[int] = []
+        for ann in announcements:
+            text = " ".join(filter(None, [ann.announcement_type or "", ann.title or ""]))
+            for keyword, pts in PIPELINE_EVENT_SCORES.items():
+                if keyword in text:
+                    hit_scores.append(pts)
+                    break  # 每条公告只取最高匹配一次
+
+        if hit_scores:
+            # 取分值绝对值最高的 3 条（保留符号），求均值后 clip 到 0~100
+            top3 = sorted(hit_scores, key=abs, reverse=True)[:3]
+            pipeline_score: float | None = max(0.0, min(100.0, sum(top3) / len(top3)))
+        else:
+            pipeline_score = None
+
+        # ── 现金跑道分 ──
+        ocf = snapshot.operating_cashflow
+        if ocf is None:
+            cash_score: float | None = None
+        elif ocf > 0:
+            net_p = abs(snapshot.net_profit or 1)
+            cash_score = min(100.0, 60.0 + ocf / net_p * 5)
+        else:
+            # 负现金流：用总资产估算可维持季度数
+            # 需要从 snapshot 重新取 total_assets（YearSnapshot 无此字段，用营收近似）
+            base = abs(snapshot.revenue or 0)
+            if base == 0 or ocf == 0:
+                cash_score = 20.0
+            else:
+                quarters = base / abs(ocf) * 0.25
+                if quarters >= 8:
+                    cash_score = 70.0
+                elif quarters >= 4:
+                    cash_score = 45.0
+                elif quarters >= 2:
+                    cash_score = 20.0
+                else:
+                    cash_score = 5.0
+
+        # ── 汇总 ──
+        valid = [s for s in (pipeline_score, cash_score) if s is not None]
+        mkt_score = round(sum(valid) / len(valid), 1) if valid else 0.0
+
+        metrics = {
+            "管线进展": {
+                "value": round(pipeline_score, 1) if pipeline_score is not None else None,
+                "unit": "分",
+                "score": round(pipeline_score, 1) if pipeline_score is not None else 0,
+                "missing": pipeline_score is None,
+                "detail": f"近12月命中{len(hit_scores)}条事件" if hit_scores else "近12月无管线事件公告",
+            },
+            "现金跑道": {
+                "value": round(cash_score, 1) if cash_score is not None else None,
+                "unit": "分",
+                "score": round(cash_score, 1) if cash_score is not None else 0,
+                "missing": cash_score is None,
+            },
+        }
+        return mkt_score, metrics
 
     def _growth(self, current: float | None, previous: float | None) -> float | None:
         if current is None or previous in (None, 0):
