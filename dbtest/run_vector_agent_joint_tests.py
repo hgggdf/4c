@@ -22,6 +22,7 @@ from app.core.database.models.company import Company
 from app.core.database.models.financial_hot import FinancialNotesHot
 from app.core.database.models.news_hot import NewsRawHot
 from app.core.database.models.research_report_hot import ResearchReportHot
+from app.core.database.models.vector_and_job import VectorDocumentIndex
 from app.core.database.session import SessionLocal
 from app.core.utils.dedup import prepare_dedup_record
 from app.knowledge import sync
@@ -113,6 +114,14 @@ class VectorAgentJointTests(unittest.TestCase):
         )
 
     @classmethod
+    def _delete_vector_index(cls, db, rows: list) -> None:
+        source_uids = [str(row.dedup_key) for row in rows if getattr(row, "dedup_key", None)]
+        for source_uid in source_uids:
+            db.query(VectorDocumentIndex).filter(VectorDocumentIndex.source_uid == source_uid).delete(
+                synchronize_session=False
+            )
+
+    @classmethod
     def _cleanup_seed_rows(cls) -> None:
         with SessionLocal() as db:
             rows_by_type = [
@@ -139,8 +148,12 @@ class VectorAgentJointTests(unittest.TestCase):
             ]
             for doc_type, table, rows in rows_by_type:
                 cls._delete_vectors(doc_type, table, rows)
+                cls._delete_vector_index(db, rows)
                 for row in rows:
                     db.delete(row)
+            db.query(VectorDocumentIndex).filter(VectorDocumentIndex.chunk_text.like(f"%{MARKER}%")).delete(
+                synchronize_session=False
+            )
             db.commit()
 
     @classmethod
@@ -272,6 +285,7 @@ class VectorAgentJointTests(unittest.TestCase):
             db.commit()
             if company.business_summary or company.core_products_json or company.main_segments_json:
                 sync.sync_company_profiles_by_ids(db, [STOCK_CODE])
+                db.commit()
             else:
                 get_vector_store().delete_by_source(
                     doc_type="company_profile",
@@ -279,6 +293,13 @@ class VectorAgentJointTests(unittest.TestCase):
                     source_pks=[STOCK_CODE],
                     source_uids=[f"company:{STOCK_CODE}"],
                 )
+                sync.delete_vector_index_entries(
+                    db,
+                    source_table=Company.__tablename__,
+                    source_pks=[STOCK_CODE],
+                    source_uids=[f"company:{STOCK_CODE}"],
+                )
+                db.commit()
 
     def _assert_service_hit(self, result, *, doc_type: str) -> None:
         self.assertTrue(result.success, result.message)

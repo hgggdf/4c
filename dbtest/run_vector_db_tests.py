@@ -17,10 +17,12 @@ from app.core.database.models.announcement_hot import AnnouncementRawArchive, An
 from app.core.database.models.company import Company
 from app.core.database.models.financial_hot import FinancialNotesHot
 from app.core.database.models.news_hot import NewsRawArchive, NewsRawHot
+from app.core.database.models.vector_and_job import VectorDocumentIndex
 from app.core.database.session import SessionLocal
 from app.core.utils.dedup import prepare_dedup_record
 from app.knowledge import sync
 from app.knowledge.store import ACTIVE_COLLECTIONS, _get_collection, get_store, get_vector_store
+from app.service.adapters.vector_store import KnowledgeVectorStoreAdapter
 from app.service.retrieval_service import RetrievalService
 
 
@@ -79,6 +81,16 @@ class VectorDbIntegrationTests(unittest.TestCase):
             source_uids=source_uids,
         )
 
+    def _delete_vector_index(self, db, rows: list) -> None:
+        source_uids = [str(row.dedup_key) for row in rows if getattr(row, "dedup_key", None)]
+        for source_uid in source_uids:
+            db.query(VectorDocumentIndex).filter(VectorDocumentIndex.source_uid == source_uid).delete(
+                synchronize_session=False
+            )
+
+    def _index_rows(self, db, source_uid: str) -> list[VectorDocumentIndex]:
+        return db.query(VectorDocumentIndex).filter(VectorDocumentIndex.source_uid == source_uid).all()
+
     def _cleanup_test_rows(self) -> None:
         with SessionLocal() as db:
             ann_hot = db.query(AnnouncementRawHot).filter(AnnouncementRawHot.title.like(f"%{MARKER}%")).all()
@@ -92,6 +104,10 @@ class VectorDbIntegrationTests(unittest.TestCase):
             self._delete_vectors("news", NewsRawHot.__tablename__, news_hot)
             self._delete_vectors("news", NewsRawArchive.__tablename__, news_archive)
             self._delete_vectors("financial_note", FinancialNotesHot.__tablename__, financial_rows)
+            self._delete_vector_index(db, ann_hot + ann_archive + news_hot + news_archive + financial_rows)
+            db.query(VectorDocumentIndex).filter(VectorDocumentIndex.chunk_text.like(f"%{MARKER}%")).delete(
+                synchronize_session=False
+            )
 
             for row in ann_hot + ann_archive + news_hot + news_archive + financial_rows:
                 db.delete(row)
@@ -147,6 +163,13 @@ class VectorDbIntegrationTests(unittest.TestCase):
                 source_table=AnnouncementRawHot.__tablename__,
                 is_hot=1,
             )
+            index_rows = self._index_rows(db, row.dedup_key)
+            self.assertEqual(len(index_rows), chunk_count)
+            self.assertTrue(all(item.vector_status == "success" for item in index_rows))
+            self.assertTrue(all(item.vector_collection == ACTIVE_COLLECTIONS["announcement"] for item in index_rows))
+            self.assertTrue(all(item.vector_id for item in index_rows))
+            self.assertEqual(row.vector_status, "success")
+            db.commit()
 
             service = RetrievalService(ctx=SimpleNamespace())
             record = service._load_source_record(
@@ -159,14 +182,16 @@ class VectorDbIntegrationTests(unittest.TestCase):
             self.assertIsNotNone(record)
             self.assertEqual(record["id"], row.id)
 
-            deleted = get_vector_store().delete_by_source(
+            deleted = KnowledgeVectorStoreAdapter().delete_by_source(
                 doc_type="announcement",
                 source_table=AnnouncementRawHot.__tablename__,
-                source_pks=[str(row.id)],
+                source_pks=[row.id],
                 source_uids=[row.dedup_key],
             )
             self.assertGreater(deleted, 0)
             self.assertEqual(_vector_count("announcement", row.dedup_key), 0)
+            db.commit()
+            self.assertEqual(len(self._index_rows(db, row.dedup_key)), 0)
 
     def test_hot_to_archive_resync_replaces_hot_vector(self) -> None:
         with SessionLocal() as db:
@@ -200,6 +225,8 @@ class VectorDbIntegrationTests(unittest.TestCase):
                 source_table=NewsRawHot.__tablename__,
                 is_hot=1,
             )
+            self.assertEqual(len(self._index_rows(db, hot_row.dedup_key)), hot_chunks)
+            self.assertEqual(hot_row.vector_status, "success")
 
             archive_payload = {
                 key: getattr(hot_row, key)
@@ -240,6 +267,10 @@ class VectorDbIntegrationTests(unittest.TestCase):
                 is_hot=0,
             )
             self.assertFalse(any(meta.get("source_table") == NewsRawHot.__tablename__ for meta in metadatas))
+            index_rows = self._index_rows(db, archive_row.dedup_key)
+            self.assertEqual(len(index_rows), cold_chunks)
+            self.assertTrue(all(item.source_table == NewsRawArchive.__tablename__ for item in index_rows))
+            self.assertEqual(archive_row.vector_status, "success")
 
             service = RetrievalService(ctx=SimpleNamespace())
             record = service._load_source_record(
@@ -287,6 +318,9 @@ class VectorDbIntegrationTests(unittest.TestCase):
                 is_hot=1,
             )
             self.assertTrue(all(meta.get("category") == "vector_db_test" for meta in metadatas))
+            index_rows = self._index_rows(db, row.dedup_key)
+            self.assertEqual(len(index_rows), chunk_count)
+            self.assertTrue(all(item.doc_type == "financial_note" for item in index_rows))
 
             service = RetrievalService(ctx=SimpleNamespace())
             record = service._load_source_record(
@@ -322,6 +356,9 @@ class VectorDbIntegrationTests(unittest.TestCase):
                     source_table=Company.__tablename__,
                     is_hot=1,
                 )
+                index_rows = self._index_rows(db, source_uid)
+                self.assertEqual(len(index_rows), chunk_count)
+                self.assertTrue(all(item.source_table == Company.__tablename__ for item in index_rows))
 
                 service = RetrievalService(ctx=SimpleNamespace())
                 record = service._load_source_record(
@@ -342,6 +379,7 @@ class VectorDbIntegrationTests(unittest.TestCase):
                     db.commit()
                     if company.business_summary or company.core_products_json or company.main_segments_json:
                         sync.sync_company_profiles_by_ids(db, [STOCK_CODE])
+                        db.commit()
                     else:
                         get_vector_store().delete_by_source(
                             doc_type="company_profile",
@@ -349,6 +387,13 @@ class VectorDbIntegrationTests(unittest.TestCase):
                             source_pks=[STOCK_CODE],
                             source_uids=[source_uid],
                         )
+                        sync.delete_vector_index_entries(
+                            db,
+                            source_table=Company.__tablename__,
+                            source_pks=[STOCK_CODE],
+                            source_uids=[source_uid],
+                        )
+                        db.commit()
 
 
 if __name__ == "__main__":

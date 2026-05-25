@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from datetime import date, datetime
+from hashlib import sha256
 from hashlib import md5
 from typing import Iterable
 
-from sqlalchemy import select
+from sqlalchemy import delete, or_, select
 from sqlalchemy.orm import Session
 
 from app.core.database.models.announcement_hot import (
@@ -33,7 +35,15 @@ from app.core.database.models.news_hot import (
     NewsStructuredArchive,
     NewsStructuredHot,
 )
-from app.knowledge.store import ChunkMetadata, get_store, get_vector_store
+from app.core.database.models.vector_and_job import VectorDocumentIndex
+from app.knowledge.store import (
+    ACTIVE_COLLECTIONS,
+    EMBEDDING_MODEL_NAME,
+    ChunkMetadata,
+    build_chunk_payloads,
+    get_store,
+    get_vector_store,
+)
 
 
 def _doc_id(prefix: str, pk: int | str, text: str) -> str:
@@ -56,6 +66,113 @@ def _source_uid(row, fallback_prefix: str) -> str:
         if value:
             return value
     return f"{fallback_prefix}:{_safe_attr(row, 'id', '')}"
+
+
+def _source_id_for_index(source_pk: int | str, source_uid: str = "") -> int:
+    text = str(source_pk or "").strip()
+    try:
+        return int(text)
+    except (TypeError, ValueError):
+        seed = source_uid or text
+        return int(sha256(seed.encode("utf-8")).hexdigest()[:15], 16)
+
+
+def _parse_publish_time(value) -> datetime | None:
+    if value is None or value == "":
+        return None
+    if isinstance(value, datetime):
+        return value.replace(tzinfo=None)
+    if isinstance(value, date):
+        return datetime.combine(value, datetime.min.time())
+    text = str(value).strip()
+    if not text:
+        return None
+    try:
+        return datetime.fromisoformat(text.replace("Z", "+00:00")).replace(tzinfo=None)
+    except ValueError:
+        try:
+            return datetime.fromisoformat(text[:10])
+        except ValueError:
+            return None
+
+
+def delete_vector_index_entries(
+    db: Session,
+    *,
+    source_table: str,
+    source_pks: list[int | str],
+    source_uids: list[str] | None = None,
+) -> int:
+    conditions = []
+    source_uids = [str(uid) for uid in (source_uids or []) if uid]
+    for source_uid in source_uids:
+        conditions.append(VectorDocumentIndex.source_uid == source_uid)
+    for source_pk in source_pks:
+        conditions.append(
+            (VectorDocumentIndex.source_table == source_table)
+            & (VectorDocumentIndex.source_id == _source_id_for_index(source_pk))
+        )
+    if not conditions:
+        return 0
+    result = db.execute(delete(VectorDocumentIndex).where(or_(*conditions)))
+    return int(result.rowcount or 0)
+
+
+def _set_source_vector_status(row, status: str) -> None:
+    if row is not None and hasattr(row, "vector_status"):
+        try:
+            setattr(row, "vector_status", status)
+        except Exception:
+            pass
+
+
+def _write_vector_index_entries(
+    db: Session,
+    *,
+    meta: ChunkMetadata,
+    chunks: list[dict],
+    vector_status: str,
+) -> int:
+    if not chunks:
+        return 0
+
+    source_id = _source_id_for_index(meta.source_pk, meta.source_uid)
+    publish_time = _parse_publish_time(meta.publish_date)
+    if vector_status == "success":
+        vector_collection = ACTIVE_COLLECTIONS.get(meta.doc_type)
+    elif vector_status == "fallback_only":
+        vector_collection = "tfidf_fallback"
+    else:
+        vector_collection = None
+
+    rows = []
+    for chunk in chunks:
+        vector_id = None
+        if vector_status == "success":
+            vector_id = chunk["id"]
+        elif vector_status == "fallback_only":
+            vector_id = f"tfidf:{chunk['id']}"
+        rows.append(
+            VectorDocumentIndex(
+                doc_type=meta.doc_type,
+                source_table=meta.source_table,
+                source_id=source_id,
+                source_uid=meta.source_uid or None,
+                stock_code=meta.stock_code or None,
+                industry_code=meta.industry_code or None,
+                title=meta.title or None,
+                publish_time=publish_time,
+                chunk_index=int(chunk["chunk_index"]),
+                chunk_text=chunk["text"],
+                vector_collection=vector_collection,
+                vector_id=vector_id,
+                embedding_model=EMBEDDING_MODEL_NAME,
+                vector_status=vector_status,
+            )
+        )
+    db.add_all(rows)
+    db.flush()
+    return len(rows)
 
 
 def _financial_note_text(row) -> str:
@@ -98,7 +215,7 @@ def _financial_note_text(row) -> str:
     return "；".join(parts)
 
 
-def _delete_existing(doc_type: str, source_table: str, source_pk: int | str, source_uid: str = "") -> None:
+def _delete_existing_stores(doc_type: str, source_table: str, source_pk: int | str, source_uid: str = "") -> None:
     try:
         get_vector_store().delete_by_source(
             doc_type=doc_type,
@@ -118,9 +235,46 @@ def _delete_existing(doc_type: str, source_table: str, source_pk: int | str, sou
         pass
 
 
-def _write_document(text: str, doc_type: str, meta: ChunkMetadata) -> int:
+def _delete_existing(db: Session, doc_type: str, source_table: str, source_pk: int | str, source_uid: str = "") -> None:
+    _delete_existing_stores(doc_type, source_table, source_pk, source_uid)
+    try:
+        delete_vector_index_entries(
+            db,
+            source_table=source_table,
+            source_pks=[source_pk],
+            source_uids=[source_uid] if source_uid else None,
+        )
+    except Exception:
+        pass
+
+
+def _write_document_without_index(text: str, doc_type: str, meta: ChunkMetadata) -> int:
     meta_dict = meta.to_dict()
-    _delete_existing(doc_type, meta.source_table, meta.source_pk, meta.source_uid)
+    chunks = build_chunk_payloads(text, doc_type, meta_dict, meta.doc_id)
+    _delete_existing_stores(doc_type, meta.source_table, meta.source_pk, meta.source_uid)
+    if not chunks:
+        return 0
+
+    vec_count = get_vector_store().add_document(
+        text=text,
+        doc_type=doc_type,
+        metadata=meta_dict,
+        doc_id=meta.doc_id,
+    )
+    try:
+        get_store().add_document(text, metadata=meta_dict)
+    except Exception:
+        pass
+    return vec_count
+
+
+def _write_document(db: Session, text: str, doc_type: str, meta: ChunkMetadata, source_row=None) -> int:
+    meta_dict = meta.to_dict()
+    chunks = build_chunk_payloads(text, doc_type, meta_dict, meta.doc_id)
+    _delete_existing(db, doc_type, meta.source_table, meta.source_pk, meta.source_uid)
+    if not chunks:
+        _set_source_vector_status(source_row, "skipped_empty")
+        return 0
 
     vec_count = get_vector_store().add_document(
         text=text,
@@ -129,10 +283,21 @@ def _write_document(text: str, doc_type: str, meta: ChunkMetadata) -> int:
         doc_id=meta.doc_id,
     )
 
+    tfidf_ok = False
     try:
         get_store().add_document(text, metadata=meta_dict)
+        tfidf_ok = True
     except Exception:
         pass
+
+    if vec_count > 0:
+        vector_status = "success"
+    elif tfidf_ok:
+        vector_status = "fallback_only"
+    else:
+        vector_status = "failed"
+    _write_vector_index_entries(db, meta=meta, chunks=chunks, vector_status=vector_status)
+    _set_source_vector_status(source_row, vector_status)
 
     return vec_count
 
@@ -282,7 +447,7 @@ def sync_announcements(
             source_uid=_source_uid(row, "announcement"),
             is_hot=1 if is_hot else 0,
         )
-        total += _write_document(content, "announcement", meta)
+        total += _write_document(db, content, "announcement", meta, row)
 
     return total
 
@@ -322,7 +487,7 @@ def sync_announcements_by_ids(db: Session, source_ids: list[int], is_hot: bool =
             source_uid=_source_uid(row, "announcement"),
             is_hot=1 if is_hot else 0,
         )
-        total += _write_document(content, "announcement", meta)
+        total += _write_document(db, content, "announcement", meta, row)
     return total
 
 
@@ -365,7 +530,7 @@ def sync_financial_notes(
             source_uid=_source_uid(row, "financial"),
             is_hot=1 if is_hot else 0,
         )
-        total += _write_document(text_value, "financial_note", meta)
+        total += _write_document(db, text_value, "financial_note", meta, row)
 
     return total
 
@@ -398,7 +563,7 @@ def sync_financial_notes_by_ids(db: Session, source_ids: list[int], is_hot: bool
             source_uid=_source_uid(row, "financial"),
             is_hot=1 if is_hot else 0,
         )
-        total += _write_document(text_value, "financial_note", meta)
+        total += _write_document(db, text_value, "financial_note", meta, row)
     return total
 
 
@@ -429,7 +594,7 @@ def sync_company_profiles(db: Session, stock_code: str | None = None, limit: int
             source_uid=f"company:{profile.stock_code}",
             is_hot=1,
         )
-        total += _write_document(text, "company_profile", meta)
+        total += _write_document(db, text, "company_profile", meta, profile)
 
     return total
 
@@ -463,7 +628,7 @@ def sync_company_profiles_by_ids(db: Session, source_ids: list[int | str]) -> in
             source_uid=f"company:{profile.stock_code}",
             is_hot=1,
         )
-        total += _write_document(text, "company_profile", meta)
+        total += _write_document(db, text, "company_profile", meta, profile)
     return total
 
 
@@ -584,7 +749,7 @@ def sync_news(db: Session, is_hot: bool = True, stock_code: str | None = None, l
             industry_name=extra["industry_name"],
             is_hot=1 if is_hot else 0,
         )
-        total += _write_document(content, "news", meta)
+        total += _write_document(db, content, "news", meta, row)
 
     return total
 
@@ -634,7 +799,7 @@ def sync_news_by_ids(db: Session, source_ids: list[int], is_hot: bool = True) ->
             industry_name=extra["industry_name"],
             is_hot=1 if is_hot else 0,
         )
-        total += _write_document(content, "news", meta)
+        total += _write_document(db, content, "news", meta, row)
     return total
 
 
@@ -674,7 +839,19 @@ def sync_external_document(
         industry_name=industry_name,
         is_hot=is_hot,
     )
-    return _write_document(text, doc_type, meta)
+    from app.core.database.session import SessionLocal
+
+    try:
+        with SessionLocal() as db:
+            try:
+                count = _write_document(db, text, doc_type, meta)
+                db.commit()
+                return count
+            except Exception:
+                db.rollback()
+                raise
+    except Exception:
+        return _write_document_without_index(text, doc_type, meta)
 
 
 def _resolve_industry_name(db: Session, industry_code: str) -> str:
@@ -716,7 +893,7 @@ def _sync_research_report_row(db: Session, row, *, is_hot: bool, stock_name_by_c
         industry_name=industry_name,
         is_hot=1 if is_hot else 0,
     )
-    return _write_document(content, "report", meta)
+    return _write_document(db, content, "report", meta, row)
 
 
 def sync_research_reports(

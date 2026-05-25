@@ -26,6 +26,7 @@ export function sendChatMessageStream(payload, onChunk) {
     const reader = response.body.getReader()
     const decoder = new TextDecoder()
     let buffer = ''
+    let receivedData = false
 
     while (true) {
       const { done, value } = await reader.read()
@@ -38,6 +39,7 @@ export function sendChatMessageStream(payload, onChunk) {
       for (const part of parts) {
         for (const line of part.split('\n')) {
           if (!line.startsWith('data: ')) continue
+          receivedData = true
           const data = line.slice(6)
           if (data === '[DONE]') continue
           try {
@@ -55,12 +57,17 @@ export function sendChatMessageStream(payload, onChunk) {
     if (buffer.trim()) {
       for (const line of buffer.split('\n')) {
         if (!line.startsWith('data: ')) continue
+        receivedData = true
         const data = line.slice(6)
         try {
           const parsed = JSON.parse(data)
           if (parsed.type !== 'done') onChunk(parsed)
         } catch { /* ignore */ }
       }
+    }
+
+    if (!receivedData) {
+      throw new Error('服务器返回了空响应，请确认后端正常运行')
     }
   })
 }

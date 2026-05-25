@@ -4,6 +4,7 @@ import ChatBox from '../ChatBox.vue'
 import * as chatApi from '../../api/chat'
 
 vi.mock('../../api/chat', () => ({
+  uploadDoc: vi.fn(),
   uploadPDF: vi.fn(),
 }))
 
@@ -37,6 +38,7 @@ describe('ChatBox.vue — 用户提交触发链路', () => {
     expect(wrapper.emitted('submit')[0][0]).toEqual({
       message: '分析恒瑞医药',
       targets: [],
+      selected_mode: null,
     })
   })
 
@@ -49,6 +51,7 @@ describe('ChatBox.vue — 用户提交触发链路', () => {
     expect(wrapper.emitted('submit')[0][0]).toEqual({
       message: '查看行业趋势',
       targets: [],
+      selected_mode: null,
     })
   })
 
@@ -70,6 +73,7 @@ describe('ChatBox.vue — 用户提交触发链路', () => {
     expect(wrapper.emitted('submit')[0][0]).toEqual({
       message: '分析这只股票',
       targets: [{ symbol: '600276', name: '恒瑞医药', type: 'stock' }],
+      selected_mode: null,
     })
   })
 
@@ -105,6 +109,7 @@ describe('ChatBox.vue — 用户提交触发链路', () => {
     expect(wrapper.emitted('submit')[0][0]).toEqual({
       message: '',
       targets: [{ symbol: '600276', name: '恒瑞医药', type: 'stock' }],
+      selected_mode: null,
     })
   })
 
@@ -148,8 +153,8 @@ describe('ChatBox.vue — PDF 上传', () => {
     vi.clearAllMocks()
   })
 
-  it('选择文件后调用 uploadPDF', async () => {
-    chatApi.uploadPDF.mockResolvedValue({ success: true })
+  it('选择文件后调用 uploadDoc', async () => {
+    chatApi.uploadDoc.mockResolvedValue({ success: true })
 
     const file = new File(['content'], 'report.pdf', { type: 'application/pdf' })
     const input = wrapper.find('input[type="file"]')
@@ -161,12 +166,12 @@ describe('ChatBox.vue — PDF 上传', () => {
 
     await input.trigger('change')
 
-    expect(chatApi.uploadPDF).toHaveBeenCalledWith(file, expect.any(Function))
+    expect(chatApi.uploadDoc).toHaveBeenCalledWith(file, expect.any(Function))
   })
 
   it('上传过程中显示进度', async () => {
     let progressCallback
-    chatApi.uploadPDF.mockImplementation((file, onProgress) => {
+    chatApi.uploadDoc.mockImplementation((file, onProgress) => {
       progressCallback = onProgress
       return new Promise(resolve => {
         setTimeout(() => {
@@ -199,7 +204,7 @@ describe('ChatBox.vue — PDF 上传', () => {
   })
 
   it('上传失败时显示错误', async () => {
-    chatApi.uploadPDF.mockRejectedValue(new Error('网络错误'))
+    chatApi.uploadDoc.mockRejectedValue(new Error('网络错误'))
     window.alert = vi.fn()
 
     const file = new File(['content'], 'report.pdf', { type: 'application/pdf' })

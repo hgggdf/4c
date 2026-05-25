@@ -26,6 +26,8 @@ ACTIVE_COLLECTIONS = {
     "report": "research_report_chunks",
 }
 
+EMBEDDING_MODEL_NAME = "BAAI/bge-small-zh-v1.5"
+
 
 @dataclass
 class ChunkMetadata:
@@ -69,7 +71,7 @@ def _get_embedding_model():
         try:
             from sentence_transformers import SentenceTransformer
 
-            _embedding_model = SentenceTransformer("BAAI/bge-small-zh-v1.5", local_files_only=True)
+            _embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME, local_files_only=True)
         except Exception:
             _embedding_model = False
             return None
@@ -122,6 +124,42 @@ def chunk_text(text: str, size: int = 500, overlap: int = 50) -> list[str]:
     return chunks
 
 
+def build_chunk_payloads(
+    text: str,
+    doc_type: str,
+    metadata: dict[str, Any],
+    doc_id: str | None = None,
+) -> list[dict[str, Any]]:
+    chunks = chunk_text(text)
+    if not chunks:
+        return []
+
+    collection_name = _get_collection_name(doc_type)
+    if not collection_name:
+        return []
+
+    meta = dict(metadata)
+    meta["doc_type"] = doc_type
+    if doc_id:
+        meta["doc_id"] = doc_id
+
+    base_doc_id = meta.get("doc_id", "doc")
+    payloads: list[dict[str, Any]] = []
+    for i, chunk in enumerate(chunks):
+        chunk_meta = dict(meta)
+        chunk_meta["chunk_index"] = i
+        payloads.append(
+            {
+                "id": hashlib.md5(f"{base_doc_id}_{i}_{chunk}".encode("utf-8")).hexdigest(),
+                "text": chunk,
+                "metadata": chunk_meta,
+                "chunk_index": i,
+                "collection_name": collection_name,
+            }
+        )
+    return payloads
+
+
 def _build_where(filters: dict[str, Any] | None) -> dict[str, Any] | None:
     if not filters:
         return None
@@ -162,43 +200,24 @@ class VectorKnowledgeStore:
         metadata: dict[str, Any],
         doc_id: str | None = None,
     ) -> int:
-        chunks = chunk_text(text)
-        if not chunks:
+        payloads = build_chunk_payloads(text, doc_type, metadata, doc_id)
+        if not payloads:
             return 0
 
         try:
-            collection_name = _get_collection_name(doc_type)
-            if not collection_name:
-                return 0
-            collection = _get_collection(collection_name)
-            embeddings = _embed(chunks)
+            collection = _get_collection(payloads[0]["collection_name"])
+            documents = [item["text"] for item in payloads]
+            embeddings = _embed(documents)
         except Exception:
             return 0
 
-        meta = dict(metadata)
-        meta["doc_type"] = doc_type
-        if doc_id:
-            meta["doc_id"] = doc_id
-
-        base_doc_id = meta.get("doc_id", "doc")
-        ids = [
-            hashlib.md5(f"{base_doc_id}_{i}_{chunk}".encode("utf-8")).hexdigest()
-            for i, chunk in enumerate(chunks)
-        ]
-
-        metadatas = []
-        for i, _ in enumerate(chunks):
-            m = dict(meta)
-            m["chunk_index"] = i
-            metadatas.append(m)
-
         collection.upsert(
-            ids=ids,
+            ids=[item["id"] for item in payloads],
             embeddings=embeddings,
-            documents=chunks,
-            metadatas=metadatas,
+            documents=documents,
+            metadatas=[item["metadata"] for item in payloads],
         )
-        return len(chunks)
+        return len(payloads)
 
     def _query_collection(
         self,
@@ -273,7 +292,8 @@ class VectorKnowledgeStore:
 
         docs = existing.get("documents") or []
         metas = existing.get("metadatas") or []
-        embeddings = existing.get("embeddings") or []
+        raw_embeddings = existing.get("embeddings")
+        embeddings = raw_embeddings if raw_embeddings is not None else []
 
         hits: list[dict[str, Any]] = []
         for doc, meta, embedding in zip(docs, metas, embeddings):
