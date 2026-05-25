@@ -11,6 +11,8 @@ from app.core.database.base import Base, BIGINT_PK
 class ResearchReportHot(Base):
     __tablename__ = "research_report_hot"
     __table_args__ = (
+        Index("ux_rr_dedup_key", "dedup_key", unique=True),
+        Index("idx_rr_content_hash", "content_hash"),
         Index("idx_rr_scope_stock_date", "scope_type", "stock_code", "publish_date"),
         Index("idx_rr_scope_industry_date", "scope_type", "industry_code", "publish_date"),
         Index("idx_rr_vector_status", "vector_status"),
@@ -33,6 +35,8 @@ class ResearchReportHot(Base):
     file_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     original_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     file_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    dedup_key: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     vector_status: Mapped[str] = mapped_column(String(32), default="pending", nullable=False)
     query_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, nullable=False)
@@ -42,6 +46,8 @@ class ResearchReportHot(Base):
 class ResearchReportArchive(Base):
     __tablename__ = "research_report_archive"
     __table_args__ = (
+        Index("ux_rr_archive_dedup_key", "dedup_key", unique=True),
+        Index("idx_rr_archive_content_hash", "content_hash"),
         Index("idx_rr_archive_scope_stock_date", "scope_type", "stock_code", "publish_date"),
         Index("idx_rr_archive_scope_industry_date", "scope_type", "industry_code", "publish_date"),
         Index("idx_rr_archive_vector_status", "vector_status"),
@@ -64,6 +70,8 @@ class ResearchReportArchive(Base):
     file_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     original_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     file_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    dedup_key: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     vector_status: Mapped[str] = mapped_column(String(32), default="pending", nullable=False)
     query_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, nullable=False)

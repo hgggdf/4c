@@ -37,6 +37,7 @@ from app.core.database.models.research_report_hot import ResearchReportHot
 from app.core.database.models.news_hot import NewsHot
 from app.core.database.models.macro_hot import MacroIndicator
 from app.core.database.models.company import Company, IndustryMaster
+from app.core.utils.dedup import prepare_dedup_record
 
 logger = logging.getLogger(__name__)
 
@@ -339,6 +340,23 @@ def _merge_financial(db: Session, records: list[dict]) -> int:
     return count
 
 
+def _find_existing_by_dedup_or_legacy(
+    db: Session,
+    model,
+    dedup_key: str | None,
+    legacy_filters: dict[str, Any],
+):
+    if dedup_key:
+        existing = db.execute(select(model).where(model.dedup_key == dedup_key)).scalar_one_or_none()
+        if existing is not None:
+            return existing
+
+    stmt = select(model)
+    for key, value in legacy_filters.items():
+        stmt = stmt.where(getattr(model, key) == value)
+    return db.execute(stmt).scalar_one_or_none()
+
+
 def _upsert_financial(db: Session, rec: dict) -> None:
     report_date = _parse_date(rec.get("report_date"))
     if not report_date:
@@ -354,14 +372,6 @@ def _upsert_financial(db: Session, rec: dict) -> None:
     gross_margin = (gross_profit / revenue) if gross_profit is not None and revenue and revenue != 0 else None
     rd_ratio = (rd_expense / revenue) if rd_expense is not None and revenue and revenue != 0 else None
     debt_ratio = (total_liabilities / total_assets) if total_liabilities is not None and total_assets and total_assets != 0 else None
-
-    existing = db.execute(
-        select(FinancialHot).where(
-            FinancialHot.stock_code == rec["stock_code"],
-            FinancialHot.report_date == report_date,
-            FinancialHot.report_type == rec.get("report_type"),
-        )
-    ).scalar_one_or_none()
 
     fields = dict(
         fiscal_year=report_date.year,
@@ -388,6 +398,23 @@ def _upsert_financial(db: Session, rec: dict) -> None:
         file_type=rec.get("file_type"),
         original_filename=rec.get("original_filename"),
         file_hash=rec.get("file_hash"),
+    )
+    dedup_record = prepare_dedup_record(
+        "financial",
+        {**rec, **fields, "report_date": report_date, "report_type": rec.get("report_type")},
+    )
+    fields["dedup_key"] = dedup_record["dedup_key"]
+    fields["content_hash"] = dedup_record["content_hash"]
+
+    existing = _find_existing_by_dedup_or_legacy(
+        db,
+        FinancialHot,
+        fields["dedup_key"],
+        {
+            "stock_code": rec["stock_code"],
+            "report_date": report_date,
+            "report_type": rec.get("report_type"),
+        },
     )
 
     if existing:
@@ -422,10 +449,6 @@ def _upsert_announcement(db: Session, rec: dict) -> None:
 
     uid = _compute_uid(rec.get("stock_code", "") + rec.get("title", "") + str(publish_date) + (rec.get("file_hash") or ""))
 
-    existing = db.execute(
-        select(AnnouncementHot).where(AnnouncementHot.announcement_uid == uid)
-    ).scalar_one_or_none()
-
     fields = dict(
         stock_code=rec["stock_code"],
         title=rec["title"],
@@ -440,6 +463,18 @@ def _upsert_announcement(db: Session, rec: dict) -> None:
         original_filename=rec.get("original_filename"),
         file_hash=rec.get("file_hash"),
         vector_status="pending",
+    )
+    dedup_record = prepare_dedup_record("announcement", {**rec, **fields, "publish_date": publish_date})
+    fields["dedup_key"] = dedup_record["dedup_key"]
+    fields["content_hash"] = dedup_record["content_hash"]
+
+    existing = _find_existing_by_dedup_or_legacy(
+        db,
+        AnnouncementHot,
+        fields["dedup_key"],
+        {
+            "announcement_uid": uid,
+        },
     )
 
     if existing:
@@ -477,10 +512,6 @@ def _upsert_research_report(db: Session, rec: dict) -> None:
            + rec.get("title", "") + str(rec.get("publish_date", "")) + (rec.get("report_org") or "") + (rec.get("file_hash") or ""))
     uid = _compute_uid(key)
 
-    existing = db.execute(
-        select(ResearchReportHot).where(ResearchReportHot.report_uid == uid)
-    ).scalar_one_or_none()
-
     fields = dict(
         scope_type=scope,
         stock_code=rec.get("stock_code"),
@@ -497,6 +528,18 @@ def _upsert_research_report(db: Session, rec: dict) -> None:
         original_filename=rec.get("original_filename"),
         file_hash=rec.get("file_hash"),
         vector_status="pending",
+    )
+    dedup_record = prepare_dedup_record("research_report", {**rec, **fields})
+    fields["dedup_key"] = dedup_record["dedup_key"]
+    fields["content_hash"] = dedup_record["content_hash"]
+
+    existing = _find_existing_by_dedup_or_legacy(
+        db,
+        ResearchReportHot,
+        fields["dedup_key"],
+        {
+            "report_uid": uid,
+        },
     )
 
     if existing:
@@ -521,10 +564,6 @@ def _merge_news(db: Session, records: list[dict]) -> int:
 def _upsert_news(db: Session, rec: dict) -> None:
     uid = rec.get("news_uid") or _compute_uid(rec.get("source_url") or (rec.get("title", "") + str(rec.get("publish_time", ""))))
 
-    existing = db.execute(
-        select(NewsHot).where(NewsHot.news_uid == uid)
-    ).scalar_one_or_none()
-
     fields = dict(
         title=rec.get("title", ""),
         publish_time=_parse_datetime(rec.get("publish_time")),
@@ -540,6 +579,18 @@ def _upsert_news(db: Session, rec: dict) -> None:
         original_filename=rec.get("original_filename"),
         file_hash=rec.get("file_hash"),
         vector_status="pending",
+    )
+    dedup_record = prepare_dedup_record("news", {**rec, **fields})
+    fields["dedup_key"] = dedup_record["dedup_key"]
+    fields["content_hash"] = dedup_record["content_hash"]
+
+    existing = _find_existing_by_dedup_or_legacy(
+        db,
+        NewsHot,
+        fields["dedup_key"],
+        {
+            "news_uid": uid,
+        },
     )
 
     if existing:

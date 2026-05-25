@@ -3,9 +3,9 @@ from __future__ import annotations
 from sqlalchemy import or_, select, update
 
 from app.core.database.models.announcement_hot import AnnouncementRawHot, AnnouncementRawArchive
-from app.core.database.models.company import CompanyMaster, CompanyProfile
-from app.core.database.models.financial_hot import FinancialHot, FinancialNotesHot, FinancialNotesArchive
-from app.core.database.models.news_hot import NewsHot, NewsRawHot, NewsRawArchive
+from app.core.database.models.company import CompanyProfile
+from app.core.database.models.financial_hot import FinancialNotesHot, FinancialNotesArchive
+from app.core.database.models.news_hot import NewsRawHot, NewsRawArchive
 from app.core.database.models.research_report_hot import ResearchReportHot, ResearchReportArchive
 
 from .base import BaseService
@@ -29,10 +29,10 @@ class RetrievalService(BaseService):
     }
 
     DOC_TYPE_TO_TABLE = {
-        "announcement": "announcement_raw_hot",
-        "financial_note": "financial_notes_hot",
-        "news": "news_raw_hot",
-        "company_profile": "company_profile",
+        "announcement": "announcement_hot",
+        "financial_note": "financial_hot",
+        "news": "news_hot",
+        "company_profile": "company",
         "report": "research_report_hot",
     }
 
@@ -347,12 +347,11 @@ class RetrievalService(BaseService):
 
             if doc_types is None or "company_profile" in doc_types:
                 rows = db.execute(
-                    select(CompanyProfile, CompanyMaster.stock_name)
-                    .join(CompanyMaster, CompanyMaster.stock_code == CompanyProfile.stock_code)
+                    select(CompanyProfile, CompanyProfile.stock_name)
                     .where(
                         or_(
-                            CompanyMaster.stock_name.contains(normalized_query),
-                            CompanyMaster.full_name.contains(normalized_query),
+                            CompanyProfile.stock_name.contains(normalized_query),
+                            CompanyProfile.full_name.contains(normalized_query),
                             CompanyProfile.business_summary.contains(normalized_query),
                         )
                     )
@@ -364,13 +363,15 @@ class RetrievalService(BaseService):
                         score += 1.0
                     items.append({
                         "doc_type": "company_profile",
-                        "doc_id": profile.id,
-                        "chunk_id": profile.id,
+                        "doc_id": profile.stock_code,
+                        "chunk_id": profile.stock_code,
                         "text": profile.business_summary or "",
                         "score": round(score, 4),
                         "metadata": {
                             "doc_type": "company_profile",
-                            "source_pk": str(profile.id),
+                            "source_table": "company",
+                            "source_pk": str(profile.stock_code),
+                            "source_uid": f"company:{profile.stock_code}",
                             "stock_name": stock_name,
                             "title": stock_name,
                         },
@@ -448,19 +449,27 @@ class RetrievalService(BaseService):
         return self._with_db(lambda db: self._hydrate_items_with_db(db, items))
 
     def _hydrate_items_with_db(self, db, items: list[dict]) -> list[dict]:
-        cache: dict[tuple[str, str], dict | None] = {}
+        cache: dict[tuple[str, str, str, str], dict | None] = {}
         hydrated_items: list[dict] = []
 
         for item in items:
             metadata = dict(item.get("metadata") or {})
             doc_type = str(metadata.get("doc_type") or "")
+            source_table = str(metadata.get("source_table") or "")
             source_pk = str(metadata.get("source_pk") or "")
-            key = (doc_type, source_pk)
+            source_uid = str(metadata.get("source_uid") or "")
+            key = (doc_type, source_table, source_pk, source_uid)
 
             source_record = None
-            if doc_type and source_pk:
+            if doc_type and (source_pk or source_uid):
                 if key not in cache:
-                    cache[key] = self._load_source_record(db, doc_type=doc_type, source_pk=source_pk)
+                    cache[key] = self._load_source_record(
+                        db,
+                        doc_type=doc_type,
+                        source_pk=source_pk,
+                        source_table=source_table,
+                        source_uid=source_uid,
+                    )
                 source_record = cache[key]
 
             hydrated_item = dict(item)
@@ -471,62 +480,151 @@ class RetrievalService(BaseService):
 
         return hydrated_items
 
-    def _load_source_record(self, db, *, doc_type: str, source_pk: str) -> dict | None:
-        try:
-            source_id = int(source_pk)
-        except (TypeError, ValueError):
-            return None
-
+    def _load_source_record(
+        self,
+        db,
+        *,
+        doc_type: str,
+        source_pk: str,
+        source_table: str = "",
+        source_uid: str = "",
+    ) -> dict | None:
         if doc_type == "announcement":
-            from app.core.repositories.announcement_repository import AnnouncementRepository
-
-            entity = AnnouncementRepository(db).get_raw_by_id(source_id)
+            entity = self._load_hot_cold_source(
+                db,
+                source_pk=source_pk,
+                source_table=source_table,
+                source_uid=source_uid,
+                hot_model=AnnouncementRawHot,
+                archive_model=AnnouncementRawArchive,
+                table_aliases={"announcement_raw_hot": AnnouncementRawHot},
+                legacy_uid_field="announcement_uid",
+            )
             if not entity:
                 return None
             return model_to_dict(entity, self.ANNOUNCEMENT_SOURCE_FIELDS)
 
         if doc_type == "financial_note":
-            from app.core.repositories.financial_repository import FinancialRepository
-
-            entity = FinancialRepository(db).get_financial_note_by_id(source_id)
+            entity = self._load_hot_cold_source(
+                db,
+                source_pk=source_pk,
+                source_table=source_table,
+                source_uid=source_uid,
+                hot_model=FinancialNotesHot,
+                archive_model=FinancialNotesArchive,
+                table_aliases={"financial_notes_hot": FinancialNotesHot},
+            )
             if not entity:
                 return None
             return model_to_dict(entity, self.FINANCIAL_NOTE_SOURCE_FIELDS)
 
         if doc_type == "news":
-            from app.core.repositories.news_repository import NewsRepository
-
-            entity = NewsRepository(db).get_news_raw_by_id(source_id)
+            entity = self._load_hot_cold_source(
+                db,
+                source_pk=source_pk,
+                source_table=source_table,
+                source_uid=source_uid,
+                hot_model=NewsRawHot,
+                archive_model=NewsRawArchive,
+                table_aliases={"news_raw_hot": NewsRawHot},
+                legacy_uid_field="news_uid",
+            )
             if not entity:
                 return None
             return model_to_dict(entity, self.NEWS_SOURCE_FIELDS)
 
         if doc_type == "company_profile":
-            from app.core.database.models.company import CompanyMaster, CompanyProfile
-
-            row = db.execute(
-                select(CompanyProfile, CompanyMaster.stock_name)
-                .outerjoin(CompanyMaster, CompanyProfile.stock_code == CompanyMaster.stock_code)
-                .where(CompanyProfile.id == source_id)
-            ).first()
-            if not row:
+            stock_code = source_pk
+            if source_uid.startswith("company:"):
+                stock_code = source_uid.split(":", 1)[1]
+            if not stock_code:
                 return None
 
-            profile, stock_name = row
+            profile = db.execute(
+                select(CompanyProfile).where(CompanyProfile.stock_code == stock_code)
+            ).scalars().first()
+            if not profile:
+                return None
+
+            stock_name = profile.stock_name
             payload = model_to_dict(profile, self.COMPANY_PROFILE_SOURCE_FIELDS)
             payload["stock_name"] = normalize_value(stock_name)
             return payload
 
         if doc_type == "report":
-            from app.core.database.models.research_report_hot import ResearchReportHot
-
-            entity = db.execute(
-                select(ResearchReportHot).where(ResearchReportHot.id == source_id)
-            ).scalars().first()
+            entity = self._load_hot_cold_source(
+                db,
+                source_pk=source_pk,
+                source_table=source_table,
+                source_uid=source_uid,
+                hot_model=ResearchReportHot,
+                archive_model=ResearchReportArchive,
+                legacy_uid_field="report_uid",
+            )
             if not entity:
                 return None
             return model_to_dict(entity, self.RESEARCH_REPORT_SOURCE_FIELDS)
 
+        return None
+
+    def _load_hot_cold_source(
+        self,
+        db,
+        *,
+        source_pk: str,
+        source_table: str,
+        source_uid: str,
+        hot_model,
+        archive_model,
+        table_aliases: dict[str, object] | None = None,
+        legacy_uid_field: str = "",
+    ):
+        table_to_model = {
+            getattr(hot_model, "__tablename__", ""): hot_model,
+            getattr(archive_model, "__tablename__", ""): archive_model,
+        }
+        table_to_model.update(table_aliases or {})
+
+        def by_id(model):
+            if not source_pk:
+                return None
+            try:
+                source_id = int(source_pk)
+            except (TypeError, ValueError):
+                return None
+            try:
+                return db.execute(select(model).where(model.id == source_id)).scalars().first()
+            except Exception:
+                return None
+
+        model = table_to_model.get(source_table)
+        if model is not None:
+            entity = by_id(model)
+            if entity is not None:
+                return entity
+
+        if source_uid:
+            for model in (hot_model, archive_model):
+                try:
+                    if hasattr(model, "dedup_key"):
+                        entity = db.execute(
+                            select(model).where(model.dedup_key == source_uid)
+                        ).scalars().first()
+                        if entity is not None:
+                            return entity
+                    if legacy_uid_field and hasattr(model, legacy_uid_field):
+                        entity = db.execute(
+                            select(model).where(getattr(model, legacy_uid_field) == source_uid)
+                        ).scalars().first()
+                        if entity is not None:
+                            return entity
+                except Exception:
+                    continue
+
+        for model in (hot_model, archive_model):
+            entity = by_id(model)
+            if entity is not None:
+                return entity
         return None
 
     def _rebuild_document_embeddings(self, req: RebuildEmbeddingsRequest):
@@ -581,6 +679,7 @@ class RetrievalService(BaseService):
             doc_type=doc_type,
             source_table=source_table,
             source_pks=req.source_ids,
+            source_uids=[f"company:{source_id}" for source_id in req.source_ids] if doc_type == "company_profile" else None,
         )
         return {
             "doc_type": doc_type,

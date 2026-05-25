@@ -30,3 +30,11 @@ SYSTEM_PROMPT = """
 - 药明康德最近订单情况怎么样
 - 集采对某某公司的影响有多大
 """.strip()
+
+SYSTEM_PROMPT = SYSTEM_PROMPT + "\n\n" + """
+## Formatting Rules
+- Use GitHub Markdown only. Do not output LaTeX math.
+- Do not use $...$, $$...$$, \\(...\\), \\[...\\], \\frac{}, \\times, \\sum, or other TeX syntax.
+- Write formulas as plain text or inline code, for example: `PE = stock price / EPS`, `FCF = operating cash flow - capex`.
+- Prefer Markdown tables for formulas, assumptions, metrics, and conclusions; put units in table columns.
+""".strip()

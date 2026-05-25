@@ -96,13 +96,13 @@ class CompanyWriteService(BaseService):
         entity, created = repo.upsert_company_profile(payload)
         sync_status = None
         if req.sync_vector_index:
-            sync_status = self._sync_company_profile(db, [entity.id])
+            sync_status = self._sync_company_profile(db, [entity.stock_code])
         result = model_to_dict(entity, ["id", "stock_code", "business_summary", "core_products_json", "main_segments_json", "market_position", "management_summary", "updated_at"])
         result["created"] = created
         result["sync_status"] = sync_status
         return result
 
-    def _sync_company_profile(self, db, source_ids: list[int]) -> str:
+    def _sync_company_profile(self, db, source_ids: list[str]) -> str:
         return self._sync_to_knowledge("sync_company_profiles_by_ids", db, source_ids)
 
     def _delete_company_profile(self, db, req: DeleteCompanyProfileRequest) -> dict:
@@ -117,8 +117,9 @@ class CompanyWriteService(BaseService):
         if req.sync_vector_index:
             result["deleted_chunks"] = self.ctx.vector_store.delete_by_source(
                 doc_type="company_profile",
-                source_table="company_profile",
+                source_table="company",
                 source_pks=deleted_ids,
+                source_uids=[f"company:{stock_code}" for stock_code in deleted_ids],
             ) if deleted_ids else 0
         return result
 

@@ -4,6 +4,7 @@ import hashlib
 
 from app.core.database.models.research_report_hot import ResearchReportHot
 from app.core.repositories.base import BaseRepository
+from app.core.utils.dedup import prepare_dedup_record
 
 
 def _ensure_uid(item: dict) -> dict:
@@ -18,10 +19,19 @@ def _ensure_uid(item: dict) -> dict:
     return item
 
 
+def _prepare_research_report_item(item: dict) -> dict:
+    return prepare_dedup_record("research_report", _ensure_uid(item))
+
+
 class ResearchReportWriteRepository(BaseRepository):
     """研报写库入口。"""
 
     def batch_upsert_research_reports(self, items: list[dict]):
         """批量写入研报，按 report_uid 去重。"""
-        items = [_ensure_uid(i) for i in items]
-        return self.bulk_upsert(ResearchReportHot, items=items, unique_keys=["report_uid"])
+        items = [_prepare_research_report_item(i) for i in items]
+        return self.bulk_upsert(
+            ResearchReportHot,
+            items=items,
+            unique_keys=["dedup_key"],
+            preserve_on_update=["report_uid"],
+        )

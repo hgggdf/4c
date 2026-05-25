@@ -7,58 +7,36 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.database.models.announcement_hot import (
+    AnnouncementRawArchive,
     AnnouncementRawHot,
+    AnnouncementStructuredArchive,
     AnnouncementStructuredHot,
+    CentralizedProcurementEventArchive,
     CentralizedProcurementEventHot,
+    ClinicalTrialEventArchive,
     ClinicalTrialEventHot,
+    DrugApprovalArchive,
     DrugApprovalHot,
+    RegulatoryRiskEventArchive,
     RegulatoryRiskEventHot,
 )
 from app.core.database.models.company import CompanyMaster, CompanyProfile, IndustryMaster
-from app.core.database.models.financial_hot import FinancialNotesHot
-from app.core.database.models.research_report_hot import ResearchReportHot
+from app.core.database.models.financial_hot import FinancialNotesArchive, FinancialNotesHot
+from app.core.database.models.research_report_hot import ResearchReportArchive, ResearchReportHot
 from app.core.database.models.news_hot import (
+    NewsCompanyMapArchive,
     NewsCompanyMapHot,
+    NewsIndustryMapArchive,
     NewsIndustryMapHot,
+    NewsRawArchive,
     NewsRawHot,
+    NewsStructuredArchive,
     NewsStructuredHot,
 )
 from app.knowledge.store import ChunkMetadata, get_store, get_vector_store
 
-try:
-    from app.core.database.models.archive import (
-        AnnouncementRawArchive,
-        AnnouncementStructuredArchive,
-        CentralizedProcurementEventArchive,
-        ClinicalTrialEventArchive,
-        DrugApprovalArchive,
-        FinancialNotesArchive,
-        NewsCompanyMapArchive,
-        NewsIndustryMapArchive,
-        NewsRawArchive,
-        NewsStructuredArchive,
-        RegulatoryRiskEventArchive,
-    )
-except Exception:
-    AnnouncementRawArchive = None
-    AnnouncementStructuredArchive = None
-    DrugApprovalArchive = None
-    ClinicalTrialEventArchive = None
-    CentralizedProcurementEventArchive = None
-    RegulatoryRiskEventArchive = None
-    FinancialNotesArchive = None
-    NewsRawArchive = None
-    NewsStructuredArchive = None
-    NewsIndustryMapArchive = None
-    NewsCompanyMapArchive = None
 
-try:
-    from app.core.database.models.research_report_hot import ResearchReportArchive
-except Exception:
-    ResearchReportArchive = None
-
-
-def _doc_id(prefix: str, pk: int, text: str) -> str:
+def _doc_id(prefix: str, pk: int | str, text: str) -> str:
     return f"{prefix}_{pk}_{md5((text or '')[:200].encode('utf-8')).hexdigest()[:10]}"
 
 
@@ -72,24 +50,77 @@ def _normalize_text(value) -> str:
     return str(value).strip()
 
 
-def _delete_existing(doc_type: str, source_table: str, source_pk: int | str) -> None:
+def _source_uid(row, fallback_prefix: str) -> str:
+    for attr in ("dedup_key", "announcement_uid", "report_uid", "news_uid"):
+        value = _normalize_text(_safe_attr(row, attr, ""))
+        if value:
+            return value
+    return f"{fallback_prefix}:{_safe_attr(row, 'id', '')}"
+
+
+def _financial_note_text(row) -> str:
+    note_text = _normalize_text(_safe_attr(row, "note_text"))
+    if note_text:
+        return note_text
+
+    report_type = _normalize_text(_safe_attr(row, "report_type"))
+    if report_type == "daily":
+        return ""
+
+    fields = [
+        ("stock_code", "股票代码"),
+        ("report_date", "报告日期"),
+        ("fiscal_year", "会计年度"),
+        ("report_type", "报告类型"),
+        ("revenue", "营业收入"),
+        ("operating_cost", "营业成本"),
+        ("gross_profit", "毛利润"),
+        ("gross_margin", "毛利率"),
+        ("selling_expense", "销售费用"),
+        ("admin_expense", "管理费用"),
+        ("rd_expense", "研发费用"),
+        ("rd_ratio", "研发费用率"),
+        ("operating_profit", "营业利润"),
+        ("net_profit", "净利润"),
+        ("net_profit_deducted", "扣非净利润"),
+        ("eps", "每股收益"),
+        ("total_assets", "总资产"),
+        ("total_liabilities", "总负债"),
+        ("debt_ratio", "资产负债率"),
+        ("operating_cashflow", "经营现金流"),
+        ("source_url", "来源"),
+    ]
+    parts = []
+    for attr, label in fields:
+        value = _normalize_text(_safe_attr(row, attr))
+        if value:
+            parts.append(f"{label}: {value}")
+    return "；".join(parts)
+
+
+def _delete_existing(doc_type: str, source_table: str, source_pk: int | str, source_uid: str = "") -> None:
     try:
         get_vector_store().delete_by_source(
             doc_type=doc_type,
             source_table=source_table,
             source_pks=[str(source_pk)],
+            source_uids=[source_uid] if source_uid else None,
         )
     except Exception:
         pass
     try:
-        get_store().delete_by_source(source_table=source_table, source_pks=[str(source_pk)])
+        get_store().delete_by_source(
+            source_table=source_table,
+            source_pks=[str(source_pk)],
+            source_uids=[source_uid] if source_uid else None,
+        )
     except Exception:
         pass
 
 
 def _write_document(text: str, doc_type: str, meta: ChunkMetadata) -> int:
     meta_dict = meta.to_dict()
-    _delete_existing(doc_type, meta.source_table, meta.source_pk)
+    _delete_existing(doc_type, meta.source_table, meta.source_pk, meta.source_uid)
 
     vec_count = get_vector_store().add_document(
         text=text,
@@ -248,6 +279,7 @@ def sync_announcements(
             source_url=_safe_attr(row, "source_url", "") or "",
             source_table=Model.__tablename__,
             source_pk=str(row.id),
+            source_uid=_source_uid(row, "announcement"),
             is_hot=1 if is_hot else 0,
         )
         total += _write_document(content, "announcement", meta)
@@ -287,6 +319,7 @@ def sync_announcements_by_ids(db: Session, source_ids: list[int], is_hot: bool =
             source_url=_safe_attr(row, "source_url", "") or "",
             source_table=Model.__tablename__,
             source_pk=str(row.id),
+            source_uid=_source_uid(row, "announcement"),
             is_hot=1 if is_hot else 0,
         )
         total += _write_document(content, "announcement", meta)
@@ -314,7 +347,7 @@ def sync_financial_notes(
 
     total = 0
     for row in rows:
-        text_value = _normalize_text(_safe_attr(row, "note_text"))
+        text_value = _financial_note_text(row)
         if not text_value:
             continue
 
@@ -324,11 +357,12 @@ def sync_financial_notes(
             stock_code=_safe_attr(row, "stock_code", "") or "",
             stock_name=stock_name_by_code.get(_safe_attr(row, "stock_code", "") or "", ""),
             publish_date=str(_safe_attr(row, "report_date", "") or ""),
-            category=_safe_attr(row, "note_type", "") or "",
+            category=_safe_attr(row, "note_type", "") or _safe_attr(row, "report_type", "") or "",
             source_type=_safe_attr(row, "source_type", "") or "",
             source_url=_safe_attr(row, "source_url", "") or "",
             source_table=Model.__tablename__,
             source_pk=str(row.id),
+            source_uid=_source_uid(row, "financial"),
             is_hot=1 if is_hot else 0,
         )
         total += _write_document(text_value, "financial_note", meta)
@@ -347,7 +381,7 @@ def sync_financial_notes_by_ids(db: Session, source_ids: list[int], is_hot: bool
 
     total = 0
     for row in rows:
-        text_value = _normalize_text(_safe_attr(row, "note_text"))
+        text_value = _financial_note_text(row)
         if not text_value:
             continue
         meta = ChunkMetadata(
@@ -356,11 +390,12 @@ def sync_financial_notes_by_ids(db: Session, source_ids: list[int], is_hot: bool
             stock_code=_safe_attr(row, "stock_code", "") or "",
             stock_name=stock_name_by_code.get(_safe_attr(row, "stock_code", "") or "", ""),
             publish_date=str(_safe_attr(row, "report_date", "") or ""),
-            category=_safe_attr(row, "note_type", "") or "",
+            category=_safe_attr(row, "note_type", "") or _safe_attr(row, "report_type", "") or "",
             source_type=_safe_attr(row, "source_type", "") or "",
             source_url=_safe_attr(row, "source_url", "") or "",
             source_table=Model.__tablename__,
             source_pk=str(row.id),
+            source_uid=_source_uid(row, "financial"),
             is_hot=1 if is_hot else 0,
         )
         total += _write_document(text_value, "financial_note", meta)
@@ -391,6 +426,7 @@ def sync_company_profiles(db: Session, stock_code: str | None = None, limit: int
             title=stock_name,
             source_table=CompanyProfile.__tablename__,
             source_pk=profile.stock_code or "",
+            source_uid=f"company:{profile.stock_code}",
             is_hot=1,
         )
         total += _write_document(text, "company_profile", meta)
@@ -398,7 +434,7 @@ def sync_company_profiles(db: Session, stock_code: str | None = None, limit: int
     return total
 
 
-def sync_company_profiles_by_ids(db: Session, source_ids: list[int]) -> int:
+def sync_company_profiles_by_ids(db: Session, source_ids: list[int | str]) -> int:
     if not source_ids:
         return 0
 
@@ -423,7 +459,8 @@ def sync_company_profiles_by_ids(db: Session, source_ids: list[int]) -> int:
             stock_name=stock_name,
             title=stock_name,
             source_table=CompanyProfile.__tablename__,
-            source_pk=str(profile.id),
+            source_pk=profile.stock_code or "",
+            source_uid=f"company:{profile.stock_code}",
             is_hot=1,
         )
         total += _write_document(text, "company_profile", meta)
@@ -542,6 +579,7 @@ def sync_news(db: Session, is_hot: bool = True, stock_code: str | None = None, l
             source_url=_safe_attr(row, "source_url", "") or "",
             source_table=RawModel.__tablename__,
             source_pk=str(row.id),
+            source_uid=_source_uid(row, "news"),
             industry_code=extra["industry_code"],
             industry_name=extra["industry_name"],
             is_hot=1 if is_hot else 0,
@@ -591,6 +629,7 @@ def sync_news_by_ids(db: Session, source_ids: list[int], is_hot: bool = True) ->
             source_url=_safe_attr(row, "source_url", "") or "",
             source_table=RawModel.__tablename__,
             source_pk=str(row.id),
+            source_uid=_source_uid(row, "news"),
             industry_code=extra["industry_code"],
             industry_name=extra["industry_name"],
             is_hot=1 if is_hot else 0,
@@ -630,6 +669,7 @@ def sync_external_document(
         source_url=source_url,
         source_table=f"external_{doc_type}",
         source_pk=str(source_pk),
+        source_uid=f"external:{doc_type}:{source_pk}",
         industry_code=industry_code,
         industry_name=industry_name,
         is_hot=is_hot,
@@ -671,6 +711,7 @@ def _sync_research_report_row(db: Session, row, *, is_hot: bool, stock_name_by_c
         source_url=_safe_attr(row, "source_url", "") or "",
         source_table=source_table,
         source_pk=str(row.id),
+        source_uid=_source_uid(row, "research_report"),
         industry_code=industry_code,
         industry_name=industry_name,
         is_hot=1 if is_hot else 0,

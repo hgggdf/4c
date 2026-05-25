@@ -108,6 +108,6 @@ class NewsWriteService(BaseService):
     def _delete_news_vectors(self, source_ids: list[int]) -> int:
         return self.ctx.vector_store.delete_by_source(
             doc_type="news",
-            source_table="news_raw_hot",
+            source_table="news_hot",
             source_pks=source_ids,
         )

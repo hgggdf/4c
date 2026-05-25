@@ -118,6 +118,6 @@ class AnnouncementWriteService(BaseService):
     def _delete_announcement_vectors(self, source_ids: list[int]) -> int:
         return self.ctx.vector_store.delete_by_source(
             doc_type="announcement",
-            source_table="announcement_raw_hot",
+            source_table="announcement_hot",
             source_pks=source_ids,
         )

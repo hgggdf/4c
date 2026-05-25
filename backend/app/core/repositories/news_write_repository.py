@@ -3,6 +3,7 @@ from __future__ import annotations
 from app.core.database.models.news_hot import NewsHot, NewsArchive
 from app.core.repositories.base import BaseRepository
 from app.core.utils.convert import generate_uid_md5
+from app.core.utils.dedup import prepare_dedup_record
 
 
 def _ensure_news_uid(item: dict) -> dict:
@@ -16,6 +17,10 @@ def _ensure_news_uid(item: dict) -> dict:
     return item
 
 
+def _prepare_news_item(item: dict) -> dict:
+    return prepare_dedup_record("news", _ensure_news_uid(item))
+
+
 class NewsWriteRepository(BaseRepository):
     """新闻写库入口。
 
@@ -25,13 +30,23 @@ class NewsWriteRepository(BaseRepository):
 
     def batch_upsert_news_raw(self, items: list[dict]):
         """批量写入原始新闻，按 news_uid 去重。"""
-        items = [_ensure_news_uid(i) for i in items]
-        return self.bulk_upsert(NewsHot, items=items, unique_keys=["news_uid"])
+        items = [_prepare_news_item(i) for i in items]
+        return self.bulk_upsert(
+            NewsHot,
+            items=items,
+            unique_keys=["dedup_key"],
+            preserve_on_update=["news_uid"],
+        )
 
     def batch_upsert_news(self, items: list[dict]):
         """通用新闻写入入口，按 news_uid 去重。"""
-        items = [_ensure_news_uid(i) for i in items]
-        return self.bulk_upsert(NewsHot, items=items, unique_keys=["news_uid"])
+        items = [_prepare_news_item(i) for i in items]
+        return self.bulk_upsert(
+            NewsHot,
+            items=items,
+            unique_keys=["dedup_key"],
+            preserve_on_update=["news_uid"],
+        )
 
     # 旧版 news_structured → 写入 news_hot，结构化字段存 key_fields_json
     def batch_upsert_news_structured(self, items: list[dict]):
@@ -40,8 +55,13 @@ class NewsWriteRepository(BaseRepository):
         for item in items:
             m = dict(item)
             m.setdefault("key_fields_json", {k: v for k, v in item.items()})
-            mapped.append(_ensure_news_uid(m))
-        return self.bulk_upsert(NewsHot, items=mapped, unique_keys=["news_uid"])
+            mapped.append(_prepare_news_item(m))
+        return self.bulk_upsert(
+            NewsHot,
+            items=mapped,
+            unique_keys=["dedup_key"],
+            preserve_on_update=["news_uid"],
+        )
 
     # 旧版 news_industry_map → 更新 related_industry_codes_json
     def replace_news_industry_map(self, news_id: int, items: list[dict]):
@@ -69,8 +89,13 @@ class NewsWriteRepository(BaseRepository):
             m = dict(item)
             m.setdefault("news_type", "industry_impact")
             m.setdefault("key_fields_json", {k: v for k, v in item.items()})
-            mapped.append(m)
-        return self.bulk_upsert(NewsHot, items=mapped, unique_keys=["news_uid"])
+            mapped.append(_prepare_news_item(m))
+        return self.bulk_upsert(
+            NewsHot,
+            items=mapped,
+            unique_keys=["dedup_key"],
+            preserve_on_update=["news_uid"],
+        )
 
     def batch_delete_news_raw(self, items: list[dict]) -> list[int]:
         """按 news_uid 删除原始新闻。"""

@@ -22,6 +22,7 @@ from app.core.database.models.announcement_hot import AnnouncementHot
 from app.core.database.models.research_report_hot import ResearchReportHot
 from app.core.database.models.news_hot import NewsHot
 from app.core.database.models.macro_hot import MacroIndicator
+from app.core.utils.dedup import prepare_dedup_record
 from sqlalchemy import select
 
 INCOMING_DIR = Path("data/incoming")
@@ -40,6 +41,17 @@ def sha256(text: str) -> str:
 
 def md5(text: str) -> str:
     return hashlib.md5(text.encode("utf-8")).hexdigest()
+
+
+def find_existing_by_dedup_or_legacy(db, model, dedup_key: str | None, legacy_filters: dict):
+    if dedup_key:
+        existing = db.execute(select(model).where(model.dedup_key == dedup_key)).scalars().first()
+        if existing:
+            return existing
+    stmt = select(model)
+    for key, value in legacy_filters.items():
+        stmt = stmt.where(getattr(model, key) == value)
+    return db.execute(stmt).scalars().first()
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -195,14 +207,6 @@ def ingest_financial(batch_id: str, batch_dir: Path, records: list[dict]) -> tup
                 revenue = _safe_float(rec.get("revenue"))
                 operating_cost = _safe_float(rec.get("operating_cost"))
 
-                existing = db.execute(
-                    select(FinancialHot).where(
-                        FinancialHot.stock_code == stock_code,
-                        FinancialHot.report_date == report_date,
-                        FinancialHot.report_type == report_type,
-                    )
-                ).scalars().first()
-
                 values = {
                     "fiscal_year": fiscal_year,
                     "revenue": revenue,
@@ -236,8 +240,25 @@ def ingest_financial(batch_id: str, batch_dir: Path, records: list[dict]) -> tup
                     "original_filename": rec.get("original_filename"),
                     "file_hash": rec.get("file_hash"),
                 }
+                dedup_record = prepare_dedup_record(
+                    "financial",
+                    {**rec, **values, "report_date": report_date, "report_type": report_type},
+                )
+                values["dedup_key"] = dedup_record["dedup_key"]
+                values["content_hash"] = dedup_record["content_hash"]
                 # 只更新非 None 的值
                 values = {k: v for k, v in values.items() if v is not None}
+
+                existing = find_existing_by_dedup_or_legacy(
+                    db,
+                    FinancialHot,
+                    values.get("dedup_key"),
+                    {
+                        "stock_code": stock_code,
+                        "report_date": report_date,
+                        "report_type": report_type,
+                    },
+                )
 
                 if existing:
                     for k, v in values.items():
@@ -277,19 +298,26 @@ def ingest_announcement(batch_id: str, batch_dir: Path, records: list[dict]) -> 
             try:
                 move_file_to_raw(batch_dir, rec.get("local_file", ""), "announcement", stock_code)
                 uid = md5(f"{stock_code}-{title}-{publish_date}")
-
-                existing = db.execute(
-                    select(AnnouncementHot).where(
-                        AnnouncementHot.stock_code == stock_code,
-                        AnnouncementHot.title == title,
-                        AnnouncementHot.publish_date == publish_date,
-                    )
-                ).scalars().first()
+                dedup_record = prepare_dedup_record(
+                    "announcement",
+                    {**rec, "stock_code": stock_code, "title": title, "publish_date": publish_date},
+                )
+                existing = find_existing_by_dedup_or_legacy(
+                    db,
+                    AnnouncementHot,
+                    dedup_record.get("dedup_key"),
+                    {
+                        "stock_code": stock_code,
+                        "title": title,
+                        "publish_date": publish_date,
+                    },
+                )
 
                 if existing:
                     for field in ["announcement_type", "content", "summary_text",
-                                  "key_fields_json", "source_url", "file_hash"]:
-                        val = rec.get(field)
+                                  "key_fields_json", "source_url", "file_hash",
+                                  "dedup_key", "content_hash"]:
+                        val = dedup_record.get(field)
                         if val is not None:
                             setattr(existing, field, val)
                 else:
@@ -304,6 +332,8 @@ def ingest_announcement(batch_id: str, batch_dir: Path, records: list[dict]) -> 
                         key_fields_json=rec.get("key_fields_json"),
                         source_url=rec.get("source_url"),
                         file_hash=rec.get("file_hash") or uid,
+                        dedup_key=dedup_record["dedup_key"],
+                        content_hash=dedup_record["content_hash"],
                     )
                     db.add(entity)
                 db.flush()
@@ -352,15 +382,29 @@ def ingest_research_report(batch_id: str, batch_dir: Path, records: list[dict]) 
                         industry_code = None
 
                 uid = md5(f"{scope_type}-{stock_code}-{industry_code}-{title}-{rec.get('publish_date', '')}")
-
-                existing = db.execute(
-                    select(ResearchReportHot).where(ResearchReportHot.report_uid == uid)
-                ).scalars().first()
+                dedup_record = prepare_dedup_record(
+                    "research_report",
+                    {
+                        **rec,
+                        "scope_type": scope_type,
+                        "stock_code": stock_code,
+                        "industry_code": industry_code,
+                        "title": title,
+                    },
+                )
+                existing = find_existing_by_dedup_or_legacy(
+                    db,
+                    ResearchReportHot,
+                    dedup_record.get("dedup_key"),
+                    {
+                        "report_uid": uid,
+                    },
+                )
 
                 if existing:
                     for field in ["report_org", "content", "summary_text", "source_type",
-                                  "source_url", "file_hash"]:
-                        val = rec.get(field)
+                                  "source_url", "file_hash", "dedup_key", "content_hash"]:
+                        val = dedup_record.get(field)
                         if val is not None:
                             setattr(existing, field, val)
                 else:
@@ -377,6 +421,8 @@ def ingest_research_report(batch_id: str, batch_dir: Path, records: list[dict]) 
                         source_type=rec.get("source_type"),
                         source_url=rec.get("source_url"),
                         file_hash=rec.get("file_hash"),
+                        dedup_key=dedup_record["dedup_key"],
+                        content_hash=dedup_record["content_hash"],
                     )
                     db.add(entity)
                 db.flush()
@@ -407,16 +453,22 @@ def ingest_news(batch_id: str, batch_dir: Path, records: list[dict]) -> tuple[in
                 news_uid = sha256(
                     rec.get("source_url") or f"{title}{rec.get('publish_time', '')}{rec.get('source_name', '')}"
                 )
-
-                existing = db.execute(
-                    select(NewsHot).where(NewsHot.news_uid == news_uid)
-                ).scalars().first()
+                dedup_record = prepare_dedup_record("news", {**rec, "title": title, "news_uid": news_uid})
+                existing = find_existing_by_dedup_or_legacy(
+                    db,
+                    NewsHot,
+                    dedup_record.get("dedup_key"),
+                    {
+                        "news_uid": news_uid,
+                    },
+                )
 
                 if existing:
                     for field in ["content", "summary_text", "news_type", "source_name",
                                   "source_url", "related_stock_codes_json",
-                                  "related_industry_codes_json", "key_fields_json"]:
-                        val = rec.get(field)
+                                  "related_industry_codes_json", "key_fields_json",
+                                  "dedup_key", "content_hash"]:
+                        val = dedup_record.get(field)
                         if val is not None:
                             setattr(existing, field, val)
                 else:
@@ -433,6 +485,8 @@ def ingest_news(batch_id: str, batch_dir: Path, records: list[dict]) -> tuple[in
                         related_industry_codes_json=rec.get("related_industry_codes_json"),
                         key_fields_json=rec.get("key_fields_json"),
                         file_hash=rec.get("file_hash"),
+                        dedup_key=dedup_record["dedup_key"],
+                        content_hash=dedup_record["content_hash"],
                     )
                     db.add(entity)
                 db.flush()

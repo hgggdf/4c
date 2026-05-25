@@ -3,6 +3,7 @@ from __future__ import annotations
 from app.core.database.models.announcement_hot import AnnouncementHot, AnnouncementArchive
 from app.core.repositories.base import BaseRepository
 from app.core.utils.convert import generate_uid_md5
+from app.core.utils.dedup import prepare_dedup_record
 
 
 def _ensure_uid(item: dict) -> dict:
@@ -16,6 +17,10 @@ def _ensure_uid(item: dict) -> dict:
     return item
 
 
+def _prepare_announcement_item(item: dict) -> dict:
+    return prepare_dedup_record("announcement", _ensure_uid(item))
+
+
 class AnnouncementWriteRepository(BaseRepository):
     """公告写库入口。
 
@@ -25,13 +30,23 @@ class AnnouncementWriteRepository(BaseRepository):
 
     def batch_upsert_raw_announcements(self, items: list[dict]):
         """批量写入原始公告，按 stock_code/title/publish_date 去重。"""
-        items = [_ensure_uid(i) for i in items]
-        return self.bulk_upsert(AnnouncementHot, items=items, unique_keys=["stock_code", "title", "publish_date"])
+        items = [_prepare_announcement_item(i) for i in items]
+        return self.bulk_upsert(
+            AnnouncementHot,
+            items=items,
+            unique_keys=["dedup_key"],
+            preserve_on_update=["announcement_uid"],
+        )
 
     def batch_upsert_announcements(self, items: list[dict]):
         """按 announcement_uid 批量写入公告。"""
-        items = [_ensure_uid(i) for i in items]
-        return self.bulk_upsert(AnnouncementHot, items=items, unique_keys=["announcement_uid"])
+        items = [_prepare_announcement_item(i) for i in items]
+        return self.bulk_upsert(
+            AnnouncementHot,
+            items=items,
+            unique_keys=["dedup_key"],
+            preserve_on_update=["announcement_uid"],
+        )
 
     # 旧版 structured → 写入 announcement_hot，category 存入 announcement_type
     def batch_upsert_structured_announcements(self, items: list[dict]):
@@ -41,8 +56,13 @@ class AnnouncementWriteRepository(BaseRepository):
             m = dict(item)
             if "category" in m and "announcement_type" not in m:
                 m["announcement_type"] = m.pop("category")
-            mapped.append(_ensure_uid(m))
-        return self.bulk_upsert(AnnouncementHot, items=mapped, unique_keys=["stock_code", "title", "publish_date"])
+            mapped.append(_prepare_announcement_item(m))
+        return self.bulk_upsert(
+            AnnouncementHot,
+            items=mapped,
+            unique_keys=["dedup_key"],
+            preserve_on_update=["announcement_uid"],
+        )
 
     # 旧版事件扩展表 → 写入 announcement_hot，type 字段标记
     def batch_upsert_drug_approvals(self, items: list[dict]):
@@ -70,8 +90,13 @@ class AnnouncementWriteRepository(BaseRepository):
             m.setdefault("title", m.get("drug_name") or m.get("risk_type") or ann_type)
             m.setdefault("publish_date", m.get("approval_date") or m.get("event_date"))
             m.setdefault("key_fields_json", {k: v for k, v in item.items()})
-            mapped.append(_ensure_uid(m))
-        return self.bulk_upsert(AnnouncementHot, items=mapped, unique_keys=["stock_code", "title", "publish_date"])
+            mapped.append(_prepare_announcement_item(m))
+        return self.bulk_upsert(
+            AnnouncementHot,
+            items=mapped,
+            unique_keys=["dedup_key"],
+            preserve_on_update=["announcement_uid"],
+        )
 
     def batch_delete_raw_announcements(self, items: list[dict]) -> list[int]:
         """按 stock_code/title/publish_date 删除原始公告。"""

@@ -341,6 +341,12 @@ TOOLS_SCHEMA = [
     },
 ]
 
+MARKDOWN_FORMULA_RULES = """Formatting rules:
+- Use GitHub Markdown only. Do not output LaTeX math.
+- Do not use $...$, $$...$$, \\(...\\), \\[...\\], \\frac{}, \\times, \\sum, or other TeX syntax.
+- Write formulas as plain text or inline code, for example: `PE = stock price / EPS`, `FCF = operating cash flow - capex`.
+- Prefer Markdown tables for formulas, assumptions, metrics, and conclusions; put units in table columns."""
+
 SYSTEM_PROMPT = """你是"医策经纬"——面向医药上市公司的多智能体运营诊断与投研辅助系统，具备真正的 Agent 能力。
 
 工具选择指引：
@@ -368,6 +374,8 @@ SYSTEM_PROMPT = """你是"医策经纬"——面向医药上市公司的多智�
 - 说明推理过程和趋势判断
 - 给出明确的投资决策建议
 - 用中文回答，结构清晰"""
+
+SYSTEM_PROMPT = SYSTEM_PROMPT + "\n\n" + MARKDOWN_FORMULA_RULES
 
 
 # ─────────────────────────────────────────────────────────────
@@ -635,10 +643,11 @@ class ReactAgent:
                     "1. 直接引用上方数据中的具体数值，标注数据来源工具名；\n"
                     "2. 说明推理过程（数据说明了什么趋势/问题）；\n"
                     "3. 给出明确的投资决策建议（买入/持有/观望）及理由；\n"
-                    "4. 用中文回答，结构清晰。"
+                    "4. 用中文回答，结构清晰；\n"
+                    "5. 公式必须使用普通 Markdown 文本或表格，禁止使用 LaTeX、$...$、$$...$$、\\frac{}、\\times 等 TeX 语法。"
                 )
                 final_messages = [
-                    {"role": "system", "content": "你是专业的医药行业投研分析助手。以下工具数据均已成功从数据库获取，是真实可信的，请直接基于这些数据进行分析。"},
+                    {"role": "system", "content": "你是专业的医药行业投研分析助手。以下工具数据均已成功从数据库获取，是真实可信的，请直接基于这些数据进行分析。\n\n" + MARKDOWN_FORMULA_RULES},
                     {"role": "user", "content": synthesis_prompt},
                 ]
             else:

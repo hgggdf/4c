@@ -1,0 +1,17 @@
+{
+  "batch_id": "verify_20260511",
+  "created_at": "2026-05-24T2310",
+  "status": "ready",
+  "data_types": [
+    "company",
+    "research_report",
+    "announcement",
+    "news",
+    "financial"
+  ],
+  "stock_codes": [
+    "000538",
+    "600276"
+  ],
+  "stock_count": 2
+}

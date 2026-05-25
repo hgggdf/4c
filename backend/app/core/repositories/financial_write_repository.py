@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from app.core.database.models.financial_hot import FinancialHot, FinancialArchive
 from app.core.repositories.base import BaseRepository
+from app.core.utils.dedup import prepare_dedup_record
+
+
+def _prepare_financial_items(items: list[dict]) -> list[dict]:
+    return [prepare_dedup_record("financial", item) for item in items]
 
 
 class FinancialWriteRepository(BaseRepository):
@@ -13,31 +18,31 @@ class FinancialWriteRepository(BaseRepository):
 
     def batch_upsert_income_statements(self, items: list[dict]):
         """批量写入收入表数据，按 stock_code/report_date/report_type 去重。"""
-        return self.bulk_upsert(FinancialHot, items=items, unique_keys=["stock_code", "report_date", "report_type"])
+        return self.bulk_upsert(FinancialHot, items=_prepare_financial_items(items), unique_keys=["dedup_key"])
 
     def batch_upsert_balance_sheets(self, items: list[dict]):
         """批量写入资产负债表数据，复用 FinancialHot 合并表。"""
-        return self.bulk_upsert(FinancialHot, items=items, unique_keys=["stock_code", "report_date", "report_type"])
+        return self.bulk_upsert(FinancialHot, items=_prepare_financial_items(items), unique_keys=["dedup_key"])
 
     def batch_upsert_cashflow_statements(self, items: list[dict]):
         """批量写入现金流量表数据，复用 FinancialHot 合并表。"""
-        return self.bulk_upsert(FinancialHot, items=items, unique_keys=["stock_code", "report_date", "report_type"])
+        return self.bulk_upsert(FinancialHot, items=_prepare_financial_items(items), unique_keys=["dedup_key"])
 
     def batch_upsert_financial(self, items: list[dict]):
         """通用财务批量写入入口。"""
-        return self.bulk_upsert(FinancialHot, items=items, unique_keys=["stock_code", "report_date", "report_type"])
+        return self.bulk_upsert(FinancialHot, items=_prepare_financial_items(items), unique_keys=["dedup_key"])
 
     def batch_upsert_financial_metrics(self, items: list[dict]):
         """批量写入财务指标数据，复用 FinancialHot 合并表。"""
-        return self.bulk_upsert(FinancialHot, items=items, unique_keys=["stock_code", "report_date", "report_type"])
+        return self.bulk_upsert(FinancialHot, items=_prepare_financial_items(items), unique_keys=["dedup_key"])
 
     def batch_upsert_financial_notes(self, items: list[dict]):
         """批量写入财务附注数据，复用 FinancialHot 合并表。"""
-        return self.bulk_upsert(FinancialHot, items=items, unique_keys=["stock_code", "report_date", "report_type"])
+        return self.bulk_upsert(FinancialHot, items=_prepare_financial_items(items), unique_keys=["dedup_key"])
 
     def batch_upsert_business_segments(self, items: list[dict]):
         """批量写入业务分部数据，复用 FinancialHot 合并表。"""
-        return self.bulk_upsert(FinancialHot, items=items, unique_keys=["stock_code", "report_date", "report_type"])
+        return self.bulk_upsert(FinancialHot, items=_prepare_financial_items(items), unique_keys=["dedup_key"])
 
     def batch_upsert_stock_daily(self, items: list[dict]):
         """日行情写入占位入口；当前没有实际写库行为。"""

@@ -97,7 +97,14 @@ class BaseRepository:
             stmt = stmt.limit(limit)
         return self.scalars_all(stmt)
 
-    def upsert(self, model: Any, *, unique_fields: dict[str, Any], values: dict[str, Any]) -> tuple[Any, bool]:
+    def upsert(
+        self,
+        model: Any,
+        *,
+        unique_fields: dict[str, Any],
+        values: dict[str, Any],
+        preserve_on_update: Sequence[str] | None = None,
+    ) -> tuple[Any, bool]:
         """按唯一字段实现“存在则更新，不存在则新增”。
 
         注意：这是应用层先查再写，不是 MySQL 原子 ON DUPLICATE KEY UPDATE。
@@ -109,7 +116,10 @@ class BaseRepository:
             entity = model(**{**unique_fields, **values})
             self.add(entity)
         else:
+            preserved = set(preserve_on_update or [])
             for key, value in values.items():
+                if key in preserved:
+                    continue
                 setattr(entity, key, value)
             self.db.flush()
         return entity, created
@@ -121,6 +131,7 @@ class BaseRepository:
         items: list[dict[str, Any]],
         unique_keys: Sequence[str],
         mutable_fields: Sequence[str] | None = None,
+        preserve_on_update: Sequence[str] | None = None,
     ) -> tuple[list[Any], int, int]:
         """批量 upsert。
 
@@ -137,7 +148,12 @@ class BaseRepository:
             values = {k: v for k, v in item.items() if k not in unique_keys and k != "id"}
             if mutable_set is not None:
                 values = {k: v for k, v in values.items() if k in mutable_set}
-            entity, created = self.upsert(model, unique_fields=unique_fields, values=values)
+            entity, created = self.upsert(
+                model,
+                unique_fields=unique_fields,
+                values=values,
+                preserve_on_update=preserve_on_update,
+            )
             entities.append(entity)
             if created:
                 created_count += 1

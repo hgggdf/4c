@@ -11,6 +11,8 @@ from app.core.database.base import Base, BIGINT_PK
 class NewsHot(Base):
     __tablename__ = "news_hot"
     __table_args__ = (
+        Index("ux_news_dedup_key", "dedup_key", unique=True),
+        Index("idx_news_content_hash", "content_hash"),
         Index("idx_publish_time", "publish_time"),
         Index("idx_news_type_time", "news_type", "publish_time"),
         Index("idx_vector_status", "vector_status"),
@@ -37,6 +39,8 @@ class NewsHot(Base):
     file_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     original_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     file_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    dedup_key: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     vector_status: Mapped[str] = mapped_column(String(32), default="pending", nullable=False)
     query_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
@@ -47,6 +51,8 @@ class NewsHot(Base):
 class NewsArchive(Base):
     __tablename__ = "news_archive"
     __table_args__ = (
+        Index("ux_news_archive_dedup_key", "dedup_key", unique=True),
+        Index("idx_news_archive_content_hash", "content_hash"),
         Index("idx_news_archive_publish_time", "publish_time"),
         Index("idx_news_archive_type_time", "news_type", "publish_time"),
         Index("idx_news_archive_vector_status", "vector_status"),
@@ -72,6 +78,8 @@ class NewsArchive(Base):
     file_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     original_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     file_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    dedup_key: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     vector_status: Mapped[str] = mapped_column(String(32), default="pending", nullable=False)
     query_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
