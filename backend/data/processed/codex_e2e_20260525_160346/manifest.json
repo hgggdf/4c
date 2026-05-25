@@ -1,0 +1,20 @@
+{
+    "batch_id":  "codex_e2e_20260525_160346",
+    "status":  "ready",
+    "data_types":  [
+                       "company",
+                       "financial",
+                       "announcement",
+                       "research_report",
+                       "news",
+                       "macro"
+                   ],
+    "files":  {
+                  "company":  "company/company_records.jsonl",
+                  "financial":  "financial/financial_records.jsonl",
+                  "announcement":  "announcement/announcement_records.jsonl",
+                  "research_report":  "research_report/research_report_records.jsonl",
+                  "news":  "news/news_records.jsonl",
+                  "macro":  "macro/macro_records.jsonl"
+              }
+}

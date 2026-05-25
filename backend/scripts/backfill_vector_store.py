@@ -25,7 +25,7 @@ BACKFILL_ORDER = (
     ("announcement", sync_announcements),
     ("financial_note", sync_financial_notes),
     ("news", sync_news),
-    ("research_report", sync_research_reports),
+    ("report", sync_research_reports),
 )
 
 

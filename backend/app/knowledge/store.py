@@ -292,7 +292,8 @@ class VectorKnowledgeStore:
 
         docs = existing.get("documents") or []
         metas = existing.get("metadatas") or []
-        embeddings = existing.get("embeddings") or []
+        raw_embeddings = existing.get("embeddings")
+        embeddings = raw_embeddings if raw_embeddings is not None else []
 
         hits: list[dict[str, Any]] = []
         for doc, meta, embedding in zip(docs, metas, embeddings):

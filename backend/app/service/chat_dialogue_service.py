@@ -187,12 +187,12 @@ class ChatService:
                 score += 0.6
             items.append({"doc_type": "news", "title": row.title, "snippet": row.summary_text or row.content or "", "match_source": "keyword", "keyword_score": score, "vector_score": None, "final_score": score})
 
-        prof = db.execute(select(CompanyProfile, CompanyMaster.stock_name).join(CompanyMaster, CompanyMaster.stock_code == CompanyProfile.stock_code).where(or_(CompanyMaster.stock_name.contains(q), CompanyMaster.full_name.contains(q), CompanyProfile.business_summary.contains(q))).limit(top_k)).all()
-        for profile, stock_name in prof:
+        prof = db.execute(select(CompanyMaster).where(or_(CompanyMaster.stock_name.contains(q), CompanyMaster.full_name.contains(q), CompanyMaster.business_summary.contains(q))).limit(top_k)).scalars().all()
+        for profile in prof:
             score = 1.7
             if stock_code and profile.stock_code == stock_code:
                 score += 0.8
-            items.append({"doc_type": "company_profile", "title": stock_name or profile.stock_code, "snippet": profile.business_summary or "", "match_source": "keyword", "keyword_score": score, "vector_score": None, "final_score": score})
+            items.append({"doc_type": "company_profile", "title": profile.stock_name or profile.stock_code, "snippet": profile.business_summary or "", "match_source": "keyword", "keyword_score": score, "vector_score": None, "final_score": score})
 
         return items[:top_k]
 
