@@ -514,6 +514,7 @@ async function handleFollowUp(suggestion, followUp) {
   await chatStore.askFollowUp({
     message: suggestion.message,
     stock_code: followUp.stock_code,
+    stock_name: followUp.stock_name,
     mode: suggestion.mode,
   })
 }

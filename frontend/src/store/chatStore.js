@@ -265,10 +265,10 @@ export const useChatStore = defineStore('chat', {
     },
 
     // 用户点击功能推荐卡片后调用
-    async askFollowUp({ message, stock_code, mode }) {
+    async askFollowUp({ message, stock_code, stock_name, mode }) {
       await this.ask({
         message,
-        targets: stock_code ? [{ type: 'stock', symbol: stock_code }] : [],
+        targets: stock_code ? [{ type: 'stock', symbol: stock_code, name: stock_name || stock_code }] : [],
         selected_mode: mode,
       })
     },
