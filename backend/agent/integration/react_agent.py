@@ -298,12 +298,13 @@ TOOLS_SCHEMA = [
         "type": "function",
         "function": {
             "name": "get_price_volume_data",
-            "description": "获取公司最近N个交易日的原始日行情序列（OHLC、成交量、成交额、涨跌幅）。",
+            "description": "获取公司日行情序列（OHLC、成交量、成交额、涨跌幅）。具体日期追问必须传 target_date，不要把日期误写成 days=1。",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "stock_code": {"type": "string", "description": "6位数字股票代码"},
-                    "days": {"type": "integer", "description": "返回交易日数，默认60", "default": 60},
+                    "days": {"type": "integer", "description": "返回交易日数，默认60；具体日期追问不要传1", "default": 60},
+                    "target_date": {"type": "string", "description": "具体目标日期，如2026-05-08或5月8日"},
                 },
                 "required": ["stock_code"],
             },
@@ -398,6 +399,7 @@ SYSTEM_PROMPT = """你是"医策经纬"——面向医药上市公司的多智�
 - 需要量价分析、技术面判断 → 调 get_price_volume_analysis
 - 需要解释放量/缩量/异动原因 → 调 get_price_volume_event_correlation
 - 需要获取原始日行情序列 → 调 get_price_volume_data
+- 用户问“5月8日呢？”这类具体日期追问 → 调 get_price_volume_data，并传 target_date="5月8日"；不要传 days=1
 - 需要管线 rNPV 估值 → 先调 list_pipeline_drugs 了解管线，再调 calculate_pipeline_rnpv 计算三情景估值
 - 问题是行业趋势、政策影响、宏观分析（无具体公司名）→ 直接调 search_documents，不要要求用户澄清
 - 例如"集采对仿制药行业的影响" → search_documents(query="集采对仿制药的影响", doc_types=["announcement","news"])
@@ -409,6 +411,7 @@ SYSTEM_PROMPT = """你是"医策经纬"——面向医药上市公司的多智�
 3. 只基于工具返回的真实数据作答，不编造数据
 4. 数据不足时明确说明，不猜测
 5. 用户明确指定了天数（如"最近120天"、"过去半年"、"250个交易日"等），必须将对应的整数值作为 days 参数传入工具，不得忽略或使用默认值
+6. 用户指定具体日期（如"5月8日"、"2026-05-08"）时，这是 target_date，不是 days；不得把具体日期追问转换成 days=1
 
 最终答案要求：
 - 引用具体数据数值，标注来源工具
@@ -532,7 +535,20 @@ def _execute_tool(name: str, args: dict[str, Any]) -> tuple[Any, str]:
 
         if name == "get_price_volume_data":
             from agent.tools import get_price_volume_data
-            result = get_price_volume_data(args["stock_code"], days=args.get("days", 60))
+            requested_days = args.get("days", 60)
+            try:
+                effective_days = int(requested_days)
+            except (TypeError, ValueError):
+                effective_days = 60
+            if effective_days < 30:
+                effective_days = 60
+            result = get_price_volume_data(
+                args["stock_code"],
+                days=effective_days,
+                target_date=args.get("target_date"),
+            )
+            result["requested_days"] = requested_days
+            result["effective_days"] = effective_days
             return result, f"日行情序列 [{args['stock_code']}]"
 
         if name == "get_price_volume_analysis":

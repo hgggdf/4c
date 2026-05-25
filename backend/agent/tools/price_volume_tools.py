@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+import re
+from datetime import date, datetime
 from typing import Any
 
 from app.core.database.session import SessionLocal
@@ -52,6 +54,45 @@ def _momentum(closes: list[float], n: int) -> float | None:
     return round((end - start) / start, 4)
 
 
+def _parse_target_trade_date(value: str | None, *, default_year: int) -> date | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    match = re.search(r"(\d{4})[-/年](\d{1,2})[-/月](\d{1,2})", text)
+    if match:
+        return date(int(match.group(1)), int(match.group(2)), int(match.group(3)))
+    match = re.search(r"(\d{1,2})\s*月\s*(\d{1,2})\s*日", text)
+    if match:
+        return date(default_year, int(match.group(1)), int(match.group(2)))
+    match = re.search(r"(?<!\d)(\d{1,2})[-/](\d{1,2})(?!\d)", text)
+    if match:
+        return date(default_year, int(match.group(1)), int(match.group(2)))
+    return None
+
+
+def _row_day(row) -> date | None:
+    return row.trade_date or row.report_date
+
+
+def _row_payload(row) -> dict[str, Any]:
+    return {
+        "date": str(_row_day(row)),
+        "open": float(row.open_price) if row.open_price is not None else None,
+        "close": float(row.close_price) if row.close_price is not None else None,
+        "high": float(row.high_price) if row.high_price is not None else None,
+        "low": float(row.low_price) if row.low_price is not None else None,
+        "volume": float(row.volume) if row.volume is not None else None,
+        "amount": float(row.amount) if row.amount is not None else None,
+        "change_pct": _change_pct_to_percent(row.change_pct),
+    }
+
+
+def _change_pct_to_percent(value: Any) -> float | None:
+    if value is None:
+        return None
+    return round(float(value) * 100, 6)
+
+
 def _corr_interpretation(r: float | None) -> str:
     if r is None:
         return "数据不足，无法计算"
@@ -68,7 +109,7 @@ def _corr_interpretation(r: float | None) -> str:
 
 # ── 公开工具函数 ───────────────────────────────────────────────────────────────
 
-def get_price_volume_data(stock_code: str, days: int = 60) -> dict[str, Any]:
+def get_price_volume_data(stock_code: str, days: int = 60, target_date: str | None = None) -> dict[str, Any]:
     """
     获取公司最近 N 个交易日的原始日行情序列。
 
@@ -92,47 +133,98 @@ def get_price_volume_data(stock_code: str, days: int = 60) -> dict[str, Any]:
         else stock_code
     )
 
-    from sqlalchemy import select, desc
-    from app.core.database.models.financial_hot import FinancialHot
+    try:
+        days = int(days)
+    except (TypeError, ValueError):
+        days = 60
+    days = max(1, min(days, 500))
+
+    from sqlalchemy import select, desc, func
+    from app.core.database.models.financial_hot import FinancialHot, FinancialArchive
+
+    def _latest_day_stmt(model):
+        trade_day = func.coalesce(model.trade_date, model.report_date)
+        return (
+            select(func.max(trade_day))
+            .where(
+                model.stock_code == stock_code,
+                func.lower(model.report_type) == "daily",
+                model.close_price.isnot(None),
+            )
+        )
 
     db = SessionLocal()
     try:
-        rows = db.execute(
-            select(FinancialHot)
-            .where(
-                FinancialHot.stock_code == stock_code,
-                FinancialHot.report_type == "daily",
-                FinancialHot.close_price.isnot(None),
-            )
-            .order_by(desc(FinancialHot.report_date))
-            .limit(days)
-        ).scalars().all()
+        latest_candidates = [
+            db.execute(_latest_day_stmt(FinancialHot)).scalar_one_or_none(),
+            db.execute(_latest_day_stmt(FinancialArchive)).scalar_one_or_none(),
+        ]
     finally:
         db.close()
+
+    latest_available_day = max([day for day in latest_candidates if day is not None], default=None)
+    default_year = latest_available_day.year if latest_available_day else datetime.now().year
+    parsed_target_day = _parse_target_trade_date(target_date, default_year=default_year)
+
+    def _daily_stmt(model):
+        trade_day = func.coalesce(model.trade_date, model.report_date)
+        stmt = (
+            select(model)
+            .where(
+                model.stock_code == stock_code,
+                func.lower(model.report_type) == "daily",
+                model.close_price.isnot(None),
+            )
+            .order_by(desc(trade_day))
+            .limit(days)
+        )
+        if parsed_target_day is not None:
+            stmt = stmt.where(trade_day <= parsed_target_day)
+        return stmt
+
+    db = SessionLocal()
+    try:
+        hot_rows = db.execute(_daily_stmt(FinancialHot)).scalars().all()
+        archive_rows = db.execute(_daily_stmt(FinancialArchive)).scalars().all()
+    finally:
+        db.close()
+
+    by_day = {}
+    for row in list(hot_rows) + list(archive_rows):
+        row_day = _row_day(row)
+        if row_day is None:
+            continue
+        by_day.setdefault(str(row_day), row)
+    rows = sorted(
+        by_day.values(),
+        key=lambda row: _row_day(row),
+        reverse=True,
+    )[:days]
 
     if not rows:
         return {
             "stock_code": stock_code,
             "stock_name": stock_name,
-            "error": "数据库中暂无该公司的日行情数据（report_type='daily'）。",
+            "error": "数据库中暂无该公司的日行情数据（financial_hot/financial_archive report_type='daily'）。",
             "count": 0,
         }
 
     rows = list(reversed(rows))  # 升序
 
-    trade_dates = [str(r.report_date) for r in rows]
+    trade_dates = [str(_row_day(r)) for r in rows]
     close_prices = [float(r.close_price) for r in rows]
     open_prices = [float(r.open_price) if r.open_price else None for r in rows]
     high_prices = [float(r.high_price) if r.high_price else None for r in rows]
     low_prices = [float(r.low_price) if r.low_price else None for r in rows]
     volumes = [float(r.volume) if r.volume else None for r in rows]
     amounts = [float(r.amount) if r.amount else None for r in rows]
-    change_pcts = [float(r.change_pct) if r.change_pct else None for r in rows]
+    change_pcts = [_change_pct_to_percent(r.change_pct) for r in rows]
 
     latest = rows[-1]
-    return {
+    result = {
         "stock_code": stock_code,
         "stock_name": stock_name,
+        "requested_target_date": str(parsed_target_day) if parsed_target_day else None,
         "count": len(rows),
         "trade_dates": trade_dates,
         "close_prices": close_prices,
@@ -145,10 +237,21 @@ def get_price_volume_data(stock_code: str, days: int = 60) -> dict[str, Any]:
         "latest": {
             "date": str(latest.report_date),
             "close": float(latest.close_price),
-            "change_pct": float(latest.change_pct) if latest.change_pct else None,
+            "change_pct": _change_pct_to_percent(latest.change_pct),
             "volume": float(latest.volume) if latest.volume else None,
         },
     }
+    if parsed_target_day is not None:
+        matched = latest
+        matched_day = _row_day(matched)
+        result["target_record"] = _row_payload(matched)
+        result["target_match"] = {
+            "requested_date": str(parsed_target_day),
+            "matched_date": str(matched_day) if matched_day else None,
+            "is_exact": matched_day == parsed_target_day,
+            "note": "若 is_exact=false，说明目标日期不是交易日或库中缺该日数据，返回的是目标日前最近交易日。",
+        }
+    return result
 
 
 def get_price_volume_analysis(stock_code: str, days: int = 60) -> dict[str, Any]:
@@ -173,7 +276,7 @@ def get_price_volume_analysis(stock_code: str, days: int = 60) -> dict[str, Any]
         return raw
 
     closes = raw["close_prices"]
-    vols = [v for v in raw["volumes"] if v is not None]
+    vols = [v if v is not None else 0.0 for v in raw["volumes"]]
     dates = raw["trade_dates"]
     change_pcts = raw["change_pcts"]
     highs = raw["high_prices"]
@@ -221,7 +324,7 @@ def get_price_volume_analysis(stock_code: str, days: int = 60) -> dict[str, Any]
     avg_amplitude = round(sum(amp_vals) / len(amp_vals), 4) if amp_vals else None
 
     # ── 量价信号检测 ──
-    # change_pct 在数据库中存的是百分比单位（如 -0.9751 表示 -0.9751%）
+    # change_pct 对外统一转成百分比单位：数据库值 * 100。
     signals: list[dict] = []
     for i in range(len(closes)):
         v = vols[i] if i < len(vols) else None

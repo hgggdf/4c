@@ -20,11 +20,15 @@ function toNumber(value, fallback = 0) {
   return Number.isFinite(num) ? num : fallback
 }
 
+function toDisplayChangePercent(value, fallback = 0) {
+  const num = Number(value)
+  return Number.isFinite(num) ? num * 100 : fallback
+}
+
 function normalizeQuote(quote = {}, fallback = {}) {
-  const changePercent = toNumber(
-    quote.change_pct ?? quote.change_percent ?? fallback.change_pct ?? fallback.change_percent,
-    0
-  )
+  const rawChangePercent =
+    quote.change_pct ?? quote.change_percent ?? fallback.change_pct ?? fallback.change_percent
+  const changePercent = toDisplayChangePercent(rawChangePercent, 0)
 
   return {
     symbol: quote.symbol ?? fallback.symbol ?? '',
