@@ -162,6 +162,7 @@ export const useChatStore = defineStore('chat', {
         retrievalTrace: [],
         toolEvents: [],
         docPreviews: [],
+        followUp: null,
         modeTitle: selectedMode,
         sessionId,
         selectedMode,
@@ -240,6 +241,8 @@ export const useChatStore = defineStore('chat', {
               reactiveMsg.toolEvents = [...reactiveMsg.toolEvents, { type: 'status', content: '正在综合分析…' }]
             } else if (event.type === 'answer_done') {
               // 流式输出结束标记，无需处理
+            } else if (event.type === 'follow_up') {
+              reactiveMsg.followUp = event
             } else if (event.type === 'error') {
               reactiveMsg.content += `\n\n[对话异常: ${event.message || '未知错误'}]`
             } else if (event.type === 'done') {
@@ -259,6 +262,15 @@ export const useChatStore = defineStore('chat', {
         }
         this.featureMode = null
       }
+    },
+
+    // 用户点击功能推荐卡片后调用
+    async askFollowUp({ message, stock_code, mode }) {
+      await this.ask({
+        message,
+        targets: stock_code ? [{ type: 'stock', symbol: stock_code }] : [],
+        selected_mode: mode,
+      })
     },
 
     // 用户回答澄清问题后，带着补充信息重新发问

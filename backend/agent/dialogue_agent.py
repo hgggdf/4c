@@ -940,6 +940,16 @@ class DialogueAgent:
             self._memory.append(session_id, "assistant", "".join(answer_chunks),
                                 llm_compress_fn=self._compress_history)
 
+        # 功能推荐：根据语境判断是否推荐三个深度功能
+        follow_up = _suggest_follow_up(
+            question,
+            "".join(answer_chunks),
+            stock_context,
+            selected_mode,
+        )
+        if follow_up:
+            yield follow_up
+
     # 对比指标列表：(指标名, 单位, 是否越高越好)
     _COMPARE_METRICS = [
         ("毛利率",           "%",  True),
@@ -1345,6 +1355,88 @@ class DialogueAgent:
         lines.append("\n---\n*本报告基于本地数据库自动生成，仅供参考，不构成投资建议。*")
 
         return "\n".join(lines)
+
+
+def _suggest_follow_up(
+    question: str,
+    answer: str,
+    stock_context: dict[str, Any] | None,
+    selected_mode: str | None,
+) -> dict[str, Any] | None:
+    """
+    根据问题语境判断是否推荐企业打分/估值分析/量价分析。
+    只在有明确公司上下文、且当前模式不是这三个功能本身时才推荐。
+    返回 None 表示不推荐。
+    """
+    if not stock_context:
+        return None
+
+    # 已经在做这三个功能，不重复推荐
+    no_suggest_modes = {"valuation_analysis", "price_volume_analysis", "report_generation"}
+    if selected_mode in no_suggest_modes:
+        return None
+
+    q = question.lower()
+    a = (answer or "").lower()
+    combined = q + " " + a
+    stock_name = stock_context.get("stock_name", "该公司")
+
+    # 估值分析：问题或回答涉及价格/估值/市盈/低估/高估/值不值
+    valuation_keywords = ["估值", "pe", "pb", "市盈", "市净", "高估", "低估", "值不值", "贵不贵",
+                          "便宜", "目标价", "价格", "股价", "投资价值", "peg", "dcf"]
+    # 量价分析：涉及走势/技术/成交量/均线/趋势/买卖点
+    price_volume_keywords = ["走势", "趋势", "成交量", "均线", "技术", "买入", "卖出", "行情",
+                             "涨跌", "量价", "换手", "突破", "支撑", "压力", "ma"]
+    # 企业打分：涉及综合评价/怎么样/健康度/基本面/实力
+    scoring_keywords = ["怎么样", "如何", "综合", "评分", "健康", "基本面", "实力", "竞争力",
+                        "整体", "表现", "评价", "好不好", "质地"]
+
+    suggestions = []
+
+    if any(kw in combined for kw in valuation_keywords):
+        suggestions.append({
+            "mode": "valuation_analysis",
+            "label": "估值分析",
+            "desc": f"查看 {stock_name} PE/PB/PEG 等估值指标",
+            "message": f"对{stock_name}进行详细估值分析",
+        })
+
+    if any(kw in combined for kw in price_volume_keywords):
+        suggestions.append({
+            "mode": "price_volume_analysis",
+            "label": "量价分析",
+            "desc": f"分析 {stock_name} 近期量价走势与信号",
+            "message": f"分析{stock_name}近期量价走势",
+        })
+
+    if any(kw in combined for kw in scoring_keywords):
+        suggestions.append({
+            "mode": "company_scoring",
+            "label": "企业打分",
+            "desc": f"对 {stock_name} 进行多维度财务评分",
+            "message": f"对{stock_name}进行企业综合打分",
+        })
+
+    # 什么都没匹配但有公司上下文，且问题较短（泛问），给出全部三个
+    if not suggestions and len(question.strip()) <= 20:
+        suggestions = [
+            {"mode": "valuation_analysis", "label": "估值分析",
+             "desc": f"PE/PB/PEG 等估值指标", "message": f"对{stock_name}进行详细估值分析"},
+            {"mode": "price_volume_analysis", "label": "量价分析",
+             "desc": f"近期量价走势与信号", "message": f"分析{stock_name}近期量价走势"},
+            {"mode": "company_scoring", "label": "企业打分",
+             "desc": f"多维度财务健康度评分", "message": f"对{stock_name}进行企业综合打分"},
+        ]
+
+    if not suggestions:
+        return None
+
+    return {
+        "type": "follow_up",
+        "stock_code": stock_context.get("stock_code"),
+        "stock_name": stock_name,
+        "suggestions": suggestions[:3],
+    }
 
 
 __all__ = ["DialogueAgent"]

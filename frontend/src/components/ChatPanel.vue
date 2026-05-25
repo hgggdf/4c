@@ -201,6 +201,23 @@
               </div>
             </div>
 
+            <!-- 功能推荐卡片 -->
+            <div v-if="msg.role === 'assistant' && msg.followUp" class="cp-followup">
+              <div class="cp-followup-label">您可能还需要</div>
+              <div class="cp-followup-chips">
+                <button
+                  v-for="s in msg.followUp.suggestions"
+                  :key="s.mode"
+                  class="cp-followup-chip"
+                  :disabled="isGenerating"
+                  @click="handleFollowUp(s, msg.followUp)"
+                >
+                  <span class="cp-followup-chip-label">{{ s.label }}</span>
+                  <span class="cp-followup-chip-desc">{{ s.desc }}</span>
+                </button>
+              </div>
+            </div>
+
             <!-- 时间 + 复制按钮 -->
             <div class="cp-time-row">
               <span class="cp-time">{{ formatTime(msg.createdAt) }}</span>
@@ -490,6 +507,15 @@ function getDataSources(msg) {
 function getSourceNotice(msg) {
   if (!msg || msg.role !== 'assistant') return ''
   return msg.sourceNotice || msg.toolCalls?.source_notice || ''
+}
+
+async function handleFollowUp(suggestion, followUp) {
+  if (isGenerating.value) return
+  await chatStore.askFollowUp({
+    message: suggestion.message,
+    stock_code: followUp.stock_code,
+    mode: suggestion.mode,
+  })
 }
 
 function toggleRetrieval(index) {
@@ -1303,6 +1329,60 @@ function toggleRetrieval(index) {
   font-size: 11px;
   color: var(--text-muted);
   opacity: 0.6;
+}
+
+/* ── 功能推荐卡片 ── */
+.cp-followup {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(75,169,154,0.2);
+  border-radius: 12px;
+  background: rgba(75,169,154,0.04);
+}
+.cp-followup-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+  letter-spacing: 0.03em;
+}
+.cp-followup-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cp-followup-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 6px 11px;
+  border: 1px solid rgba(75,169,154,0.28);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: all .15s;
+  text-align: left;
+}
+.cp-followup-chip:hover:not(:disabled) {
+  border-color: var(--accent2);
+  background: rgba(75,169,154,0.08);
+  box-shadow: 0 2px 8px rgba(75,169,154,0.12);
+  transform: translateY(-1px);
+}
+.cp-followup-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.cp-followup-chip-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent2);
+}
+.cp-followup-chip-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.3;
 }
 
 /* ── 灯箱 ── */
