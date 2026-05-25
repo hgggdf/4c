@@ -22,6 +22,7 @@ TOOL_NAMES = {
     "valuation_metrics",
     "dcf_valuation",
     "valuation_comparison",
+    "price_volume_data",
     # 量价分析
     "price_volume_analysis",
     "price_volume_event_correlation",
@@ -224,6 +225,7 @@ def build_tool_plan(
                 add("dcf_valuation", purpose="DCF贴现现金流估值", required=False, data_source_type="估值", can_score=True, freshness_value="local")
             _PV_KW = ("量价", "成交量", "放量", "缩量", "技术面", "k线", "均线", "换手", "量能")
             if any(kw in question.lower() for kw in _PV_KW):
+                add("price_volume_data", purpose="获取日度OHLCV序列", required=True, data_source_type="行情", can_score=False, freshness_value="local")
                 add("price_volume_analysis", purpose="量价技术分析", required=True, data_source_type="行情", can_score=False, freshness_value="local")
         return plan
 
@@ -236,6 +238,7 @@ def build_tool_plan(
 
     if mode == "price_volume_analysis":
         add("company_basic_info", purpose="获取公司基础信息", required=True, data_source_type="公司", can_score=False, freshness_value="local")
+        add("price_volume_data", purpose="获取日度OHLCV序列", required=True, data_source_type="行情", can_score=False, freshness_value="local")
         add("price_volume_analysis", purpose="量价技术分析（MA/量价相关/信号）", required=True, data_source_type="行情", can_score=False, freshness_value="local")
         add("price_volume_event_correlation", purpose="量价异动与公告事件关联", required=False, data_source_type="行情", can_score=False, freshness_value="local")
         return plan

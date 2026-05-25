@@ -497,14 +497,18 @@ def _ingest_stock_daily(envelope: OpenClawEnvelope, container: ServiceContainer)
 
     stock_daily = {
         "stock_code": entity.get("stock_code", ""),
+        "report_date": payload.get("report_date") or payload.get("trade_date"),
         "trade_date": payload.get("trade_date"),
+        "report_type": "daily",
         "open_price": payload.get("open_price"),
         "close_price": payload.get("close_price"),
         "high_price": payload.get("high_price"),
         "low_price": payload.get("low_price"),
         "volume": payload.get("volume"),
-        "turnover": payload.get("turnover"),
+        "amount": payload.get("amount") or payload.get("turnover"),
+        "change_pct": payload.get("change_pct"),
         "source_type": source.get("source_type"),
+        "source_url": source.get("source_url"),
     }
 
     req = IngestFinancialPackageRequest(

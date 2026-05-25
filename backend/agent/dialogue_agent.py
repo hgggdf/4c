@@ -603,8 +603,9 @@ class DialogueAgent:
             tool_name = tr.get("tool_name", "")
             data = tr["data"]
             data_str = json.dumps(data, ensure_ascii=False, default=str)
-            if len(data_str) > 4000:
-                data_str = data_str[:4000] + "...(数据已截断)"
+            max_data_chars = 12000 if tool_name == "price_volume_data" else 4000
+            if len(data_str) > max_data_chars:
+                data_str = data_str[:max_data_chars] + "...(数据已截断)"
 
             system_lines.append("")
             system_lines.append(f"### 数据源：{tool_name}")
@@ -756,6 +757,40 @@ class DialogueAgent:
         messages.append({"role": "user", "content": question})
         return messages
 
+    @staticmethod
+    def _looks_like_short_follow_up(question: str) -> bool:
+        q = str(question or "").strip()
+        if not q:
+            return False
+        if re.search(r"\d{1,2}\s*月\s*\d{1,2}\s*日", q):
+            return True
+        if len(q) <= 18:
+            return True
+        follow_up_words = ("那", "这个", "这天", "当天", "同样", "继续", "呢", "前后", "再看")
+        return any(word in q for word in follow_up_words)
+
+    @classmethod
+    def _build_tool_planning_question(
+        cls,
+        question: str,
+        *,
+        history: list[dict[str, Any]] | None,
+        db_messages: list[dict[str, str]] | None,
+    ) -> str:
+        if not cls._looks_like_short_follow_up(question):
+            return question
+
+        recent_messages = db_messages if db_messages is not None else history
+        snippets: list[str] = []
+        for item in (recent_messages or [])[-6:]:
+            content = str(item.get("content") or "").strip()
+            if content:
+                snippets.append(content[:300])
+
+        if not snippets:
+            return question
+        return "\n".join([*snippets, f"当前追问：{question}"])
+
     def chat_stream(
         self,
         question: str,
@@ -793,7 +828,14 @@ class DialogueAgent:
 
         # ── quick_query 模式：预定义工具流程 ──────────────────────────────
         system_context_override: str | None = None
-        if selected_mode in (None, "quick_query") and stock_context and not tool_autonomy:
+        deterministic_tool_modes = {"price_volume_analysis"}
+        tool_plan_mode: str | None = None
+        if selected_mode in (None, "quick_query"):
+            tool_plan_mode = "quick_query"
+        elif selected_mode in deterministic_tool_modes:
+            tool_plan_mode = selected_mode
+
+        if tool_plan_mode and stock_context and not tool_autonomy:
             from agent.integration.tool_planner import build_tool_plan
             from agent.integration.tool_executor import execute_tool_plan
 
@@ -801,10 +843,15 @@ class DialogueAgent:
                 "stock_code": stock_context.get("stock_code"),
                 "company_name": stock_context.get("stock_name"),
             }
+            planning_question = self._build_tool_planning_question(
+                question,
+                history=history,
+                db_messages=db_messages,
+            )
 
             tool_plan = build_tool_plan(
-                question,
-                selected_mode="quick_query",
+                planning_question,
+                selected_mode=tool_plan_mode,
                 freshness_strategy="local_only",
                 company_entity=company_entity,
             )

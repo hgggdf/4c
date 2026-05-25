@@ -140,6 +140,37 @@ def tool_compare_companies(stock_codes: list[str], metric_names: list[str], limi
     return compare_financial_metrics(valid_codes, metric_names, limit=limit)
 
 
+@tool
+def tool_get_price_volume_data(stock_code: str, days: int = 60, target_date: str = "") -> dict:
+    """Return daily OHLCV series. For exact-date questions pass target_date like '2026-05-08' or '5月8日'; do not use days=1 for dates."""
+    from agent.tools.price_volume_tools import get_price_volume_data
+    requested_days = days
+    try:
+        effective_days = int(days)
+    except (TypeError, ValueError):
+        effective_days = 60
+    if effective_days < 30:
+        effective_days = 60
+    result = get_price_volume_data(stock_code, days=effective_days, target_date=target_date or None)
+    result["requested_days"] = requested_days
+    result["effective_days"] = effective_days
+    return result
+
+
+@tool
+def tool_get_price_volume_analysis(stock_code: str, days: int = 60) -> dict:
+    """Analyze daily OHLCV data: MA5/MA10/MA20, volume averages, price-volume correlation, momentum, amplitude, and volume ratio."""
+    from agent.tools.price_volume_tools import get_price_volume_analysis
+    return get_price_volume_analysis(stock_code, days=days)
+
+
+@tool
+def tool_get_price_volume_event_correlation(stock_code: str, days: int = 120) -> dict:
+    """Find price-volume anomaly signals and match nearby announcements/news within the lookback window."""
+    from agent.tools.price_volume_tools import get_price_volume_event_correlation
+    return get_price_volume_event_correlation(stock_code, days=days)
+
+
 # 注册到 Agent 的工具列表
 AGENT_TOOLS = [
     tool_resolve_company,
@@ -154,6 +185,9 @@ AGENT_TOOLS = [
     tool_search_knowledge,
     tool_get_macro_summary,
     tool_compare_companies,
+    tool_get_price_volume_data,
+    tool_get_price_volume_analysis,
+    tool_get_price_volume_event_correlation,
 ]
 
 
@@ -194,7 +228,14 @@ MARKDOWN_FORMULA_RULES = """Formatting rules:
 - Write formulas as plain text or inline code, for example: `PE = stock price / EPS`, `FCF = operating cash flow - capex`.
 - Prefer Markdown tables for formulas, assumptions, metrics, and conclusions; put units in table columns."""
 
-SYSTEM_PROMPT = SYSTEM_PROMPT + "\n\n" + MARKDOWN_FORMULA_RULES
+SYSTEM_PROMPT = (
+    SYSTEM_PROMPT
+    + "\n\n"
+    + MARKDOWN_FORMULA_RULES
+    + "\n\nPrice-volume questions must use tool_get_price_volume_analysis. "
+      "Exact-date price-volume follow-up questions must use tool_get_price_volume_data. "
+      "Anomaly/event-correlation questions must use tool_get_price_volume_event_correlation."
+)
 
 
 class LangGraphAgent:

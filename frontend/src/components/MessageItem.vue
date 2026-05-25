@@ -59,7 +59,8 @@ const renderedHtml = computed(() => {
 })
 
 function getChangePercent(extra = {}) {
-  return Number(extra.change_pct ?? extra.change_percent ?? 0)
+  const rawChangePercent = Number(extra.change_pct ?? extra.change_percent ?? 0)
+  return Number.isFinite(rawChangePercent) ? rawChangePercent * 100 : 0
 }
 </script>
 

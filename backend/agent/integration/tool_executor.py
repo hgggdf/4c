@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from agent.tools import announcement_tools, company_tools, comparison_tools, financial_tools, macro_tools, news_tools, retrieval_tools
@@ -45,6 +46,27 @@ def normalize_tool_result(
 def _planned_input(plan_item: dict[str, Any]) -> dict[str, Any]:
     raw = plan_item.get("input") or {}
     return raw if isinstance(raw, dict) else {}
+
+
+def _extract_days(input_data: dict[str, Any], default: int) -> int:
+    raw = input_data.get("days") or input_data.get("lookback_days")
+    time_range = input_data.get("time_range")
+    if raw is None and isinstance(time_range, dict):
+        raw = (
+            time_range.get("days")
+            or time_range.get("lookback_days")
+            or time_range.get("trading_days")
+        )
+    if raw is None:
+        question = str(input_data.get("user_question") or "")
+        match = re.search(r"(?:最近|近)\s*(\d{1,4})\s*(?:个)?(?:交易日|日|天)", question)
+        if match:
+            raw = match.group(1)
+    try:
+        days = int(raw)
+    except (TypeError, ValueError):
+        days = default
+    return max(5, min(days, 500))
 
 
 def _run_tool(tool_name: str, input_data: dict[str, Any]) -> tuple[bool, Any, str | None]:
@@ -165,17 +187,24 @@ def _run_tool(tool_name: str, input_data: dict[str, Any]) -> tuple[bool, Any, st
         from agent.tools.valuation_tools import get_valuation_comparison
         return True, get_valuation_comparison(codes), None
 
+    if tool_name == "price_volume_data":
+        if not stock_code:
+            return False, None, "缺少必需参数 stock_code"
+        from agent.tools.price_volume_tools import get_price_volume_data
+        days = max(_extract_days(input_data, 60), 60)
+        return True, get_price_volume_data(stock_code, days=days), None
+
     if tool_name == "price_volume_analysis":
         if not stock_code:
             return False, None, "缺少必需参数 stock_code"
         from agent.tools.price_volume_tools import get_price_volume_analysis
-        return True, get_price_volume_analysis(stock_code), None
+        return True, get_price_volume_analysis(stock_code, days=_extract_days(input_data, 60)), None
 
     if tool_name == "price_volume_event_correlation":
         if not stock_code:
             return False, None, "缺少必需参数 stock_code"
         from agent.tools.price_volume_tools import get_price_volume_event_correlation
-        return True, get_price_volume_event_correlation(stock_code), None
+        return True, get_price_volume_event_correlation(stock_code, days=_extract_days(input_data, 120)), None
 
     return False, None, "未配置真实工具映射"
 
