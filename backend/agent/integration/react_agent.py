@@ -368,6 +368,7 @@ SYSTEM_PROMPT = """你是"医策经纬"——面向医药上市公司的多智�
 2. 根据问题类型选择合适的工具，不要调用无关工具
 3. 只基于工具返回的真实数据作答，不编造数据
 4. 数据不足时明确说明，不猜测
+5. 用户明确指定了天数（如"最近120天"、"过去半年"、"250个交易日"等），必须将对应的整数值作为 days 参数传入工具，不得忽略或使用默认值
 
 最终答案要求：
 - 引用具体数据数值，标注来源工具
@@ -598,8 +599,9 @@ class ReactAgent:
             for tc in msg.tool_calls:
                 tool_name = tc.function.name
                 try:
-                    tool_args = json.loads(tc.function.arguments)
+                    tool_args = json.loads(tc.function.arguments) if tc.function.arguments else {}
                 except Exception:
+                    logger.warning("Failed to parse tool arguments for %s: %r", tool_name, tc.function.arguments)
                     tool_args = {}
 
                 yield {

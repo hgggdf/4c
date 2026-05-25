@@ -24,6 +24,7 @@ class DiagnoseOut(BaseModel):
 	strengths: list[str]
 	weaknesses: list[str]
 	suggestion: str
+	data_completeness: float = 1.0
 
 
 __all__ = ["DiagnoseOut", "DimensionOut"]

@@ -37,7 +37,7 @@
       </div>
 
       <!-- 消息列表 -->
-      <div class="cp-messages" ref="msgListRef">
+      <div class="cp-messages" ref="msgListRef" @scroll="onMessagesScroll">
         <div
           v-for="(msg, i) in chatStore.messages"
           :key="`${msg.createdAt}-${i}`"
@@ -201,6 +201,23 @@
               </div>
             </div>
 
+            <!-- 功能推荐卡片 -->
+            <div v-if="msg.role === 'assistant' && msg.followUp" class="cp-followup">
+              <div class="cp-followup-label">您可能还需要</div>
+              <div class="cp-followup-chips">
+                <button
+                  v-for="s in msg.followUp.suggestions"
+                  :key="s.mode"
+                  class="cp-followup-chip"
+                  :disabled="isGenerating"
+                  @click="handleFollowUp(s, msg.followUp)"
+                >
+                  <span class="cp-followup-chip-label">{{ s.label }}</span>
+                  <span class="cp-followup-chip-desc">{{ s.desc }}</span>
+                </button>
+              </div>
+            </div>
+
             <!-- 时间 + 复制按钮 -->
             <div class="cp-time-row">
               <span class="cp-time">{{ formatTime(msg.createdAt) }}</span>
@@ -347,14 +364,23 @@ async function copyMessage(content, index) {
 const DOC_KIND_LABELS = { report: '研报', announcement: '公告', news: '新闻', financial_note: '财报' }
 function docKindLabel(kind) { return DOC_KIND_LABELS[kind] || kind }
 
-function scrollBottom() {
+const userScrolledUp = ref(false)
+
+function onMessagesScroll() {
+  const el = msgListRef.value
+  if (!el) return
+  // 距底部超过 80px 认为用户主动上翻
+  userScrolledUp.value = el.scrollHeight - el.scrollTop - el.clientHeight > 80
+}
+
+function scrollBottom(force = false) {
+  if (!force && userScrolledUp.value) return
   nextTick(() => {
     if (msgListRef.value) msgListRef.value.scrollTop = msgListRef.value.scrollHeight
   })
 }
 
 function onScrollBottomEvent(e) {
-  // 只响应当前活跃会话的滚动事件，避免其他会话的流式输出干扰
   if (e.detail?.sessionId !== undefined && e.detail.sessionId !== chatStore.activeSessionId) return
   scrollBottom()
 }
@@ -386,8 +412,19 @@ async function removeSession(sessionId) {
   await chatStore.deleteSession(sessionId)
 }
 
-watch(() => chatStore.messages.map(m => `${m.role}:${m.content}:${m.agentTrace?.length}`).join('|'), scrollBottom)
-watch(() => chatStore.activeSessionId, scrollBottom)
+// 消息数量增加（新消息追加）时强制滚底并重置上翻状态
+watch(() => chatStore.messages.length, () => {
+  userScrolledUp.value = false
+  scrollBottom(true)
+})
+// 内容或 trace 更新时，只在用户没有上翻时才跟随滚底
+watch(() => chatStore.messages.map(m => `${m.content?.length}:${m.agentTrace?.length}:${m.toolEvents?.length}`).join('|'), () => {
+  scrollBottom()
+})
+watch(() => chatStore.activeSessionId, () => {
+  userScrolledUp.value = false
+  scrollBottom(true)
+})
 watch(() => chatStore.isSessionLoading(chatStore.activeSessionId), scrollBottom)
 
 onMounted(() => {
@@ -470,6 +507,15 @@ function getDataSources(msg) {
 function getSourceNotice(msg) {
   if (!msg || msg.role !== 'assistant') return ''
   return msg.sourceNotice || msg.toolCalls?.source_notice || ''
+}
+
+async function handleFollowUp(suggestion, followUp) {
+  if (isGenerating.value) return
+  await chatStore.askFollowUp({
+    message: suggestion.message,
+    stock_code: followUp.stock_code,
+    mode: suggestion.mode,
+  })
 }
 
 function toggleRetrieval(index) {
@@ -1283,6 +1329,60 @@ function toggleRetrieval(index) {
   font-size: 11px;
   color: var(--text-muted);
   opacity: 0.6;
+}
+
+/* ── 功能推荐卡片 ── */
+.cp-followup {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(75,169,154,0.2);
+  border-radius: 12px;
+  background: rgba(75,169,154,0.04);
+}
+.cp-followup-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+  letter-spacing: 0.03em;
+}
+.cp-followup-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cp-followup-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 6px 11px;
+  border: 1px solid rgba(75,169,154,0.28);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: all .15s;
+  text-align: left;
+}
+.cp-followup-chip:hover:not(:disabled) {
+  border-color: var(--accent2);
+  background: rgba(75,169,154,0.08);
+  box-shadow: 0 2px 8px rgba(75,169,154,0.12);
+  transform: translateY(-1px);
+}
+.cp-followup-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.cp-followup-chip-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent2);
+}
+.cp-followup-chip-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.3;
 }
 
 /* ── 灯箱 ── */

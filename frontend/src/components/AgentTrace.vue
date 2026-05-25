@@ -70,7 +70,7 @@ defineProps({
   loading: { type: Boolean, default: false },
 })
 
-const expanded = ref(false)
+const expanded = ref(true)
 
 function formatVal(val) {
   if (Array.isArray(val)) return val.join(', ')

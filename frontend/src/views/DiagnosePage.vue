@@ -30,6 +30,15 @@
           <div class="company-name">{{ data.stock_name }}（{{ data.stock_code }}）</div>
           <div class="score-level">{{ data.level }}</div>
           <div class="score-year">{{ data.year }}年度</div>
+          <span
+            v-if="data.data_completeness != null && data.data_completeness < 1.0"
+            class="completeness-badge"
+            :style="{
+              background: data.data_completeness >= 0.75 ? 'rgba(234,179,8,0.12)' : 'rgba(249,115,22,0.12)',
+              color: data.data_completeness >= 0.75 ? '#b45309' : '#c2410c',
+              border: `1px solid ${data.data_completeness >= 0.75 ? '#fde68a' : '#fed7aa'}`,
+            }"
+          >数据完整度 {{ Math.round(data.data_completeness * 100) }}%</span>
         </div>
       </div>
 
@@ -49,8 +58,8 @@
             <div class="dim-bar-fill" :style="{ width: dim.score + '%' }" :class="scoreClass(dim.score)"></div>
           </div>
           <div class="dim-metrics">
-            <span v-for="(v, k) in dim.metrics" :key="k" class="metric-tag">
-              {{ k }}: {{ v.value }}{{ v.unit }}
+            <span v-for="(v, k) in dim.metrics" :key="k" class="metric-tag" :class="{ 'metric-missing': v.missing }">
+              {{ k }}: {{ v.value != null ? (v.value + (v.unit || '')) : '暂无数据' }}
             </span>
           </div>
         </div>
@@ -258,6 +267,10 @@ watch([selectedSymbol, selectedYear], () => {
 .company-name { font-size: 18px; color: var(--text-primary); font-weight: 600; }
 .score-level { font-size: 15px; color: var(--text-secondary); margin-top: 4px; }
 .score-year  { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.completeness-badge {
+  display: inline-block; margin-top: 6px;
+  font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500;
+}
 
 .chart-section {
   background: var(--bg-panel); border-radius: 16px; padding: 16px;
@@ -289,6 +302,7 @@ watch([selectedSymbol, selectedYear], () => {
 
 .dim-metrics { display: flex; flex-wrap: wrap; gap: 6px; }
 .metric-tag { background: var(--bg-card2); color: var(--text-secondary); font-size: 12px; padding: 2px 8px; border-radius: 4px; }
+.metric-tag.metric-missing { color: var(--text-muted); font-style: italic; }
 
 .insight-row { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 16px; }
 .insight-box {
