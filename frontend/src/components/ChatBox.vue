@@ -39,13 +39,13 @@
 
     <!-- PDF 上传进度 -->
     <div v-if="uploadState.active" class="upload-progress">
-      <span class="upload-icon">📄</span>
+      <span class="upload-icon">{{ uploadState.icon }}</span>
       <span class="upload-name">{{ uploadState.fileName }}</span>
       <div class="upload-bar-wrap">
         <div class="upload-bar-fill" :style="{ width: uploadState.percent + '%' }"></div>
       </div>
       <span class="upload-pct">{{ uploadState.percent }}%</span>
-      <span v-if="uploadState.done" class="upload-done">✓ 已入库</span>
+      <span v-if="uploadState.done" class="upload-done">✓ {{ uploadState.doneMsg }}</span>
     </div>
 
     <!-- 行业对比使用引导 -->
@@ -79,16 +79,16 @@
           </template>
           Enter 发送 · Shift+Enter 换行
         </span>
-        <!-- PDF 上传按钮 -->
-        <label class="upload-btn" title="上传 PDF 到知识库">
+        <!-- 上传文档按钮 -->
+        <label class="upload-btn" title="上传文档到知识库（支持 PDF / Word / TXT / Excel）">
           <input
             ref="fileInputRef"
             type="file"
-            accept=".pdf"
+            accept=".pdf,.docx,.txt,.xlsx,.xls"
             style="display:none"
             @change="handleFileChange"
           />
-          📎 上传研报
+          📎 上传文档
         </label>
       </div>
       <button
@@ -105,7 +105,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { uploadPDF } from '../api/chat'
+import { uploadDoc } from '../api/chat'
 
 const props = defineProps({
   loading: { type: Boolean, default: false }
@@ -142,7 +142,14 @@ const fileInputRef = ref(null)
 const activeFeature = ref('')
 const guideVisible = ref(true)
 
-const uploadState = ref({ active: false, fileName: '', percent: 0, done: false })
+const uploadState = ref({ active: false, fileName: '', percent: 0, done: false, icon: '📄', doneMsg: '已入库' })
+
+const FILE_ICONS = { pdf: '📕', docx: '📝', txt: '📄', xlsx: '📊', xls: '📊' }
+
+function getFileIcon(name) {
+  const ext = (name || '').split('.').pop().toLowerCase()
+  return FILE_ICONS[ext] || '📄'
+}
 
 const placeholder = computed(() => {
   if (droppedNews.value.length && droppedItems.value.length)
@@ -259,18 +266,26 @@ async function handleFileChange(evt) {
   const file = evt.target.files?.[0]
   if (!file) return
 
-  uploadState.value = { active: true, fileName: file.name, percent: 0, done: false }
+  uploadState.value = {
+    active: true,
+    fileName: file.name,
+    percent: 0,
+    done: false,
+    icon: getFileIcon(file.name),
+    doneMsg: '已入库',
+  }
 
   try {
-    await uploadPDF(file, pct => {
+    const res = await uploadDoc(file, pct => {
       uploadState.value.percent = pct
     })
     uploadState.value.percent = 100
     uploadState.value.done = true
-    setTimeout(() => { uploadState.value.active = false }, 3000)
+    uploadState.value.doneMsg = res?.message || '已入库'
+    setTimeout(() => { uploadState.value.active = false }, 4000)
   } catch (err) {
     uploadState.value.active = false
-    alert('上传失败：' + err.message)
+    alert('上传失败：' + (err?.response?.data?.detail || err.message))
   } finally {
     if (fileInputRef.value) fileInputRef.value.value = ''
   }

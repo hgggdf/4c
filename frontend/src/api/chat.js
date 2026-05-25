@@ -93,11 +93,11 @@ export function deleteSession(session_id) {
   return request.post('/api/chat/delete-session', { session_id })
 }
 
-export function uploadPDF(file, onProgress) {
+export function uploadDoc(file, onProgress) {
   const formData = new FormData()
   formData.append('file', file)
 
-  return request.post('/api/upload_pdf', formData, {
+  return request.post('/api/upload_doc', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
     onUploadProgress: progressEvent => {
       if (onProgress && progressEvent.total) {
@@ -106,6 +106,10 @@ export function uploadPDF(file, onProgress) {
       }
     }
   })
+}
+
+export function uploadPDF(file, onProgress) {
+  return uploadDoc(file, onProgress)
 }
 
 // POST /api/agent/stream — 真正的 ReAct Agent 流式接口
