@@ -188,6 +188,15 @@ SYSTEM_PROMPT = """你是一个专业的医药行业投研分析助手。
 仅当问题既无公司名/代码，又非行业/政策类，且无法判断意图时，才回复：[CLARIFY] 请问您想了解哪方面？"""
 
 
+MARKDOWN_FORMULA_RULES = """Formatting rules:
+- Use GitHub Markdown only. Do not output LaTeX math.
+- Do not use $...$, $$...$$, \\(...\\), \\[...\\], \\frac{}, \\times, \\sum, or other TeX syntax.
+- Write formulas as plain text or inline code, for example: `PE = stock price / EPS`, `FCF = operating cash flow - capex`.
+- Prefer Markdown tables for formulas, assumptions, metrics, and conclusions; put units in table columns."""
+
+SYSTEM_PROMPT = SYSTEM_PROMPT + "\n\n" + MARKDOWN_FORMULA_RULES
+
+
 class LangGraphAgent:
     """基于 LangGraph ReAct 的真正智能体，采用双模型架构：
     - 工具调用阶段：moonshot-v1-8k（快速、稳定，LangChain）
@@ -278,6 +287,8 @@ class LangGraphAgent:
 
         system_content = (
             (system_context + "\n\n" if system_context else "")
+            + MARKDOWN_FORMULA_RULES
+            + "\n\n"
             + "你是专业的医药行业投研分析助手。"
             "请基于上方工具采集的真实数据进行深度分析，禁止编造数据，用中文回答，结构清晰。"
         )

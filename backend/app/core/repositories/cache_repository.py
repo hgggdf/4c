@@ -7,22 +7,28 @@ class CacheRepository(BaseRepository):
     """v3 无缓存表，所有方法返回 None / 空，保持接口兼容。"""
 
     def get_query_cache(self, cache_key: str):
+        """查询结果缓存兼容入口；当前无缓存表，固定返回 None。"""
         return None
 
     def upsert_query_cache(self, cache_key: str, *, user_id: int, query_text: str | None,
                            result_json: dict | None, source_signature: str | None = None, expire_at=None):
+        """写入查询结果缓存兼容入口；当前不落库。"""
         return None
 
     def get_hot_data(self, data_type: str, cache_key: str):
+        """热数据缓存读取兼容入口；当前无缓存表。"""
         return None
 
     def upsert_hot_data(self, data_type: str, cache_key: str, *, value_json: dict | None,
                         last_update=None, expire_at=None):
+        """热数据缓存写入兼容入口；当前不落库。"""
         return None
 
     def get_report_preview(self, user_id: int, stock_code: str, report_type: str | None):
+        """报告预览缓存读取兼容入口；当前无缓存表。"""
         return None
 
     def upsert_report_preview(self, user_id: int, stock_code: str, *, report_type: str | None,
                               report_json: dict | None, expire_at=None):
+        """报告预览缓存写入兼容入口；当前不落库。"""
         return None

@@ -129,6 +129,14 @@ class DialogueAgent:
         "price_volume_analysis": ["announcement", "news"],
     }
 
+    MARKDOWN_FORMULA_RULES = [
+        "Formatting rules:",
+        "- Use GitHub Markdown only. Do not output LaTeX math.",
+        r"- Do not use $...$, $$...$$, \(...\), \[...\], \frac{}, \times, \sum, or other TeX syntax.",
+        "- Write formulas as plain text or inline code, for example: `PE = stock price / EPS`, `FCF = operating cash flow - capex`.",
+        "- Prefer Markdown tables for formulas, assumptions, metrics, and conclusions; put units in table columns.",
+    ]
+
     def __init__(self) -> None:
         self.container = ServiceContainer.build_default()
         self.llm_client = KimiClient()
@@ -479,6 +487,8 @@ class DialogueAgent:
         evidence_items: list[dict[str, Any]],
     ) -> str:
         system_lines = [
+            *self.MARKDOWN_FORMULA_RULES,
+            "",
             "你是「医药投研智能助手」，由 Moonshot Kimi 大模型驱动，专注于医药行业的投资研究分析。",
             "",
             "你的能力包括：",
@@ -557,6 +567,8 @@ class DialogueAgent:
         import json
 
         system_lines = [
+            *self.MARKDOWN_FORMULA_RULES,
+            "",
             "你是「医药投研智能助手」，由 Moonshot Kimi 大模型驱动，专注于医药行业的投资研究分析。",
             "",
             "回答规则：",

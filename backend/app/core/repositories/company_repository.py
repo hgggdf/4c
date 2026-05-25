@@ -13,18 +13,28 @@ from app.core.database.models.company import (
 
 
 class CompanyRepository:
+    """公司和行业读库入口。
+
+    该类历史上没有继承 BaseRepository，直接持有 Session 执行查询。
+    v3 中 CompanyMaster/CompanyProfile 都是 Company 的兼容别名。
+    """
+
     def __init__(self, db: Session):
+        """保存 SQLAlchemy Session。"""
         self.db = db
 
     def get_by_stock_code(self, stock_code: str) -> CompanyMaster | None:
+        """按股票代码获取公司主数据。"""
         stmt = select(CompanyMaster).where(CompanyMaster.stock_code == stock_code)
         return self.db.execute(stmt).scalars().first()
 
     def get_profile(self, stock_code: str) -> CompanyProfile | None:
+        """获取公司画像；v3 中实际仍查询 company 表。"""
         stmt = select(CompanyProfile).where(CompanyProfile.stock_code == stock_code)
         return self.db.execute(stmt).scalars().first()
 
     def list_industries(self, stock_code: str) -> list[IndustryMaster]:
+        """根据公司当前 industry_code 查询所属行业记录。"""
         company = self.get_by_stock_code(stock_code)
         if company is None or not company.industry_code:
             return []
@@ -32,6 +42,10 @@ class CompanyRepository:
         return list(self.db.execute(stmt).scalars().all())
 
     def search_by_name_or_alias(self, keyword: str, limit: int = 10) -> list[CompanyMaster]:
+        """按简称、全称和兼容别名搜索公司。
+
+        alias_json 在 v3 模型中为兼容属性，通常为空；保留解析逻辑是为了旧数据结构。
+        """
         kw = (keyword or "").strip()
         if not kw:
             return []
@@ -81,6 +95,10 @@ class CompanyRepository:
         return merged[:limit]
 
     def resolve_company_from_text(self, text: str, limit: int = 5) -> list[CompanyMaster]:
+        """从一段自然语言文本里解析可能提到的公司。
+
+        先做公司名/全称/别名直接包含匹配；未命中时，再抽取中文片段做模糊搜索。
+        """
         text = (text or "").strip()
         if not text:
             return []

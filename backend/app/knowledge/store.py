@@ -46,6 +46,7 @@ class ChunkMetadata:
     source_url: str = ""
     source_table: str = ""
     source_pk: str = ""
+    source_uid: str = ""
     industry_code: str = ""
     industry_name: str = ""
     drug_name: str = ""
@@ -229,18 +230,23 @@ class VectorKnowledgeStore:
                 include=["documents", "metadatas", "distances"],
             )
         except Exception:
-            try:
-                results = collection.query(
-                    query_embeddings=[query_vec],
-                    n_results=min(top_k, count),
-                    include=["documents", "metadatas", "distances"],
-                )
-            except Exception:
-                return []
+            return self._query_collection_bruteforce(
+                collection,
+                query_vec,
+                top_k=top_k,
+                where=where,
+            )
 
         docs = results.get("documents", [[]])[0]
         metas = results.get("metadatas", [[]])[0]
         dists = results.get("distances", [[]])[0]
+        if not docs:
+            return self._query_collection_bruteforce(
+                collection,
+                query_vec,
+                top_k=top_k,
+                where=where,
+            )
 
         hits: list[dict[str, Any]] = []
         for doc, meta, dist in zip(docs, metas, dists):
@@ -248,6 +254,37 @@ class VectorKnowledgeStore:
             if score > 0.3:
                 hits.append({"text": doc, "score": score, "meta": meta or {}})
         return hits
+
+    def _query_collection_bruteforce(
+        self,
+        collection,
+        query_vec: list[float],
+        *,
+        top_k: int,
+        where: dict[str, Any] | None,
+    ) -> list[dict[str, Any]]:
+        try:
+            existing = collection.get(
+                where=where,
+                include=["documents", "metadatas", "embeddings"],
+            )
+        except Exception:
+            return []
+
+        docs = existing.get("documents") or []
+        metas = existing.get("metadatas") or []
+        embeddings = existing.get("embeddings") or []
+
+        hits: list[dict[str, Any]] = []
+        for doc, meta, embedding in zip(docs, metas, embeddings):
+            if embedding is None:
+                continue
+            score = round(_cosine(query_vec, list(embedding)), 4)
+            if score > 0.3:
+                hits.append({"text": doc, "score": score, "meta": meta or {}})
+
+        hits.sort(key=lambda item: item["score"], reverse=True)
+        return hits[:top_k]
 
     def search(
         self,
@@ -329,6 +366,7 @@ class VectorKnowledgeStore:
         doc_type: str,
         source_table: str,
         source_pks: list[str],
+        source_uids: list[str] | None = None,
     ) -> int:
         collection_name = _get_collection_name(doc_type)
         if not collection_name:
@@ -339,7 +377,20 @@ class VectorKnowledgeStore:
         except Exception:
             return 0
 
-        deleted = 0
+        deleted_ids: set[str] = set()
+
+        def collect_ids(where: dict[str, Any]) -> None:
+            try:
+                existing = collection.get(where=where, include=[])
+                ids = existing.get("ids", []) if existing else []
+                deleted_ids.update(str(item) for item in ids)
+            except Exception:
+                return
+
+        for source_uid in source_uids or []:
+            if source_uid:
+                collect_ids({"source_uid": str(source_uid)})
+
         for source_pk in source_pks:
             where = {
                 "$and": [
@@ -347,15 +398,15 @@ class VectorKnowledgeStore:
                     {"source_pk": str(source_pk)},
                 ]
             }
-            try:
-                existing = collection.get(where=where, include=[])
-                ids = existing.get("ids", []) if existing else []
-                if ids:
-                    collection.delete(ids=ids)
-                    deleted += len(ids)
-            except Exception:
-                continue
-        return deleted
+            collect_ids(where)
+
+        if not deleted_ids:
+            return 0
+        try:
+            collection.delete(ids=list(deleted_ids))
+        except Exception:
+            return 0
+        return len(deleted_ids)
 
 
 # ---------------- TF-IDF fallback ----------------
@@ -464,14 +515,27 @@ class KnowledgeStore:
                 break
         return items
 
-    def delete_by_source(self, *, source_table: str, source_pks: list[str]) -> int:
+    def delete_by_source(
+        self,
+        *,
+        source_table: str,
+        source_pks: list[str],
+        source_uids: list[str] | None = None,
+    ) -> int:
         source_pk_set = {str(x) for x in source_pks}
+        source_uid_set = {str(x) for x in (source_uids or []) if x}
         before = len(self.docs)
         self.docs = [
             d for d in self.docs
             if not (
-                (d.get("meta") or {}).get("source_table") == source_table
-                and str((d.get("meta") or {}).get("source_pk", "")) in source_pk_set
+                (
+                    (d.get("meta") or {}).get("source_table") == source_table
+                    and str((d.get("meta") or {}).get("source_pk", "")) in source_pk_set
+                )
+                or (
+                    source_uid_set
+                    and str((d.get("meta") or {}).get("source_uid", "")) in source_uid_set
+                )
             )
         ]
         deleted = before - len(self.docs)

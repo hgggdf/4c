@@ -34,6 +34,7 @@ def build_chat_messages(
         "输出对象字段固定且只能包含 answer、suggestion、chart_desc、report_markdown。"
         "answer 控制在 300 字以内；suggestion 控制在 150 字以内；chart_desc 控制在 120 字以内；"
         "report_markdown 输出精简 markdown 草稿，按『一、财务健康度』『二、成长潜力』『三、风险提示』『四、建议』四段组织。"
+        "公式必须使用普通 Markdown 文本或表格，禁止使用 LaTeX、$...$、$$...$$、\\frac{}、\\times 等 TeX 语法。"
         "来源标注规则：answer 和 report_markdown 中每个关键数据点后必须用方括号标注来源，"
         "格式为 [来源：文档标题·日期]，例如：净利润下降12%[来源：2023年年报·财务报表]；"
         "若数据来自 evidence_items，使用对应条目的 title 和 date 字段；无法追溯时标注 [来源：模型推断]。"

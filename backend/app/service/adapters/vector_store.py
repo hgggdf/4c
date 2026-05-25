@@ -21,6 +21,7 @@ class VectorStoreAdapter(Protocol):
         doc_type: str,
         source_table: str,
         source_pks: list[int | str],
+        source_uids: list[int | str] | None = None,
     ) -> int: ...
 
 
@@ -56,8 +57,20 @@ class KnowledgeVectorStoreAdapter:
                     doc_types=doc_types,
                     filters=filters or None,
                 )
+                if not hits:
+                    hits = get_store().search(
+                        query,
+                        top_k=max(top_k * 3, top_k),
+                        filters=filters or None,
+                        doc_types=doc_types,
+                    )
             elif typed_retrieval:
-                hits = []
+                hits = get_store().search(
+                    query,
+                    top_k=max(top_k * 3, top_k),
+                    filters=filters or None,
+                    doc_types=doc_types,
+                )
             else:
                 hits = get_store().search(
                     query,
@@ -66,18 +79,15 @@ class KnowledgeVectorStoreAdapter:
                     doc_types=doc_types,
                 )
         except Exception:
-            if typed_retrieval:
+            try:
+                hits = get_store().search(
+                    query,
+                    top_k=max(top_k * 3, top_k),
+                    filters=filters or None,
+                    doc_types=doc_types,
+                )
+            except Exception:
                 hits = []
-            else:
-                try:
-                    hits = get_store().search(
-                        query,
-                        top_k=max(top_k * 3, top_k),
-                        filters=filters or None,
-                        doc_types=doc_types,
-                    )
-                except Exception:
-                    hits = []
 
         if not filters and not doc_types:
             return hits[:top_k]
@@ -116,6 +126,7 @@ class KnowledgeVectorStoreAdapter:
         doc_type: str,
         source_table: str,
         source_pks: list[int | str],
+        source_uids: list[int | str] | None = None,
     ) -> int:
         try:
             from app.knowledge.store import get_store, get_vector_store
@@ -128,6 +139,7 @@ class KnowledgeVectorStoreAdapter:
                 doc_type=doc_type,
                 source_table=source_table,
                 source_pks=[str(x) for x in source_pks],
+                source_uids=[str(x) for x in (source_uids or []) if x],
             )
         except Exception:
             pass
@@ -136,6 +148,7 @@ class KnowledgeVectorStoreAdapter:
             deleted += get_store().delete_by_source(
                 source_table=source_table,
                 source_pks=[str(x) for x in source_pks],
+                source_uids=[str(x) for x in (source_uids or []) if x],
             )
         except Exception:
             pass

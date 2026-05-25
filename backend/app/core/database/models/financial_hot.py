@@ -13,6 +13,8 @@ class FinancialHot(Base):
     __tablename__ = "financial_hot"
     __table_args__ = (
         UniqueConstraint("stock_code", "report_date", "report_type", name="uk_financial"),
+        Index("ux_financial_dedup_key", "dedup_key", unique=True),
+        Index("idx_financial_content_hash", "content_hash"),
         Index("idx_stock_report_date", "stock_code", "report_date"),
         Index("idx_report_type", "report_type"),
         Index("idx_query_count", "query_count"),
@@ -58,6 +60,8 @@ class FinancialHot(Base):
     file_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     original_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     file_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    dedup_key: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     query_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, nullable=False)
@@ -68,6 +72,8 @@ class FinancialArchive(Base):
     __tablename__ = "financial_archive"
     __table_args__ = (
         UniqueConstraint("stock_code", "report_date", "report_type", name="uk_financial_archive"),
+        Index("ux_financial_archive_dedup_key", "dedup_key", unique=True),
+        Index("idx_financial_archive_content_hash", "content_hash"),
         Index("idx_financial_archive_code_date", "stock_code", "report_date"),
         Index("idx_financial_archive_query_count", "query_count"),
     )
@@ -112,6 +118,8 @@ class FinancialArchive(Base):
     file_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     original_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     file_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    dedup_key: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     query_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, nullable=False)

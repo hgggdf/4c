@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     app_name: str = "Stock Agent API"
     app_host: str = "0.0.0.0"
-    app_port: int = 8000
+    app_port: int = 8001
     allow_origins: str = "http://127.0.0.1:5173,http://localhost:5173"
 
     mysql_host: str = "127.0.0.1"

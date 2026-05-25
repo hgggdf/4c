@@ -12,6 +12,8 @@ class AnnouncementHot(Base):
     __tablename__ = "announcement_hot"
     __table_args__ = (
         UniqueConstraint("stock_code", "title", "publish_date", name="uk_announcement"),
+        Index("ux_announcement_dedup_key", "dedup_key", unique=True),
+        Index("idx_announcement_content_hash", "content_hash"),
         Index("idx_stock_publish_date", "stock_code", "publish_date"),
         Index("idx_vector_status", "vector_status"),
         Index("idx_query_count", "query_count"),
@@ -34,6 +36,8 @@ class AnnouncementHot(Base):
     file_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     original_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     file_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    dedup_key: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     vector_status: Mapped[str] = mapped_column(String(32), default="pending", nullable=False)
     query_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
@@ -45,6 +49,8 @@ class AnnouncementArchive(Base):
     __tablename__ = "announcement_archive"
     __table_args__ = (
         UniqueConstraint("stock_code", "title", "publish_date", name="uk_announcement_archive"),
+        Index("ux_announcement_archive_dedup_key", "dedup_key", unique=True),
+        Index("idx_announcement_archive_content_hash", "content_hash"),
         Index("idx_ann_archive_code_date", "stock_code", "publish_date"),
         Index("idx_ann_archive_vector_status", "vector_status"),
         Index("idx_ann_archive_query_count", "query_count"),
@@ -66,6 +72,8 @@ class AnnouncementArchive(Base):
     file_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
     original_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
     file_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    dedup_key: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     vector_status: Mapped[str] = mapped_column(String(32), default="pending", nullable=False)
     query_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

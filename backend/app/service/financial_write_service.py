@@ -129,6 +129,6 @@ class FinancialWriteService(BaseService):
     def _delete_financial_note_vectors(self, source_ids: list[int]) -> int:
         return self.ctx.vector_store.delete_by_source(
             doc_type="financial_note",
-            source_table="financial_notes_hot",
+            source_table="financial_hot",
             source_pks=source_ids,
         )

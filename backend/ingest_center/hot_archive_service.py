@@ -58,6 +58,22 @@ RESTORE_QUERY_THRESHOLD = 30
 # 每次处理批量大小
 CHUNK_SIZE = 500
 
+ARCHIVE_LEGACY_KEYS = {
+    "financial_hot": ["stock_code", "report_date", "report_type"],
+    "announcement_hot": ["stock_code", "title", "publish_date"],
+    "research_report_hot": ["report_uid"],
+    "news_hot": ["news_uid"],
+}
+
+RESTORE_LEGACY_KEYS = {
+    "financial": ["stock_code", "report_date", "report_type"],
+    "announcement": ["stock_code", "title", "publish_date"],
+    "research_report": ["report_uid"],
+    "news": ["news_uid"],
+}
+
+PRESERVE_IDENTITY_FIELDS = {"announcement_uid", "report_uid", "news_uid", "created_at"}
+
 
 class HotArchiveService:
     """冷热库交替服务，提供热转冷、冷转热、query_count 衰减三个接口。"""
@@ -148,8 +164,12 @@ class HotArchiveService:
             chunk = rows[i:i + CHUNK_SIZE]
             for row in chunk:
                 try:
-                    archive_row = self._copy_to_archive(row, archive_model)
-                    self.db.add(archive_row)
+                    existing = self._find_existing_archive(row, archive_model, source_table)
+                    if existing is None:
+                        archive_row = self._copy_to_archive(row, archive_model)
+                        self.db.add(archive_row)
+                    else:
+                        self._merge_common_fields(existing, row)
                     self.db.flush()
                     self.db.delete(row)
                     self.db.flush()
@@ -168,6 +188,38 @@ class HotArchiveService:
         kwargs = {col: getattr(row, col) for col in common}
         return archive_model(**kwargs)
 
+    def _find_existing_archive(self, row: Any, archive_model, source_table: str) -> Any | None:
+        legacy_keys = ARCHIVE_LEGACY_KEYS.get(source_table, [])
+        return self._find_existing_by_dedup_or_legacy(archive_model, row, legacy_keys)
+
+    def _find_existing_by_dedup_or_legacy(self, model, row: Any, legacy_keys: list[str]) -> Any | None:
+        dedup_key = getattr(row, "dedup_key", None)
+        if dedup_key:
+            existing = self.db.execute(select(model).where(model.dedup_key == dedup_key)).scalar_one_or_none()
+            if existing is not None:
+                return existing
+
+        if not legacy_keys:
+            return None
+        stmt = select(model)
+        for key in legacy_keys:
+            stmt = stmt.where(getattr(model, key) == getattr(row, key))
+        return self.db.execute(stmt).scalar_one_or_none()
+
+    def _merge_common_fields(self, target: Any, source: Any) -> None:
+        target_cols = {c.name for c in target.__table__.columns if c.name != "id"}
+        source_cols = {c.name for c in source.__table__.columns if c.name != "id"}
+        for col in target_cols & source_cols:
+            if col in PRESERVE_IDENTITY_FIELDS:
+                continue
+            source_value = getattr(source, col)
+            if source_value is None:
+                continue
+            if col == "query_count":
+                target.query_count = max(target.query_count or 0, source_value or 0)
+            else:
+                setattr(target, col, source_value)
+
     # ------------------------------------------------------------------
     # 冷转热（回温）
     # ------------------------------------------------------------------
@@ -184,10 +236,10 @@ class HotArchiveService:
             True 表示成功回温
         """
         mapping = {
-            "financial": (FinancialArchive, FinancialHot, ["stock_code", "report_date", "report_type"]),
-            "announcement": (AnnouncementArchive, AnnouncementHot, ["announcement_uid"]),
-            "research_report": (ResearchReportArchive, ResearchReportHot, ["report_uid"]),
-            "news": (NewsArchive, NewsHot, ["news_uid"]),
+            "financial": (FinancialArchive, FinancialHot, RESTORE_LEGACY_KEYS["financial"]),
+            "announcement": (AnnouncementArchive, AnnouncementHot, RESTORE_LEGACY_KEYS["announcement"]),
+            "research_report": (ResearchReportArchive, ResearchReportHot, RESTORE_LEGACY_KEYS["research_report"]),
+            "news": (NewsArchive, NewsHot, RESTORE_LEGACY_KEYS["news"]),
         }
         if data_type not in mapping:
             logger.warning("unknown data_type for restore: %s", data_type)
@@ -200,10 +252,7 @@ class HotArchiveService:
             return False
 
         # 检查热库是否已存在
-        stmt = select(hot_model)
-        for key in unique_keys:
-            stmt = stmt.where(getattr(hot_model, key) == getattr(archive_row, key))
-        existing = self.db.execute(stmt).scalar_one_or_none()
+        existing = self._find_existing_by_dedup_or_legacy(hot_model, archive_row, unique_keys)
 
         if existing is None:
             hot_cols = {c.name for c in hot_model.__table__.columns if c.name != "id"}
@@ -211,6 +260,9 @@ class HotArchiveService:
             common = hot_cols & archive_cols
             kwargs = {col: getattr(archive_row, col) for col in common}
             self.db.add(hot_model(**kwargs))
+            self.db.commit()
+        else:
+            self._merge_common_fields(existing, archive_row)
             self.db.commit()
 
         self._log_job("restore_hot", f"{data_type}_hot", 1, 0)
