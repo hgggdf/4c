@@ -168,6 +168,8 @@ export const useChatStore = defineStore('chat', {
       }
       session.messages.push(userMsg)
       session.messages.push(assistantMsg)
+      // 持有响应式引用
+      const reactiveMsg = session.messages[session.messages.length - 1]
       this.sessionLoading[sessionId] = true
       this.loading = Object.values(this.sessionLoading).some(Boolean)
 
@@ -181,7 +183,7 @@ export const useChatStore = defineStore('chat', {
           top_k: 5,
         }).catch(() => null)
         const retrievalItems = retrievalRes?.data?.items ?? retrievalRes?.items ?? []
-        assistantMsg.retrievalTrace = retrievalItems.slice(0, 5)
+        reactiveMsg.retrievalTrace = retrievalItems.slice(0, 5)
         const contextText = retrievalItems.slice(0, 3).map((item, index) => {
           const title = item?.metadata?.title || item?.source_record?.title || '未命名结果'
           const snippet = item?.text || item?.source_record?.summary_text || item?.source_record?.content || ''
@@ -205,42 +207,41 @@ export const useChatStore = defineStore('chat', {
           },
           (event) => {
             if (event.type === 'tool_call') {
-              assistantMsg.toolEvents.push({ type: 'tool_call', tool: event.tool, args: event.args })
+              reactiveMsg.toolEvents = [...reactiveMsg.toolEvents, { type: 'tool_call', tool: event.tool, args: event.args }]
             } else if (event.type === 'tool_result') {
-              assistantMsg.toolEvents.push({ type: 'tool_result', tool: event.tool, preview: event.content || event.preview || '' })
+              reactiveMsg.toolEvents = [...reactiveMsg.toolEvents, { type: 'tool_result', tool: event.tool, preview: event.content || event.preview || '' }]
             } else if (event.type === 'status') {
-              assistantMsg.toolEvents.push({ type: 'status', content: event.content })
+              reactiveMsg.toolEvents = [...reactiveMsg.toolEvents, { type: 'status', content: event.content }]
             } else if (event.type === 'doc_preview') {
-              assistantMsg.docPreviews.push({
+              reactiveMsg.docPreviews = [...reactiveMsg.docPreviews, {
                 title: event.title,
                 kind: event.kind,
                 date: event.date,
                 file_name: event.file_name,
                 source_url: event.source_url || '',
                 summary: event.summary || '',
-              })
+              }]
             } else if (event.type === 'clarification') {
-              // 澄清事件：把 assistant 消息标记为澄清气泡，暂停输入
-              assistantMsg.isClarification = true
-              assistantMsg.content = event.question
-              assistantMsg.clarificationSuggestions = event.suggestions || []
+              reactiveMsg.isClarification = true
+              reactiveMsg.content = event.question
+              reactiveMsg.clarificationSuggestions = event.suggestions || []
               this.pendingClarification = {
                 question: event.question,
                 suggestions: event.suggestions || [],
                 sessionId,
               }
             } else if (event.type === 'answer') {
-              assistantMsg.content += event.content || ''
+              reactiveMsg.content += event.content || ''
               window.dispatchEvent(new CustomEvent('chat-scroll-bottom', { detail: { sessionId } }))
             } else if (event.type === 'answer_chunk') {
-              assistantMsg.content += event.content || ''
+              reactiveMsg.content += event.content || ''
               window.dispatchEvent(new CustomEvent('chat-scroll-bottom', { detail: { sessionId } }))
             } else if (event.type === 'synthesizing') {
-              assistantMsg.toolEvents.push({ type: 'status', content: '正在综合分析…' })
+              reactiveMsg.toolEvents = [...reactiveMsg.toolEvents, { type: 'status', content: '正在综合分析…' }]
             } else if (event.type === 'answer_done') {
               // 流式输出结束标记，无需处理
             } else if (event.type === 'error') {
-              assistantMsg.content += `\n\n[对话异常: ${event.message || '未知错误'}]`
+              reactiveMsg.content += `\n\n[对话异常: ${event.message || '未知错误'}]`
             } else if (event.type === 'done') {
               // end marker
             }
@@ -248,13 +249,13 @@ export const useChatStore = defineStore('chat', {
         )
       } catch (err) {
         const msg = err?.message || String(err) || '未知错误'
-        assistantMsg.content += `\n\n[请求失败：${msg}]`
+        reactiveMsg.content += `\n\n[请求失败：${msg}]`
         console.error('[chatStream error]', err)
       } finally {
         this.sessionLoading[sessionId] = false
         this.loading = Object.values(this.sessionLoading).some(Boolean)
-        if (assistantMsg.content || assistantMsg.toolEvents.length) {
-          appendAssistantMessage(sessionId, assistantMsg.content || ' ').catch(() => {})
+        if (reactiveMsg.content || reactiveMsg.toolEvents.length) {
+          appendAssistantMessage(sessionId, reactiveMsg.content || ' ').catch(() => {})
         }
         this.featureMode = null
       }
@@ -283,6 +284,8 @@ export const useChatStore = defineStore('chat', {
       }
       session.messages.push(userMsg)
       session.messages.push(assistantMsg)
+      // 持有响应式引用（Pinia 把 session.messages 转为响应式数组后，末尾元素是响应式对象）
+      const reactiveMsg = session.messages[session.messages.length - 1]
       this.sessionLoading[sessionId] = true
       this.loading = true
 
@@ -296,40 +299,40 @@ export const useChatStore = defineStore('chat', {
               return
             }
             if (event.type === 'thinking') {
-              assistantMsg.agentTrace.push({ type: 'thinking', content: event.content })
+              reactiveMsg.agentTrace = [...reactiveMsg.agentTrace, { type: 'thinking', content: event.content }]
             } else if (event.type === 'tool_call') {
-              assistantMsg.agentTrace.push({ type: 'tool_call', tool: event.tool, args: event.args, call_id: event.call_id })
+              reactiveMsg.agentTrace = [...reactiveMsg.agentTrace, { type: 'tool_call', tool: event.tool, args: event.args, call_id: event.call_id }]
             } else if (event.type === 'tool_result') {
-              assistantMsg.agentTrace.push({ type: 'tool_result', tool: event.tool, call_id: event.call_id, source: event.source, preview: event.preview })
+              reactiveMsg.agentTrace = [...reactiveMsg.agentTrace, { type: 'tool_result', tool: event.tool, call_id: event.call_id, source: event.source, preview: event.preview }]
             } else if (event.type === 'status') {
-              assistantMsg.agentTrace.push({ type: 'status', content: event.content })
+              reactiveMsg.agentTrace = [...reactiveMsg.agentTrace, { type: 'status', content: event.content }]
             } else if (event.type === 'answer') {
-              assistantMsg.content = event.content
-              assistantMsg.agentSources = event.sources || []
+              reactiveMsg.content = event.content
+              reactiveMsg.agentSources = event.sources || []
               window.dispatchEvent(new CustomEvent('chat-scroll-bottom', { detail: { sessionId } }))
             } else if (event.type === 'answer_chunk') {
-              assistantMsg.content += event.content || ''
+              reactiveMsg.content += event.content || ''
               window.dispatchEvent(new CustomEvent('chat-scroll-bottom', { detail: { sessionId } }))
             } else if (event.type === 'synthesizing') {
-              assistantMsg.agentTrace.push({ type: 'status', content: '正在综合分析…' })
+              reactiveMsg.agentTrace = [...reactiveMsg.agentTrace, { type: 'status', content: '正在综合分析…' }]
             } else if (event.type === 'answer_done') {
               // end marker
             } else if (event.type === 'clarification') {
-              assistantMsg.content = event.question || '请补充更多信息以便分析。'
-              assistantMsg.agentTrace.push({ type: 'status', content: '需要澄清' })
+              reactiveMsg.content = event.question || '请补充更多信息以便分析。'
+              reactiveMsg.agentTrace = [...reactiveMsg.agentTrace, { type: 'status', content: '需要澄清' }]
               window.dispatchEvent(new CustomEvent('chat-scroll-bottom', { detail: { sessionId } }))
             } else if (event.type === 'error') {
-              assistantMsg.content = `[Agent 错误：${event.message}]`
+              reactiveMsg.content = `[Agent 错误：${event.message}]`
             }
           }
         )
       } catch (err) {
-        assistantMsg.content = `[请求失败：${err?.message || err}]`
+        reactiveMsg.content = `[请求失败：${err?.message || err}]`
       } finally {
         this.sessionLoading[sessionId] = false
         this.loading = Object.values(this.sessionLoading).some(Boolean)
-        if (assistantMsg.content) {
-          appendAssistantMessage(sessionId, assistantMsg.content).catch(() => {})
+        if (reactiveMsg.content) {
+          appendAssistantMessage(sessionId, reactiveMsg.content).catch(() => {})
         }
       }
     },

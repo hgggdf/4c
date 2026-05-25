@@ -37,7 +37,7 @@
       </div>
 
       <!-- 消息列表 -->
-      <div class="cp-messages" ref="msgListRef">
+      <div class="cp-messages" ref="msgListRef" @scroll="onMessagesScroll">
         <div
           v-for="(msg, i) in chatStore.messages"
           :key="`${msg.createdAt}-${i}`"
@@ -347,14 +347,23 @@ async function copyMessage(content, index) {
 const DOC_KIND_LABELS = { report: '研报', announcement: '公告', news: '新闻', financial_note: '财报' }
 function docKindLabel(kind) { return DOC_KIND_LABELS[kind] || kind }
 
-function scrollBottom() {
+const userScrolledUp = ref(false)
+
+function onMessagesScroll() {
+  const el = msgListRef.value
+  if (!el) return
+  // 距底部超过 80px 认为用户主动上翻
+  userScrolledUp.value = el.scrollHeight - el.scrollTop - el.clientHeight > 80
+}
+
+function scrollBottom(force = false) {
+  if (!force && userScrolledUp.value) return
   nextTick(() => {
     if (msgListRef.value) msgListRef.value.scrollTop = msgListRef.value.scrollHeight
   })
 }
 
 function onScrollBottomEvent(e) {
-  // 只响应当前活跃会话的滚动事件，避免其他会话的流式输出干扰
   if (e.detail?.sessionId !== undefined && e.detail.sessionId !== chatStore.activeSessionId) return
   scrollBottom()
 }
@@ -386,8 +395,19 @@ async function removeSession(sessionId) {
   await chatStore.deleteSession(sessionId)
 }
 
-watch(() => chatStore.messages.map(m => `${m.role}:${m.content}:${m.agentTrace?.length}`).join('|'), scrollBottom)
-watch(() => chatStore.activeSessionId, scrollBottom)
+// 消息数量增加（新消息追加）时强制滚底并重置上翻状态
+watch(() => chatStore.messages.length, () => {
+  userScrolledUp.value = false
+  scrollBottom(true)
+})
+// 内容或 trace 更新时，只在用户没有上翻时才跟随滚底
+watch(() => chatStore.messages.map(m => `${m.content?.length}:${m.agentTrace?.length}:${m.toolEvents?.length}`).join('|'), () => {
+  scrollBottom()
+})
+watch(() => chatStore.activeSessionId, () => {
+  userScrolledUp.value = false
+  scrollBottom(true)
+})
 watch(() => chatStore.isSessionLoading(chatStore.activeSessionId), scrollBottom)
 
 onMounted(() => {
