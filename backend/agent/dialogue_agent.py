@@ -34,6 +34,7 @@ class DialogueAgent:
         "butterfly_analysis": "蝴蝶效应",
         "valuation_analysis": "估值分析",
         "price_volume_analysis": "量价分析",
+        "rnpv_analysis": "管线rNPV估值",
     }
 
     MODE_SYSTEM_TEMPLATES = {
@@ -114,6 +115,15 @@ class DialogueAgent:
 4. 公司层传导（具体受影响的上市公司、影响路径）
 5. 风险提示（需警惕的连锁反应与尾部风险）
 6. 投资机会（可能受益的行业与标的）""",
+
+        "rnpv_analysis": """\
+当前任务：管线 rNPV 估值
+请根据已计算的三情景结果，按以下框架输出分析报告：
+1. 估值结论摘要（基准 rNPV，悲观/乐观区间）
+2. 关键驱动假设（PoS、患者数、定价、峰值份额）
+3. 情景差异解读（各情景的核心变量差异）
+4. 主要不确定性与风险（临床失败、竞品冲击、定价风险）
+5. 参考建议（结合公司整体估值看该管线的贡献度）""",
     }
 
     MODE_DOC_TYPES = {
@@ -127,6 +137,7 @@ class DialogueAgent:
         "butterfly_analysis": ["news", "report"],
         "valuation_analysis": ["financial_note", "report"],
         "price_volume_analysis": ["announcement", "news"],
+        "rnpv_analysis": ["announcement", "report"],
     }
 
     MARKDOWN_FORMULA_RULES = [
@@ -891,6 +902,39 @@ class DialogueAgent:
                 "content": "本地数据库暂无足够的对比数据，将由 AI 基于知识库进行分析…",
             }
 
+        # rnpv_analysis 模式：调用 rNPV 计算工具后再由 LLM 解读
+        if selected_mode == "rnpv_analysis" and stock_context:
+            yield {"type": "status", "content": "正在计算管线 rNPV 三情景估值…"}
+            try:
+                from agent.tools.rnpv_tools import calculate_pipeline_rnpv, list_pipeline_drugs
+                stock_code = stock_context.get("stock_code", "")
+                stock_name = stock_context.get("stock_name", "")
+
+                drugs = list_pipeline_drugs(stock_code)
+                drug_name = drugs[0].get("drug_name") if drugs else None
+                indication = drugs[0].get("indication") if drugs else None
+                trial_phase = drugs[0].get("trial_phase") if drugs else None
+                route = drugs[0].get("route_of_administration") if drugs else None
+
+                rnpv_data = calculate_pipeline_rnpv(
+                    stock_code=stock_code,
+                    stock_name=stock_name,
+                    drug_name=drug_name,
+                    indication=indication,
+                    trial_phase=trial_phase,
+                    route_of_administration=route,
+                )
+                yield {"type": "rnpv_result", "data": rnpv_data}
+                # 将计算结果注入 system_context，让 LLM 据此解读
+                import json as _json
+                system_context_override = (
+                    f"以下是已计算完毕的 rNPV 三情景估值数据，请据此撰写分析报告，不要重新计算：\n"
+                    f"```json\n{_json.dumps(rnpv_data, ensure_ascii=False, indent=2)}\n```"
+                )
+            except Exception as exc:
+                logger.warning("rNPV calculation failed: %s", exc)
+                yield {"type": "status", "content": f"rNPV 计算遇到问题（{exc}），将由 AI 基于知识库分析。"}
+
         messages = self.build_messages(
             question, history, targets, current_stock_code, selected_mode=selected_mode,
             session_id=session_id, db_messages=db_messages,
@@ -1384,7 +1428,7 @@ def _suggest_follow_up(
         return None
 
     # 已经在做这三个功能，不重复推荐
-    no_suggest_modes = {"valuation_analysis", "price_volume_analysis", "report_generation"}
+    no_suggest_modes = {"valuation_analysis", "price_volume_analysis", "report_generation", "rnpv_analysis"}
     if selected_mode in no_suggest_modes:
         return None
 
@@ -1402,6 +1446,9 @@ def _suggest_follow_up(
     # 企业打分：涉及综合评价/怎么样/健康度/基本面/实力
     scoring_keywords = ["怎么样", "如何", "综合", "评分", "健康", "基本面", "实力", "竞争力",
                         "整体", "表现", "评价", "好不好", "质地"]
+    # rNPV 估值：涉及管线/研发/药品/临床/rNPV
+    rnpv_keywords = ["管线", "研发", "临床", "rnpv", "风险调整", "在研", "新药", "创新药",
+                     "适应症", "phase", "三期", "二期", "nda", "申报", "获批"]
 
     suggestions = []
 
@@ -1427,6 +1474,14 @@ def _suggest_follow_up(
             "label": "企业打分",
             "desc": f"对 {stock_name} 进行多维度财务评分",
             "message": f"对{stock_name}进行企业综合打分",
+        })
+
+    if any(kw in combined for kw in rnpv_keywords):
+        suggestions.append({
+            "mode": "rnpv_analysis",
+            "label": "管线rNPV估值",
+            "desc": f"对 {stock_name} 核心管线进行风险调整净现值估算",
+            "message": f"对{stock_name}核心管线进行rNPV三情景估值",
         })
 
     # 什么都没匹配但有公司上下文，且问题较短（泛问），给出全部三个

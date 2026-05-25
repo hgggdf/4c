@@ -163,6 +163,7 @@ export const useChatStore = defineStore('chat', {
         toolEvents: [],
         docPreviews: [],
         followUp: null,
+        rnpvResult: null,
         modeTitle: selectedMode,
         sessionId,
         selectedMode,
@@ -243,6 +244,8 @@ export const useChatStore = defineStore('chat', {
               // 流式输出结束标记，无需处理
             } else if (event.type === 'follow_up') {
               reactiveMsg.followUp = event
+            } else if (event.type === 'rnpv_result') {
+              reactiveMsg.rnpvResult = event.data
             } else if (event.type === 'error') {
               reactiveMsg.content += `\n\n[对话异常: ${event.message || '未知错误'}]`
             } else if (event.type === 'done') {

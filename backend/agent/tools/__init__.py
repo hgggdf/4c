@@ -54,6 +54,10 @@ from .valuation_tools import (
     get_valuation_comparison,
     get_valuation_metrics,
 )
+from .rnpv_tools import (
+    calculate_pipeline_rnpv,
+    list_pipeline_drugs,
+)
 
 __all__ = [
     # Company tools
@@ -97,6 +101,9 @@ __all__ = [
     "get_valuation_metrics",
     "get_dcf_valuation",
     "get_valuation_comparison",
+    # rNPV tools
+    "calculate_pipeline_rnpv",
+    "list_pipeline_drugs",
     # Price-volume tools
     "get_price_volume_data",
     "get_price_volume_analysis",

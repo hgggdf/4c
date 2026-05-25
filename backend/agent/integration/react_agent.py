@@ -339,6 +339,45 @@ TOOLS_SCHEMA = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_pipeline_drugs",
+            "description": "列出公司在研管线品种，包含适应症、临床阶段、给药方式等信息。在做 rNPV 估值前先调此工具了解管线全貌。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码"},
+                },
+                "required": ["stock_code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "calculate_pipeline_rnpv",
+            "description": "计算单个管线品种的 rNPV（风险调整净现值）三情景估值（悲观/基准/乐观）。缺失参数有行业基准 fallback，不会报错。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {"type": "string", "description": "6位数字股票代码"},
+                    "stock_name": {"type": "string", "description": "公司名称"},
+                    "drug_name": {"type": "string", "description": "品种名称，不填则自动取管线第一个品种"},
+                    "indication": {"type": "string", "description": "适应症，如'非小细胞肺癌'"},
+                    "trial_phase": {"type": "string", "description": "临床阶段枚举：phase1/phase2/phase3/nda/approved"},
+                    "route_of_administration": {"type": "string", "description": "给药方式，如'口服'/'注射'"},
+                    "target_patients_wan": {"type": "number", "description": "目标患者数（万人），缺失时用行业基准"},
+                    "price_per_year_wan": {"type": "number", "description": "年治疗费用（万元/人），缺失时用行业基准"},
+                    "peak_market_share": {"type": "number", "description": "峰值市场份额 0-1，缺失时用行业基准"},
+                    "net_margin": {"type": "number", "description": "净利润率 0-1，默认0.25"},
+                    "wacc": {"type": "number", "description": "折现率 0-1，默认0.10"},
+                    "rd_expense_total_wan": {"type": "number", "description": "公司整体R&D费用（万元），用于成本代理，可不填"},
+                },
+                "required": ["stock_code", "stock_name"],
+            },
+        },
+    },
 ]
 
 MARKDOWN_FORMULA_RULES = """Formatting rules:
@@ -359,6 +398,7 @@ SYSTEM_PROMPT = """你是"医策经纬"——面向医药上市公司的多智�
 - 需要量价分析、技术面判断 → 调 get_price_volume_analysis
 - 需要解释放量/缩量/异动原因 → 调 get_price_volume_event_correlation
 - 需要获取原始日行情序列 → 调 get_price_volume_data
+- 需要管线 rNPV 估值 → 先调 list_pipeline_drugs 了解管线，再调 calculate_pipeline_rnpv 计算三情景估值
 - 问题是行业趋势、政策影响、宏观分析（无具体公司名）→ 直接调 search_documents，不要要求用户澄清
 - 例如"集采对仿制药行业的影响" → search_documents(query="集采对仿制药的影响", doc_types=["announcement","news"])
 - 例如"医保谈判最新政策" → search_documents(query="医保谈判政策", doc_types=["news","announcement"])
@@ -504,6 +544,29 @@ def _execute_tool(name: str, args: dict[str, Any]) -> tuple[Any, str]:
             from agent.tools import get_price_volume_event_correlation
             result = get_price_volume_event_correlation(args["stock_code"], days=args.get("days", 120))
             return result, f"量价事件关联 [{args['stock_code']}]"
+
+        if name == "list_pipeline_drugs":
+            from agent.tools.rnpv_tools import list_pipeline_drugs
+            result = list_pipeline_drugs(args["stock_code"])
+            return result, f"管线数据库 [{args['stock_code']}]"
+
+        if name == "calculate_pipeline_rnpv":
+            from agent.tools.rnpv_tools import calculate_pipeline_rnpv
+            result = calculate_pipeline_rnpv(
+                stock_code=args["stock_code"],
+                stock_name=args["stock_name"],
+                drug_name=args.get("drug_name"),
+                indication=args.get("indication"),
+                trial_phase=args.get("trial_phase"),
+                route_of_administration=args.get("route_of_administration"),
+                target_patients_wan=args.get("target_patients_wan"),
+                price_per_year_wan=args.get("price_per_year_wan"),
+                peak_market_share=args.get("peak_market_share"),
+                net_margin=args.get("net_margin", 0.25),
+                wacc=args.get("wacc", 0.10),
+                rd_expense_total_wan=args.get("rd_expense_total_wan"),
+            )
+            return result, f"rNPV 管线估值 [{args['stock_code']}]"
 
         return {"error": f"未知工具: {name}"}, "未知"
 

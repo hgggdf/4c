@@ -201,6 +201,9 @@
               </div>
             </div>
 
+            <!-- rNPV 估值结果卡片 -->
+            <RnpvCard v-if="msg.role === 'assistant' && msg.rnpvResult" :data="msg.rnpvResult" />
+
             <!-- 功能推荐卡片 -->
             <div v-if="msg.role === 'assistant' && msg.followUp" class="cp-followup">
               <div class="cp-followup-label">您可能还需要</div>
@@ -299,6 +302,7 @@ import { useChatStore } from '../store/chatStore'
 import ChatBox from './ChatBox.vue'
 import AgentTrace from './AgentTrace.vue'
 import ReportChart from './ReportChart.vue'
+import RnpvCard from './RnpvCard.vue'
 
 // 将消息内容拆分为文本段和图表段
 function parseMessageSegments(content) {
