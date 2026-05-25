@@ -2,19 +2,35 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useChatStore } from '../chatStore'
 import * as chatApi from '../../api/chat'
+import * as retrievalApi from '../../api/retrieval'
 
 vi.mock('../../api/chat', () => ({
   sendChatMessageStream: vi.fn(),
+  sendAgentStream: vi.fn(),
+  createSession: vi.fn(),
+  listSessions: vi.fn(),
+  listMessages: vi.fn(),
+  appendUserMessage: vi.fn(),
+  appendAssistantMessage: vi.fn(),
+  deleteSession: vi.fn(),
+}))
+
+vi.mock('../../api/retrieval', () => ({
+  searchHybrid: vi.fn(),
 }))
 
 describe('chatStore.js — ask() 方法触发链路', () => {
   let store
 
-  beforeEach(() => {
+  beforeEach(async () => {
     setActivePinia(createPinia())
+    chatApi.createSession.mockResolvedValue({ id: 1, session_title: '测试会话' })
+    chatApi.appendUserMessage.mockResolvedValue({})
+    chatApi.appendAssistantMessage.mockResolvedValue({})
+    retrievalApi.searchHybrid.mockResolvedValue({ data: { items: [] } })
     store = useChatStore()
     // 创建新会话以便测试
-    store.newSession()
+    await store.newSession()
     vi.clearAllMocks()
   })
 
@@ -24,7 +40,7 @@ describe('chatStore.js — ask() 方法触发链路', () => {
     const initialCount = store.messages.length
     await store.ask({ message: '测试' })
 
-    expect(store.messages.length).toBe(initialCount + 1)
+    expect(store.messages.length).toBe(initialCount + 2)
     const assistantMsg = store.messages[store.messages.length - 1]
     expect(assistantMsg.role).toBe('assistant')
     expect(assistantMsg.content).toBe('')
@@ -46,40 +62,29 @@ describe('chatStore.js — ask() 方法触发链路', () => {
   })
 
   it('逐块更新 assistant 消息内容', async () => {
-    let chunkCallback
     chatApi.sendChatMessageStream.mockImplementation((payload, onChunk) => {
-      chunkCallback = onChunk
+      onChunk({ type: 'answer_chunk', content: 'Hello' })
+      onChunk({ type: 'answer_chunk', content: ' ' })
+      onChunk({ type: 'answer_chunk', content: 'World' })
       return Promise.resolve()
     })
 
-    const promise = store.ask({ message: '测试' })
-
-    // 模拟流式返回
-    chunkCallback({ text: 'Hello' })
-    chunkCallback({ text: ' ' })
-    chunkCallback({ text: 'World' })
-
-    await promise
+    await store.ask({ message: '测试' })
 
     const assistantMsg = store.messages[store.messages.length - 1]
     expect(assistantMsg.content).toBe('Hello World')
   })
 
-  it('chunk.text 为空时不更新内容', async () => {
-    let chunkCallback
+  it('answer_chunk.content 为空时不更新内容', async () => {
     chatApi.sendChatMessageStream.mockImplementation((payload, onChunk) => {
-      chunkCallback = onChunk
+      onChunk({ type: 'answer_chunk', content: 'Start' })
+      onChunk({ type: 'done' })
+      onChunk({ type: 'answer_chunk', content: '' })
+      onChunk({ type: 'answer_chunk', content: ' End' })
       return Promise.resolve()
     })
 
-    const promise = store.ask({ message: '测试' })
-
-    chunkCallback({ text: 'Start' })
-    chunkCallback({ done: true }) // 无 text 字段
-    chunkCallback({ text: '' }) // 空字符串
-    chunkCallback({ text: ' End' })
-
-    await promise
+    await store.ask({ message: '测试' })
 
     const assistantMsg = store.messages[store.messages.length - 1]
     expect(assistantMsg.content).toBe('Start End')
@@ -172,14 +177,14 @@ describe('chatStore.js — ask() 方法触发链路', () => {
     await store.ask({ message: '问题2' })
     await store.ask({ message: '问题3' })
 
-    expect(store.messages.length).toBe(initialCount + 3) // 每次 ask 添加 1 条 assistant 消息
+    expect(store.messages.length).toBe(initialCount + 6) // 每次 ask 添加 1 条 user + 1 条 assistant 消息
   })
 
   it('流式响应中途出错，已接收的内容保留', async () => {
     let chunkCallback
     chatApi.sendChatMessageStream.mockImplementation((payload, onChunk) => {
       chunkCallback = onChunk
-      chunkCallback({ text: '部分内容' })
+      chunkCallback({ type: 'answer_chunk', content: '部分内容' })
       return Promise.reject(new Error('中断'))
     })
 
