@@ -153,4 +153,19 @@ class KnowledgeVectorStoreAdapter:
         except Exception:
             pass
 
+        try:
+            from app.core.database.session import SessionLocal
+            from app.knowledge.sync import delete_vector_index_entries
+
+            with SessionLocal() as db:
+                delete_vector_index_entries(
+                    db,
+                    source_table=source_table,
+                    source_pks=list(source_pks),
+                    source_uids=[str(x) for x in (source_uids or []) if x],
+                )
+                db.commit()
+        except Exception:
+            pass
+
         return deleted
