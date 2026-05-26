@@ -1,0 +1,8 @@
+{
+  "batch_id": "pipeline_test_20260526",
+  "status": "ready",
+  "data_types": ["pipeline_drug"],
+  "files": {
+    "pipeline_drug": "pipeline/pipeline_drug_records.jsonl"
+  }
+}

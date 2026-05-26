@@ -21,6 +21,7 @@ from .macro_write_repository import MacroWriteRepository
 from .maintenance_repository import MaintenanceRepository
 from .news_repository import NewsRepository
 from .news_write_repository import NewsWriteRepository
+from .pipeline_repository import PipelineRepository
 from .research_report_repository import ResearchReportRepository
 
 __all__ = [
@@ -33,6 +34,7 @@ __all__ = [
     "AnnouncementWriteRepository",
     "NewsRepository",
     "NewsWriteRepository",
+    "PipelineRepository",
     "ResearchReportRepository",
     "MacroRepository",
     "MacroWriteRepository",

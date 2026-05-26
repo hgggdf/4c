@@ -141,6 +141,18 @@ def build_dedup_key(data_type: str, item: dict[str, Any]) -> str:
             ],
         )
 
+    if data_type == "pipeline_drug":
+        # 不把 trial_phase 放进去：阶段会推进，dedup_key 必须保持稳定。
+        canonical = item.get("canonical_drug_name") or item.get("drug_name") or ""
+        return _hash_parts(
+            data_type,
+            [
+                item.get("stock_code"),
+                normalize_key_part(canonical),
+                normalize_key_part(item.get("indication_norm") or item.get("indication") or ""),
+            ],
+        )
+
     raise ValueError(f"Unsupported dedup data_type: {data_type}")
 
 

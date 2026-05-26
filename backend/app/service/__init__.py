@@ -14,6 +14,7 @@ from .macro_write_service import MacroWriteService
 from .maintenance_service import MaintenanceService
 from .news_service import NewsService
 from .news_write_service import NewsWriteService
+from .pipeline_service import PipelineService
 from .retrieval_service import RetrievalService
 
 __all__ = [
@@ -33,6 +34,7 @@ __all__ = [
     "AnnouncementWriteService",
     "MacroWriteService",
     "NewsWriteService",
+    "PipelineService",
     "MaintenanceService",
     "IngestGatewayService",
 ]

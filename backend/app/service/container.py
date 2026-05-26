@@ -18,6 +18,7 @@ from .macro_write_service import MacroWriteService
 from .maintenance_service import MaintenanceService
 from .news_service import NewsService
 from .news_write_service import NewsWriteService
+from .pipeline_service import PipelineService
 from .research_report_write_service import ResearchReportWriteService
 from .retrieval_service import RetrievalService
 
@@ -39,6 +40,7 @@ class ServiceContainer:
     macro_write: MacroWriteService
     news_write: NewsWriteService
     research_report_write: ResearchReportWriteService
+    pipeline: PipelineService
     maintenance: MaintenanceService
     ingest: IngestGatewayService
     butterfly: ButterflyService
@@ -72,6 +74,7 @@ class ServiceContainer:
             macro_write=macro_write,
             news_write=news_write,
             research_report_write=research_report_write,
+            pipeline=PipelineService(ctx=ctx),
             maintenance=maintenance,
             ingest=IngestGatewayService(
                 ctx=ctx,

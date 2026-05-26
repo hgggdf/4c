@@ -24,6 +24,7 @@ ACTIVE_COLLECTIONS = {
     "news": "news_chunks",
     "company_profile": "company_profile_chunks",
     "report": "research_report_chunks",
+    "pipeline_drug": "pipeline_drug_chunks",
 }
 
 EMBEDDING_MODEL_NAME = "BAAI/bge-small-zh-v1.5"
@@ -54,6 +55,7 @@ class ChunkMetadata:
     drug_name: str = ""
     indication: str = ""
     trial_phase: str = ""
+    route_of_administration: str = ""
     event_type: str = ""
     is_hot: int = 1
 
