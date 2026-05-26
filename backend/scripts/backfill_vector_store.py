@@ -16,6 +16,7 @@ from app.knowledge.sync import (
     sync_announcements,
     sync_financial_notes,
     sync_news,
+    sync_pipeline_drugs,
     sync_research_reports,
     sync_company_profiles,
 )
@@ -37,6 +38,7 @@ def run_backfill() -> dict:
             for doc_type, sync_fn in BACKFILL_ORDER:
                 step_counts[doc_type] = int(sync_fn(db, is_hot=True))
             step_counts["company_profile"] = int(sync_company_profiles(db))
+            step_counts["pipeline_drug"] = int(sync_pipeline_drugs(db))
             db.commit()
         except Exception:
             db.rollback()
@@ -47,6 +49,8 @@ def run_backfill() -> dict:
         doc_type: vector_store.count(doc_type=doc_type)
         for doc_type, _ in BACKFILL_ORDER
     }
+    collection_counts["company_profile"] = vector_store.count(doc_type="company_profile")
+    collection_counts["pipeline_drug"] = vector_store.count(doc_type="pipeline_drug")
 
     return {
         "chroma_path": str(CHROMA_DB_DIR),

@@ -59,6 +59,7 @@ from .news_hot import (
     IndustryImpactEventArchive,
 )
 from .vector_and_job import VectorDocumentIndex, DataJobLog, StagingImport
+from .pipeline import PipelineDrug, RNPVValuationRun
 
 __all__ = [
     "User", "ChatSession", "ChatMessage", "Watchlist",
@@ -76,4 +77,5 @@ __all__ = [
     "NewsIndustryMapHot", "NewsCompanyMapHot", "IndustryImpactEventHot",
     "NewsIndustryMapArchive", "NewsCompanyMapArchive", "IndustryImpactEventArchive",
     "VectorDocumentIndex", "DataJobLog", "StagingImport",
+    "PipelineDrug", "RNPVValuationRun",
 ]

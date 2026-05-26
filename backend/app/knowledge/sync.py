@@ -35,6 +35,7 @@ from app.core.database.models.news_hot import (
     NewsStructuredArchive,
     NewsStructuredHot,
 )
+from app.core.database.models.pipeline import PipelineDrug
 from app.core.database.models.vector_and_job import VectorDocumentIndex
 from app.knowledge.store import (
     ACTIVE_COLLECTIONS,
@@ -933,4 +934,87 @@ def sync_research_reports_by_ids(db: Session, source_ids: list[int], is_hot: boo
     total = 0
     for row in rows:
         total += _sync_research_report_row(db, row, is_hot=is_hot, stock_name_by_code=stock_name_by_code)
+    return total
+
+
+def _pipeline_drug_text(row) -> str:
+    parts = []
+    if row.stock_code:
+        parts.append(f"公司：{row.stock_code}")
+    parts.append(f"药品：{row.drug_name}")
+    if row.indication:
+        parts.append(f"适应症：{row.indication}")
+    if row.therapeutic_area:
+        parts.append(f"治疗领域：{row.therapeutic_area}")
+    parts.append(f"阶段：{row.trial_phase}")
+    if row.trial_phase_raw:
+        parts.append(f"原始表述：{row.trial_phase_raw}")
+    if row.route_of_administration:
+        parts.append(f"给药方式：{row.route_of_administration}")
+    if row.evidence_text:
+        parts.append(f"证据：{row.evidence_text}")
+    if row.source_url:
+        parts.append(f"来源：{row.source_url}")
+    return "\n".join(parts)
+
+
+def _build_pipeline_meta(row, stock_name: str) -> ChunkMetadata:
+    return ChunkMetadata(
+        doc_type="pipeline_drug",
+        doc_id=_doc_id("pipeline_drug", row.id, row.drug_name or ""),
+        stock_code=row.stock_code or "",
+        stock_name=stock_name,
+        title=row.drug_name or "",
+        category=row.therapeutic_area or "",
+        drug_name=row.drug_name or "",
+        indication=row.indication or "",
+        trial_phase=row.trial_phase or "",
+        route_of_administration=row.route_of_administration or "",
+        source_type=row.source_type or "",
+        source_url=row.source_url or "",
+        source_table=PipelineDrug.__tablename__,
+        source_pk=str(row.id),
+        source_uid=row.dedup_key or f"pipeline:{row.id}",
+        is_hot=1,
+    )
+
+
+def sync_pipeline_drugs(
+    db: Session,
+    stock_code: str | None = None,
+    limit: int | None = None,
+) -> int:
+    stmt = select(PipelineDrug).where(PipelineDrug.is_active == 1)
+    if stock_code:
+        stmt = stmt.where(PipelineDrug.stock_code == stock_code)
+    if limit:
+        stmt = stmt.limit(limit)
+
+    rows = db.execute(stmt).scalars().all()
+    stock_name_by_code = _stock_name_map(db, [getattr(r, "stock_code", "") for r in rows])
+
+    total = 0
+    for row in rows:
+        text = _pipeline_drug_text(row)
+        if not text:
+            continue
+        meta = _build_pipeline_meta(row, stock_name_by_code.get(row.stock_code or "", ""))
+        total += _write_document(db, text, "pipeline_drug", meta, row)
+    return total
+
+
+def sync_pipeline_drugs_by_ids(db: Session, source_ids: list[int]) -> int:
+    if not source_ids:
+        return 0
+    stmt = select(PipelineDrug).where(PipelineDrug.id.in_(source_ids))
+    rows = db.execute(stmt).scalars().all()
+    stock_name_by_code = _stock_name_map(db, [getattr(r, "stock_code", "") for r in rows])
+
+    total = 0
+    for row in rows:
+        text = _pipeline_drug_text(row)
+        if not text:
+            continue
+        meta = _build_pipeline_meta(row, stock_name_by_code.get(row.stock_code or "", ""))
+        total += _write_document(db, text, "pipeline_drug", meta, row)
     return total

@@ -1,0 +1,8 @@
+{
+  "batch_id": "pipeline_test_20260526",
+  "status": "success",
+  "finished_at": "2026-05-26T01:18:25.876152",
+  "success_count": 10,
+  "failed_count": 0,
+  "errors": []
+}

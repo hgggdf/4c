@@ -501,6 +501,43 @@ def ingest_news(batch_id: str, batch_dir: Path, records: list[dict]) -> tuple[in
     return ok, fail, errors
 
 
+def ingest_pipeline_drug(batch_id: str, batch_dir: Path, records: list[dict]) -> tuple[int, int, list]:
+    """OpenClaw 管线数据入库；委派给 PipelineRepository 应用 phase/confidence 守卫。"""
+    from app.core.repositories.pipeline_repository import PipelineRepository
+
+    ok, fail, errors = 0, 0, []
+    db = SessionLocal()
+    try:
+        repo = PipelineRepository(db)
+        for i, rec in enumerate(records):
+            stock_code = (rec.get("stock_code") or "").strip()
+            drug_name = (rec.get("drug_name") or "").strip()
+            if not stock_code or not drug_name:
+                errors.append({"row": i + 1, "reason": "stock_code 或 drug_name 为空"})
+                fail += 1
+                continue
+            company = db.execute(
+                select(Company).where(Company.stock_code == stock_code)
+            ).scalars().first()
+            if company is None:
+                errors.append({"row": i + 1, "reason": f"未找到 company: {stock_code}"})
+                fail += 1
+                continue
+            try:
+                _, _, warnings = repo.upsert_drug(rec)
+                ok += 1
+                for w in warnings:
+                    errors.append({"row": i + 1, "warn": w})
+            except Exception as exc:  # noqa: BLE001
+                errors.append({"row": i + 1, "reason": str(exc)})
+                fail += 1
+                db.rollback()
+        db.commit()
+    finally:
+        db.close()
+    return ok, fail, errors
+
+
 from app.core.utils.macro import normalize_macro_record as _normalize_macro_record, MACRO_DISPLAY_NAMES as _MACRO_DISPLAY_NAMES, MACRO_DESCRIPTIONS as _MACRO_DESCRIPTIONS
 
 
@@ -564,9 +601,10 @@ HANDLERS = {
     "research_report": ("research_report/research_report_records.jsonl", ingest_research_report),
     "news":            ("news/news_records.jsonl",                      ingest_news),
     "macro":           ("macro/macro_records.jsonl",                    ingest_macro),
+    "pipeline_drug":   ("pipeline/pipeline_drug_records.jsonl",         ingest_pipeline_drug),
 }
 
-TABLE_ORDER = ["company", "financial", "announcement", "research_report", "news", "macro"]
+TABLE_ORDER = ["company", "financial", "announcement", "research_report", "news", "macro", "pipeline_drug"]
 
 
 def process_batch(batch_dir: Path):

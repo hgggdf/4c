@@ -4,17 +4,17 @@ from __future__ import annotations
 
 from typing import Any
 
+from app.service.container import ServiceContainer
 from app.service.rnpv_calculator import RnpvInput, calculate_rnpv, format_rnpv_result
 
 
 def get_pipeline_drugs(stock_code: str) -> list[dict]:
-    """获取管线列表，优先使用真实 repository，降级到 mock。"""
-    try:
-        from app.core.repositories.pipeline_repository import get_pipeline_drugs as _real
-        return _real(stock_code)
-    except ImportError:
-        from app.core.repositories.pipeline_repository_mock import get_pipeline_drugs as _mock
-        return _mock(stock_code)
+    """通过 PipelineService 获取适合 rNPV 自动选择的管线候选。"""
+    container = ServiceContainer.build_default()
+    result = container.pipeline.list_rnpv_candidates(stock_code)
+    if not result.success:
+        raise ValueError(f"获取管线品种失败: {result.message}")
+    return result.data or []
 
 
 def calculate_pipeline_rnpv(
