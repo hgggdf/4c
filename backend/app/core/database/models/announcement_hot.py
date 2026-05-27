@@ -3,9 +3,13 @@
 from datetime import date, datetime
 
 from sqlalchemy import JSON, Date, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database.base import Base, BIGINT_PK
+
+
+_LONG_CONTENT = LONGTEXT().with_variant(Text, "sqlite")
 
 
 class AnnouncementHot(Base):
@@ -26,7 +30,7 @@ class AnnouncementHot(Base):
     publish_date: Mapped[date] = mapped_column(Date, nullable=False)
     announcement_type: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
-    content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    content: Mapped[str | None] = mapped_column(_LONG_CONTENT, nullable=True)
     summary_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     # 存放所有结构化字段：药品审批、临床试验、集采、监管风险等
     key_fields_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
@@ -63,7 +67,7 @@ class AnnouncementArchive(Base):
     publish_date: Mapped[date] = mapped_column(Date, nullable=False)
     announcement_type: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
-    content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    content: Mapped[str | None] = mapped_column(_LONG_CONTENT, nullable=True)
     summary_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     key_fields_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
