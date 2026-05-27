@@ -949,30 +949,61 @@ class DialogueAgent:
                 "content": "本地数据库暂无足够的对比数据，将由 AI 基于知识库进行分析…",
             }
 
-        # rnpv_analysis 模式：调用 rNPV 计算工具后再由 LLM 解读
+        # rnpv_analysis 模式：对话式收集参数，全部就绪后计算并保存
         if selected_mode == "rnpv_analysis" and stock_context:
-            yield {"type": "status", "content": "正在计算管线 rNPV 三情景估值…"}
+            from agent.integration.rnpv_param_collector import collect_rnpv_params, get_next_question
+            from agent.tools.rnpv_tools import calculate_and_save_pipeline_rnpv, list_pipeline_drugs
+
+            stock_code = stock_context.get("stock_code", "")
+            stock_name = stock_context.get("stock_name", "")
+
+            # 从 pipeline_drugs 表获取已知字段作为 prefill
+            prefill: dict[str, Any] = {}
+            drug_name: str | None = None
+            route: str | None = None
             try:
-                from agent.tools.rnpv_tools import calculate_pipeline_rnpv, list_pipeline_drugs
-                stock_code = stock_context.get("stock_code", "")
-                stock_name = stock_context.get("stock_name", "")
-
                 drugs = list_pipeline_drugs(stock_code)
-                drug_name = drugs[0].get("drug_name") if drugs else None
-                indication = drugs[0].get("indication") if drugs else None
-                trial_phase = drugs[0].get("trial_phase") if drugs else None
-                route = drugs[0].get("route_of_administration") if drugs else None
+                if drugs:
+                    first = drugs[0]
+                    drug_name = first.get("drug_name")
+                    prefill = {
+                        "indication": first.get("indication"),
+                        "trial_phase": first.get("trial_phase"),
+                    }
+                    route = first.get("route_of_administration")
+            except Exception as exc:
+                logger.debug("list_pipeline_drugs failed: %s", exc)
 
-                rnpv_data = calculate_pipeline_rnpv(
+            # 用历史消息 + prefill 判断已收集哪些参数
+            history_for_collect = list(db_messages or history or [])
+            collected, next_field = collect_rnpv_params(history_for_collect, prefill=prefill)
+
+            if next_field is not None:
+                # 还有字段未收集，向用户追问一个字段后直接返回，不进入 LLM 流程
+                q = get_next_question(next_field)
+                yield {
+                    "type": "clarification",
+                    "question": q["question"],
+                    "suggestions": q["suggestions"],
+                    "reason": "rnpv_param",
+                }
+                return
+
+            # 所有字段已就绪，执行计算并保存
+            yield {"type": "status", "content": "参数收集完毕，正在计算 rNPV 三情景估值…"}
+            try:
+                rnpv_data = calculate_and_save_pipeline_rnpv(
                     stock_code=stock_code,
                     stock_name=stock_name,
                     drug_name=drug_name,
-                    indication=indication,
-                    trial_phase=trial_phase,
+                    indication=collected.get("indication"),
+                    trial_phase=collected.get("trial_phase"),
                     route_of_administration=route,
+                    target_patients_wan=collected.get("target_patients_wan"),
+                    price_per_year_wan=collected.get("price_per_year_wan"),
+                    peak_market_share=collected.get("peak_market_share"),
                 )
                 yield {"type": "rnpv_result", "data": rnpv_data}
-                # 将计算结果注入 system_context，让 LLM 据此解读
                 import json as _json
                 system_context_override = (
                     f"以下是已计算完毕的 rNPV 三情景估值数据，请据此撰写分析报告，不要重新计算：\n"
