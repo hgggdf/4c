@@ -178,6 +178,7 @@ def ingest_company(batch_id: str, batch_dir: Path, records: list[dict]) -> tuple
                     )
                     db.add(company)
                 db.flush()
+                db.commit()
                 ok += 1
             except Exception as e:
                 errors.append({"row": i + 1, "reason": str(e)})
@@ -272,6 +273,7 @@ def ingest_financial(batch_id: str, batch_dir: Path, records: list[dict]) -> tup
                     )
                     db.add(entity)
                 db.flush()
+                db.commit()
                 ok += 1
             except Exception as e:
                 errors.append({"row": i + 1, "reason": str(e)})
@@ -337,6 +339,7 @@ def ingest_announcement(batch_id: str, batch_dir: Path, records: list[dict]) -> 
                     )
                     db.add(entity)
                 db.flush()
+                db.commit()
                 ok += 1
             except Exception as e:
                 errors.append({"row": i + 1, "reason": str(e)})
@@ -426,6 +429,7 @@ def ingest_research_report(batch_id: str, batch_dir: Path, records: list[dict]) 
                     )
                     db.add(entity)
                 db.flush()
+                db.commit()
                 ok += 1
             except Exception as e:
                 errors.append({"row": i + 1, "reason": str(e)})
@@ -490,6 +494,7 @@ def ingest_news(batch_id: str, batch_dir: Path, records: list[dict]) -> tuple[in
                     )
                     db.add(entity)
                 db.flush()
+                db.commit()
                 ok += 1
             except Exception as e:
                 errors.append({"row": i + 1, "reason": str(e)})
@@ -525,6 +530,7 @@ def ingest_pipeline_drug(batch_id: str, batch_dir: Path, records: list[dict]) ->
                 continue
             try:
                 _, _, warnings = repo.upsert_drug(rec)
+                db.commit()
                 ok += 1
                 for w in warnings:
                     errors.append({"row": i + 1, "warn": w})
@@ -581,6 +587,7 @@ def ingest_macro(batch_id: str, batch_dir: Path, records: list[dict]) -> tuple[i
                     )
                     db.add(entity)
                 db.flush()
+                db.commit()
                 ok += 1
             except Exception as e:
                 errors.append({"row": i + 1, "reason": str(e)})
