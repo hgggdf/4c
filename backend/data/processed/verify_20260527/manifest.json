@@ -1,0 +1,35 @@
+{
+  "batch_id": "verify_20260527",
+  "created_at": "2026-05-27T1705",
+  "status": "ready",
+  "data_types": [
+    "company",
+    "research_report",
+    "announcement",
+    "news",
+    "financial",
+    "pipeline_drug"
+  ],
+  "stock_codes": ["000538", "600276"],
+  "stock_count": 2,
+  "files": {
+    "company": "company/company_records.jsonl",
+    "financial": "financial/financial_records.jsonl",
+    "announcement": "announcement/announcement_records.jsonl",
+    "research_report": "research_report/research_report_records.jsonl",
+    "news": "news/news_records.jsonl",
+    "pipeline_drug": "pipeline/pipeline_drug_records.jsonl",
+    "pipeline_docs": "pipeline_docs/"
+  },
+  "stats": {
+    "company": 2,
+    "financial": 732,
+    "announcement": 671,
+    "research_report": 110,
+    "news": 32,
+    "pipeline_drug": 40,
+    "announcement_content_ok": 394,
+    "research_report_content_ok": 110,
+    "news_related_stock_ok": 32
+  }
+}
