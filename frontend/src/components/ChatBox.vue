@@ -106,11 +106,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { uploadDoc } from '../api/chat'
+import { useChatStore } from '../store/chatStore'
 
 const props = defineProps({
   loading: { type: Boolean, default: false }
 })
 const emit = defineEmits(['submit'])
+const chatStore = useChatStore()
 
 const featureButtons = [
   { key: 'company_analysis', label: '企业运营评估', icon: '🧠' },
@@ -278,7 +280,7 @@ async function handleFileChange(evt) {
   try {
     const res = await uploadDoc(file, pct => {
       uploadState.value.percent = pct
-    })
+    }, chatStore.activeSessionId)
     uploadState.value.percent = 100
     uploadState.value.done = true
     uploadState.value.doneMsg = res?.message || '已入库'

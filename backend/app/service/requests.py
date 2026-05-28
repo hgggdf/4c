@@ -81,6 +81,7 @@ class SearchRequest(BaseRequest):
     industry_code: str | None = None
     doc_types: list[str] | None = None
     top_k: int = 5
+    uploader_id: str | None = None  # session_id of uploader; enables private doc retrieval
 
 
 @dataclass(slots=True)

@@ -217,6 +217,7 @@ class DialogueAgent:
         stock_context: dict[str, Any] | None,
         *,
         selected_mode: str | None = None,
+        uploader_id: str | None = None,
     ) -> list[dict[str, Any]]:
         stock_code = stock_context.get("stock_code") if stock_context else None
         items: list[dict[str, Any]] = []
@@ -234,7 +235,7 @@ class DialogueAgent:
                 continue
             try:
                 result = handler(
-                    SearchRequest(query=question, stock_code=stock_code, top_k=limit)
+                    SearchRequest(query=question, stock_code=stock_code, top_k=limit, uploader_id=uploader_id)
                 )
             except Exception as exc:
                 logger.debug("Evidence search failed for %s: %s", doc_type, exc)
@@ -718,7 +719,8 @@ class DialogueAgent:
                 current_stock_code=current_stock_code,
             )
             evidence_items = (
-                self._collect_evidence(question, stock_context, selected_mode=selected_mode)
+                self._collect_evidence(question, stock_context, selected_mode=selected_mode,
+                                       uploader_id=str(session_id) if session_id is not None else None)
                 if stock_context
                 else []
             )
@@ -876,7 +878,8 @@ class DialogueAgent:
         # ── 非 quick_query 或无 stock_context：走原有 evidence 路径 ────────
         if system_context_override is None:
             evidence_items = (
-                self._collect_evidence(question, stock_context, selected_mode=selected_mode)
+                self._collect_evidence(question, stock_context, selected_mode=selected_mode,
+                                       uploader_id=str(session_id) if session_id is not None else None)
                 if stock_context
                 else []
             )

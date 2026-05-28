@@ -231,6 +231,19 @@ class RetrievalService(BaseService):
             doc_types=doc_types,
         )
 
+        # Also search private uploads for this uploader and merge results
+        if req.uploader_id:
+            private_hits = self.ctx.vector_store.search(
+                query=query,
+                top_k=top_k,
+                filters={"uploader_id": req.uploader_id},
+                doc_types=["report_private"],
+            )
+            if private_hits:
+                combined = hits + private_hits
+                combined.sort(key=lambda x: x.get("score", 0), reverse=True)
+                hits = combined[:top_k]
+
         items = self._normalize_hits(hits)
         hydrated_items = self._hydrate_items(items)
 

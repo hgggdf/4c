@@ -25,6 +25,7 @@ ACTIVE_COLLECTIONS = {
     "company_profile": "company_profile_chunks",
     "report": "research_report_chunks",
     "pipeline_drug": "pipeline_drug_chunks",
+    "report_private": "user_upload_private_chunks",
 }
 
 EMBEDDING_MODEL_NAME = "BAAI/bge-small-zh-v1.5"
@@ -131,12 +132,14 @@ def build_chunk_payloads(
     doc_type: str,
     metadata: dict[str, Any],
     doc_id: str | None = None,
+    *,
+    collection_name_override: str | None = None,
 ) -> list[dict[str, Any]]:
     chunks = chunk_text(text)
     if not chunks:
         return []
 
-    collection_name = _get_collection_name(doc_type)
+    collection_name = collection_name_override or _get_collection_name(doc_type)
     if not collection_name:
         return []
 
@@ -201,8 +204,13 @@ class VectorKnowledgeStore:
         doc_type: str,
         metadata: dict[str, Any],
         doc_id: str | None = None,
+        *,
+        collection_name_override: str | None = None,
     ) -> int:
-        payloads = build_chunk_payloads(text, doc_type, metadata, doc_id)
+        payloads = build_chunk_payloads(
+            text, doc_type, metadata, doc_id,
+            collection_name_override=collection_name_override,
+        )
         if not payloads:
             return 0
 
