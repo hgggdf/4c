@@ -240,14 +240,14 @@ SYSTEM_PROMPT = (
 
 class LangGraphAgent:
     """基于 LangGraph ReAct 的真正智能体，采用双模型架构：
-    - 工具调用阶段：moonshot-v1-8k（快速、稳定，LangChain）
+    - 工具调用阶段：moonshot-v1-32k（快速、稳定，LangChain）
     - 最终答案生成：kimi-k2.5（thinking 模型，原生 OpenAI SDK 直调）
     """
 
     framework = "langgraph"
     agent_mode = "kimi-react+thinking"
 
-    TOOL_CALLING_MODEL = "moonshot-v1-8k"
+    TOOL_CALLING_MODEL = "moonshot-v1-32k"
     THINKING_MODEL = "kimi-k2.5"
 
     def __init__(self) -> None:

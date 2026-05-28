@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     glm_model: str = ""
     kimi_api_key: str = ""
     kimi_base_url: str = "https://api.moonshot.ai/v1"
-    kimi_model: str = "moonshot-v1-8k"
+    kimi_model: str = "moonshot-v1-32k"
     tushare_token: str = ""
 
     crawler_enable_playwright_fallback: bool = False

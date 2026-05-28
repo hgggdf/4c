@@ -1,7 +1,7 @@
 """
 真正的 ReAct Agent：LLM 自主决定调哪些工具、调几次，直到信息足够再输出最终答案。
 
-工具调用阶段用 moonshot-v1-8k（支持 function calling，无 thinking 限制）
+工具调用阶段用 moonshot-v1-32k（支持 function calling，无 thinking 限制）
 最终答案生成用 kimi-k2.5（更强的推理和写作能力）
 """
 
@@ -603,10 +603,10 @@ def _safe_json(obj: Any) -> str:
 # ─────────────────────────────────────────────────────────────
 
 class ReactAgent:
-    """真正的 ReAct Agent：工具调用用 moonshot-v1-8k，最终答案用 kimi-k2.5。"""
+    """真正的 ReAct Agent：工具调用用 moonshot-v1-32k，最终答案用 kimi-k2.5。"""
 
     MAX_ITERATIONS = 8
-    TOOL_MODEL = "moonshot-v1-8k"
+    TOOL_MODEL = "moonshot-v1-32k"
 
     def __init__(self) -> None:
         settings = get_settings()

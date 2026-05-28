@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from app.core.repositories.company_repository import CompanyRepository
 
 from .base import BaseService
@@ -79,8 +81,8 @@ class CompanyService(BaseService):
         return {
             "stock_code": profile.stock_code,
             "business_summary": profile.business_summary,
-            "core_products_json": profile.core_products_json,
-            "main_segments_json": profile.main_segments_json,
+            "core_products_json": _parse_json_field(profile.core_products_json),
+            "main_segments_json": _parse_json_field(profile.main_segments_json),
             "market_position": profile.market_position,
             "management_summary": profile.management_summary,
         }
@@ -121,8 +123,8 @@ class CompanyService(BaseService):
             if profile is None
             else {
                 "business_summary": profile.business_summary,
-                "core_products_json": profile.core_products_json,
-                "main_segments_json": profile.main_segments_json,
+                "core_products_json": _parse_json_field(profile.core_products_json),
+                "main_segments_json": _parse_json_field(profile.main_segments_json),
                 "market_position": profile.market_position,
                 "management_summary": profile.management_summary,
             },
@@ -158,3 +160,16 @@ class CompanyService(BaseService):
         repo = CompanyRepository(db)
         company = repo.get_by_stock_code(stock_code)
         return company is not None
+
+
+def _parse_json_field(value):
+    if not isinstance(value, str):
+        return value
+    try:
+        parsed = json.loads(value)
+        # guard against double-encoded strings
+        if isinstance(parsed, str):
+            return json.loads(parsed)
+        return parsed
+    except (ValueError, TypeError):
+        return value
