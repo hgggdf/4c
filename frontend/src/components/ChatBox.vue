@@ -24,6 +24,14 @@
       </div>
     </div>
 
+    <!-- 已上传的文件标签 -->
+    <div v-if="uploadedFiles.length" class="dragged-tags">
+      <span v-for="f in uploadedFiles" :key="f.name" class="dragged-tag dragged-tag--file">
+        {{ f.icon }} {{ f.name }}
+        <span class="rm" @click="removeFile(f.name)">×</span>
+      </span>
+    </div>
+
     <div class="feature-buttons">
       <button
         v-for="item in featureButtons"
@@ -145,6 +153,7 @@ const activeFeature = ref('')
 const guideVisible = ref(true)
 
 const uploadState = ref({ active: false, fileName: '', percent: 0, done: false, icon: '📄', doneMsg: '已入库' })
+const uploadedFiles = ref([])
 
 const FILE_ICONS = { pdf: '📕', docx: '📝', txt: '📄', xlsx: '📊', xls: '📊' }
 
@@ -183,6 +192,10 @@ function onDrop(evt) {
       }
     }
   } catch {}
+}
+
+function removeFile(name) {
+  uploadedFiles.value = uploadedFiles.value.filter(f => f.name !== name)
 }
 
 function removeNews(id) {
@@ -261,6 +274,7 @@ function handleSubmit() {
   text.value = ''
   droppedItems.value = []
   droppedNews.value = []
+  uploadedFiles.value = []
   activeFeature.value = ''
 }
 
@@ -284,7 +298,8 @@ async function handleFileChange(evt) {
     uploadState.value.percent = 100
     uploadState.value.done = true
     uploadState.value.doneMsg = res?.message || '已入库'
-    setTimeout(() => { uploadState.value.active = false }, 4000)
+    uploadedFiles.value.push({ name: file.name, icon: getFileIcon(file.name) })
+    setTimeout(() => { uploadState.value.active = false }, 2000)
   } catch (err) {
     uploadState.value.active = false
     alert('上传失败：' + (err?.response?.data?.detail || err.message))
@@ -499,4 +514,11 @@ async function handleFileChange(evt) {
   flex-shrink: 0;
 }
 .dragged-news-tag .rm:hover { opacity: 1; }
+
+/* 已上传文件标签 */
+.dragged-tag--file {
+  background: rgba(245,158,11,0.08);
+  border-color: rgba(245,158,11,0.35);
+  color: #b45309;
+}
 </style>
