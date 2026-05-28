@@ -1,0 +1,10 @@
+{
+  "batch_id": "pipeline_full_0528152725_a2f698cb",
+  "status": "ready",
+  "data_types": [
+    "pipeline_drug"
+  ],
+  "files": {
+    "pipeline_drug": "pipeline/pipeline_drug_records.jsonl"
+  }
+}

@@ -22,13 +22,16 @@ import logging
 import random
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 
 from app.core.database.models.announcement_hot import AnnouncementRawHot
 from app.core.database.models.company import CompanyMaster, CompanyProfile
 from app.core.database.models.financial_hot import FinancialNotesHot
 from app.core.database.models.news_hot import NewsRawHot
+from app.core.database.models.pipeline import PipelineDrug
+from app.core.database.models.research_report_hot import ResearchReportHot
 from app.core.database.session import SessionLocal
+from app.knowledge.sync import _financial_note_text, _pipeline_drug_text
 from app.knowledge.store import (
     ACTIVE_COLLECTIONS,
     VectorKnowledgeStore,
@@ -48,6 +51,28 @@ def _doc_id(prefix: str, pk: int, text: str) -> str:
     return f"{prefix}_{pk}_{hashlib.md5((text or '')[:200].encode('utf-8')).hexdigest()[:10]}"
 
 
+def _choose_text(*values: Any) -> str:
+    for value in values:
+        if value is None:
+            continue
+        text = str(value).strip()
+        if text:
+            return text
+    return ""
+
+
+def _company_profile_text(profile: Any) -> str:
+    parts = [
+        value for value in [
+            getattr(profile, "business_summary", None),
+            getattr(profile, "market_position", None),
+            getattr(profile, "management_summary", None),
+        ]
+        if value
+    ]
+    return "\n".join(parts)
+
+
 # ---------------------------------------------------------------------------
 # 1. 数量一致性
 # ---------------------------------------------------------------------------
@@ -55,11 +80,20 @@ def verify_counts(db, vs: VectorKnowledgeStore) -> dict[str, bool]:
     """对比 DB 记录数与 Chroma chunk 数的比例是否合理。"""
     results: dict[str, bool] = {}
 
+    announcement_rows = db.execute(select(AnnouncementRawHot)).scalars().all()
+    financial_rows = db.execute(select(FinancialNotesHot)).scalars().all()
+    news_rows = db.execute(select(NewsRawHot)).scalars().all()
+    company_rows = db.execute(select(CompanyProfile)).scalars().all()
+    report_rows = db.execute(select(ResearchReportHot)).scalars().all()
+    pipeline_rows = db.execute(select(PipelineDrug).where(PipelineDrug.is_active == 1)).scalars().all()
+
     db_counts = {
-        "announcement": db.execute(select(func.count()).select_from(AnnouncementRawHot)).scalar() or 0,
-        "financial_note": db.execute(select(func.count()).select_from(FinancialNotesHot)).scalar() or 0,
-        "news": db.execute(select(func.count()).select_from(NewsRawHot)).scalar() or 0,
-        "company_profile": db.execute(select(func.count()).select_from(CompanyProfile)).scalar() or 0,
+        "announcement": sum(1 for row in announcement_rows if _choose_text(getattr(row, "content", ""), getattr(row, "summary_text", ""))),
+        "financial_note": sum(1 for row in financial_rows if _financial_note_text(row)),
+        "news": sum(1 for row in news_rows if _choose_text(getattr(row, "content", ""))),
+        "company_profile": sum(1 for row in company_rows if _company_profile_text(row)),
+        "report": sum(1 for row in report_rows if _choose_text(getattr(row, "content", ""), getattr(row, "summary_text", ""))),
+        "pipeline_drug": sum(1 for row in pipeline_rows if _pipeline_drug_text(row)),
     }
 
     logger.info("\n" + "=" * 60)
@@ -162,7 +196,7 @@ def verify_source_tracing(db, vs: VectorKnowledgeStore, sample_size: int = 10) -
         samples = random.sample(records, min(sample_size, len(records)))
         found = missing = 0
         for row in samples:
-            content = (row.content or "").strip()
+            content = _choose_text(row.content, getattr(row, "summary_text", ""))
             if not content:
                 continue
             doc_id = _doc_id("announcement", row.id, content)
@@ -201,7 +235,7 @@ def verify_source_tracing(db, vs: VectorKnowledgeStore, sample_size: int = 10) -
         samples = random.sample(records, min(sample_size, len(records)))
         found = missing = 0
         for row in samples:
-            text_value = (getattr(row, "content_text", None) or row.note_text or "").strip()
+            text_value = _financial_note_text(row)
             if not text_value:
                 continue
             doc_id = _doc_id("financial_note", row.id, text_value)
@@ -272,21 +306,17 @@ def verify_source_tracing(db, vs: VectorKnowledgeStore, sample_size: int = 10) -
     # ---------- company_profile ----------
     def check_company_profiles():
         nonlocal all_ok
-        stmt = select(CompanyProfile, CompanyMaster.stock_name).join(
-            CompanyMaster, CompanyProfile.stock_code == CompanyMaster.stock_code
-        )
-        rows = db.execute(stmt).all()
+        rows = db.execute(select(CompanyProfile)).scalars().all()
         if not rows:
             logger.info("  → company_profile: DB 无数据，跳过")
             return
         samples = random.sample(rows, min(sample_size, len(rows)))
         found = missing = 0
-        for profile, stock_name in samples:
-            parts = [p for p in [profile.business_summary, profile.market_position, profile.management_summary] if p]
-            if not parts:
+        for profile in samples:
+            text = _company_profile_text(profile)
+            if not text:
                 continue
-            text = "\n".join(parts)
-            doc_id = _doc_id("company_profile", profile.id, text)
+            doc_id = _doc_id("company_profile", profile.stock_code, text)
             chunks = chunk_text(text)
             if not chunks:
                 continue
