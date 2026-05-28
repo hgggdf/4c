@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from datetime import date, datetime
 from hashlib import sha256
 from hashlib import md5
@@ -45,6 +46,12 @@ from app.knowledge.store import (
     get_store,
     get_vector_store,
 )
+
+_TRUTHY = {"1", "true", "yes", "on"}
+
+
+def _tfidf_fallback_write_enabled() -> bool:
+    return os.getenv("ENABLE_TFIDF_FALLBACK_WRITE", "").strip().lower() in _TRUTHY
 
 
 def _doc_id(prefix: str, pk: int | str, text: str) -> str:
@@ -226,14 +233,15 @@ def _delete_existing_stores(doc_type: str, source_table: str, source_pk: int | s
         )
     except Exception:
         pass
-    try:
-        get_store().delete_by_source(
-            source_table=source_table,
-            source_pks=[str(source_pk)],
-            source_uids=[source_uid] if source_uid else None,
-        )
-    except Exception:
-        pass
+    if _tfidf_fallback_write_enabled():
+        try:
+            get_store().delete_by_source(
+                source_table=source_table,
+                source_pks=[str(source_pk)],
+                source_uids=[source_uid] if source_uid else None,
+            )
+        except Exception:
+            pass
 
 
 def _delete_existing(db: Session, doc_type: str, source_table: str, source_pk: int | str, source_uid: str = "") -> None:
@@ -262,10 +270,11 @@ def _write_document_without_index(text: str, doc_type: str, meta: ChunkMetadata)
         metadata=meta_dict,
         doc_id=meta.doc_id,
     )
-    try:
-        get_store().add_document(text, metadata=meta_dict)
-    except Exception:
-        pass
+    if _tfidf_fallback_write_enabled():
+        try:
+            get_store().add_document(text, metadata=meta_dict)
+        except Exception:
+            pass
     return vec_count
 
 
@@ -285,11 +294,12 @@ def _write_document(db: Session, text: str, doc_type: str, meta: ChunkMetadata, 
     )
 
     tfidf_ok = False
-    try:
-        get_store().add_document(text, metadata=meta_dict)
-        tfidf_ok = True
-    except Exception:
-        pass
+    if _tfidf_fallback_write_enabled():
+        try:
+            get_store().add_document(text, metadata=meta_dict)
+            tfidf_ok = True
+        except Exception:
+            pass
 
     if vec_count > 0:
         vector_status = "success"
