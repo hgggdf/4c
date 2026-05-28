@@ -179,6 +179,12 @@ def collect_rnpv_params(
     return params, None
 
 
-def get_next_question(field: str) -> dict:
-    """Return the question text and chip suggestions for the given field."""
-    return _QUESTION_MAP[field]
+def get_next_question(field: str, *, suggestions: list[str] | None = None) -> dict:
+    """Return the question text and chip suggestions for the given field.
+
+    Pass suggestions to override the default chips (e.g. with live pricing data).
+    """
+    entry = dict(_QUESTION_MAP[field])
+    if suggestions:
+        entry["suggestions"] = suggestions[:4]
+    return entry

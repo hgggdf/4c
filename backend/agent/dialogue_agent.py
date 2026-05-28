@@ -995,7 +995,30 @@ class DialogueAgent:
 
             if next_field is not None:
                 # 还有字段未收集，向用户追问一个字段后直接返回，不进入 LLM 流程
-                q = get_next_question(next_field)
+                # 追问年治疗费时，先检索本地知识库中同适应症的历史定价作为建议选项
+                extra_suggestions: list[str] | None = None
+                if next_field == "price_per_year_wan":
+                    indication_for_pricing = collected.get("indication") or prefill.get("indication")
+                    if indication_for_pricing:
+                        try:
+                            from agent.tools.pricing_tools import search_pricing_reference
+                            pricing = search_pricing_reference(indication_for_pricing)
+                            if pricing.get("prices_wan"):
+                                extra_suggestions = pricing["suggestions"]
+                                if pricing.get("sources"):
+                                    src = pricing["sources"][0]
+                                    yield {
+                                        "type": "status",
+                                        "content": (
+                                            f"已检索到同适应症定价参考"
+                                            f"（来源：{src.get('title', '公告')} {src.get('date', '')}），"
+                                            f"参考区间：{pricing['low']}～{pricing['high']} 万元/年"
+                                        ),
+                                    }
+                        except Exception as exc:
+                            logger.debug("pricing_reference lookup failed: %s", exc)
+
+                q = get_next_question(next_field, suggestions=extra_suggestions)
                 yield {
                     "type": "clarification",
                     "question": q["question"],
