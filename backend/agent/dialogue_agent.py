@@ -974,6 +974,21 @@ class DialogueAgent:
             except Exception as exc:
                 logger.debug("list_pipeline_drugs failed: %s", exc)
 
+            # 合并用户上传文档的 LLM 抽取结果（优先级高于 pipeline_drugs 表）
+            try:
+                from agent.integration.rnpv_extractor import get_all_cached_params
+                for _doc_params in get_all_cached_params().values():
+                    for _k, _v in _doc_params.items():
+                        if _v is not None:
+                            if _k == "drug_name":
+                                drug_name = _v
+                            elif _k == "route_of_administration":
+                                route = _v
+                            else:
+                                prefill[_k] = _v
+            except Exception as exc:
+                logger.debug("rnpv_extractor cache merge failed: %s", exc)
+
             # 用历史消息 + prefill 判断已收集哪些参数
             history_for_collect = list(db_messages or history or [])
             collected, next_field = collect_rnpv_params(history_for_collect, prefill=prefill)

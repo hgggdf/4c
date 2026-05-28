@@ -120,6 +120,13 @@ async def upload_doc(file: UploadFile = File(...)):
             logger.error("TF-IDF 写入失败: %s", tfidf_exc)
             raise HTTPException(status_code=500, detail="文档入库失败，请稍后重试") from tfidf_exc
 
+    # Kick off rNPV parameter extraction in the background (non-blocking)
+    try:
+        from agent.integration.rnpv_extractor import extract_rnpv_params_async
+        extract_rnpv_params_async(doc_id, text)
+    except Exception:
+        pass  # extraction is best-effort; never block the upload response
+
     return {
         "success": True,
         "file_name": file.filename,
