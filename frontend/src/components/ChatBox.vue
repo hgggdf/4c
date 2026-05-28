@@ -230,12 +230,12 @@ function resolvePrompt(key) {
 
 function selectFeature(key) {
   const wasActive = activeFeature.value === key
-  const oldPrompt = FEATURE_PROMPTS[activeFeature.value] || ''
+  const oldPrompt = resolvePrompt(activeFeature.value)
   activeFeature.value = wasActive ? '' : key
   if (!wasActive && key === 'industry_compare') guideVisible.value = true
 
   if (wasActive) {
-    if (!text.value.trim() || text.value === oldPrompt || text.value === resolvePrompt(activeFeature.value)) {
+    if (!text.value.trim() || text.value === oldPrompt) {
       text.value = ''
     }
   } else {
