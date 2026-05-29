@@ -146,7 +146,7 @@ function mapMetrics(dataset = {}) {
 
 function mapReports(dataset = {}, symbol = '') {
   const reports = Array.isArray(dataset.research_reports) ? dataset.research_reports : []
-  return reports.slice(0, 12).map((item, index) => ({
+  return reports.slice(0, 20).map((item, index) => ({
     id: `${symbol}-${item['序号'] ?? index}`,
     title: item['报告名称'] || '未命名研报',
     broker: item['机构'] || '--',
@@ -177,7 +177,7 @@ function mapEvents(dataset = {}) {
     url: a['来源链接'] || a['网址'] || a['链接'] || '',
   }))
 
-  const newsEvents = news.slice(0, 20).map(n => ({
+  const newsEvents = news.slice(0, 30).map(n => ({
     type: 'news',
     title: n['新闻标题'] || n['标题'] || '新闻',
     category: n['文章来源'] || n['新闻来源'] || n['来源'] || '',

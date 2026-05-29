@@ -114,8 +114,9 @@ function openDetail(item) {
 async function load() {
   loading.value = true
   try {
-    const res = await getNewsLatest(7)
-    news.value = Array.isArray(res) ? res : (res?.data ?? [])
+    const res = await getNewsLatest(14)
+    const all = Array.isArray(res) ? res : (res?.data ?? [])
+    news.value = all.slice(0, 30)
   } catch (e) {
     console.error('[NewsPanel]', e)
   } finally {

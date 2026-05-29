@@ -404,7 +404,7 @@ class StockService:
         ]
 
     def _build_announcements(self, db: Session, stock_code: str, compact: bool) -> list[dict]:
-        limit = 8 if compact else 20
+        limit = 8 if compact else 30
         rows = list(
             db.execute(
                 select(AnnouncementRawHot)
@@ -424,7 +424,7 @@ class StockService:
         ]
 
     def _build_news(self, db: Session, stock_code: str, compact: bool) -> list[dict]:
-        limit = 8 if compact else 20
+        limit = 8 if compact else 30
         rows = list(
             db.execute(
                 select(NewsHot)
