@@ -519,9 +519,17 @@ const parsedFinancial = computed(() => {
 
   const stmts = d.income_statements || []
   const latest = d.latest_income || stmts[0] || null
-  const prev   = stmts[1] || null
 
   if (!latest) return { hasData: false }
+
+  // 找同报告类型、上一年的记录作为同比基准
+  // 避免跨报告期比较（如 Q1 2025 vs 年报 2024）导致同比严重失真
+  const prev = stmts.find(s =>
+    s.report_type === latest.report_type &&
+    (s.fiscal_year === (latest.fiscal_year - 1) ||
+     (s.report_date && latest.report_date && s.report_date < latest.report_date &&
+      s.fiscal_year < latest.fiscal_year))
+  ) || null
 
   const reportTypeMap = { annual: '年报', q1: '一季报', semiannual: '半年报', q3: '三季报', q4: '年报', daily: '日报' }
   const latestPeriod = latest.report_date
@@ -792,7 +800,7 @@ async function loadCompanyProfile() {
 
 async function loadFinancialSummary() {
   try {
-    const res = await getFinancialSummary(props.stock.symbol, 6)
+    const res = await getFinancialSummary(props.stock.symbol, 12)
     financialSummary.value = res && typeof res === 'object' ? res : null
   } catch (err) {
     console.error('[loadFinancialSummary]', err)

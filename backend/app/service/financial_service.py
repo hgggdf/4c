@@ -138,6 +138,16 @@ class FinancialService(BaseService):
         rows = repo.get_income_statements(stock_code, limit=count)
         statements = [model_to_dict(r, _fields) for r in rows]
 
+        # 去除伪年报：report_type='annual' 但 report_date 不是年末（12-31）的记录
+        # 这类记录是 OpenClaw 对季报/半年报额外插入的累计 YTD 汇总，会干扰同比计算
+        def _is_valid(s: dict) -> bool:
+            if s.get("report_type") != "annual":
+                return True
+            rd = str(s.get("report_date") or "")
+            return rd.endswith("-12-31")
+
+        statements = [s for s in statements if _is_valid(s)]
+
         for s in statements:
             rev = s.get("revenue")
             np_ = s.get("net_profit")
