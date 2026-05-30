@@ -822,10 +822,15 @@ class DialogueAgent:
             }
             return
 
+        # 蝴蝶效应分析针对宏观事件，不应继承 session 里的公司上下文；
+        # 只使用用户在本轮明确指定的公司（targets 或问题文本中提及）。
+        effective_stock_code = (
+            None if selected_mode == "butterfly_analysis" else current_stock_code
+        )
         stock_context = self._resolve_stock_context(
             question,
             targets=targets,
-            current_stock_code=current_stock_code,
+            current_stock_code=effective_stock_code,
         )
 
         # ── quick_query 模式：预定义工具流程 ──────────────────────────────
