@@ -169,6 +169,10 @@ function mapEvents(dataset = {}) {
   const anns = Array.isArray(dataset.announcements) ? dataset.announcements : []
   const news = Array.isArray(dataset.news) ? dataset.news : []
 
+  const oneMonthAgo = new Date()
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
+  const cutoff = oneMonthAgo.toISOString().slice(0, 10)
+
   const annEvents = anns.slice(0, 30).map(a => ({
     type: 'announcement',
     title: a['公告标题'] || a['标题'] || '公告',
@@ -177,14 +181,20 @@ function mapEvents(dataset = {}) {
     url: a['来源链接'] || a['网址'] || a['链接'] || '',
   }))
 
-  const newsEvents = news.slice(0, 30).map(n => ({
-    type: 'news',
-    title: n['新闻标题'] || n['标题'] || '新闻',
-    category: n['文章来源'] || n['新闻来源'] || n['来源'] || '',
-    date: (n['发布时间'] || n['时间'] || '').slice(0, 10),
-    url: n['新闻链接'] || n['链接'] || '',
-    summary: n['影响说明'] || n['新闻内容'] || n['摘要'] || '',
-  }))
+  const newsEvents = news
+    .filter(n => {
+      const date = (n['发布时间'] || n['时间'] || '').slice(0, 10)
+      return date >= cutoff
+    })
+    .slice(0, 30)
+    .map(n => ({
+      type: 'news',
+      title: n['新闻标题'] || n['标题'] || '新闻',
+      category: n['文章来源'] || n['新闻来源'] || n['来源'] || '',
+      date: (n['发布时间'] || n['时间'] || '').slice(0, 10),
+      url: n['新闻链接'] || n['链接'] || '',
+      summary: n['影响说明'] || n['新闻内容'] || n['摘要'] || '',
+    }))
 
   return [...annEvents, ...newsEvents]
     .filter(e => e.title)

@@ -42,6 +42,7 @@ backend/local_data/*.db
 backend/local_data/*.sqlite
 backend/local_data/*.sqlite3
 backend/chroma_db/
+backend/knowledge_store.json
 
 # Data directories (raw/processed batch data)
 backend/data/incoming/
