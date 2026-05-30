@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 import re
+import unicodedata
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from typing import Any
@@ -104,13 +105,34 @@ def _get_collection(collection_name: str):
     return collection
 
 
+def _clean_embedding_text(text: str) -> str:
+    """清洗 embedding 输入，防止 sentence-transformers 把公告正文误判为 URL。
+
+    sentence-transformers 5.x 内部会对每条输入调用 is_image_url_or_path()，
+    其中 urlparse() 遇到"www.xxx.com）中文正文"这类开头时会因 NFKC 规范化后
+    netloc 含非法字符而抛 ValueError。
+    """
+    if not text:
+        return ""
+    text = str(text).strip()
+    # 统一 Unicode，全角字符转半角，避免 urlparse 遇到全角括号等报错
+    text = unicodedata.normalize("NFKC", text)
+    # 开头形如 www.xxx.com 后接中文正文时，加前缀避免被识别为 URL
+    if re.match(r"^(https?://)?www\.", text, re.IGNORECASE):
+        text = "来源网页：" + text
+    # 去掉控制字符
+    text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", "", text)
+    return text
+
+
 def _embed(texts: list[str]) -> list[list[float]]:
     model = _get_embedding_model()
-    vecs = model.encode(texts, normalize_embeddings=True)
+    cleaned = [_clean_embedding_text(t) for t in texts]
+    vecs = model.encode(cleaned, normalize_embeddings=True)
     return vecs.tolist()
 
 
-def chunk_text(text: str, size: int = 500, overlap: int = 50) -> list[str]:
+def chunk_text(text: str, size: int = 1000, overlap: int = 100) -> list[str]:
     text = (text or "").strip()
     if not text:
         return []
