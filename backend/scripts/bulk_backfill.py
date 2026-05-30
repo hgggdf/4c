@@ -27,6 +27,7 @@ import hashlib
 import json
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -162,6 +163,19 @@ def _bulk_flush(
         batch = rows[i:i + BULK_INSERT_SIZE]
         db.bulk_insert_mappings(VectorDocumentIndex, batch)
     db.flush()
+
+    # 把刚写入的索引行的 created_at 更新为当前时间，确保 >= 源表 updated_at
+    # 避免 financial_note / company 等无 vector_status 字段的表在下次增量时被误判为"需要重建"
+    if source_ids_in_batch:
+        db.execute(
+            update(VectorDocumentIndex)
+            .where(
+                VectorDocumentIndex.doc_type == doc_type_in_batch,
+                VectorDocumentIndex.source_id.in_(source_ids_in_batch),
+            )
+            .values(created_at=datetime.now())
+        )
+        db.flush()
 
     return len(chunks)
 
