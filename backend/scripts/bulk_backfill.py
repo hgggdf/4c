@@ -27,6 +27,7 @@ import hashlib
 import json
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -71,7 +72,7 @@ from app.knowledge.sync import (
 )
 from app.paths import CHROMA_DB_DIR
 
-BULK_EMBED_SIZE = 256          # 单批 embedding 的 chunk 数
+BULK_EMBED_SIZE = 512          # 单批 embedding 的 chunk 数
 BULK_INSERT_SIZE = 1000        # 单批 vector_document_index 写入数
 
 
@@ -113,12 +114,30 @@ def _bulk_flush(
     ids = [c["id"] for c in chunks]
 
     embeddings = _embed(documents)
+    # Chroma upsert：chunk ID 确定性生成，相同 ID 直接覆盖，无需先删
     collection.upsert(
         ids=ids,
         embeddings=embeddings,
         documents=documents,
         metadatas=metadatas,
     )
+
+    # 先按 source_id 删旧的 vector_document_index 行，再批量插入新行
+    # 比 _purge_by_source_uids 快得多：纯 SQL，不查 Chroma
+    source_ids_in_batch = list({
+        _source_id_for_index(ct[2], ct[3])
+        for ct in chunk_to_doc
+        if ct[2] or ct[3]
+    })
+    if source_ids_in_batch:
+        doc_type_in_batch = chunk_to_doc[0][0]
+        db.execute(
+            delete(VectorDocumentIndex).where(
+                VectorDocumentIndex.doc_type == doc_type_in_batch,
+                VectorDocumentIndex.source_id.in_(source_ids_in_batch),
+            )
+        )
+        db.flush()
 
     rows: list[dict[str, Any]] = []
     for i, chunk in enumerate(chunks):
@@ -140,11 +159,23 @@ def _bulk_flush(
             "vector_status": "success",
         })
 
-    # 分批 bulk_insert_mappings 避免超大 SQL
     for i in range(0, len(rows), BULK_INSERT_SIZE):
         batch = rows[i:i + BULK_INSERT_SIZE]
         db.bulk_insert_mappings(VectorDocumentIndex, batch)
     db.flush()
+
+    # 把刚写入的索引行的 created_at 更新为当前时间，确保 >= 源表 updated_at
+    # 避免 financial_note / company 等无 vector_status 字段的表在下次增量时被误判为"需要重建"
+    if source_ids_in_batch:
+        db.execute(
+            update(VectorDocumentIndex)
+            .where(
+                VectorDocumentIndex.doc_type == doc_type_in_batch,
+                VectorDocumentIndex.source_id.in_(source_ids_in_batch),
+            )
+            .values(created_at=datetime.now())
+        )
+        db.flush()
 
     return len(chunks)
 
@@ -306,8 +337,6 @@ def backfill_announcements(db: Session, collection, *, incremental: bool = False
     rows = db.execute(stmt).scalars().all()
     if not rows:
         return 0
-    if incremental:
-        _purge_by_source_uids(db, "announcement", [_source_uid(r, "announcement") for r in rows])
     stock_map = _stock_name_map(db, [getattr(r, "stock_code", "") for r in rows])
 
     pending_chunks: list[dict[str, Any]] = []
@@ -323,7 +352,12 @@ def backfill_announcements(db: Session, collection, *, incremental: bool = False
             skipped_ids.append(row.id)
             continue
 
-        extra = _load_announcement_metadata(db, row, is_hot=True)
+        # bulk_backfill 跳过 _load_announcement_metadata（N+1 查询，扩展表已废弃，实际返回全空）
+        extra = {
+            "category": _safe_attr(row, "announcement_type", "") or "",
+            "signal_type": "", "risk_level": "", "drug_name": "",
+            "indication": "", "trial_phase": "", "event_type": "",
+        }
         doc_id = _doc_id("announcement", row.id, content)
         publish_date_str = str(_safe_attr(row, "publish_date", "") or "")
         publish_time_by_doc_id[doc_id] = _parse_publish_time(publish_date_str)
@@ -402,8 +436,6 @@ def backfill_financial_notes(db: Session, collection, *, incremental: bool = Fal
         ]
     if not rows:
         return 0
-    if incremental:
-        _purge_by_source_uids(db, "financial_note", [_source_uid(r, "financial") for r in rows])
     stock_map = _stock_name_map(db, [getattr(r, "stock_code", "") for r in rows])
 
     pending_chunks: list[dict[str, Any]] = []
@@ -475,8 +507,6 @@ def backfill_news(db: Session, collection, *, incremental: bool = False) -> int:
     rows = db.execute(stmt).scalars().all()
     if not rows:
         return 0
-    if incremental:
-        _purge_by_source_uids(db, "news", [_source_uid(r, "news") for r in rows])
 
     pending_chunks: list[dict[str, Any]] = []
     pending_meta: list[tuple[str, str, str, str, str, str, str]] = []
@@ -569,8 +599,6 @@ def backfill_research_reports(db: Session, collection, *, incremental: bool = Fa
     rows = db.execute(stmt).scalars().all()
     if not rows:
         return 0
-    if incremental:
-        _purge_by_source_uids(db, "report", [_source_uid(r, "research_report") for r in rows])
     stock_map = _stock_name_map(db, [getattr(r, "stock_code", "") for r in rows])
 
     pending_chunks: list[dict[str, Any]] = []
@@ -668,8 +696,6 @@ def backfill_company_profiles(db: Session, collection, *, incremental: bool = Fa
         ]
     if not rows:
         return 0
-    if incremental:
-        _purge_by_source_uids(db, "company_profile", [f"company:{r.stock_code}" for r in rows])
 
     pending_chunks: list[dict[str, Any]] = []
     pending_meta: list[tuple[str, str, str, str, str, str, str]] = []
@@ -736,8 +762,6 @@ def backfill_pipeline_drugs(db: Session, collection, *, incremental: bool = Fals
     rows = db.execute(stmt).scalars().all()
     if not rows:
         return 0
-    if incremental:
-        _purge_by_source_uids(db, "pipeline_drug", [r.dedup_key or f"pipeline:{r.id}" for r in rows])
     stock_map = _stock_name_map(db, [getattr(r, "stock_code", "") for r in rows])
 
     pending_chunks: list[dict[str, Any]] = []

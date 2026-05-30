@@ -142,10 +142,10 @@ class StockService:
 
         if compact:
             dataset["kline"] = dataset["kline"][-60:]
-            dataset["announcements"] = dataset["announcements"][:8]
-            dataset["news"] = dataset["news"][:8]
+            dataset["announcements"] = dataset["announcements"][:30]
+            dataset["news"] = dataset["news"][:30]
             dataset["main_business"] = dataset["main_business"][:8]
-            dataset["research_reports"] = dataset["research_reports"][:12]
+            dataset["research_reports"] = dataset["research_reports"][:20]
 
         return dataset
 
@@ -404,7 +404,7 @@ class StockService:
         ]
 
     def _build_announcements(self, db: Session, stock_code: str, compact: bool) -> list[dict]:
-        limit = 8 if compact else 30
+        limit = 30 if compact else 50
         rows = list(
             db.execute(
                 select(AnnouncementRawHot)
@@ -424,7 +424,7 @@ class StockService:
         ]
 
     def _build_news(self, db: Session, stock_code: str, compact: bool) -> list[dict]:
-        limit = 8 if compact else 30
+        limit = 30 if compact else 50
         rows = list(
             db.execute(
                 select(NewsHot)
@@ -436,6 +436,12 @@ class StockService:
         matched = []
         for row in rows:
             codes = row.related_stock_codes_json
+            # 处理双重 JSON 编码：'"[\\"600276\\"]"' → '["600276"]' → ['600276']
+            if isinstance(codes, str):
+                try:
+                    codes = json.loads(codes)
+                except Exception:
+                    codes = [codes]
             if isinstance(codes, str):
                 try:
                     codes = json.loads(codes)
@@ -461,7 +467,7 @@ class StockService:
         ]
 
     def _build_research_reports(self, db: Session, stock_code: str, compact: bool) -> list[dict]:
-        limit = 12 if compact else 30
+        limit = 20 if compact else 30
         rows = list(
             db.execute(
                 select(ResearchReportHot)
