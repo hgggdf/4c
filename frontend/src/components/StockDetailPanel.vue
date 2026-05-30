@@ -149,18 +149,6 @@
             </div>
           </div>
 
-          <!-- 产品 & 业务板块 -->
-          <div class="co-block" v-if="parsedProfile.products.length || parsedProfile.segments.length">
-            <div class="co-block-head">
-              <span class="co-block-icon">💊</span>
-              <span class="co-block-title">产品 & 业务</span>
-            </div>
-            <div class="co-tags">
-              <span v-for="p in parsedProfile.products" :key="p" class="co-tag co-tag--product">{{ p }}</span>
-              <span v-for="s in parsedProfile.segments" :key="s" class="co-tag co-tag--segment">{{ s }}</span>
-            </div>
-          </div>
-
           <!-- 战略方向 -->
           <div class="co-block" v-if="parsedProfile.strategy">
             <div class="co-block-head">
