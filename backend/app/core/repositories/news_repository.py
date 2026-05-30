@@ -20,15 +20,24 @@ class NewsRepository(BaseRepository):
         """把最近 N 天转换成发布时间下限。"""
         return datetime.now() - timedelta(days=days)
 
-    def list_news_raw(self, *, days: int = 30, news_type: str | None = None, limit: int | None = None) -> list[NewsHot | NewsArchive]:
-        """按时间范围和新闻类型查询新闻列表。"""
-        hot_stmt = select(NewsHot).where(NewsHot.publish_time >= self._since(days))
-        cold_stmt = select(NewsArchive).where(NewsArchive.publish_time >= self._since(days))
+    def list_news_raw(self, *, days: int | None = 30, news_type: str | None = None, limit: int | None = None) -> list[NewsHot | NewsArchive]:
+        """按时间范围和新闻类型查询新闻列表。
+
+        days 为 None 时不做时间过滤，仅按发布时间倒序取最新 limit 条，
+        用于"最新资讯"面板，避免数据陈旧时落在时间窗口外查不到。
+        """
+        hot_stmt = select(NewsHot)
+        cold_stmt = select(NewsArchive)
+        if days is not None:
+            hot_stmt = hot_stmt.where(NewsHot.publish_time >= self._since(days))
+            cold_stmt = cold_stmt.where(NewsArchive.publish_time >= self._since(days))
         if news_type:
             hot_stmt = hot_stmt.where(NewsHot.news_type == news_type)
             cold_stmt = cold_stmt.where(NewsArchive.news_type == news_type)
         hot_stmt = hot_stmt.order_by(NewsHot.publish_time.desc())
         cold_stmt = cold_stmt.order_by(NewsArchive.publish_time.desc())
+        if limit:
+            hot_stmt = hot_stmt.limit(limit)
         return self._hot_cold_list(hot_stmt, cold_stmt, limit=limit)
 
     def get_news_raw_by_id(self, news_id: int) -> NewsHot | NewsArchive | None:

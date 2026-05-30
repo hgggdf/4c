@@ -114,9 +114,10 @@ function openDetail(item) {
 async function load() {
   loading.value = true
   try {
-    const res = await getNewsLatest(14)
+    // 取最新 30 条，不按时间窗口过滤，避免数据陈旧时面板为空
+    const res = await getNewsLatest(null, null, 30)
     const all = Array.isArray(res) ? res : (res?.data ?? [])
-    news.value = all.slice(0, 30)
+    news.value = all
   } catch (e) {
     console.error('[NewsPanel]', e)
   } finally {

@@ -134,11 +134,17 @@ class DialogueAgent:
         "industry_compare": ["news", "report", "financial_note"],
         "report_generation": ["announcement", "financial_note", "news", "report"],
         "attribution_analysis": ["financial_note", "announcement", "news", "report"],
-        "butterfly_analysis": ["news", "report"],
+        "butterfly_analysis": ["news"],
         "valuation_analysis": ["financial_note", "report"],
         "price_volume_analysis": ["announcement", "news"],
         "rnpv_analysis": ["announcement", "report"],
     }
+
+    # 宏观/事件驱动模式：分析对象是宏观事件与行业传导，而非具体公司。
+    # 这类模式禁止检索公司级文档（研报/公告/财报），避免向量检索在无对口
+    # 资料时硬凑 top-k，命中知识库里占比最高的公司（如恒瑞）造成分析跑偏。
+    MACRO_MODES = {"butterfly_analysis"}
+    COMPANY_DOC_TYPES = {"announcement", "financial_note", "report"}
 
     MARKDOWN_FORMULA_RULES = [
         "Formatting rules:",
@@ -223,6 +229,10 @@ class DialogueAgent:
         items: list[dict[str, Any]] = []
 
         allowed_doc_types = self.MODE_DOC_TYPES.get(selected_mode or "", ["announcement", "financial_note", "news", "report"])
+        # 宏观/事件驱动模式：剔除公司级文档，只保留宏观新闻等非公司来源，
+        # 防止无对口资料时向量检索硬凑 top-k 命中无关公司。
+        if selected_mode in self.MACRO_MODES:
+            allowed_doc_types = [d for d in allowed_doc_types if d not in self.COMPANY_DOC_TYPES]
         search_plan = [
             ("announcement", self.container.retrieval.search_announcements, 2),
             ("financial_note", self.container.retrieval.search_financial_notes, 2),

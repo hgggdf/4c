@@ -35,6 +35,7 @@ class FinancialSummaryRequest(StockCodeRequest):
 class NewsRawRequest(BaseRequest):
     days: int = 30
     news_type: str | None = None
+    limit: int | None = None
 
 
 @dataclass(slots=True)

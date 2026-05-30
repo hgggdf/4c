@@ -1,7 +1,9 @@
 import request from './request'
 
-export function getNewsLatest(days = 7, news_type = null) {
-  return request.post('/api/news/raw', { days, news_type })
+export function getNewsLatest(days = 7, news_type = null, limit = null) {
+  // limit 模式下不发 days，避免后端 days 字段类型校验（int）拒绝 null
+  const body = limit ? { news_type, limit } : { days, news_type }
+  return request.post('/api/news/raw', body)
 }
 
 export function getNewsByCompany(stock_code, days = 30) {

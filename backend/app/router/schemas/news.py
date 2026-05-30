@@ -6,8 +6,9 @@ from .common import BaseRequestModel, BatchItemsModel, IndustryDaysModel, StockC
 
 
 class NewsRawModel(BaseRequestModel):
-	days: int = 30
+	days: int | None = 30
 	news_type: str | None = None
+	limit: int | None = None
 
 
 class NewsStructuredModel(BaseRequestModel):

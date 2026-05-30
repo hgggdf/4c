@@ -54,6 +54,11 @@ class NewsService(BaseService):
         return model_to_dict(row, ["id", "news_id", "topic_category", "summary_text", "keywords_json", "signal_type", "impact_level", "impact_horizon", "sentiment_label", "confidence_score", "related_stock_codes_json", "related_industry_codes_json", "created_at"])
 
     def _get_news_raw(self, db, req: NewsRawRequest) -> list[dict]:
+        # limit 模式：忽略时间窗口，直接取最新 N 条，供"最新资讯"面板使用，
+        # 避免数据陈旧时按 days 过滤查不到任何新闻。
+        if req.limit:
+            rows = NewsRepository(db).list_news_raw(days=None, news_type=req.news_type, limit=req.limit)
+            return [self._news_raw_dict(r) for r in rows]
         days = require_positive_int(req.days, "days")
         rows = NewsRepository(db).list_news_raw(days=days, news_type=req.news_type)
         return [self._news_raw_dict(r) for r in rows]

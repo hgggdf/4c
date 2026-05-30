@@ -178,7 +178,13 @@ export const useChatStore = defineStore('chat', {
       appendUserMessage(sessionId, content).catch(() => {})
 
       try {
-        const retrievalRes = await searchHybrid({
+        // 宏观/事件驱动模式（如蝴蝶效应）分析的是宏观事件与行业传导，没有特定公司。
+        // 此处的公司级预检索无相关性下限，会硬凑 top-k 命中知识库里占比最高的公司
+        // （如恒瑞医药）并拼进 prompt，导致分析跑偏。这类模式跳过预检索拼接。
+        const MACRO_MODES = ['butterfly_analysis']
+        const isMacroMode = MACRO_MODES.includes(selectedMode)
+
+        const retrievalRes = isMacroMode ? null : await searchHybrid({
           query: content,
           stock_code: targets.find(t => t.type !== 'industry')?.symbol || null,
           industry_code: targets.find(t => t.type === 'industry')?.symbol || null,
