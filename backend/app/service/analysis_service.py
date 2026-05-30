@@ -389,10 +389,13 @@ class AnalysisService:
         return [item.stock_code for item in fallback]
 
     def _load_snapshots(self, db: Session, stock_code: str) -> dict[int, YearSnapshot]:
+        # 排除日行情行（report_type='daily'）：它们与财务报表共用 financial_hot 表，
+        # 但 revenue/net_profit 等财务字段全为 NULL，且 report_date 通常更新，
+        # 若不过滤会被 latest_rows_by_year 选为当年快照，导致所有指标缺失、打分全为 0。
         all_rows = list(
             db.execute(
                 select(FinancialHot)
-                .where(FinancialHot.stock_code == stock_code)
+                .where(FinancialHot.stock_code == stock_code, FinancialHot.report_type != 'daily')
                 .order_by(FinancialHot.report_date.desc(), FinancialHot.created_at.desc())
             ).scalars().all()
         )
@@ -400,7 +403,7 @@ class AnalysisService:
             all_rows = list(
                 db.execute(
                     select(FinancialArchive)
-                    .where(FinancialArchive.stock_code == stock_code)
+                    .where(FinancialArchive.stock_code == stock_code, FinancialArchive.report_type != 'daily')
                     .order_by(FinancialArchive.report_date.desc(), FinancialArchive.created_at.desc())
                 ).scalars().all()
             )

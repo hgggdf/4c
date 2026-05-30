@@ -110,12 +110,17 @@ class ButterflyService(BaseService):
         stock_codes = [c.stock_code for c in companies]
         company_map = {c.stock_code: c for c in companies}
 
+        # 排除日行情行（report_type='daily'）：其财务字段全为 NULL 且 report_date 更新，
+        # 否则 max(report_date) 会选中日行情行，导致所有财务指标缺失。
         subq = (
             select(
                 FinancialHot.stock_code,
                 func.max(FinancialHot.report_date).label("max_date"),
             )
-            .where(FinancialHot.stock_code.in_(stock_codes))
+            .where(
+                FinancialHot.stock_code.in_(stock_codes),
+                FinancialHot.report_type != 'daily',
+            )
             .group_by(FinancialHot.stock_code)
             .subquery()
         )
@@ -125,6 +130,7 @@ class ButterflyService(BaseService):
                 (FinancialHot.stock_code == subq.c.stock_code)
                 & (FinancialHot.report_date == subq.c.max_date),
             )
+            .where(FinancialHot.report_type != 'daily')
         ).scalars().all()
         fin_map: dict[str, FinancialHot] = {r.stock_code: r for r in fin_rows}
 
