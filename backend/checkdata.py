@@ -584,9 +584,6 @@ def _validate_financial(item: dict[str, Any], row: int, file: str, report: dict[
         required = [
             "revenue",
             "operating_cost",
-            "selling_expense",
-            "admin_expense",
-            "rd_expense",
             "operating_profit",
             "net_profit",
             "net_profit_deducted",
