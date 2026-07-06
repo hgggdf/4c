@@ -23,6 +23,7 @@ from app.core.database.models.research_report_hot import ResearchReportHot
 from app.core.database.models.news_hot import NewsHot
 from app.core.database.models.macro_hot import MacroIndicator
 from app.core.utils.dedup import prepare_dedup_record
+from checkdata import validate_batch
 from sqlalchemy import select
 
 INCOMING_DIR = Path("data/incoming")
@@ -103,6 +104,27 @@ def _compute_ratio(numerator, denominator):
     if n is None or d is None or d == 0:
         return None
     return round(n / d, 6)
+
+
+def reject_invalid_batch(batch_dir: Path, validation_report: dict) -> bool:
+    """整包退回无效数据，并写出给 OpenClaw/AI 修复用的校验报告。"""
+    batch_id = validation_report.get("batch_id") or batch_dir.name
+    dest = FAILED_DIR / batch_id
+    dest.mkdir(parents=True, exist_ok=True)
+    feedback_dir = dest / "feedback"
+    report_path = feedback_dir / "validation_report.json"
+
+    if batch_dir.resolve() != dest.resolve():
+        shutil.copytree(str(batch_dir), str(dest), dirs_exist_ok=True)
+        shutil.rmtree(str(batch_dir))
+
+    feedback_dir.mkdir(parents=True, exist_ok=True)
+    with open(report_path, "w", encoding="utf-8") as f:
+        json.dump(validation_report, f, ensure_ascii=False, indent=2)
+
+    log(f"VALIDATION FAILED: 批次 {batch_id} 未入库，已退回到 {dest}")
+    log(f"校验报告: {report_path}")
+    return False
 
 
 # ── 各类型入库逻辑（直接操作数据库）──────────────────────
@@ -619,6 +641,10 @@ def process_batch(batch_dir: Path):
     if not manifest_path.exists():
         log(f"ERROR: {batch_dir} 下找不到 manifest.json")
         return False
+
+    validation_report = validate_batch(batch_dir)
+    if not validation_report.get("ok"):
+        return reject_invalid_batch(batch_dir, validation_report)
 
     with open(manifest_path, "r", encoding="utf-8") as f:
         manifest = json.load(f)
