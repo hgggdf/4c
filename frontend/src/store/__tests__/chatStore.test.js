@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { useChatStore } from '../chatStore'
+import { buildSessionTitle, useChatStore } from '../chatStore'
 import * as chatApi from '../../api/chat'
 import * as retrievalApi from '../../api/retrieval'
 
@@ -12,6 +12,7 @@ vi.mock('../../api/chat', () => ({
   listMessages: vi.fn(),
   appendUserMessage: vi.fn(),
   appendAssistantMessage: vi.fn(),
+  updateSessionTitle: vi.fn(),
   deleteSession: vi.fn(),
 }))
 
@@ -27,6 +28,7 @@ describe('chatStore.js — ask() 方法触发链路', () => {
     chatApi.createSession.mockResolvedValue({ id: 1, session_title: '测试会话' })
     chatApi.appendUserMessage.mockResolvedValue({})
     chatApi.appendAssistantMessage.mockResolvedValue({})
+    chatApi.updateSessionTitle.mockResolvedValue({})
     retrievalApi.searchHybrid.mockResolvedValue({ data: { items: [] } })
     store = useChatStore()
     // 创建新会话以便测试
@@ -45,6 +47,67 @@ describe('chatStore.js — ask() 方法触发链路', () => {
     expect(assistantMsg.role).toBe('assistant')
     expect(assistantMsg.content).toBe('')
     expect(assistantMsg.createdAt).toBeTypeOf('number')
+  })
+
+  it('首条问题会自动生成并持久化会话标题', async () => {
+    store.activeSession.title = '新对话'
+    chatApi.sendChatMessageStream.mockResolvedValue(undefined)
+
+    await store.ask({
+      message: '对比研发投入和核心产品管线',
+      targets: [{ symbol: '600276', name: '恒瑞医药', type: 'stock' }],
+    })
+
+    expect(store.activeSession.title).toBe('恒瑞医药：对比研发投入和核心产品管线')
+    expect(chatApi.updateSessionTitle).toHaveBeenCalledWith(
+      store.activeSessionId,
+      '恒瑞医药：对比研发投入和核心产品管线',
+    )
+  })
+
+  it('后续问题不会覆盖已有会话标题', async () => {
+    store.activeSession.title = '新对话'
+    chatApi.sendChatMessageStream.mockResolvedValue(undefined)
+
+    await store.ask({ message: '第一个问题' })
+    await store.ask({ message: '第二个问题' })
+
+    expect(store.activeSession.title).toBe('第一个问题')
+    expect(chatApi.updateSessionTitle).toHaveBeenCalledTimes(1)
+  })
+
+  it('当前会话为空时不会重复创建空白会话', async () => {
+    const sessionCount = store.sessions.length
+
+    await store.newSession()
+
+    expect(store.sessions).toHaveLength(sessionCount)
+    expect(chatApi.createSession).not.toHaveBeenCalled()
+  })
+
+  it('手动重命名会话并持久化', async () => {
+    chatApi.updateSessionTitle.mockResolvedValue({ session_title: '恒瑞医药风险复盘' })
+
+    const success = await store.renameSession(store.activeSessionId, '  恒瑞医药风险复盘  ')
+
+    expect(success).toBe(true)
+    expect(store.activeSession.title).toBe('恒瑞医药风险复盘')
+    expect(chatApi.updateSessionTitle).toHaveBeenCalledWith(store.activeSessionId, '恒瑞医药风险复盘')
+  })
+
+  it('Agent 模式只新增标题上下文，不改变实际提问内容', async () => {
+    store.activeSession.title = '新对话'
+    chatApi.sendAgentStream.mockResolvedValue(undefined)
+    const message = '[标的: 恒瑞医药(600276)] 分析核心产品管线'
+
+    await store.askAgent({
+      message,
+      titleMessage: '分析核心产品管线',
+      targets: [{ symbol: '600276', name: '恒瑞医药', type: 'stock' }],
+    })
+
+    expect(store.activeSession.title).toBe('恒瑞医药：分析核心产品管线')
+    expect(chatApi.sendAgentStream.mock.calls[0][0].message).toBe(message)
   })
 
   it('调用流式 API sendChatMessageStream', async () => {
@@ -203,5 +266,25 @@ describe('chatStore.js — ask() 方法触发链路', () => {
 
     const [payload] = chatApi.sendChatMessageStream.mock.calls[0]
     expect(payload.targets).toEqual(targets)
+  })
+})
+
+describe('buildSessionTitle()', () => {
+  it('自动标题最多 24 个字符', () => {
+    const title = buildSessionTitle({ message: '这是一个用于验证自动会话标题长度限制的非常非常长的问题内容' })
+
+    expect(Array.from(title)).toHaveLength(24)
+    expect(title.endsWith('…')).toBe(true)
+  })
+
+  it('没有文本时根据分析标的命名', () => {
+    const title = buildSessionTitle({
+      targets: [
+        { name: '恒瑞医药' },
+        { name: '百济神州' },
+      ],
+    })
+
+    expect(title).toBe('恒瑞医药、百济神州联合分析')
   })
 })

@@ -19,9 +19,32 @@
         >
           <div class="cp-session-icon">💬</div>
           <div class="cp-session-info">
-            <div class="cp-session-title">{{ s.title }}</div>
+            <input
+              v-if="editingSessionId === s.id"
+              v-model="editingSessionTitle"
+              class="cp-session-title-input"
+              maxlength="50"
+              aria-label="会话标题"
+              @click.stop
+              @keydown.enter.stop.prevent="saveSessionTitle(s)"
+              @keydown.esc.stop.prevent="cancelRenameSession"
+              @blur="saveSessionTitle(s)"
+            />
+            <div
+              v-else
+              class="cp-session-title"
+              :title="s.title"
+              @dblclick.stop="startRenameSession(s)"
+            >{{ s.title }}</div>
             <div class="cp-session-meta">{{ s.updatedAt }}</div>
           </div>
+          <button
+            v-if="editingSessionId !== s.id"
+            class="cp-rename-btn"
+            title="重命名对话"
+            aria-label="重命名对话"
+            @click.stop="startRenameSession(s)"
+          >✎</button>
           <button class="cp-delete-btn" title="删除对话" @click.stop="removeSession(s.id)">删除</button>
         </div>
       </div>
@@ -341,6 +364,8 @@ const isGenerating = computed(() => chatStore.isSessionLoading(chatStore.activeS
 const expandedRetrievals = ref(new Set())
 const lightboxImg = ref(null)
 const copiedIndex = ref(-1)
+const editingSessionId = ref(null)
+const editingSessionTitle = ref('')
 const hasRenderableAssistantMessage = computed(() =>
   chatStore.messages.some((msg, idx) => msg.role === 'assistant' && shouldShowBubble(msg, idx))
 )
@@ -396,7 +421,8 @@ function logout() {
 
 async function handleSubmit(payload) {
   if (agentMode.value) {
-    let message = typeof payload === 'string' ? payload : (payload.message || '')
+    const titleMessage = typeof payload === 'string' ? payload : (payload.message || '')
+    let message = titleMessage
     const targets = payload.targets || []
     if (targets.length) {
       const targetInfo = targets.map(t => `${t.name}(${t.symbol})`).join(', ')
@@ -405,7 +431,7 @@ async function handleSubmit(payload) {
         : `请对以下标的进行分析：${targetInfo}`
     }
     if (!message) return
-    await chatStore.askAgent({ message })
+    await chatStore.askAgent({ message, titleMessage, targets })
   } else {
     await chatStore.ask(payload)
   }
@@ -414,6 +440,24 @@ async function handleSubmit(payload) {
 
 async function removeSession(sessionId) {
   await chatStore.deleteSession(sessionId)
+}
+
+function startRenameSession(session) {
+  editingSessionId.value = session.id
+  editingSessionTitle.value = session.title
+}
+
+function cancelRenameSession() {
+  editingSessionId.value = null
+  editingSessionTitle.value = ''
+}
+
+async function saveSessionTitle(session) {
+  if (editingSessionId.value !== session.id) return
+  const title = editingSessionTitle.value.trim()
+  cancelRenameSession()
+  if (!title || title === session.title) return
+  await chatStore.renameSession(session.id, title)
 }
 
 // 消息数量增加（新消息追加）时强制滚底并重置上翻状态
@@ -618,7 +662,7 @@ function toggleRetrieval(index) {
 }
 .cp-session-item.active .cp-session-icon { opacity: 1; }
 
-.cp-session-info { min-width: 0; }
+.cp-session-info { min-width: 0; flex: 1; }
 .cp-session-title {
   font-size: 12px;
   font-weight: 700;
@@ -627,6 +671,22 @@ function toggleRetrieval(index) {
   white-space: nowrap;
   text-overflow: ellipsis;
   line-height: 1.4;
+}
+.cp-session-title-input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--border-hl);
+  border-radius: 5px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 2px 5px;
+  outline: none;
+}
+.cp-session-title-input:focus {
+  box-shadow: 0 0 0 2px rgba(75,169,154,0.12);
 }
 .cp-session-item.active .cp-session-title {
   color: var(--accent2);
@@ -638,8 +698,23 @@ function toggleRetrieval(index) {
   margin-top: 2px;
 }
 
+.cp-rename-btn {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 3px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.cp-rename-btn:hover {
+  color: var(--accent2);
+  background: rgba(75,169,154,0.10);
+}
+
 .cp-delete-btn {
-  margin-left: auto;
+  flex-shrink: 0;
   border: 1px solid var(--border);
   background: var(--bg-card);
   color: var(--text-secondary);

@@ -109,6 +109,12 @@ class ChatCreateSessionRequest(BaseRequest):
 
 
 @dataclass(slots=True)
+class ChatUpdateSessionTitleRequest(BaseRequest):
+    session_id: int = 0
+    session_title: str = ""
+
+
+@dataclass(slots=True)
 class ChatAppendMessageRequest(BaseRequest):
     session_id: int = 0
     content: str = ""
