@@ -22,6 +22,7 @@ from app.router.schemas.chat import (
 	ChatResponse,
 	ChatSessionModel,
 	ChatUpdateCurrentStockModel,
+	ChatUpdateSessionTitleModel,
 )
 
 from app.router.utils import build_request, service_result_response
@@ -32,6 +33,7 @@ from app.service.requests import (
 	ChatListSessionsRequest,
 	ChatSessionRequest,
 	ChatUpdateCurrentStockRequest,
+	ChatUpdateSessionTitleRequest,
 )
 
 logger = logging.getLogger(__name__)
@@ -136,6 +138,11 @@ def get_current_context(payload: ChatSessionModel, container: ServiceContainer =
 @router.post("/chat/create-session")
 def create_session(payload: ChatCreateSessionModel, container: ServiceContainer = Depends(get_container)):
 	return service_result_response(container.chat.create_session(build_request(ChatCreateSessionRequest, payload)))
+
+
+@router.post("/chat/update-session-title")
+def update_session_title(payload: ChatUpdateSessionTitleModel, container: ServiceContainer = Depends(get_container)):
+	return service_result_response(container.chat.update_session_title(build_request(ChatUpdateSessionTitleRequest, payload)))
 
 
 @router.post("/chat/append-user-message")

@@ -108,6 +108,11 @@ class ChatCreateSessionModel(BaseRequestModel):
 	session_title: str | None = None
 
 
+class ChatUpdateSessionTitleModel(BaseRequestModel):
+	session_id: int
+	session_title: str = Field(..., min_length=1, max_length=50)
+
+
 class ChatAppendMessageModel(BaseRequestModel):
 	session_id: int
 	content: str
@@ -135,6 +140,7 @@ __all__ = [
 	"ChatListSessionsModel",
 	"ChatSessionModel",
 	"ChatCreateSessionModel",
+	"ChatUpdateSessionTitleModel",
 	"ChatAppendMessageModel",
 	"ChatUpdateCurrentStockModel",
 ]

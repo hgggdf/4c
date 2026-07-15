@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { sendChatMessage, sendChatMessageStream } from '../chat.js'
+import { sendChatMessage, sendChatMessageStream, updateSessionTitle } from '../chat.js'
 
 // Mock request module
 vi.mock('../request.js', () => ({
@@ -32,6 +32,20 @@ describe('chat.js — sendChatMessage (普通聊天)', () => {
     const result = await sendChatMessage({ message: 'test' })
 
     expect(result).toEqual(expected)
+  })
+})
+
+describe('chat.js — updateSessionTitle', () => {
+  it('调用会话标题更新接口', async () => {
+    const mockRequest = (await import('../request.js')).default
+    mockRequest.post.mockResolvedValue({ session_title: '恒瑞医药研发管线' })
+
+    await updateSessionTitle(12, '恒瑞医药研发管线')
+
+    expect(mockRequest.post).toHaveBeenCalledWith('/api/chat/update-session-title', {
+      session_id: 12,
+      session_title: '恒瑞医药研发管线',
+    })
   })
 })
 

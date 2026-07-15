@@ -4,7 +4,7 @@ from app.core.repositories import ChatRepository
 
 from .base import BaseService
 from .guards import require_non_empty, require_positive_int, require_stock_code
-from .requests import ChatAppendMessageRequest, ChatCreateSessionRequest, ChatListSessionsRequest, ChatSessionRequest, ChatUpdateCurrentStockRequest, StockCodeRequest
+from .requests import ChatAppendMessageRequest, ChatCreateSessionRequest, ChatListSessionsRequest, ChatSessionRequest, ChatUpdateCurrentStockRequest, ChatUpdateSessionTitleRequest, StockCodeRequest
 from .serializers import model_to_dict, normalize_value
 
 
@@ -28,6 +28,9 @@ class ChatService(BaseService):
 
     def create_session(self, req: ChatCreateSessionRequest):
         return self._run(lambda: self._with_db(lambda db: self._create_session(db, req)), trace_id=req.trace_id)
+
+    def update_session_title(self, req: ChatUpdateSessionTitleRequest):
+        return self._run(lambda: self._with_db(lambda db: self._update_session_title(db, req)), trace_id=req.trace_id)
 
     def append_user_message(self, req: ChatAppendMessageRequest):
         return self._run(lambda: self._with_db(lambda db: self._append_message(db, req, role="user")), trace_id=req.trace_id)
@@ -89,6 +92,16 @@ class ChatService(BaseService):
         user_id = require_positive_int(req.user_id, "user_id")
         title = req.session_title.strip() if req.session_title else None
         entity = ChatRepository(db).create_session(user_id, session_title=title)
+        return self._session_payload(db, entity)
+
+    def _update_session_title(self, db, req: ChatUpdateSessionTitleRequest) -> dict:
+        session_id = require_positive_int(req.session_id, "session_id")
+        title = require_non_empty(req.session_title, "session_title")
+        if len(title) > 50:
+            raise ValueError("session_title must be at most 50 characters")
+        entity = ChatRepository(db).update_session_title(session_id, title)
+        if entity is None:
+            raise ValueError(f"session not found: {session_id}")
         return self._session_payload(db, entity)
 
     def _append_message(self, db, req: ChatAppendMessageRequest, *, role: str) -> dict:

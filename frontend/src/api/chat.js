@@ -76,6 +76,10 @@ export function createSession(user_id, session_title) {
   return request.post('/api/chat/create-session', { user_id, session_title })
 }
 
+export function updateSessionTitle(session_id, session_title) {
+  return request.post('/api/chat/update-session-title', { session_id, session_title })
+}
+
 export function listSessions(user_id, limit = 20) {
   return request.post('/api/chat/sessions', { user_id, limit })
 }

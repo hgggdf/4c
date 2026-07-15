@@ -34,6 +34,15 @@ class ChatRepository(BaseRepository):
         return self.add(ChatSession(user_id=user_id, session_title=session_title,
                                     current_stock_code=current_stock_code))
 
+    def update_session_title(self, session_id: int, session_title: str) -> ChatSession | None:
+        """更新会话标题。"""
+        entity = self.get_session(session_id)
+        if entity is None:
+            return None
+        entity.session_title = session_title
+        self.db.flush()
+        return entity
+
     def append_message(self, session_id: int, *, role: str, content: str,
                        stock_code: str | None = None, intent_type: str | None = None,
                        tool_calls_json: dict | None = None) -> ChatMessage:

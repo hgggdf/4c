@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import ChatBox from '../ChatBox.vue'
 import * as chatApi from '../../api/chat'
 
@@ -22,6 +23,7 @@ describe('ChatBox.vue — 用户提交触发链路', () => {
   let wrapper
 
   beforeEach(() => {
+    setActivePinia(createPinia())
     wrapper = mount(ChatBox, {
       props: { loading: false },
     })
@@ -166,7 +168,7 @@ describe('ChatBox.vue — PDF 上传', () => {
 
     await input.trigger('change')
 
-    expect(chatApi.uploadDoc).toHaveBeenCalledWith(file, expect.any(Function))
+    expect(chatApi.uploadDoc).toHaveBeenCalledWith(file, expect.any(Function), null)
   })
 
   it('上传过程中显示进度', async () => {

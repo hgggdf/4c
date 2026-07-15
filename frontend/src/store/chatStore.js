@@ -7,11 +7,60 @@ import {
   listMessages,
   appendUserMessage,
   appendAssistantMessage,
+  updateSessionTitle,
   deleteSession as deleteChatSession,
 } from '../api/chat'
 import { searchHybrid } from '../api/retrieval'
 
 const WELCOME_MSG = '你好，我是医药投研多智能体系统。\n\n你可以：\n• 直接提问，如「分析恒瑞医药的研发管线」\n• 将左侧个股或行业卡片拖入输入框，进行多标的联合分析\n• 切换右侧宏观/行业/个股面板，查看详细数据'
+const DEFAULT_SESSION_TITLE = '新对话'
+const AUTO_TITLE_MAX_LENGTH = 24
+const MANUAL_TITLE_MAX_LENGTH = 50
+
+const MODE_TITLES = {
+  company_analysis: '企业运营评估',
+  financial_analysis: '财务分析',
+  butterfly_analysis: '蝴蝶效应分析',
+  risk_analysis: '风险分析',
+  pipeline_analysis: '研发管线分析',
+}
+
+function normalizeTitleText(value) {
+  return String(value || '')
+    .replace(/\[([^\]]+)]\([^)]+\)/g, '$1')
+    .replace(/https?:\/\/\S+/gi, '')
+    .replace(/[`#>*_~]/g, ' ')
+    .replace(/[\r\n\t]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/^[：:，,；;。.!！?？\s-]+|[：:，,；;。.!！?？\s-]+$/g, '')
+    .trim()
+}
+
+function truncateTitle(value, maxLength) {
+  const characters = Array.from(value)
+  if (characters.length <= maxLength) return value
+  return `${characters.slice(0, maxLength - 1).join('')}…`
+}
+
+export function buildSessionTitle({ message = '', targets = [], selectedMode = null } = {}) {
+  const targetNames = [...new Set(targets.map(item => normalizeTitleText(item?.name)).filter(Boolean))]
+  const question = normalizeTitleText(message)
+  let title = ''
+
+  if (targetNames.length && question) {
+    title = `${targetNames.join('、')}：${question}`
+  } else if (question) {
+    title = question
+  } else if (targetNames.length > 1) {
+    title = `${targetNames.join('、')}联合分析`
+  } else if (targetNames.length === 1) {
+    title = `${targetNames[0]}分析`
+  } else if (selectedMode) {
+    title = MODE_TITLES[selectedMode] || normalizeTitleText(selectedMode)
+  }
+
+  return truncateTitle(title || DEFAULT_SESSION_TITLE, AUTO_TITLE_MAX_LENGTH)
+}
 
 export const useChatStore = defineStore('chat', {
   state: () => ({
@@ -40,7 +89,7 @@ export const useChatStore = defineStore('chat', {
         const list = Array.isArray(items) ? items : []
         this.sessions = list.map(s => ({
           id: s.id ?? s.session_id,
-          title: s.session_title || s.title || '新对话',
+          title: s.session_title || s.title || DEFAULT_SESSION_TITLE,
           preview: '',
           updatedAt: (s.updated_at || s.created_at || '').slice(0, 10),
           messages: [],
@@ -74,6 +123,10 @@ export const useChatStore = defineStore('chat', {
           }))
           if (!session.messages.length) {
             session.messages.push({ role: 'assistant', content: WELCOME_MSG, createdAt: Date.now() })
+          }
+          const firstUserMessage = session.messages.find(message => message.role === 'user')
+          if (session.title === DEFAULT_SESSION_TITLE && firstUserMessage) {
+            this.autoNameSession(session.id, { message: firstUserMessage.content })
           }
         }
       } catch (err) {
@@ -111,12 +164,17 @@ export const useChatStore = defineStore('chat', {
     },
 
     async newSession() {
+      const currentSession = this.sessions.find(session => session.id === this.activeSessionId)
+      if (currentSession && !currentSession.messages.some(message => message.role === 'user')) {
+        return currentSession
+      }
+
       try {
-        const res = await createSession(1, '新对话')
+        const res = await createSession(1, DEFAULT_SESSION_TITLE)
         const s = res || {}
         const session = {
           id: s.id ?? s.session_id ?? Date.now(),
-          title: s.session_title || '新对话',
+          title: s.session_title || DEFAULT_SESSION_TITLE,
           preview: '',
           updatedAt: new Date().toISOString().slice(0, 10),
           messages: [{ role: 'assistant', content: WELCOME_MSG, createdAt: Date.now() }],
@@ -129,12 +187,45 @@ export const useChatStore = defineStore('chat', {
         const id = Date.now()
         this.sessions.unshift({
           id,
-          title: '新对话',
+          title: DEFAULT_SESSION_TITLE,
           preview: '',
           updatedAt: new Date().toISOString().slice(0, 10),
           messages: [{ role: 'assistant', content: WELCOME_MSG, createdAt: Date.now() }],
         })
         this.activeSessionId = id
+      }
+    },
+
+    autoNameSession(sessionId, context) {
+      const session = this.sessions.find(item => item.id === sessionId)
+      if (!session || session.title !== DEFAULT_SESSION_TITLE) return
+
+      const title = buildSessionTitle(context)
+      if (title === DEFAULT_SESSION_TITLE) return
+
+      session.title = title
+      session.updatedAt = new Date().toISOString().slice(0, 10)
+      updateSessionTitle(sessionId, title).catch(err => {
+        console.error('[autoNameSession]', err)
+      })
+    },
+
+    async renameSession(sessionId, value) {
+      const session = this.sessions.find(item => item.id === sessionId)
+      const title = normalizeTitleText(value)
+      if (!session || !title || Array.from(title).length > MANUAL_TITLE_MAX_LENGTH) return false
+
+      const previousTitle = session.title
+      session.title = title
+      try {
+        const updated = await updateSessionTitle(sessionId, title)
+        session.title = updated?.session_title || title
+        session.updatedAt = new Date().toISOString().slice(0, 10)
+        return true
+      } catch (err) {
+        session.title = previousTitle
+        console.error('[renameSession]', err)
+        return false
       }
     },
 
@@ -153,6 +244,12 @@ export const useChatStore = defineStore('chat', {
       const sessionId = this.activeSessionId
       const session = this.sessions.find(s => s.id === sessionId)
       if (!session || !sessionId) return
+
+      const isFirstQuestion = !session.messages.some(item => item.role === 'user')
+      if (isFirstQuestion) {
+        this.autoNameSession(sessionId, { message, targets, selectedMode })
+      }
+      session.updatedAt = new Date().toISOString().slice(0, 10)
 
       const userMsg = { role: 'user', content, createdAt: Date.now(), sessionId, selectedMode }
       const assistantMsg = {
@@ -289,11 +386,16 @@ export const useChatStore = defineStore('chat', {
     },
 
     // 真正的 ReAct Agent — LLM 自主决定工具链
-    async askAgent({ message }) {
+    async askAgent({ message, titleMessage = message, targets = [] }) {
       const session = this.sessions.find(s => s.id === this.activeSessionId)
       if (!session) return
 
       const sessionId = this.activeSessionId
+      const isFirstQuestion = !session.messages.some(item => item.role === 'user')
+      if (isFirstQuestion) {
+        this.autoNameSession(sessionId, { message: titleMessage, targets })
+      }
+      session.updatedAt = new Date().toISOString().slice(0, 10)
       const userMsg = { role: 'user', content: message, createdAt: Date.now() }
       const assistantMsg = {
         role: 'assistant',
